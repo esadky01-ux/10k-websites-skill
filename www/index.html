@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex,follow">
+<title>Europa Taxi</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<style>
+body{background:#0A0A0C;color:#F4F4F6;font:400 16px/1.6 system-ui,sans-serif;
+display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}
+.kutu{text-align:center;padding:24px}
+h1{font-size:26px;letter-spacing:.5px}h1 span{color:#FFC107}
+ul{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:10px}
+a{display:block;padding:13px 40px;border:1px solid rgba(255,255,255,.18);border-radius:12px;
+color:#F4F4F6;text-decoration:none;font-weight:600}
+a:hover{border-color:#FFC107;color:#FFC107}
+</style>
+<script>
+/* Kok yonlendirme: once kayitli tercih, sonra tarayici dili, yoksa /fr/ */
+(function(){
+  var diller = ["fr","nl","en","tr"], hedef = null;
+  try { hedef = localStorage.getItem("europa_dil"); } catch(e){}
+  if (diller.indexOf(hedef) === -1) {
+    hedef = null;
+    var tercihler = navigator.languages || [navigator.language || ""];
+    for (var i = 0; i < tercihler.length && !hedef; i++) {
+      var kod = String(tercihler[i]).slice(0, 2).toLowerCase();
+      if (diller.indexOf(kod) !== -1) hedef = kod;
+    }
+  }
+  location.replace("/" + (hedef || "fr") + "/");
+})();
+</script>
+</head>
+<body>
+<div class="kutu">
+  <h1>EUROPA<span>TAXI</span></h1>
+  <ul>
+    <li><a href="/fr/" hreflang="fr-BE">Français</a></li>
+    <li><a href="/nl/" hreflang="nl-BE">Nederlands</a></li>
+    <li><a href="/en/" hreflang="en">English</a></li>
+    <li><a href="/tr/" hreflang="tr">Türkçe</a></li>
+  </ul>
+</div>
+</body>
+</html>

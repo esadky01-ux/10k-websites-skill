@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 86">
+  <!-- Business / VIP Van: Mercedes Vito benzeri, yandan -->
+  <g stroke="#FFC107" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 62 Q10 61 10 55 L10 34 Q10 26 18 24 L46 20 Q50 14 58 14 L172 14 Q182 14 182 24 L182 55 Q182 61 176 62"/>
+    <path d="M20 34 L46 30 L46 20 L24 23 Q18 24 17 30 Z" fill="rgba(255,193,7,.14)"/>
+    <path d="M54 29 L54 19 L86 19 L86 29 Z" fill="rgba(255,193,7,.14)"/>
+    <path d="M94 29 L94 19 L126 19 L126 29 Z" fill="rgba(255,193,7,.14)"/>
+    <path d="M134 29 L134 19 L166 19 L166 29 Z" fill="rgba(255,193,7,.14)"/>
+    <path d="M64 62 L134 62"/>
+    <path d="M10 44 L182 44" opacity=".5"/>
+  </g>
+  <g fill="#0A0A0C" stroke="#FFC107" stroke-width="3">
+    <circle cx="46" cy="62" r="13"/>
+    <circle cx="152" cy="62" r="13"/>
+  </g>
+  <g fill="#FFC107">
+    <circle cx="46" cy="62" r="4.5"/>
+    <circle cx="152" cy="62" r="4.5"/>
+    <rect x="174" y="50" width="8" height="4" rx="2"/>
+    <rect x="12" y="50" width="7" height="3.6" rx="1.8"/>
+  </g>
+</svg>
