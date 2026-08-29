@@ -446,6 +446,37 @@ a:hover{{border-color:#FFC107;color:#FFC107}}
 """
 (WWW / "index.html").write_text(kok_html, encoding="utf-8")
 
+# ---------------------------------------------------------------- .htaccess + sitemap + robots
+# Kok .htaccess kaynaktan kopyalanir (sartname §11)
+shutil.copyfile(KAYNAK / "kok.htaccess", WWW / ".htaccess")
+
+# sitemap.xml: her URL icin TAM xhtml:link kumesi (kendisi dahil 4 dil + x-default).
+# Eksik kume tum grubu gecersiz kilar (sartname §11).
+bugun = datetime.date.today().isoformat()
+alternatifler = "\n".join(
+    f'    <xhtml:link rel="alternate" hreflang="{strings[d]["dil_hreflang"]}" href="{ALAN}{strings[d]["dil_yol"]}"/>'
+    for d in DILLER
+) + f'\n    <xhtml:link rel="alternate" hreflang="x-default" href="{ALAN}/fr/"/>'
+sitemap_girdileri = "\n".join(
+    f"""  <url>
+    <loc>{ALAN}{strings[d]["dil_yol"]}</loc>
+{alternatifler}
+    <lastmod>{bugun}</lastmod>
+  </url>"""
+    for d in DILLER
+)
+sitemap = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+{sitemap_girdileri}
+</urlset>
+"""
+(WWW / "sitemap.xml").write_text(sitemap, encoding="utf-8")
+
+# robots.txt: /pay/ tarama disi + sitemap referansi
+(WWW / "robots.txt").write_text(
+    f"User-agent: *\nDisallow: /pay/\n\nSitemap: {ALAN}/sitemap.xml\n", encoding="utf-8")
+
 # ---------------------------------------------------------------- rapor
 print("✓ Derleme tamam:")
 for dil in DILLER:

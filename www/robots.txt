@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /pay/
+
+Sitemap: https://europetaxi24.be/sitemap.xml
