@@ -151,6 +151,8 @@ for dil, h in sayfalar.items():
     kontrol("min-width:0" in h.replace(" ", ""), f"[{dil}] .grid-2 min-width:0 eksik")
     kontrol("overflow-wrap:anywhere" in h.replace(" ", ""), f"[{dil}] overflow-wrap:anywhere eksik")
     kontrol("env(safe-area-inset-bottom)" in h, f"[{dil}] safe-area-inset eksik")
+    kontrol("overflow-x:clip" in h.replace(" ", ""), f"[{dil}] yatay tasma guvenlik agi (overflow-x:clip) eksik")
+    kontrol("flex-wrap:wrap" in h.replace(" ", ""), f"[{dil}] baslik kirilabilir olmali (flex-wrap)")
     kontrol(".gm-err-container" in h and "display:none!important" in h.replace(" ", ""),
             f"[{dil}] Google hata CSS guvenlik agi eksik")
 

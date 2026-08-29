@@ -157,6 +157,12 @@ function kontrol(kosul, mesaj){ if (!kosul) hatalar.push(mesaj); }
   const tasma390 = await mobil.evaluate(() => document.scrollingElement.scrollWidth - window.innerWidth);
   kontrol(tasma390 <= 0, '390px yatay tasma: ' + tasma390 + 'px');
 
+  // 320px (en dar gercek cihazlar) da tasmasin
+  await mobil.setViewportSize({ width: 320, height: 700 });
+  await mobil.waitForTimeout(300);
+  const tasma320 = await mobil.evaluate(() => document.scrollingElement.scrollWidth - window.innerWidth);
+  kontrol(tasma320 <= 0, '320px yatay tasma: ' + tasma320 + 'px');
+
   /* ---------- D. Google dayanikliligi: gm_authFailure simulasyonu ---------- */
   const g1 = await b.newPage({ viewport: { width: 1280, height: 900 } });
   const g1h = [];
