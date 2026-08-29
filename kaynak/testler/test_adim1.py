@@ -296,6 +296,62 @@ toplam, kapora, kalan = fiyat_hesapla(45)
 kontrol((toplam, kapora, kalan) == (99.55, 19.91, 79.64),
         f"45 km fiyat bekleneni vermedi: {toplam}/{kapora}/{kalan}")
 
+# ================================================================ H. EK VERILER
+print("— H. isletme / araclar / populer rotalar / dil bekcileri")
+
+# Isletme sabitleri (sartname §1, birebir)
+isletme = json.loads((KOK / "isletme.json").read_text(encoding="utf-8"))
+kontrol(isletme["marka"] == "Europa Taxi", "isletme.marka yanlis")
+kontrol(isletme["slogan"] == "Your Ride, Our Priority", "isletme.slogan yanlis")
+kontrol(isletme["unvan"] == "CAN COMPANY", "isletme.unvan yanlis")
+kontrol(isletme["kdv"] == "BE 1016.219.906", "isletme.kdv yanlis")
+kontrol("Excelsiorlaan 31" in isletme["adres"] and "1930 Zaventem" in isletme["adres"],
+        "isletme.adres sartnamedeki adres olmali")
+kontrol(isletme["eposta"] == "Europataxisrl@gmail.com", "isletme.eposta yanlis")
+kontrol(isletme["gonderen_eposta"] == "noreply@europetaxi24.be", "isletme.gonderen_eposta yanlis")
+kontrol(isletme["telefon"] == "+32 493 83 98 98", "isletme.telefon yanlis")
+kontrol(isletme["whatsapp"] == "https://wa.me/32493839898", "isletme.whatsapp yanlis")
+kontrol(isletme["alan_adi"] == "https://europetaxi24.be", "isletme.alan_adi yanlis")
+for yasak in ["necatican", "ceylan"]:
+    kontrol(yasak not in json.dumps(isletme).lower(), f"isletme.json yasak icerik: '{yasak}'")
+
+# Arac kapasiteleri (sartname §7)
+araclar = veri["araclar"]
+kontrol(araclar["eco"] == {"yolcu": 4, "buyuk": 2, "kucuk": 2}, "eco kapasitesi 4/2+2 olmali")
+kontrol(araclar["wagon"] == {"yolcu": 4, "buyuk": 4, "kucuk": 2}, "wagon kapasitesi 4/4+2 olmali")
+kontrol(araclar["vip"] == {"yolcu": 7, "buyuk": 6, "kucuk": 4}, "vip kapasitesi 7/6+4 olmali")
+kontrol(araclar["vip"]["yolcu"] == SABIT["yolcu_max"]
+        and araclar["vip"]["buyuk"] == SABIT["buyuk_valiz_max"]
+        and araclar["vip"]["kucuk"] == SABIT["kucuk_valiz_max"],
+        "Sayac limitleri en buyuk aracin (Vito) kapasitesine esit olmali")
+
+# Populer rota chip'leri: hepsi KESIN tabloda olmali (chip fiyati kesin km'den)
+for a, b in veri["populer"]:
+    kontrol(a in YERLER and b in YERLER, f"populer rota bilinmeyen yer: {a}-{b}")
+    kontrol((a, b) in KESIN_SOZLUK, f"populer rota KESIN tabloda yok: {a}-{b}")
+
+# Yedek mod sure hesabi icin ortalama hiz
+kontrol(50 <= SABIT["ort_hiz_kmh"] <= 90, "ort_hiz_kmh 50-90 araliginda olmali")
+
+# Eksiklik denetiminden gelen takma ad duzeltmeleri
+for girdi, beklenen in [("Bergen", "mons"), ("Spa", "spa"), ("Saint-Nicolas", "sint-niklaas")]:
+    kontrol(yer_bul(girdi) == beklenen, f"yer_bul({girdi!r}) {beklenen!r} donmeli")
+
+# Dil incelemesi bekcileri: bir daha geri gelmesinler
+fr_metin = json.dumps(strings["fr"], ensure_ascii=False).lower()
+kontrol("licencié" not in fr_metin, "[fr] 'licencié' (yanlis anlam) kullanilmamali, 'agréé' dogru")
+kontrol("agréé" in fr_metin, "[fr] 'agréé' gecmeli")
+nl_metin2 = json.dumps(strings["nl"], ensure_ascii=False).lower()
+kontrol("instaptarief" not in nl_metin2, "[nl] 'instaptarief' yerine 'instapgeld' kullanilmali")
+kontrol("instapgeld" in nl_metin2, "[nl] 'instapgeld' gecmeli")
+kontrol("stationwagen" not in nl_metin2, "[nl] 'stationwagen' (NL-NL) yerine 'break' kullanilmali")
+
+# Alt metinleri: 4 dilde bes gorsel icin de mevcut (SEO: her <img> alt'li)
+for alt_anahtar in ["alt_hero", "alt_logo", "alt_veh_eco", "alt_veh_wagon", "alt_veh_vip"]:
+    for dil in DILLER:
+        kontrol(strings[dil].get(alt_anahtar, "").strip() != "",
+                f"[{dil}] {alt_anahtar} eksik")
+
 # ================================================================ SONUC
 print()
 if hatalar:

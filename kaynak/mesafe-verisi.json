@@ -10,145 +10,1570 @@
     "tolerans_yuzde": 12,
     "yolcu_max": 7,
     "buyuk_valiz_max": 6,
-    "kucuk_valiz_max": 4
+    "kucuk_valiz_max": 4,
+    "ort_hiz_kmh": 70
   },
   "yerler": {
-    "brussels":        { "lat": 50.8467, "lng": 4.3517, "ulke": "BE", "havalimani": false, "ad": { "fr": "Bruxelles", "nl": "Brussel", "en": "Brussels", "tr": "Brüksel" }, "takma": ["bruxelles", "brussel", "brussels", "bruksel", "bxl", "bruxelles ville", "brussel stad", "bruxelles midi", "brussel zuid", "gare du midi"] },
-    "antwerpen":       { "lat": 51.2194, "lng": 4.4025, "ulke": "BE", "havalimani": false, "ad": { "fr": "Anvers", "nl": "Antwerpen", "en": "Antwerp", "tr": "Anvers" }, "takma": ["antwerpen", "anvers", "antwerp", "antwerpen centraal"] },
-    "gent":            { "lat": 51.0543, "lng": 3.7174, "ulke": "BE", "havalimani": false, "ad": { "fr": "Gand", "nl": "Gent", "en": "Ghent", "tr": "Gent" }, "takma": ["gent", "gand", "ghent", "gent sint pieters"] },
-    "brugge":          { "lat": 51.2093, "lng": 3.2247, "ulke": "BE", "havalimani": false, "ad": { "fr": "Bruges", "nl": "Brugge", "en": "Bruges", "tr": "Brugge" }, "takma": ["brugge", "bruges", "brug"] },
-    "leuven":          { "lat": 50.8798, "lng": 4.7005, "ulke": "BE", "havalimani": false, "ad": { "fr": "Louvain", "nl": "Leuven", "en": "Leuven", "tr": "Leuven" }, "takma": ["leuven", "louvain", "loven"] },
-    "liege":           { "lat": 50.6326, "lng": 5.5797, "ulke": "BE", "havalimani": false, "ad": { "fr": "Liège", "nl": "Luik", "en": "Liège", "tr": "Liège" }, "takma": ["liege", "luik", "luttich", "liege guillemins"] },
-    "charleroi":       { "lat": 50.4114, "lng": 4.4448, "ulke": "BE", "havalimani": false, "ad": { "fr": "Charleroi", "nl": "Charleroi", "en": "Charleroi", "tr": "Charleroi" }, "takma": ["charleroi", "charleroi ville", "charleroi centrum", "sarlerua"] },
-    "namur":           { "lat": 50.4674, "lng": 4.8720, "ulke": "BE", "havalimani": false, "ad": { "fr": "Namur", "nl": "Namen", "en": "Namur", "tr": "Namur" }, "takma": ["namur", "namen"] },
-    "mons":            { "lat": 50.4542, "lng": 3.9523, "ulke": "BE", "havalimani": false, "ad": { "fr": "Mons", "nl": "Bergen", "en": "Mons", "tr": "Mons" }, "takma": ["mons", "bergen mons"] },
-    "hasselt":         { "lat": 50.9307, "lng": 5.3378, "ulke": "BE", "havalimani": false, "ad": { "fr": "Hasselt", "nl": "Hasselt", "en": "Hasselt", "tr": "Hasselt" }, "takma": ["hasselt"] },
-    "mechelen":        { "lat": 51.0259, "lng": 4.4776, "ulke": "BE", "havalimani": false, "ad": { "fr": "Malines", "nl": "Mechelen", "en": "Mechelen", "tr": "Mechelen" }, "takma": ["mechelen", "malines"] },
-    "aalst":           { "lat": 50.9378, "lng": 4.0402, "ulke": "BE", "havalimani": false, "ad": { "fr": "Alost", "nl": "Aalst", "en": "Aalst", "tr": "Aalst" }, "takma": ["aalst", "alost"] },
-    "kortrijk":        { "lat": 50.8280, "lng": 3.2649, "ulke": "BE", "havalimani": false, "ad": { "fr": "Courtrai", "nl": "Kortrijk", "en": "Kortrijk", "tr": "Kortrijk" }, "takma": ["kortrijk", "courtrai"] },
-    "oostende":        { "lat": 51.2154, "lng": 2.9286, "ulke": "BE", "havalimani": false, "ad": { "fr": "Ostende", "nl": "Oostende", "en": "Ostend", "tr": "Oostende" }, "takma": ["oostende", "ostende", "ostend"] },
-    "sint-niklaas":    { "lat": 51.1654, "lng": 4.1437, "ulke": "BE", "havalimani": false, "ad": { "fr": "Saint-Nicolas", "nl": "Sint-Niklaas", "en": "Sint-Niklaas", "tr": "Sint-Niklaas" }, "takma": ["sint niklaas", "saint nicolas waas"] },
-    "genk":            { "lat": 50.9654, "lng": 5.5008, "ulke": "BE", "havalimani": false, "ad": { "fr": "Genk", "nl": "Genk", "en": "Genk", "tr": "Genk" }, "takma": ["genk"] },
-    "roeselare":       { "lat": 50.9469, "lng": 3.1223, "ulke": "BE", "havalimani": false, "ad": { "fr": "Roulers", "nl": "Roeselare", "en": "Roeselare", "tr": "Roeselare" }, "takma": ["roeselare", "roulers"] },
-    "vilvoorde":       { "lat": 50.9281, "lng": 4.4287, "ulke": "BE", "havalimani": false, "ad": { "fr": "Vilvorde", "nl": "Vilvoorde", "en": "Vilvoorde", "tr": "Vilvoorde" }, "takma": ["vilvoorde", "vilvorde"] },
-    "waterloo":        { "lat": 50.7147, "lng": 4.3999, "ulke": "BE", "havalimani": false, "ad": { "fr": "Waterloo", "nl": "Waterloo", "en": "Waterloo", "tr": "Waterloo" }, "takma": ["waterloo"] },
-    "tournai":         { "lat": 50.6070, "lng": 3.3893, "ulke": "BE", "havalimani": false, "ad": { "fr": "Tournai", "nl": "Doornik", "en": "Tournai", "tr": "Tournai" }, "takma": ["tournai", "doornik"] },
-    "la-louviere":     { "lat": 50.4794, "lng": 4.1874, "ulke": "BE", "havalimani": false, "ad": { "fr": "La Louvière", "nl": "La Louvière", "en": "La Louvière", "tr": "La Louvière" }, "takma": ["la louviere", "louviere"] },
-    "verviers":        { "lat": 50.5891, "lng": 5.8624, "ulke": "BE", "havalimani": false, "ad": { "fr": "Verviers", "nl": "Verviers", "en": "Verviers", "tr": "Verviers" }, "takma": ["verviers"] },
-    "dendermonde":     { "lat": 51.0257, "lng": 4.1013, "ulke": "BE", "havalimani": false, "ad": { "fr": "Termonde", "nl": "Dendermonde", "en": "Dendermonde", "tr": "Dendermonde" }, "takma": ["dendermonde", "termonde"] },
-    "wavre":           { "lat": 50.7173, "lng": 4.6118, "ulke": "BE", "havalimani": false, "ad": { "fr": "Wavre", "nl": "Waver", "en": "Wavre", "tr": "Wavre" }, "takma": ["wavre", "waver"] },
-    "turnhout":        { "lat": 51.3227, "lng": 4.9449, "ulke": "BE", "havalimani": false, "ad": { "fr": "Turnhout", "nl": "Turnhout", "en": "Turnhout", "tr": "Turnhout" }, "takma": ["turnhout"] },
-    "lokeren":         { "lat": 51.1043, "lng": 3.9930, "ulke": "BE", "havalimani": false, "ad": { "fr": "Lokeren", "nl": "Lokeren", "en": "Lokeren", "tr": "Lokeren" }, "takma": ["lokeren"] },
-    "knokke":          { "lat": 51.3500, "lng": 3.2870, "ulke": "BE", "havalimani": false, "ad": { "fr": "Knokke-Heist", "nl": "Knokke-Heist", "en": "Knokke-Heist", "tr": "Knokke-Heist" }, "takma": ["knokke", "knokke heist"] },
-    "tongeren":        { "lat": 50.7807, "lng": 5.4640, "ulke": "BE", "havalimani": false, "ad": { "fr": "Tongres", "nl": "Tongeren", "en": "Tongeren", "tr": "Tongeren" }, "takma": ["tongeren", "tongres"] },
-    "ieper":           { "lat": 50.8510, "lng": 2.8857, "ulke": "BE", "havalimani": false, "ad": { "fr": "Ypres", "nl": "Ieper", "en": "Ypres", "tr": "Ieper" }, "takma": ["ieper", "ypres"] },
-    "dinant":          { "lat": 50.2607, "lng": 4.9122, "ulke": "BE", "havalimani": false, "ad": { "fr": "Dinant", "nl": "Dinant", "en": "Dinant", "tr": "Dinant" }, "takma": ["dinant"] },
-    "spa":             { "lat": 50.4926, "lng": 5.8641, "ulke": "BE", "havalimani": false, "ad": { "fr": "Spa", "nl": "Spa", "en": "Spa", "tr": "Spa" }, "takma": ["spa belgique", "spa belgie", "spa francorchamps"] },
-    "eupen":           { "lat": 50.6276, "lng": 6.0367, "ulke": "BE", "havalimani": false, "ad": { "fr": "Eupen", "nl": "Eupen", "en": "Eupen", "tr": "Eupen" }, "takma": ["eupen"] },
-    "arlon":           { "lat": 49.6837, "lng": 5.8167, "ulke": "BE", "havalimani": false, "ad": { "fr": "Arlon", "nl": "Aarlen", "en": "Arlon", "tr": "Arlon" }, "takma": ["arlon", "aarlen"] },
-    "bastogne":        { "lat": 50.0008, "lng": 5.7150, "ulke": "BE", "havalimani": false, "ad": { "fr": "Bastogne", "nl": "Bastenaken", "en": "Bastogne", "tr": "Bastogne" }, "takma": ["bastogne", "bastenaken"] },
-    "nivelles":        { "lat": 50.5977, "lng": 4.3283, "ulke": "BE", "havalimani": false, "ad": { "fr": "Nivelles", "nl": "Nijvel", "en": "Nivelles", "tr": "Nivelles" }, "takma": ["nivelles", "nijvel"] },
-    "louvain-la-neuve":{ "lat": 50.6696, "lng": 4.6134, "ulke": "BE", "havalimani": false, "ad": { "fr": "Louvain-la-Neuve", "nl": "Louvain-la-Neuve", "en": "Louvain-la-Neuve", "tr": "Louvain-la-Neuve" }, "takma": ["louvain la neuve", "lln"] },
-    "durbuy":          { "lat": 50.3527, "lng": 5.4563, "ulke": "BE", "havalimani": false, "ad": { "fr": "Durbuy", "nl": "Durbuy", "en": "Durbuy", "tr": "Durbuy" }, "takma": ["durbuy"] },
-    "zaventem-stad":   { "lat": 50.8845, "lng": 4.4715, "ulke": "BE", "havalimani": false, "ad": { "fr": "Zaventem (centre)", "nl": "Zaventem (centrum)", "en": "Zaventem (centre)", "tr": "Zaventem (merkez)" }, "takma": ["zaventem centrum", "zaventem centre", "zaventem merkez"] },
-
-    "bru":             { "lat": 50.9010, "lng": 4.4856, "ulke": "BE", "havalimani": true, "ad": { "fr": "Brussels Airport (Zaventem)", "nl": "Brussels Airport (Zaventem)", "en": "Brussels Airport (Zaventem)", "tr": "Brüksel Havalimanı (Zaventem)" }, "takma": ["bru", "zaventem", "brussels airport", "aeroport de bruxelles", "aeroport zaventem", "luchthaven zaventem", "brussel luchthaven", "brussels luchthaven", "bruksel havalimani", "zaventem havalimani", "zaventem airport", "aeroport de zaventem", "brussel nationaal", "bruxelles national"] },
-    "crl":             { "lat": 50.4601, "lng": 4.4538, "ulke": "BE", "havalimani": true, "ad": { "fr": "Aéroport de Charleroi (CRL)", "nl": "Luchthaven Charleroi (CRL)", "en": "Charleroi Airport (CRL)", "tr": "Charleroi Havalimanı (CRL)" }, "takma": ["crl", "charleroi airport", "aeroport de charleroi", "luchthaven charleroi", "charleroi havalimani", "brussels south", "bruxelles sud", "brussel zuid luchthaven", "gosselies"] },
-    "anr":             { "lat": 51.1894, "lng": 4.4603, "ulke": "BE", "havalimani": true, "ad": { "fr": "Aéroport d'Anvers (ANR)", "nl": "Luchthaven Antwerpen (ANR)", "en": "Antwerp Airport (ANR)", "tr": "Anvers Havalimanı (ANR)" }, "takma": ["anr", "antwerp airport", "aeroport anvers", "luchthaven antwerpen", "antwerpen luchthaven", "anvers havalimani", "deurne airport", "deurne luchthaven"] },
-    "ost":             { "lat": 51.1998, "lng": 2.8622, "ulke": "BE", "havalimani": true, "ad": { "fr": "Aéroport d'Ostende (OST)", "nl": "Luchthaven Oostende (OST)", "en": "Ostend-Bruges Airport (OST)", "tr": "Oostende Havalimanı (OST)" }, "takma": ["ost", "ostend airport", "aeroport ostende", "luchthaven oostende", "oostende luchthaven", "oostende havalimani"] },
-    "lgg":             { "lat": 50.6374, "lng": 5.4432, "ulke": "BE", "havalimani": true, "ad": { "fr": "Aéroport de Liège (LGG)", "nl": "Luchthaven Luik (LGG)", "en": "Liège Airport (LGG)", "tr": "Liège Havalimanı (LGG)" }, "takma": ["lgg", "liege airport", "aeroport de liege", "luchthaven luik", "luik luchthaven", "liege havalimani", "bierset"] },
-
-    "amsterdam":       { "lat": 52.3676, "lng": 4.9041, "ulke": "NL", "havalimani": false, "ad": { "fr": "Amsterdam", "nl": "Amsterdam", "en": "Amsterdam", "tr": "Amsterdam" }, "takma": ["amsterdam"] },
-    "ams":             { "lat": 52.3105, "lng": 4.7683, "ulke": "NL", "havalimani": true, "ad": { "fr": "Amsterdam Schiphol (AMS)", "nl": "Amsterdam Schiphol (AMS)", "en": "Amsterdam Schiphol (AMS)", "tr": "Amsterdam Schiphol (AMS)" }, "takma": ["ams", "schiphol", "amsterdam schiphol", "schiphol airport", "schiphol havalimani", "aeroport schiphol", "luchthaven schiphol"] },
-    "rotterdam":       { "lat": 51.9244, "lng": 4.4777, "ulke": "NL", "havalimani": false, "ad": { "fr": "Rotterdam", "nl": "Rotterdam", "en": "Rotterdam", "tr": "Rotterdam" }, "takma": ["rotterdam"] },
-    "den-haag":        { "lat": 52.0705, "lng": 4.3007, "ulke": "NL", "havalimani": false, "ad": { "fr": "La Haye", "nl": "Den Haag", "en": "The Hague", "tr": "Lahey" }, "takma": ["den haag", "la haye", "the hague", "lahey", "s gravenhage", "gravenhage"] },
-    "utrecht":         { "lat": 52.0907, "lng": 5.1214, "ulke": "NL", "havalimani": false, "ad": { "fr": "Utrecht", "nl": "Utrecht", "en": "Utrecht", "tr": "Utrecht" }, "takma": ["utrecht"] },
-    "eindhoven":       { "lat": 51.4416, "lng": 5.4697, "ulke": "NL", "havalimani": false, "ad": { "fr": "Eindhoven", "nl": "Eindhoven", "en": "Eindhoven", "tr": "Eindhoven" }, "takma": ["eindhoven"] },
-    "ein":             { "lat": 51.4501, "lng": 5.3745, "ulke": "NL", "havalimani": true, "ad": { "fr": "Aéroport d'Eindhoven (EIN)", "nl": "Eindhoven Airport (EIN)", "en": "Eindhoven Airport (EIN)", "tr": "Eindhoven Havalimanı (EIN)" }, "takma": ["ein", "eindhoven airport", "aeroport eindhoven", "eindhoven luchthaven", "eindhoven havalimani"] },
-    "maastricht":      { "lat": 50.8514, "lng": 5.6910, "ulke": "NL", "havalimani": false, "ad": { "fr": "Maastricht", "nl": "Maastricht", "en": "Maastricht", "tr": "Maastricht" }, "takma": ["maastricht"] },
-    "breda":           { "lat": 51.5719, "lng": 4.7683, "ulke": "NL", "havalimani": false, "ad": { "fr": "Breda", "nl": "Breda", "en": "Breda", "tr": "Breda" }, "takma": ["breda"] },
-    "tilburg":         { "lat": 51.5606, "lng": 5.0919, "ulke": "NL", "havalimani": false, "ad": { "fr": "Tilburg", "nl": "Tilburg", "en": "Tilburg", "tr": "Tilburg" }, "takma": ["tilburg"] },
-
-    "paris":           { "lat": 48.8566, "lng": 2.3522, "ulke": "FR", "havalimani": false, "ad": { "fr": "Paris", "nl": "Parijs", "en": "Paris", "tr": "Paris" }, "takma": ["paris", "parijs"] },
-    "cdg":             { "lat": 49.0097, "lng": 2.5479, "ulke": "FR", "havalimani": true, "ad": { "fr": "Paris Charles de Gaulle (CDG)", "nl": "Parijs Charles de Gaulle (CDG)", "en": "Paris Charles de Gaulle (CDG)", "tr": "Paris Charles de Gaulle (CDG)" }, "takma": ["cdg", "charles de gaulle", "roissy", "paris cdg", "cdg havalimani", "aeroport charles de gaulle"] },
-    "orly":            { "lat": 48.7262, "lng": 2.3652, "ulke": "FR", "havalimani": true, "ad": { "fr": "Paris Orly (ORY)", "nl": "Parijs Orly (ORY)", "en": "Paris Orly (ORY)", "tr": "Paris Orly (ORY)" }, "takma": ["orly", "paris orly", "ory", "orly havalimani", "aeroport orly"] },
-    "lille":           { "lat": 50.6292, "lng": 3.0573, "ulke": "FR", "havalimani": false, "ad": { "fr": "Lille", "nl": "Rijsel", "en": "Lille", "tr": "Lille" }, "takma": ["lille", "rijsel", "lille europe", "lille flandres"] },
-    "calais":          { "lat": 50.9513, "lng": 1.8587, "ulke": "FR", "havalimani": false, "ad": { "fr": "Calais", "nl": "Calais", "en": "Calais", "tr": "Calais" }, "takma": ["calais"] },
-    "dunkerque":       { "lat": 51.0344, "lng": 2.3768, "ulke": "FR", "havalimani": false, "ad": { "fr": "Dunkerque", "nl": "Duinkerke", "en": "Dunkirk", "tr": "Dunkerque" }, "takma": ["dunkerque", "duinkerke", "dunkirk"] },
-    "reims":           { "lat": 49.2583, "lng": 4.0317, "ulke": "FR", "havalimani": false, "ad": { "fr": "Reims", "nl": "Reims", "en": "Reims", "tr": "Reims" }, "takma": ["reims"] },
-    "metz":            { "lat": 49.1193, "lng": 6.1757, "ulke": "FR", "havalimani": false, "ad": { "fr": "Metz", "nl": "Metz", "en": "Metz", "tr": "Metz" }, "takma": ["metz"] },
-
-    "koln":            { "lat": 50.9375, "lng": 6.9603, "ulke": "DE", "havalimani": false, "ad": { "fr": "Cologne", "nl": "Keulen", "en": "Cologne", "tr": "Köln" }, "takma": ["koln", "cologne", "keulen", "kohln"] },
-    "cgn":             { "lat": 50.8659, "lng": 7.1427, "ulke": "DE", "havalimani": true, "ad": { "fr": "Aéroport de Cologne/Bonn (CGN)", "nl": "Luchthaven Keulen/Bonn (CGN)", "en": "Cologne/Bonn Airport (CGN)", "tr": "Köln/Bonn Havalimanı (CGN)" }, "takma": ["cgn", "cologne bonn", "koln bonn airport", "koln bonn havalimani", "flughafen koln"] },
-    "dusseldorf":      { "lat": 51.2277, "lng": 6.7735, "ulke": "DE", "havalimani": false, "ad": { "fr": "Düsseldorf", "nl": "Düsseldorf", "en": "Düsseldorf", "tr": "Düsseldorf" }, "takma": ["dusseldorf", "duesseldorf"] },
-    "dus":             { "lat": 51.2895, "lng": 6.7668, "ulke": "DE", "havalimani": true, "ad": { "fr": "Aéroport de Düsseldorf (DUS)", "nl": "Luchthaven Düsseldorf (DUS)", "en": "Düsseldorf Airport (DUS)", "tr": "Düsseldorf Havalimanı (DUS)" }, "takma": ["dus", "dusseldorf airport", "dusseldorf havalimani", "flughafen dusseldorf"] },
-    "aachen":          { "lat": 50.7753, "lng": 6.0839, "ulke": "DE", "havalimani": false, "ad": { "fr": "Aix-la-Chapelle", "nl": "Aken", "en": "Aachen", "tr": "Aachen" }, "takma": ["aachen", "aken", "aix la chapelle"] },
-    "frankfurt":       { "lat": 50.1109, "lng": 8.6821, "ulke": "DE", "havalimani": false, "ad": { "fr": "Francfort", "nl": "Frankfurt", "en": "Frankfurt", "tr": "Frankfurt" }, "takma": ["frankfurt", "francfort", "frankfurt am main"] },
-    "fra":             { "lat": 50.0379, "lng": 8.5622, "ulke": "DE", "havalimani": true, "ad": { "fr": "Aéroport de Francfort (FRA)", "nl": "Luchthaven Frankfurt (FRA)", "en": "Frankfurt Airport (FRA)", "tr": "Frankfurt Havalimanı (FRA)" }, "takma": ["fra", "frankfurt airport", "frankfurt havalimani", "flughafen frankfurt"] },
-    "bonn":            { "lat": 50.7374, "lng": 7.0982, "ulke": "DE", "havalimani": false, "ad": { "fr": "Bonn", "nl": "Bonn", "en": "Bonn", "tr": "Bonn" }, "takma": ["bonn"] },
-
-    "luxembourg":      { "lat": 49.6116, "lng": 6.1319, "ulke": "LU", "havalimani": false, "ad": { "fr": "Luxembourg", "nl": "Luxemburg", "en": "Luxembourg", "tr": "Lüksemburg" }, "takma": ["luxembourg", "luxemburg", "luksemburg", "luxembourg ville"] },
-    "lux":             { "lat": 49.6233, "lng": 6.2044, "ulke": "LU", "havalimani": true, "ad": { "fr": "Aéroport de Luxembourg (LUX)", "nl": "Luchthaven Luxemburg (LUX)", "en": "Luxembourg Airport (LUX)", "tr": "Lüksemburg Havalimanı (LUX)" }, "takma": ["lux", "findel", "luxembourg airport", "luxemburg luchthaven", "luksemburg havalimani", "aeroport luxembourg"] }
+    "brussels": {
+      "lat": 50.8467,
+      "lng": 4.3517,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Bruxelles",
+        "nl": "Brussel",
+        "en": "Brussels",
+        "tr": "Brüksel"
+      },
+      "takma": [
+        "bruxelles",
+        "brussel",
+        "brussels",
+        "bruksel",
+        "bxl",
+        "bruxelles ville",
+        "brussel stad",
+        "bruxelles midi",
+        "brussel zuid",
+        "gare du midi"
+      ]
+    },
+    "antwerpen": {
+      "lat": 51.2194,
+      "lng": 4.4025,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Anvers",
+        "nl": "Antwerpen",
+        "en": "Antwerp",
+        "tr": "Anvers"
+      },
+      "takma": [
+        "antwerpen",
+        "anvers",
+        "antwerp",
+        "antwerpen centraal"
+      ]
+    },
+    "gent": {
+      "lat": 51.0543,
+      "lng": 3.7174,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Gand",
+        "nl": "Gent",
+        "en": "Ghent",
+        "tr": "Gent"
+      },
+      "takma": [
+        "gent",
+        "gand",
+        "ghent",
+        "gent sint pieters"
+      ]
+    },
+    "brugge": {
+      "lat": 51.2093,
+      "lng": 3.2247,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Bruges",
+        "nl": "Brugge",
+        "en": "Bruges",
+        "tr": "Brugge"
+      },
+      "takma": [
+        "brugge",
+        "bruges",
+        "brug"
+      ]
+    },
+    "leuven": {
+      "lat": 50.8798,
+      "lng": 4.7005,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Louvain",
+        "nl": "Leuven",
+        "en": "Leuven",
+        "tr": "Leuven"
+      },
+      "takma": [
+        "leuven",
+        "louvain",
+        "loven"
+      ]
+    },
+    "liege": {
+      "lat": 50.6326,
+      "lng": 5.5797,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Liège",
+        "nl": "Luik",
+        "en": "Liège",
+        "tr": "Liège"
+      },
+      "takma": [
+        "liege",
+        "luik",
+        "luttich",
+        "liege guillemins"
+      ]
+    },
+    "charleroi": {
+      "lat": 50.4114,
+      "lng": 4.4448,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Charleroi",
+        "nl": "Charleroi",
+        "en": "Charleroi",
+        "tr": "Charleroi"
+      },
+      "takma": [
+        "charleroi",
+        "charleroi ville",
+        "charleroi centrum",
+        "sarlerua"
+      ]
+    },
+    "namur": {
+      "lat": 50.4674,
+      "lng": 4.872,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Namur",
+        "nl": "Namen",
+        "en": "Namur",
+        "tr": "Namur"
+      },
+      "takma": [
+        "namur",
+        "namen"
+      ]
+    },
+    "mons": {
+      "lat": 50.4542,
+      "lng": 3.9523,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Mons",
+        "nl": "Bergen",
+        "en": "Mons",
+        "tr": "Mons"
+      },
+      "takma": [
+        "mons",
+        "bergen mons",
+        "bergen"
+      ]
+    },
+    "hasselt": {
+      "lat": 50.9307,
+      "lng": 5.3378,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Hasselt",
+        "nl": "Hasselt",
+        "en": "Hasselt",
+        "tr": "Hasselt"
+      },
+      "takma": [
+        "hasselt"
+      ]
+    },
+    "mechelen": {
+      "lat": 51.0259,
+      "lng": 4.4776,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Malines",
+        "nl": "Mechelen",
+        "en": "Mechelen",
+        "tr": "Mechelen"
+      },
+      "takma": [
+        "mechelen",
+        "malines"
+      ]
+    },
+    "aalst": {
+      "lat": 50.9378,
+      "lng": 4.0402,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Alost",
+        "nl": "Aalst",
+        "en": "Aalst",
+        "tr": "Aalst"
+      },
+      "takma": [
+        "aalst",
+        "alost"
+      ]
+    },
+    "kortrijk": {
+      "lat": 50.828,
+      "lng": 3.2649,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Courtrai",
+        "nl": "Kortrijk",
+        "en": "Kortrijk",
+        "tr": "Kortrijk"
+      },
+      "takma": [
+        "kortrijk",
+        "courtrai"
+      ]
+    },
+    "oostende": {
+      "lat": 51.2154,
+      "lng": 2.9286,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Ostende",
+        "nl": "Oostende",
+        "en": "Ostend",
+        "tr": "Oostende"
+      },
+      "takma": [
+        "oostende",
+        "ostende",
+        "ostend"
+      ]
+    },
+    "sint-niklaas": {
+      "lat": 51.1654,
+      "lng": 4.1437,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Saint-Nicolas",
+        "nl": "Sint-Niklaas",
+        "en": "Sint-Niklaas",
+        "tr": "Sint-Niklaas"
+      },
+      "takma": [
+        "sint niklaas",
+        "saint nicolas waas",
+        "saint nicolas"
+      ]
+    },
+    "genk": {
+      "lat": 50.9654,
+      "lng": 5.5008,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Genk",
+        "nl": "Genk",
+        "en": "Genk",
+        "tr": "Genk"
+      },
+      "takma": [
+        "genk"
+      ]
+    },
+    "roeselare": {
+      "lat": 50.9469,
+      "lng": 3.1223,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Roulers",
+        "nl": "Roeselare",
+        "en": "Roeselare",
+        "tr": "Roeselare"
+      },
+      "takma": [
+        "roeselare",
+        "roulers"
+      ]
+    },
+    "vilvoorde": {
+      "lat": 50.9281,
+      "lng": 4.4287,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Vilvorde",
+        "nl": "Vilvoorde",
+        "en": "Vilvoorde",
+        "tr": "Vilvoorde"
+      },
+      "takma": [
+        "vilvoorde",
+        "vilvorde"
+      ]
+    },
+    "waterloo": {
+      "lat": 50.7147,
+      "lng": 4.3999,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Waterloo",
+        "nl": "Waterloo",
+        "en": "Waterloo",
+        "tr": "Waterloo"
+      },
+      "takma": [
+        "waterloo"
+      ]
+    },
+    "tournai": {
+      "lat": 50.607,
+      "lng": 3.3893,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Tournai",
+        "nl": "Doornik",
+        "en": "Tournai",
+        "tr": "Tournai"
+      },
+      "takma": [
+        "tournai",
+        "doornik"
+      ]
+    },
+    "la-louviere": {
+      "lat": 50.4794,
+      "lng": 4.1874,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "La Louvière",
+        "nl": "La Louvière",
+        "en": "La Louvière",
+        "tr": "La Louvière"
+      },
+      "takma": [
+        "la louviere",
+        "louviere"
+      ]
+    },
+    "verviers": {
+      "lat": 50.5891,
+      "lng": 5.8624,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Verviers",
+        "nl": "Verviers",
+        "en": "Verviers",
+        "tr": "Verviers"
+      },
+      "takma": [
+        "verviers"
+      ]
+    },
+    "dendermonde": {
+      "lat": 51.0257,
+      "lng": 4.1013,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Termonde",
+        "nl": "Dendermonde",
+        "en": "Dendermonde",
+        "tr": "Dendermonde"
+      },
+      "takma": [
+        "dendermonde",
+        "termonde"
+      ]
+    },
+    "wavre": {
+      "lat": 50.7173,
+      "lng": 4.6118,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Wavre",
+        "nl": "Waver",
+        "en": "Wavre",
+        "tr": "Wavre"
+      },
+      "takma": [
+        "wavre",
+        "waver"
+      ]
+    },
+    "turnhout": {
+      "lat": 51.3227,
+      "lng": 4.9449,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Turnhout",
+        "nl": "Turnhout",
+        "en": "Turnhout",
+        "tr": "Turnhout"
+      },
+      "takma": [
+        "turnhout"
+      ]
+    },
+    "lokeren": {
+      "lat": 51.1043,
+      "lng": 3.993,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Lokeren",
+        "nl": "Lokeren",
+        "en": "Lokeren",
+        "tr": "Lokeren"
+      },
+      "takma": [
+        "lokeren"
+      ]
+    },
+    "knokke": {
+      "lat": 51.35,
+      "lng": 3.287,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Knokke-Heist",
+        "nl": "Knokke-Heist",
+        "en": "Knokke-Heist",
+        "tr": "Knokke-Heist"
+      },
+      "takma": [
+        "knokke",
+        "knokke heist"
+      ]
+    },
+    "tongeren": {
+      "lat": 50.7807,
+      "lng": 5.464,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Tongres",
+        "nl": "Tongeren",
+        "en": "Tongeren",
+        "tr": "Tongeren"
+      },
+      "takma": [
+        "tongeren",
+        "tongres"
+      ]
+    },
+    "ieper": {
+      "lat": 50.851,
+      "lng": 2.8857,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Ypres",
+        "nl": "Ieper",
+        "en": "Ypres",
+        "tr": "Ieper"
+      },
+      "takma": [
+        "ieper",
+        "ypres"
+      ]
+    },
+    "dinant": {
+      "lat": 50.2607,
+      "lng": 4.9122,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Dinant",
+        "nl": "Dinant",
+        "en": "Dinant",
+        "tr": "Dinant"
+      },
+      "takma": [
+        "dinant"
+      ]
+    },
+    "spa": {
+      "lat": 50.4926,
+      "lng": 5.8641,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Spa",
+        "nl": "Spa",
+        "en": "Spa",
+        "tr": "Spa"
+      },
+      "takma": [
+        "spa belgique",
+        "spa belgie",
+        "spa francorchamps",
+        "spa"
+      ]
+    },
+    "eupen": {
+      "lat": 50.6276,
+      "lng": 6.0367,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Eupen",
+        "nl": "Eupen",
+        "en": "Eupen",
+        "tr": "Eupen"
+      },
+      "takma": [
+        "eupen"
+      ]
+    },
+    "arlon": {
+      "lat": 49.6837,
+      "lng": 5.8167,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Arlon",
+        "nl": "Aarlen",
+        "en": "Arlon",
+        "tr": "Arlon"
+      },
+      "takma": [
+        "arlon",
+        "aarlen"
+      ]
+    },
+    "bastogne": {
+      "lat": 50.0008,
+      "lng": 5.715,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Bastogne",
+        "nl": "Bastenaken",
+        "en": "Bastogne",
+        "tr": "Bastogne"
+      },
+      "takma": [
+        "bastogne",
+        "bastenaken"
+      ]
+    },
+    "nivelles": {
+      "lat": 50.5977,
+      "lng": 4.3283,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Nivelles",
+        "nl": "Nijvel",
+        "en": "Nivelles",
+        "tr": "Nivelles"
+      },
+      "takma": [
+        "nivelles",
+        "nijvel"
+      ]
+    },
+    "louvain-la-neuve": {
+      "lat": 50.6696,
+      "lng": 4.6134,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Louvain-la-Neuve",
+        "nl": "Louvain-la-Neuve",
+        "en": "Louvain-la-Neuve",
+        "tr": "Louvain-la-Neuve"
+      },
+      "takma": [
+        "louvain la neuve",
+        "lln"
+      ]
+    },
+    "durbuy": {
+      "lat": 50.3527,
+      "lng": 5.4563,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Durbuy",
+        "nl": "Durbuy",
+        "en": "Durbuy",
+        "tr": "Durbuy"
+      },
+      "takma": [
+        "durbuy"
+      ]
+    },
+    "zaventem-stad": {
+      "lat": 50.8845,
+      "lng": 4.4715,
+      "ulke": "BE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Zaventem (centre)",
+        "nl": "Zaventem (centrum)",
+        "en": "Zaventem (centre)",
+        "tr": "Zaventem (merkez)"
+      },
+      "takma": [
+        "zaventem centrum",
+        "zaventem centre",
+        "zaventem merkez"
+      ]
+    },
+    "bru": {
+      "lat": 50.901,
+      "lng": 4.4856,
+      "ulke": "BE",
+      "havalimani": true,
+      "ad": {
+        "fr": "Brussels Airport (Zaventem)",
+        "nl": "Brussels Airport (Zaventem)",
+        "en": "Brussels Airport (Zaventem)",
+        "tr": "Brüksel Havalimanı (Zaventem)"
+      },
+      "takma": [
+        "bru",
+        "zaventem",
+        "brussels airport",
+        "aeroport de bruxelles",
+        "aeroport zaventem",
+        "luchthaven zaventem",
+        "brussel luchthaven",
+        "brussels luchthaven",
+        "bruksel havalimani",
+        "zaventem havalimani",
+        "zaventem airport",
+        "aeroport de zaventem",
+        "brussel nationaal",
+        "bruxelles national"
+      ]
+    },
+    "crl": {
+      "lat": 50.4601,
+      "lng": 4.4538,
+      "ulke": "BE",
+      "havalimani": true,
+      "ad": {
+        "fr": "Aéroport de Charleroi (CRL)",
+        "nl": "Luchthaven Charleroi (CRL)",
+        "en": "Charleroi Airport (CRL)",
+        "tr": "Charleroi Havalimanı (CRL)"
+      },
+      "takma": [
+        "crl",
+        "charleroi airport",
+        "aeroport de charleroi",
+        "luchthaven charleroi",
+        "charleroi havalimani",
+        "brussels south",
+        "bruxelles sud",
+        "brussel zuid luchthaven",
+        "gosselies"
+      ]
+    },
+    "anr": {
+      "lat": 51.1894,
+      "lng": 4.4603,
+      "ulke": "BE",
+      "havalimani": true,
+      "ad": {
+        "fr": "Aéroport d'Anvers (ANR)",
+        "nl": "Luchthaven Antwerpen (ANR)",
+        "en": "Antwerp Airport (ANR)",
+        "tr": "Anvers Havalimanı (ANR)"
+      },
+      "takma": [
+        "anr",
+        "antwerp airport",
+        "aeroport anvers",
+        "luchthaven antwerpen",
+        "antwerpen luchthaven",
+        "anvers havalimani",
+        "deurne airport",
+        "deurne luchthaven"
+      ]
+    },
+    "ost": {
+      "lat": 51.1998,
+      "lng": 2.8622,
+      "ulke": "BE",
+      "havalimani": true,
+      "ad": {
+        "fr": "Aéroport d'Ostende (OST)",
+        "nl": "Luchthaven Oostende (OST)",
+        "en": "Ostend-Bruges Airport (OST)",
+        "tr": "Oostende Havalimanı (OST)"
+      },
+      "takma": [
+        "ost",
+        "ostend airport",
+        "aeroport ostende",
+        "luchthaven oostende",
+        "oostende luchthaven",
+        "oostende havalimani"
+      ]
+    },
+    "lgg": {
+      "lat": 50.6374,
+      "lng": 5.4432,
+      "ulke": "BE",
+      "havalimani": true,
+      "ad": {
+        "fr": "Aéroport de Liège (LGG)",
+        "nl": "Luchthaven Luik (LGG)",
+        "en": "Liège Airport (LGG)",
+        "tr": "Liège Havalimanı (LGG)"
+      },
+      "takma": [
+        "lgg",
+        "liege airport",
+        "aeroport de liege",
+        "luchthaven luik",
+        "luik luchthaven",
+        "liege havalimani",
+        "bierset"
+      ]
+    },
+    "amsterdam": {
+      "lat": 52.3676,
+      "lng": 4.9041,
+      "ulke": "NL",
+      "havalimani": false,
+      "ad": {
+        "fr": "Amsterdam",
+        "nl": "Amsterdam",
+        "en": "Amsterdam",
+        "tr": "Amsterdam"
+      },
+      "takma": [
+        "amsterdam"
+      ]
+    },
+    "ams": {
+      "lat": 52.3105,
+      "lng": 4.7683,
+      "ulke": "NL",
+      "havalimani": true,
+      "ad": {
+        "fr": "Amsterdam Schiphol (AMS)",
+        "nl": "Amsterdam Schiphol (AMS)",
+        "en": "Amsterdam Schiphol (AMS)",
+        "tr": "Amsterdam Schiphol (AMS)"
+      },
+      "takma": [
+        "ams",
+        "schiphol",
+        "amsterdam schiphol",
+        "schiphol airport",
+        "schiphol havalimani",
+        "aeroport schiphol",
+        "luchthaven schiphol"
+      ]
+    },
+    "rotterdam": {
+      "lat": 51.9244,
+      "lng": 4.4777,
+      "ulke": "NL",
+      "havalimani": false,
+      "ad": {
+        "fr": "Rotterdam",
+        "nl": "Rotterdam",
+        "en": "Rotterdam",
+        "tr": "Rotterdam"
+      },
+      "takma": [
+        "rotterdam"
+      ]
+    },
+    "den-haag": {
+      "lat": 52.0705,
+      "lng": 4.3007,
+      "ulke": "NL",
+      "havalimani": false,
+      "ad": {
+        "fr": "La Haye",
+        "nl": "Den Haag",
+        "en": "The Hague",
+        "tr": "Lahey"
+      },
+      "takma": [
+        "den haag",
+        "la haye",
+        "the hague",
+        "lahey",
+        "s gravenhage",
+        "gravenhage"
+      ]
+    },
+    "utrecht": {
+      "lat": 52.0907,
+      "lng": 5.1214,
+      "ulke": "NL",
+      "havalimani": false,
+      "ad": {
+        "fr": "Utrecht",
+        "nl": "Utrecht",
+        "en": "Utrecht",
+        "tr": "Utrecht"
+      },
+      "takma": [
+        "utrecht"
+      ]
+    },
+    "eindhoven": {
+      "lat": 51.4416,
+      "lng": 5.4697,
+      "ulke": "NL",
+      "havalimani": false,
+      "ad": {
+        "fr": "Eindhoven",
+        "nl": "Eindhoven",
+        "en": "Eindhoven",
+        "tr": "Eindhoven"
+      },
+      "takma": [
+        "eindhoven"
+      ]
+    },
+    "ein": {
+      "lat": 51.4501,
+      "lng": 5.3745,
+      "ulke": "NL",
+      "havalimani": true,
+      "ad": {
+        "fr": "Aéroport d'Eindhoven (EIN)",
+        "nl": "Eindhoven Airport (EIN)",
+        "en": "Eindhoven Airport (EIN)",
+        "tr": "Eindhoven Havalimanı (EIN)"
+      },
+      "takma": [
+        "ein",
+        "eindhoven airport",
+        "aeroport eindhoven",
+        "eindhoven luchthaven",
+        "eindhoven havalimani"
+      ]
+    },
+    "maastricht": {
+      "lat": 50.8514,
+      "lng": 5.691,
+      "ulke": "NL",
+      "havalimani": false,
+      "ad": {
+        "fr": "Maastricht",
+        "nl": "Maastricht",
+        "en": "Maastricht",
+        "tr": "Maastricht"
+      },
+      "takma": [
+        "maastricht"
+      ]
+    },
+    "breda": {
+      "lat": 51.5719,
+      "lng": 4.7683,
+      "ulke": "NL",
+      "havalimani": false,
+      "ad": {
+        "fr": "Breda",
+        "nl": "Breda",
+        "en": "Breda",
+        "tr": "Breda"
+      },
+      "takma": [
+        "breda"
+      ]
+    },
+    "tilburg": {
+      "lat": 51.5606,
+      "lng": 5.0919,
+      "ulke": "NL",
+      "havalimani": false,
+      "ad": {
+        "fr": "Tilburg",
+        "nl": "Tilburg",
+        "en": "Tilburg",
+        "tr": "Tilburg"
+      },
+      "takma": [
+        "tilburg"
+      ]
+    },
+    "paris": {
+      "lat": 48.8566,
+      "lng": 2.3522,
+      "ulke": "FR",
+      "havalimani": false,
+      "ad": {
+        "fr": "Paris",
+        "nl": "Parijs",
+        "en": "Paris",
+        "tr": "Paris"
+      },
+      "takma": [
+        "paris",
+        "parijs"
+      ]
+    },
+    "cdg": {
+      "lat": 49.0097,
+      "lng": 2.5479,
+      "ulke": "FR",
+      "havalimani": true,
+      "ad": {
+        "fr": "Paris Charles de Gaulle (CDG)",
+        "nl": "Parijs Charles de Gaulle (CDG)",
+        "en": "Paris Charles de Gaulle (CDG)",
+        "tr": "Paris Charles de Gaulle (CDG)"
+      },
+      "takma": [
+        "cdg",
+        "charles de gaulle",
+        "roissy",
+        "paris cdg",
+        "cdg havalimani",
+        "aeroport charles de gaulle"
+      ]
+    },
+    "orly": {
+      "lat": 48.7262,
+      "lng": 2.3652,
+      "ulke": "FR",
+      "havalimani": true,
+      "ad": {
+        "fr": "Paris Orly (ORY)",
+        "nl": "Parijs Orly (ORY)",
+        "en": "Paris Orly (ORY)",
+        "tr": "Paris Orly (ORY)"
+      },
+      "takma": [
+        "orly",
+        "paris orly",
+        "ory",
+        "orly havalimani",
+        "aeroport orly"
+      ]
+    },
+    "lille": {
+      "lat": 50.6292,
+      "lng": 3.0573,
+      "ulke": "FR",
+      "havalimani": false,
+      "ad": {
+        "fr": "Lille",
+        "nl": "Rijsel",
+        "en": "Lille",
+        "tr": "Lille"
+      },
+      "takma": [
+        "lille",
+        "rijsel",
+        "lille europe",
+        "lille flandres"
+      ]
+    },
+    "calais": {
+      "lat": 50.9513,
+      "lng": 1.8587,
+      "ulke": "FR",
+      "havalimani": false,
+      "ad": {
+        "fr": "Calais",
+        "nl": "Calais",
+        "en": "Calais",
+        "tr": "Calais"
+      },
+      "takma": [
+        "calais"
+      ]
+    },
+    "dunkerque": {
+      "lat": 51.0344,
+      "lng": 2.3768,
+      "ulke": "FR",
+      "havalimani": false,
+      "ad": {
+        "fr": "Dunkerque",
+        "nl": "Duinkerke",
+        "en": "Dunkirk",
+        "tr": "Dunkerque"
+      },
+      "takma": [
+        "dunkerque",
+        "duinkerke",
+        "dunkirk"
+      ]
+    },
+    "reims": {
+      "lat": 49.2583,
+      "lng": 4.0317,
+      "ulke": "FR",
+      "havalimani": false,
+      "ad": {
+        "fr": "Reims",
+        "nl": "Reims",
+        "en": "Reims",
+        "tr": "Reims"
+      },
+      "takma": [
+        "reims"
+      ]
+    },
+    "metz": {
+      "lat": 49.1193,
+      "lng": 6.1757,
+      "ulke": "FR",
+      "havalimani": false,
+      "ad": {
+        "fr": "Metz",
+        "nl": "Metz",
+        "en": "Metz",
+        "tr": "Metz"
+      },
+      "takma": [
+        "metz"
+      ]
+    },
+    "koln": {
+      "lat": 50.9375,
+      "lng": 6.9603,
+      "ulke": "DE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Cologne",
+        "nl": "Keulen",
+        "en": "Cologne",
+        "tr": "Köln"
+      },
+      "takma": [
+        "koln",
+        "cologne",
+        "keulen",
+        "kohln"
+      ]
+    },
+    "cgn": {
+      "lat": 50.8659,
+      "lng": 7.1427,
+      "ulke": "DE",
+      "havalimani": true,
+      "ad": {
+        "fr": "Aéroport de Cologne/Bonn (CGN)",
+        "nl": "Luchthaven Keulen/Bonn (CGN)",
+        "en": "Cologne/Bonn Airport (CGN)",
+        "tr": "Köln/Bonn Havalimanı (CGN)"
+      },
+      "takma": [
+        "cgn",
+        "cologne bonn",
+        "koln bonn airport",
+        "koln bonn havalimani",
+        "flughafen koln"
+      ]
+    },
+    "dusseldorf": {
+      "lat": 51.2277,
+      "lng": 6.7735,
+      "ulke": "DE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Düsseldorf",
+        "nl": "Düsseldorf",
+        "en": "Düsseldorf",
+        "tr": "Düsseldorf"
+      },
+      "takma": [
+        "dusseldorf",
+        "duesseldorf"
+      ]
+    },
+    "dus": {
+      "lat": 51.2895,
+      "lng": 6.7668,
+      "ulke": "DE",
+      "havalimani": true,
+      "ad": {
+        "fr": "Aéroport de Düsseldorf (DUS)",
+        "nl": "Luchthaven Düsseldorf (DUS)",
+        "en": "Düsseldorf Airport (DUS)",
+        "tr": "Düsseldorf Havalimanı (DUS)"
+      },
+      "takma": [
+        "dus",
+        "dusseldorf airport",
+        "dusseldorf havalimani",
+        "flughafen dusseldorf"
+      ]
+    },
+    "aachen": {
+      "lat": 50.7753,
+      "lng": 6.0839,
+      "ulke": "DE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Aix-la-Chapelle",
+        "nl": "Aken",
+        "en": "Aachen",
+        "tr": "Aachen"
+      },
+      "takma": [
+        "aachen",
+        "aken",
+        "aix la chapelle"
+      ]
+    },
+    "frankfurt": {
+      "lat": 50.1109,
+      "lng": 8.6821,
+      "ulke": "DE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Francfort",
+        "nl": "Frankfurt",
+        "en": "Frankfurt",
+        "tr": "Frankfurt"
+      },
+      "takma": [
+        "frankfurt",
+        "francfort",
+        "frankfurt am main"
+      ]
+    },
+    "fra": {
+      "lat": 50.0379,
+      "lng": 8.5622,
+      "ulke": "DE",
+      "havalimani": true,
+      "ad": {
+        "fr": "Aéroport de Francfort (FRA)",
+        "nl": "Luchthaven Frankfurt (FRA)",
+        "en": "Frankfurt Airport (FRA)",
+        "tr": "Frankfurt Havalimanı (FRA)"
+      },
+      "takma": [
+        "fra",
+        "frankfurt airport",
+        "frankfurt havalimani",
+        "flughafen frankfurt"
+      ]
+    },
+    "bonn": {
+      "lat": 50.7374,
+      "lng": 7.0982,
+      "ulke": "DE",
+      "havalimani": false,
+      "ad": {
+        "fr": "Bonn",
+        "nl": "Bonn",
+        "en": "Bonn",
+        "tr": "Bonn"
+      },
+      "takma": [
+        "bonn"
+      ]
+    },
+    "luxembourg": {
+      "lat": 49.6116,
+      "lng": 6.1319,
+      "ulke": "LU",
+      "havalimani": false,
+      "ad": {
+        "fr": "Luxembourg",
+        "nl": "Luxemburg",
+        "en": "Luxembourg",
+        "tr": "Lüksemburg"
+      },
+      "takma": [
+        "luxembourg",
+        "luxemburg",
+        "luksemburg",
+        "luxembourg ville"
+      ]
+    },
+    "lux": {
+      "lat": 49.6233,
+      "lng": 6.2044,
+      "ulke": "LU",
+      "havalimani": true,
+      "ad": {
+        "fr": "Aéroport de Luxembourg (LUX)",
+        "nl": "Luchthaven Luxemburg (LUX)",
+        "en": "Luxembourg Airport (LUX)",
+        "tr": "Lüksemburg Havalimanı (LUX)"
+      },
+      "takma": [
+        "lux",
+        "findel",
+        "luxembourg airport",
+        "luxemburg luchthaven",
+        "luksemburg havalimani",
+        "aeroport luxembourg"
+      ]
+    }
   },
   "kesin": [
-    ["brussels", "antwerpen", 45],
-    ["brussels", "liege", 100],
-    ["brussels", "gent", 56],
-    ["brussels", "brugge", 100],
-    ["brussels", "leuven", 28],
-    ["brussels", "namur", 65],
-    ["brussels", "mons", 67],
-    ["brussels", "hasselt", 82],
-    ["brussels", "mechelen", 27],
-    ["brussels", "oostende", 115],
-    ["brussels", "kortrijk", 90],
-    ["brussels", "bru", 14],
-    ["brussels", "crl", 60],
-    ["brussels", "luxembourg", 220],
-    ["brussels", "paris", 315],
-    ["brussels", "koln", 215],
-    ["brussels", "amsterdam", 210],
-    ["brussels", "ams", 195],
-    ["brussels", "rotterdam", 150],
-    ["brussels", "den-haag", 175],
-    ["brussels", "utrecht", 180],
-    ["brussels", "eindhoven", 125],
-    ["brussels", "ein", 120],
-    ["brussels", "maastricht", 120],
-    ["brussels", "breda", 105],
-    ["brussels", "aachen", 140],
-    ["brussels", "dusseldorf", 220],
-    ["brussels", "frankfurt", 400],
-    ["brussels", "cdg", 290],
-    ["brussels", "orly", 305],
-    ["brussels", "lille", 115],
-    ["brussels", "calais", 205],
-    ["brussels", "dunkerque", 160],
-    ["brussels", "cgn", 220],
-    ["antwerpen", "bru", 35],
-    ["antwerpen", "crl", 105],
-    ["antwerpen", "gent", 60],
-    ["antwerpen", "amsterdam", 160],
-    ["antwerpen", "ams", 145],
-    ["antwerpen", "rotterdam", 100],
-    ["antwerpen", "eindhoven", 90],
-    ["antwerpen", "breda", 55],
-    ["gent", "bru", 56],
-    ["gent", "crl", 115],
-    ["gent", "brugge", 50],
-    ["gent", "oostende", 65],
-    ["gent", "lille", 75],
-    ["brugge", "bru", 110],
-    ["brugge", "crl", 150],
-    ["leuven", "bru", 22],
-    ["leuven", "crl", 75],
-    ["liege", "bru", 90],
-    ["liege", "crl", 95],
-    ["mechelen", "bru", 17],
-    ["hasselt", "bru", 70],
-    ["kortrijk", "lille", 30],
-    ["oostende", "bru", 125],
-    ["namur", "crl", 40],
-    ["mons", "crl", 50]
+    [
+      "brussels",
+      "antwerpen",
+      45
+    ],
+    [
+      "brussels",
+      "liege",
+      100
+    ],
+    [
+      "brussels",
+      "gent",
+      56
+    ],
+    [
+      "brussels",
+      "brugge",
+      100
+    ],
+    [
+      "brussels",
+      "leuven",
+      27
+    ],
+    [
+      "brussels",
+      "namur",
+      64
+    ],
+    [
+      "brussels",
+      "mons",
+      67
+    ],
+    [
+      "brussels",
+      "hasselt",
+      83
+    ],
+    [
+      "brussels",
+      "mechelen",
+      27
+    ],
+    [
+      "brussels",
+      "oostende",
+      114
+    ],
+    [
+      "brussels",
+      "kortrijk",
+      90
+    ],
+    [
+      "brussels",
+      "bru",
+      13
+    ],
+    [
+      "brussels",
+      "crl",
+      55
+    ],
+    [
+      "brussels",
+      "luxembourg",
+      220
+    ],
+    [
+      "brussels",
+      "paris",
+      315
+    ],
+    [
+      "brussels",
+      "koln",
+      215
+    ],
+    [
+      "brussels",
+      "amsterdam",
+      210
+    ],
+    [
+      "brussels",
+      "ams",
+      193
+    ],
+    [
+      "brussels",
+      "rotterdam",
+      148
+    ],
+    [
+      "brussels",
+      "den-haag",
+      172
+    ],
+    [
+      "brussels",
+      "utrecht",
+      180
+    ],
+    [
+      "brussels",
+      "eindhoven",
+      122
+    ],
+    [
+      "brussels",
+      "ein",
+      118
+    ],
+    [
+      "brussels",
+      "maastricht",
+      115
+    ],
+    [
+      "brussels",
+      "breda",
+      102
+    ],
+    [
+      "brussels",
+      "aachen",
+      142
+    ],
+    [
+      "brussels",
+      "dusseldorf",
+      222
+    ],
+    [
+      "brussels",
+      "frankfurt",
+      400
+    ],
+    [
+      "brussels",
+      "cdg",
+      283
+    ],
+    [
+      "brussels",
+      "orly",
+      322
+    ],
+    [
+      "brussels",
+      "lille",
+      112
+    ],
+    [
+      "brussels",
+      "calais",
+      203
+    ],
+    [
+      "brussels",
+      "dunkerque",
+      165
+    ],
+    [
+      "brussels",
+      "cgn",
+      230
+    ],
+    [
+      "antwerpen",
+      "bru",
+      37
+    ],
+    [
+      "antwerpen",
+      "crl",
+      95
+    ],
+    [
+      "antwerpen",
+      "gent",
+      59
+    ],
+    [
+      "antwerpen",
+      "amsterdam",
+      160
+    ],
+    [
+      "antwerpen",
+      "ams",
+      148
+    ],
+    [
+      "antwerpen",
+      "rotterdam",
+      100
+    ],
+    [
+      "antwerpen",
+      "eindhoven",
+      88
+    ],
+    [
+      "antwerpen",
+      "breda",
+      56
+    ],
+    [
+      "gent",
+      "bru",
+      56
+    ],
+    [
+      "gent",
+      "crl",
+      115
+    ],
+    [
+      "gent",
+      "brugge",
+      47
+    ],
+    [
+      "gent",
+      "oostende",
+      62
+    ],
+    [
+      "gent",
+      "lille",
+      74
+    ],
+    [
+      "brugge",
+      "bru",
+      107
+    ],
+    [
+      "brugge",
+      "crl",
+      145
+    ],
+    [
+      "leuven",
+      "bru",
+      22
+    ],
+    [
+      "leuven",
+      "crl",
+      68
+    ],
+    [
+      "liege",
+      "bru",
+      90
+    ],
+    [
+      "liege",
+      "crl",
+      93
+    ],
+    [
+      "mechelen",
+      "bru",
+      18
+    ],
+    [
+      "hasselt",
+      "bru",
+      72
+    ],
+    [
+      "kortrijk",
+      "lille",
+      29
+    ],
+    [
+      "oostende",
+      "bru",
+      120
+    ],
+    [
+      "namur",
+      "crl",
+      40
+    ],
+    [
+      "mons",
+      "crl",
+      52
+    ]
+  ],
+  "araclar": {
+    "eco": {
+      "yolcu": 4,
+      "buyuk": 2,
+      "kucuk": 2
+    },
+    "wagon": {
+      "yolcu": 4,
+      "buyuk": 4,
+      "kucuk": 2
+    },
+    "vip": {
+      "yolcu": 7,
+      "buyuk": 6,
+      "kucuk": 4
+    }
+  },
+  "populer": [
+    [
+      "brussels",
+      "bru"
+    ],
+    [
+      "brussels",
+      "crl"
+    ],
+    [
+      "gent",
+      "bru"
+    ],
+    [
+      "antwerpen",
+      "bru"
+    ],
+    [
+      "brugge",
+      "bru"
+    ],
+    [
+      "liege",
+      "bru"
+    ],
+    [
+      "brussels",
+      "ams"
+    ],
+    [
+      "brussels",
+      "paris"
+    ]
   ]
 }
