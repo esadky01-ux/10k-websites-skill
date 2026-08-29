@@ -145,6 +145,10 @@ function kontrol(kosul, mesaj){ if (!kosul) hatalar.push(mesaj); }
   // yatay tasma yok
   const tasma = await mobil.evaluate(() => document.scrollingElement.scrollWidth - window.innerWidth);
   kontrol(tasma <= 0, 'Mobilde yatay tasma var: ' + tasma + 'px');
+  // FAB butonlari footer linklerini kapatmasin: alt bosluk >= 92px (sartname §10)
+  const altBosluk = await mobil.evaluate(() =>
+    parseFloat(getComputedStyle(document.querySelector('footer.alt')).paddingBottom));
+  kontrol(altBosluk >= 92, 'Footer alt boslugu >= 92px olmali: ' + altBosluk);
   await mobil.screenshot({ path: 'ekran-mobil.jpg', fullPage: true, quality: 70, type: 'jpeg' });
 
   // 390px de kontrol (sartname §14-F)
@@ -152,6 +156,77 @@ function kontrol(kosul, mesaj){ if (!kosul) hatalar.push(mesaj); }
   await mobil.waitForTimeout(300);
   const tasma390 = await mobil.evaluate(() => document.scrollingElement.scrollWidth - window.innerWidth);
   kontrol(tasma390 <= 0, '390px yatay tasma: ' + tasma390 + 'px');
+
+  /* ---------- D. Google dayanikliligi: gm_authFailure simulasyonu ---------- */
+  const g1 = await b.newPage({ viewport: { width: 1280, height: 900 } });
+  const g1h = [];
+  g1.on('console', m => { if (m.type() === 'error' && !m.text().includes('ERR_CONNECTION_RESET')) g1h.push(m.text()); });
+  g1.on('pageerror', e => g1h.push('pageerror: ' + e.message));
+  await g1.goto(TABAN + '/fr/', { waitUntil: 'load' });
+  await g1.waitForTimeout(400);
+  // Google'in sayfaya enjekte ettigi hata katmanini taklit et, sonra auth hatasi tetikle
+  await g1.evaluate(() => {
+    for (const sinif of ['gm-err-container', 'pac-container', 'gm-style-moc']) {
+      const el = document.createElement('div');
+      el.className = sinif;
+      el.textContent = 'Oops! Something went wrong.';
+      document.body.appendChild(el);
+    }
+    window.gm_authFailure();
+  });
+  await g1.waitForTimeout(300);
+  const kalinti = await g1.evaluate(() =>
+    document.querySelectorAll('.gm-err-container,.pac-container,.gm-style-moc').length);
+  kontrol(kalinti === 0, 'gm_authFailure sonrasi Google DOM kalintisi temizlenmeli, kalan: ' + kalinti);
+  const oops = await g1.evaluate(() => document.body.textContent.includes('Oops!'));
+  kontrol(!oops, '"Oops!" kutusu gorunmemeli');
+  kontrol((await g1.getAttribute('#f-alis', 'list')) === 'yer-listesi',
+    'authFailure sonrasi dahili liste (datalist) geri acilmali');
+  await g1.fill('#f-alis', 'Bruxelles');
+  await g1.fill('#f-varis', 'Anvers');
+  await g1.waitForTimeout(600);
+  kontrol((await g1.textContent('#p-fiyat')).includes('99,55'),
+    'authFailure sonrasi fiyat yine hesaplanmali (99,55 EUR)');
+  // kalan sayac sinirlari: buyuk 6, kucuk 4 (sartname §14-C)
+  for (let i = 0; i < 6; i++) await g1.click('[data-sayac="buyuk"][data-yon="1"]');
+  for (let i = 0; i < 4; i++) await g1.click('[data-sayac="kucuk"][data-yon="1"]');
+  await g1.waitForTimeout(150);
+  kontrol((await g1.textContent('#s-buyuk')).trim() === '6', 'Buyuk valiz 6 ile sinirli olmali');
+  kontrol((await g1.textContent('#s-kucuk')).trim() === '4', 'Kucuk valiz 4 ile sinirli olmali');
+  kontrol((await g1.getAttribute('[data-sayac="buyuk"][data-yon="1"]', 'class')).includes('kapali'),
+    'Buyuk valiz sinirinda + pasif olmali');
+  kontrol((await g1.getAttribute('[data-sayac="kucuk"][data-yon="1"]', 'class')).includes('kapali'),
+    'Kucuk valiz sinirinda + pasif olmali');
+  kontrol(g1h.length === 0, 'authFailure simulasyonunda konsol hatasi: ' + JSON.stringify(g1h));
+  await g1.close();
+
+  /* ---------- D. Google dayanikliligi: GECERSIZ anahtar + betik yukleme hatasi ---------- */
+  const g2 = await b.newPage({ viewport: { width: 1280, height: 900 } });
+  const g2h = [];
+  g2.on('console', m => {
+    const metin = m.text();
+    if (m.type() === 'error' && !metin.includes('ERR_CONNECTION_RESET') && !metin.includes('ERR_FAILED')) g2h.push(metin);
+  });
+  g2.on('pageerror', e => g2h.push('pageerror: ' + e.message));
+  // config.js'e sahte anahtar koy; Google betigini agda engelle -> site yine calismali
+  await g2.route('**/assets/config.js', r => r.fulfill({
+    contentType: 'application/javascript',
+    body: 'window.EUROPA_CONFIG={googleMapsKey:"GECERSIZ_ANAHTAR_TESTI"};',
+  }));
+  await g2.route('**maps.googleapis.com**', r => r.abort());
+  await g2.goto(TABAN + '/nl/', { waitUntil: 'load' });
+  await g2.waitForTimeout(800);
+  kontrol((await g2.getAttribute('#f-alis', 'list')) === 'yer-listesi',
+    'Gecersiz anahtar + betik hatasi: dahili moda dusulmeli');
+  await g2.fill('#f-alis', 'Gent');
+  await g2.fill('#f-varis', 'Zaventem');
+  await g2.waitForTimeout(600);
+  kontrol((await g2.textContent('#p-fiyat')).includes('121,44'),
+    'Gecersiz anahtarla site TAM islevsel kalmali (121,44 EUR)');
+  const tasmaG2 = await g2.evaluate(() => document.scrollingElement.scrollWidth - window.innerWidth);
+  kontrol(tasmaG2 <= 0, 'Gecersiz anahtar durumunda form bozulmamali (yatay tasma yok)');
+  kontrol(g2h.length === 0, 'Gecersiz anahtar testinde konsol hatasi: ' + JSON.stringify(g2h));
+  await g2.close();
 
   await b.close();
 
