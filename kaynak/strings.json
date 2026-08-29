@@ -184,7 +184,11 @@
     "alt_logo": "Europa Taxi",
     "alt_veh_eco": "Tesla Model 3 noire",
     "alt_veh_wagon": "Break noir avec grand coffre",
-    "alt_veh_vip": "Mercedes Vito noir, van 7 places"
+    "alt_veh_vip": "Mercedes Vito noir, van 7 places",
+    "err_t": "Réservation impossible",
+    "err_pay": "Le paiement n'a pas pu être initialisé. Réessayez dans un instant ou confirmez votre réservation par WhatsApp.",
+    "err_km": "Distance invalide. Recalculez le prix sur le formulaire, puis réessayez.",
+    "err_back": "Retour au formulaire"
   },
   "nl": {
     "dil_kod": "nl",
@@ -370,7 +374,11 @@
     "alt_logo": "Europa Taxi",
     "alt_veh_eco": "Zwarte Tesla Model 3",
     "alt_veh_wagon": "Zwarte break met extra grote koffer",
-    "alt_veh_vip": "Zwarte Mercedes Vito, van met 7 plaatsen"
+    "alt_veh_vip": "Zwarte Mercedes Vito, van met 7 plaatsen",
+    "err_t": "Reservering niet gelukt",
+    "err_pay": "De betaling kon niet worden opgestart. Probeer het zo meteen opnieuw of bevestig uw reservering via WhatsApp.",
+    "err_km": "Ongeldige afstand. Bereken de prijs opnieuw op het formulier en probeer het nog eens.",
+    "err_back": "Terug naar het formulier"
   },
   "en": {
     "dil_kod": "en",
@@ -556,7 +564,11 @@
     "alt_logo": "Europa Taxi",
     "alt_veh_eco": "Black Tesla Model 3",
     "alt_veh_wagon": "Black station wagon with an extra-large boot",
-    "alt_veh_vip": "Black Mercedes Vito 7-seat van"
+    "alt_veh_vip": "Black Mercedes Vito 7-seat van",
+    "err_t": "Booking could not be completed",
+    "err_pay": "The payment could not be initialised. Try again in a moment or confirm your booking on WhatsApp.",
+    "err_km": "Invalid distance. Recalculate the price on the form and try again.",
+    "err_back": "Back to the form"
   },
   "tr": {
     "dil_kod": "tr",
@@ -742,6 +754,10 @@
     "alt_logo": "Europa Taxi",
     "alt_veh_eco": "Siyah Tesla Model 3",
     "alt_veh_wagon": "Ekstra geniş bagajlı siyah station wagon",
-    "alt_veh_vip": "7 kişilik siyah Mercedes Vito"
+    "alt_veh_vip": "7 kişilik siyah Mercedes Vito",
+    "err_t": "Rezervasyon tamamlanamadı",
+    "err_pay": "Ödeme başlatılamadı. Birazdan tekrar deneyin ya da rezervasyonu WhatsApp'tan onaylayın.",
+    "err_km": "Geçersiz mesafe. Formda fiyatı yeniden hesaplayıp tekrar deneyin.",
+    "err_back": "Forma dön"
   }
 }

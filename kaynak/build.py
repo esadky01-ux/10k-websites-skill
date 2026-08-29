@@ -162,12 +162,40 @@ for parca in ["fr", "nl", "en", "tr", "assets"]:
         shutil.rmtree(hedef)
 WWW.mkdir(exist_ok=True)
 shutil.copytree(KAYNAK / "assets", WWW / "assets")
-# pay/ katmani (varsa) kopyalanir; orders/ icerigi tasinmaz
+# pay/ katmani kopyalanir; siparis kayitlari ve loglar TASINMAZ (orders/.htaccess kalir)
 if (KAYNAK / "pay").exists():
     if (WWW / "pay").exists():
         shutil.rmtree(WWW / "pay")
     shutil.copytree(KAYNAK / "pay", WWW / "pay",
-                    ignore=shutil.ignore_patterns("orders", "*.log"))
+                    ignore=shutil.ignore_patterns("ET-*.json", "*.log", "*.tmp"))
+
+    # PHP katmaninin ihtiyac duydugu metinler strings.json'dan uretilir
+    # (tek kaynak kurali: metin degisikligi = strings.json + build.py)
+    PHP_ANAHTARLARI = [
+        "succ_paid_t", "succ_paid_d", "succ_pending_t", "succ_pending_d",
+        "succ_fail_t", "succ_fail_d", "succ_ref", "succ_home", "succ_retry", "succ_wa",
+        "em_subject", "em_heading", "em_intro", "em_ref", "em_route", "em_date",
+        "em_return", "em_vehicle", "em_pax", "em_bags", "em_paid", "em_due",
+        "em_cancel_t", "em_outro", "cancel_policy", "dt_join",
+        "err_t", "err_pay", "err_km", "err_back",
+        "val_route", "val_date", "val_name", "val_email", "val_phone",
+        "veh_eco_name", "veh_eco_model", "veh_wagon_name", "veh_wagon_model",
+        "veh_vip_name", "veh_vip_model",
+    ]
+
+    def php_json_dosyasi(veri, aciklama):
+        return ("<?php\n// " + aciklama + "\n"
+                "// OTOMATIK URETILDI — elle duzenlemeyin; kaynak dosyayi degistirip build.py calistirin.\n"
+                "return json_decode(<<<'VERI'\n"
+                + json.dumps(veri, ensure_ascii=False, indent=1)
+                + "\nVERI, true);\n")
+
+    dil_verisi = {d: {k: statik_doldur(d, strings[d][k]) for k in PHP_ANAHTARLARI} for d in DILLER}
+    (WWW / "pay" / "dil.php").write_text(
+        php_json_dosyasi(dil_verisi, "4 dilli PHP metinleri (kaynak: strings.json)"), encoding="utf-8")
+    (WWW / "pay" / "isletme.php").write_text(
+        php_json_dosyasi({k: v for k, v in isletme.items() if not k.startswith("_")},
+                         "Isletme sabitleri (kaynak: isletme.json)"), encoding="utf-8")
 
 # ---------------------------------------------------------------- dil sayfalari
 boyutlar = {}
