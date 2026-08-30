@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GIR Décor — Redirection</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="assets/img/logo/gir-decor-mark.svg">
+<link rel="alternate" hreflang="fr" href="fr/index.html">
+<link rel="alternate" hreflang="tr" href="tr/index.html">
+<meta http-equiv="refresh" content="0; url=fr/index.html">
+<script>
+(function () {
+  var lang = (navigator.language || "fr").toLowerCase().indexOf("tr") === 0 ? "tr" : "fr";
+  window.location.replace(lang + "/index.html");
+})();
+</script>
+</head>
+<body>
+<p><a href="fr/index.html">Français</a> · <a href="tr/index.html">Türkçe</a></p>
+</body>
+</html>

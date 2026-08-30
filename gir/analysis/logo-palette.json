@@ -1,0 +1,44 @@
+{
+  "background_topleft": "#f8f4eb",
+  "background_bottom": "#f7f3ea",
+  "navy_letter_G": "#e8e6e0",
+  "navy_letter_R_stem": "#cccecd",
+  "navy_wordmark": "#bbbec0",
+  "gold_letter_I": "#ceb182",
+  "gold_house_frame": "#f8f4ea",
+  "grey_window_pane": "#81878f",
+  "dominant": [
+    {
+      "color": "#f0f0f0",
+      "share": "76.4%"
+    },
+    {
+      "color": "#183048",
+      "share": "3.9%"
+    },
+    {
+      "color": "#108f0f0",
+      "share": "2.5%"
+    },
+    {
+      "color": "#108108f0",
+      "share": "2.2%"
+    },
+    {
+      "color": "#d8d8d8",
+      "share": "1.5%"
+    },
+    {
+      "color": "#f0d8d8",
+      "share": "1.3%"
+    },
+    {
+      "color": "#001848",
+      "share": "1.1%"
+    },
+    {
+      "color": "#c0c0c0",
+      "share": "1%"
+    }
+  ]
+}

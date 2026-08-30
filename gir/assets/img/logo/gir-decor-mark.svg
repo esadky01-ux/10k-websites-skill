@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 60" role="img" aria-label="GIR">
+  <title>GIR</title>
+  <style>
+    .gir-mark__p { fill: var(--color-primary, #0e2947); }
+    .gir-mark__a { fill: var(--color-accent, #b98e4a); }
+  </style>
+  <!-- G -->
+  <path class="gir-mark__p" d="M30 0 L0 0 L0 60 L30 60 L30 29 L13 29 L13 38 L21 38 L21 51 L9 51 L9 9 L30 9 Z"/>
+  <!-- I (altın, üstü logodaki gibi eğik) -->
+  <path class="gir-mark__a" d="M44 7 L56 1 L56 60 L44 60 Z"/>
+  <!-- R -->
+  <path class="gir-mark__p" fill-rule="evenodd" d="M70 0 L101 0 L101 26 L96 32 L106 60 L96 60 L88 38 L79 38 L79 60 L70 60 Z M79 9 L92 9 L92 20 L79 20 Z"/>
+</svg>

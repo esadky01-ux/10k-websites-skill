@@ -1,0 +1,240 @@
+{
+  "lang": "fr",
+  "langName": "Français",
+  "otherLangLabel": "Türkçe",
+  "meta": {
+    "home": {
+      "title": "GIR Décor — Panneaux en bambou, carrelages et auvents | Belgique",
+      "description": "GIR Décor, votre spécialiste belge des panneaux muraux en bambou naturel, carrelages et auvents pour fenêtres. Qualité premium, livraison en Belgique, devis gratuit."
+    },
+    "category": {
+      "title": "Panneaux en bambou — Panneaux muraux | GIR Décor",
+      "description": "Panneaux muraux en bambou naturel 122 × 280 cm, finition mate premium, bambou durable de 5 mm. Quatre teintes : Ivoire, Lin, Argile et Camel. Livraison en Belgique."
+    },
+    "product": {
+      "titleSuffix": " | GIR Décor"
+    },
+    "contact": {
+      "title": "Contact — GIR Décor | Bruxelles, Belgique",
+      "description": "Contactez GIR Décor pour un devis gratuit : panneaux muraux en bambou, carrelages et auvents pour fenêtres en Belgique."
+    },
+    "soon": {
+      "titleSuffix": " — Bientôt disponible | GIR Décor"
+    }
+  },
+  "skipToContent": "Aller au contenu principal",
+  "topbar": {
+    "usp1": "Livraison en Belgique",
+    "usp2": "Qualité premium",
+    "usp3": "Devis gratuit",
+    "phoneLabel": "Appelez-nous :"
+  },
+  "header": {
+    "searchPlaceholder": "Rechercher un produit…",
+    "searchLabel": "Rechercher",
+    "searchButton": "Rechercher",
+    "account": "Mon compte",
+    "cart": "Panier",
+    "cartOpen": "Ouvrir le panier",
+    "menu": "Menu",
+    "menuOpen": "Ouvrir le menu",
+    "menuClose": "Fermer le menu",
+    "langSwitch": "Langue",
+    "logoAlt": "GIR Décoration — Carrelages et auvents pour fenêtres — Belgique"
+  },
+  "nav": {
+    "home": "Accueil",
+    "wallPanels": "Panneaux muraux",
+    "bambooPanels": "Panneaux en bambou",
+    "tiles": "Carrelages",
+    "awnings": "Auvents pour fenêtres",
+    "contact": "Contact",
+    "submenuOpen": "Ouvrir le sous-menu"
+  },
+  "breadcrumb": {
+    "home": "Accueil",
+    "ariaLabel": "Fil d'Ariane"
+  },
+  "home": {
+    "heroTitle": "Panneaux muraux en bambou naturel",
+    "heroSubtitle": "Chaleur, caractère et durabilité pour vos murs. Grand format 122 × 280 cm, finition mate premium, bambou responsable — livré partout en Belgique.",
+    "heroCta": "Découvrir la collection",
+    "heroSecondary": "Demander un devis",
+    "heroImageAlt": "Panneaux muraux en bambou naturel dans un salon chaleureux",
+    "featuredTitle": "Nos panneaux en bambou",
+    "featuredSubtitle": "Quatre teintes naturelles, un seul format généreux : 122 × 280 cm.",
+    "viewAll": "Voir tous les panneaux",
+    "whyTitle": "Pourquoi le bambou ?",
+    "why1Title": "Durable par nature",
+    "why1Text": "Le bambou pousse jusqu'à un mètre par jour : une ressource renouvelable qui rend votre décoration responsable sans compromis sur le style.",
+    "why2Title": "Pose simple et rapide",
+    "why2Text": "Un panneau de 122 × 280 cm couvre un mur entier. Il se pose à la colle de montage, sans outillage spécialisé ni joint apparent.",
+    "why3Title": "Finition mate premium",
+    "why3Text": "La surface mate met en valeur le veinage naturel du bambou, absorbe la lumière et crée une atmosphère feutrée et élégante.",
+    "ctaTitle": "Un projet en Belgique ?",
+    "ctaText": "Carrelages, panneaux muraux ou auvents pour fenêtres : notre équipe vous conseille et établit un devis gratuit sous 48 h.",
+    "ctaButton": "Contactez-nous"
+  },
+  "category": {
+    "h1": "Panneaux en bambou",
+    "description": "Apportez chaleur et caractère à vos murs avec nos panneaux muraux en bambou naturel. Fabriqués en bambou durable de 5 mm d'épaisseur, nos panneaux grand format (122 × 280 cm) couvrent rapidement de grandes surfaces sans joints apparents. Leur finition mate premium met en valeur le veinage naturel du bambou et s'accorde aussi bien à un intérieur contemporain qu'à une ambiance plus chaleureuse. Disponibles en quatre teintes — Ivoire, Lin, Argile et Camel — ils se posent facilement à la colle sur la plupart des supports : chambre, salon, cuisine ou bureau. Le bambou est une ressource à croissance rapide, ce qui en fait un choix décoratif responsable. Commandez vos panneaux en ligne chez GIR Décor, votre spécialiste belge du revêtement mural, ou demandez un devis gratuit.",
+    "filtersTitle": "Filtres",
+    "filtersOpen": "Filtres",
+    "filtersClose": "Fermer les filtres",
+    "filtersApply": "Appliquer",
+    "filtersReset": "Réinitialiser",
+    "categoriesTitle": "Catégories",
+    "priceTitle": "Filtrer par prix",
+    "priceFrom": "Prix minimum",
+    "priceTo": "Prix maximum",
+    "finishTitle": "Finition",
+    "thicknessTitle": "Épaisseur",
+    "sortLabel": "Trier par",
+    "sortDefault": "Tri par défaut",
+    "sortPriceAsc": "Prix croissant",
+    "sortPriceDesc": "Prix décroissant",
+    "sortNameAsc": "Nom (A–Z)",
+    "sortNewest": "Nouveautés",
+    "resultsCount": "Affichage de {shown} sur {total} résultats",
+    "resultsCountAll": "Affichage des {total} résultats",
+    "noResults": "Aucun produit ne correspond à vos filtres.",
+    "paginationLabel": "Pagination",
+    "paginationPrev": "Précédent",
+    "paginationNext": "Suivant",
+    "paginationPage": "Page"
+  },
+  "card": {
+    "inStock": "En stock",
+    "vat": "TVA incluse",
+    "perM2": "soit {price} / m²",
+    "view": "Voir le produit",
+    "addToCart": "Ajouter au panier",
+    "hoverAlt": "en situation dans une pièce"
+  },
+  "badge": {
+    "promo": "Promo",
+    "new": "Nouveau"
+  },
+  "product": {
+    "sku": "Réf.",
+    "inStock": "En stock — expédié sous 4 à 7 jours ouvrés",
+    "vat": "TVA incluse",
+    "perM2": "soit {price} / m²",
+    "colorTitle": "Couleur : ",
+    "quantity": "Quantité",
+    "quantityMinus": "Diminuer la quantité",
+    "quantityPlus": "Augmenter la quantité",
+    "addToCart": "Ajouter au panier",
+    "requestQuote": "Demander un devis",
+    "quoteMailSubject": "Demande de devis — {name} ({sku})",
+    "quoteMailBody": "Bonjour GIR Décor,%0D%0A%0D%0AJe souhaite recevoir un devis pour : {name} (réf. {sku}).%0D%0AQuantité : %0D%0ACode postal : %0D%0A%0D%0AMerci.",
+    "tabDescription": "Description",
+    "tabSpecs": "Caractéristiques",
+    "tabDelivery": "Livraison",
+    "deliveryText": "Livraison standard en Belgique : 4 à 7 jours ouvrés. Livraison gratuite à partir de 250 €. Les panneaux sont emballés à plat sur palette et livrés jusqu'au trottoir. Enlèvement gratuit possible dans notre dépôt de Bruxelles sur rendez-vous. Retours acceptés sous 14 jours pour les panneaux non ouverts.",
+    "specFinish": "Finition",
+    "specMaterial": "Matériau",
+    "specWidth": "Largeur",
+    "specHeight": "Hauteur",
+    "specThickness": "Épaisseur",
+    "specDimensions": "Dimensions",
+    "specArea": "Surface par panneau",
+    "roomsTitle": "Idéal pour ces pièces",
+    "roomBedroom": "Chambre",
+    "roomLiving": "Salon",
+    "roomKitchen": "Cuisine",
+    "roomOffice": "Bureau",
+    "infographicNote": "Remarque : les textes de l'infographie ci-dessus figurent en néerlandais sur le visuel d'origine.",
+    "galleryLabel": "Galerie du produit",
+    "galleryThumbLabel": "Afficher l'image {n}",
+    "imageAltProduct": "vue du panneau",
+    "imageAltRoom": "en situation dans une pièce",
+    "imageAltInfographic": "infographie des caractéristiques (texte en néerlandais)",
+    "imageAltTexture": "détail de la texture",
+    "relatedTitle": "Vous aimerez aussi",
+    "addedToCart": "Ajouté au panier"
+  },
+  "cart": {
+    "title": "Votre panier",
+    "close": "Fermer le panier",
+    "empty": "Votre panier est vide.",
+    "emptyCta": "Découvrir nos panneaux",
+    "subtotal": "Sous-total",
+    "vatNote": "TVA incluse — livraison calculée au devis",
+    "quoteCta": "Demander un devis pour ce panier",
+    "quoteMailSubject": "Demande de devis — panier GIR Décor",
+    "remove": "Retirer",
+    "itemUnit": "panneau(x)",
+    "note": "Boutique de démonstration : la commande se finalise par devis, aucun paiement en ligne."
+  },
+  "search": {
+    "resultsTitle": "Résultats pour « {query} »",
+    "noResults": "Aucun produit trouvé pour « {query} ».",
+    "clear": "Effacer la recherche"
+  },
+  "footer": {
+    "aboutTitle": "GIR Décor",
+    "aboutText": "GIR Décoration — carrelages et auvents pour fenêtres. Votre spécialiste belge du revêtement mural : panneaux en bambou, carrelages et auvents, sélectionnés pour leur qualité et leur durabilité.",
+    "menuTitle": "Boutique",
+    "serviceTitle": "Service client",
+    "serviceShipping": "Livraison",
+    "serviceReturns": "Retours",
+    "serviceQuote": "Demander un devis",
+    "serviceFaq": "Questions fréquentes",
+    "contactTitle": "Contact",
+    "hoursLabel": "Horaires",
+    "paymentTitle": "Paiement sécurisé",
+    "paymentNote": "Bancontact · Visa · Mastercard · PayPal · Virement",
+    "trustText": "Qualité · Design · Durabilité",
+    "madeIn": "Belgique",
+    "rights": "© {year} GIR Décoration. Tous droits réservés.",
+    "demoNote": "Site de démonstration — prix et coordonnées provisoires.",
+    "markAlt": "Monogramme GIR"
+  },
+  "cookie": {
+    "text": "Nous utilisons des cookies pour améliorer votre expérience et mesurer l'audience du site.",
+    "accept": "Accepter",
+    "decline": "Refuser"
+  },
+  "soon": {
+    "title": "Bientôt disponible",
+    "tilesTitle": "Carrelages",
+    "awningsTitle": "Auvents pour fenêtres",
+    "text": "Cette collection arrive très prochainement chez GIR Décor. Contactez-nous dès maintenant pour un devis ou des conseils personnalisés.",
+    "backHome": "Retour à l'accueil",
+    "contactCta": "Nous contacter"
+  },
+  "contact": {
+    "h1": "Contact",
+    "intro": "Une question sur nos panneaux en bambou, nos carrelages ou nos auvents ? Écrivez-nous ou appelez-nous : nous répondons sous 48 h ouvrées et le devis est toujours gratuit.",
+    "formTitle": "Envoyez-nous un message",
+    "formName": "Nom",
+    "formEmail": "E-mail",
+    "formSubject": "Sujet",
+    "formMessage": "Votre message",
+    "formSend": "Envoyer le message",
+    "formNote": "Le formulaire ouvre votre messagerie (démo — aucun envoi serveur).",
+    "infoTitle": "Coordonnées",
+    "infoPhone": "Téléphone",
+    "infoEmail": "E-mail",
+    "infoAddress": "Adresse",
+    "infoHours": "Horaires"
+  },
+  "lightbox": {
+    "label": "Visionneuse d'images",
+    "close": "Fermer la visionneuse",
+    "prev": "Image précédente",
+    "next": "Image suivante"
+  },
+  "themeSwitcher": {
+    "label": "Thème (dev)",
+    "navyGold": "Navy & Or (logo)",
+    "warmClay": "Argile chaude",
+    "charcoalBrass": "Anthracite & Laiton",
+    "sageLinen": "Sauge & Lin"
+  },
+  "a11y": {
+    "mainNav": "Navigation principale",
+    "mobileMenu": "Menu mobile"
+  }
+}

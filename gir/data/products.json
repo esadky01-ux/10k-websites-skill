@@ -1,0 +1,144 @@
+{
+  "_comment": "Fiyatlar PLACEHOLDER değerlerdir (bkz. rapor). Görseller assets/img/products/<slug>/ altındadır. ivory-bp02 için texture görseli bulunmadığından swatch, product görselinden kırpılarak üretilmiştir (ivory-bp02-swatch.png).",
+  "products": [
+    {
+      "sku": "BP02",
+      "slug": "ivory-bp02",
+      "name": {
+        "fr": "Panneau mural bambou naturel – Ivoire",
+        "tr": "Doğal Bambu Duvar Paneli – Fildişi"
+      },
+      "shortDesc": {
+        "fr": "Teinte ivoire claire et lumineuse, finition mate premium. Grand format 122 × 280 cm en bambou durable de 5 mm.",
+        "tr": "Aydınlık, ferah fildişi ton; premium mat yüzey. 5 mm sürdürülebilir bambudan 122 × 280 cm büyük ebat."
+      },
+      "description": {
+        "fr": "Le panneau mural en bambou naturel Ivoire apporte lumière et douceur à vos murs. Sa teinte claire agrandit visuellement la pièce et se marie avec tous les styles, du scandinave au contemporain. Fabriqué en bambou durable de 5 mm d'épaisseur, le panneau grand format de 122 × 280 cm couvre un mur du sol au plafond sans joint apparent. La finition mate premium met en valeur le veinage naturel du bambou tout en restant facile à entretenir. La pose se fait simplement à la colle de montage sur la plupart des supports plans : idéal pour la chambre, le salon, la cuisine ou le bureau.",
+        "tr": "Fildişi doğal bambu duvar paneli, duvarlarınıza ışıltı ve yumuşaklık katar. Açık tonu mekânı görsel olarak büyütür; İskandinav tarzından çağdaş çizgilere kadar her stille uyum sağlar. 5 mm kalınlığında sürdürülebilir bambudan üretilen 122 × 280 cm büyük ebatlı panel, duvarı tavandan zemine kadar belirgin derz olmadan kaplar. Premium mat yüzey, bambunun doğal damarlarını öne çıkarırken kolay temizlenir. Montaj yapıştırıcısı ile çoğu düz yüzeye kolayca uygulanır; yatak odası, oturma odası, mutfak ve ofis için idealdir."
+      },
+      "specs": {
+        "finish": { "fr": "Mat premium", "tr": "Premium Mat" },
+        "material": { "fr": "Bambou durable", "tr": "Sürdürülebilir bambu" },
+        "width": "122 cm",
+        "height": "280 cm",
+        "thickness": "5 mm",
+        "rooms": ["bedroom", "living", "kitchen", "office"]
+      },
+      "price": 89.0,
+      "oldPrice": 109.0,
+      "unit": { "fr": "par panneau", "tr": "panel başı" },
+      "badge": "promo",
+      "images": [
+        "assets/img/products/ivory-bp02/ivory-bp02-product.jpg",
+        "assets/img/products/ivory-bp02/ivory-bp02-room.jpg",
+        "assets/img/products/ivory-bp02/ivory-bp02-infographic.jpg"
+      ],
+      "swatch": "assets/img/products/ivory-bp02/ivory-bp02-swatch.png"
+    },
+    {
+      "sku": "BP03",
+      "slug": "linen-bp03",
+      "name": {
+        "fr": "Panneau mural bambou naturel – Lin",
+        "tr": "Doğal Bambu Duvar Paneli – Keten"
+      },
+      "shortDesc": {
+        "fr": "Beige lin naturel et apaisant, finition mate premium. Grand format 122 × 280 cm en bambou durable de 5 mm.",
+        "tr": "Doğal, dingin keten beji; premium mat yüzey. 5 mm sürdürülebilir bambudan 122 × 280 cm büyük ebat."
+      },
+      "description": {
+        "fr": "Avec sa teinte lin naturelle, ce panneau mural en bambou crée une atmosphère apaisante et intemporelle. Le beige doux s'accorde aussi bien aux intérieurs clairs qu'aux accents plus contrastés. Fabriqué en bambou durable de 5 mm d'épaisseur, le panneau grand format de 122 × 280 cm habille un mur entier sans joint apparent. Sa finition mate premium souligne la texture authentique du bambou et résiste à la vie quotidienne. La pose à la colle de montage est rapide et propre : parfait pour la chambre, le salon, la cuisine ou le bureau.",
+        "tr": "Doğal keten tonuyla bu bambu duvar paneli, dingin ve zamansız bir atmosfer yaratır. Yumuşak bej; hem aydınlık iç mekânlarla hem de kontrast vurgularla uyumludur. 5 mm kalınlığında sürdürülebilir bambudan üretilen 122 × 280 cm büyük ebatlı panel, duvarın tamamını belirgin derz olmadan giydirir. Premium mat yüzey, bambunun özgün dokusunu vurgular ve günlük kullanıma dayanıklıdır. Montaj yapıştırıcısı ile temiz ve hızlı uygulanır; yatak odası, oturma odası, mutfak ve ofis için mükemmeldir."
+      },
+      "specs": {
+        "finish": { "fr": "Mat premium", "tr": "Premium Mat" },
+        "material": { "fr": "Bambou durable", "tr": "Sürdürülebilir bambu" },
+        "width": "122 cm",
+        "height": "280 cm",
+        "thickness": "5 mm",
+        "rooms": ["bedroom", "living", "kitchen", "office"]
+      },
+      "price": 89.0,
+      "oldPrice": null,
+      "unit": { "fr": "par panneau", "tr": "panel başı" },
+      "badge": null,
+      "images": [
+        "assets/img/products/linen-bp03/linen-bp03-product.jpg",
+        "assets/img/products/linen-bp03/linen-bp03-room.jpg",
+        "assets/img/products/linen-bp03/linen-bp03-infographic.jpg",
+        "assets/img/products/linen-bp03/linen-bp03-texture.png"
+      ],
+      "swatch": "assets/img/products/linen-bp03/linen-bp03-swatch.png"
+    },
+    {
+      "sku": "BP06",
+      "slug": "clay-bp06",
+      "name": {
+        "fr": "Panneau mural bambou naturel – Argile",
+        "tr": "Doğal Bambu Duvar Paneli – Kil"
+      },
+      "shortDesc": {
+        "fr": "Terracotta argile chaleureux, finition mate premium. Grand format 122 × 280 cm en bambou durable de 5 mm.",
+        "tr": "Sıcak kil (terracotta) tonu; premium mat yüzey. 5 mm sürdürülebilir bambudan 122 × 280 cm büyük ebat."
+      },
+      "description": {
+        "fr": "La teinte argile de ce panneau mural en bambou enveloppe la pièce d'une chaleur méditerranéenne. Ce ton terracotta profond crée un mur d'accent saisissant derrière un lit, un canapé ou un plan de travail. Fabriqué en bambou durable de 5 mm d'épaisseur, le panneau grand format de 122 × 280 cm couvre la surface sans joint apparent. La finition mate premium absorbe la lumière pour un rendu feutré et élégant. Pose simple à la colle de montage sur la plupart des supports : recommandé pour la chambre, le salon, la cuisine ou le bureau.",
+        "tr": "Kil tonundaki bu bambu duvar paneli, mekânı Akdeniz sıcaklığıyla sarar. Derin terracotta rengi; yatak arkasında, koltuk duvarında veya tezgâh önünde çarpıcı bir vurgu duvarı yaratır. 5 mm kalınlığında sürdürülebilir bambudan üretilen 122 × 280 cm büyük ebatlı panel, yüzeyi belirgin derz olmadan kaplar. Premium mat yüzey ışığı emerek zarif, kadifemsi bir görünüm sunar. Montaj yapıştırıcısı ile çoğu yüzeye kolayca uygulanır; yatak odası, oturma odası, mutfak ve ofis için önerilir."
+      },
+      "specs": {
+        "finish": { "fr": "Mat premium", "tr": "Premium Mat" },
+        "material": { "fr": "Bambou durable", "tr": "Sürdürülebilir bambu" },
+        "width": "122 cm",
+        "height": "280 cm",
+        "thickness": "5 mm",
+        "rooms": ["bedroom", "living", "kitchen", "office"]
+      },
+      "price": 94.0,
+      "oldPrice": 115.0,
+      "unit": { "fr": "par panneau", "tr": "panel başı" },
+      "badge": "promo",
+      "images": [
+        "assets/img/products/clay-bp06/clay-bp06-product.jpg",
+        "assets/img/products/clay-bp06/clay-bp06-room.jpg",
+        "assets/img/products/clay-bp06/clay-bp06-infographic.jpg",
+        "assets/img/products/clay-bp06/clay-bp06-texture.png"
+      ],
+      "swatch": "assets/img/products/clay-bp06/clay-bp06-swatch.png"
+    },
+    {
+      "sku": "BP10",
+      "slug": "camel-bp10",
+      "name": {
+        "fr": "Panneau mural bambou naturel – Camel",
+        "tr": "Doğal Bambu Duvar Paneli – Kamel"
+      },
+      "shortDesc": {
+        "fr": "Brun camel doré et raffiné, finition mate premium. Grand format 122 × 280 cm en bambou durable de 5 mm.",
+        "tr": "Altın kahve kamel tonu; premium mat yüzey. 5 mm sürdürülebilir bambudan 122 × 280 cm büyük ebat."
+      },
+      "description": {
+        "fr": "Le panneau mural en bambou Camel réchauffe l'intérieur d'un brun doré raffiné. Cette teinte riche apporte de la profondeur aux pièces lumineuses et une élégance feutrée aux espaces de travail. Fabriqué en bambou durable de 5 mm d'épaisseur, le panneau grand format de 122 × 280 cm habille le mur sans joint apparent. La finition mate premium révèle le veinage du bambou pour un effet naturel haut de gamme. La pose à la colle de montage ne demande aucun outillage spécialisé : idéal pour la chambre, le salon, la cuisine ou le bureau.",
+        "tr": "Kamel bambu duvar paneli, iç mekânı rafine bir altın kahveyle ısıtır. Bu zengin ton; aydınlık odalara derinlik, çalışma alanlarına sakin bir şıklık kazandırır. 5 mm kalınlığında sürdürülebilir bambudan üretilen 122 × 280 cm büyük ebatlı panel, duvarı belirgin derz olmadan giydirir. Premium mat yüzey, bambunun damar yapısını ortaya çıkararak doğal ve kaliteli bir görünüm sunar. Montaj yapıştırıcısı ile uygulama özel alet gerektirmez; yatak odası, oturma odası, mutfak ve ofis için idealdir."
+      },
+      "specs": {
+        "finish": { "fr": "Mat premium", "tr": "Premium Mat" },
+        "material": { "fr": "Bambou durable", "tr": "Sürdürülebilir bambu" },
+        "width": "122 cm",
+        "height": "280 cm",
+        "thickness": "5 mm",
+        "rooms": ["bedroom", "living", "kitchen", "office"]
+      },
+      "price": 99.0,
+      "oldPrice": null,
+      "unit": { "fr": "par panneau", "tr": "panel başı" },
+      "badge": "new",
+      "images": [
+        "assets/img/products/camel-bp10/camel-bp10-product.jpg",
+        "assets/img/products/camel-bp10/camel-bp10-room.jpg",
+        "assets/img/products/camel-bp10/camel-bp10-infographic.jpg",
+        "assets/img/products/camel-bp10/camel-bp10-texture.png"
+      ],
+      "swatch": "assets/img/products/camel-bp10/camel-bp10-swatch.png"
+    }
+  ]
+}

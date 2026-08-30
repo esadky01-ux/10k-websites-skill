@@ -1,0 +1,228 @@
+/* ============================================================
+   GIR Décor — Design Tokens
+   TÜM renkler yalnızca bu dosyada tanımlanır. main.css içinde
+   hard-coded hex/rgb YOKTUR. Tema değiştirmek için <html> üzerinde
+   data-theme="navy-gold | warm-clay | charcoal-brass | sage-linen".
+   Varsayılan tema (navy-gold) logodan ölçülen gerçek değerlerdir:
+   lacivert #0E2947 · altın #B98E4A · kırık beyaz #F8F4EB (bkz.
+   analysis/logo-palette.json).
+   ============================================================ */
+
+:root {
+  /* --- Renkler: navy-gold (varsayılan, logodan) --- */
+  --color-primary: #0e2947;
+  --color-primary-hover: #1c3d63;
+  --color-secondary: #44536b;
+
+  --color-accent: #b98e4a;
+  --color-accent-hover: #7f5f2e;
+  --color-accent-soft: #b98e4a; /* koyu zeminlerde ikon/vurgu */
+
+  --color-bg: #f8f4eb;
+  --color-surface: #ffffff;
+  --color-header-bg: #f8f4eb;
+  --color-topbar-bg: #0e2947;
+  --color-topbar-text: #f0ead9;
+
+  --color-footer-bg: #0e2947;
+  --color-footer-text: #eae4d6;
+  --color-footer-muted: #b4bccb;
+
+  --color-text: #24303e;
+  --color-text-muted: #5f6b7a;
+  --color-link: #0e2947;
+  --color-price: #0e2947;
+  --color-price-old: #656f7e;
+
+  --color-border: #e2dbc9;
+  --color-border-strong: #cfc6ad;
+  --color-success: #226b45;
+  --color-danger: #9c3a2b;
+  --color-badge: #b98e4a;
+  --color-badge-text: #0e2947;
+
+  --color-on-primary: #f8f4eb;
+  --color-on-accent: #0e2947;
+  --color-focus: #b98e4a;
+  --color-overlay: rgba(14, 41, 71, 0.55);
+  --color-shadow: rgba(14, 41, 71, 0.1);
+  --color-shadow-strong: rgba(14, 41, 71, 0.22);
+  --color-swatch-ring: #0e2947;
+  --color-rating: #b98e4a;
+
+  /* --- Tipografi --- */
+  --font-heading: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  --font-body: "Inter", "Segoe UI", -apple-system, Roboto, Arial, sans-serif;
+  --fs-h1: 2.25rem;   /* 36px */
+  --fs-h2: 1.75rem;   /* 28px */
+  --fs-h3: 1.25rem;   /* 20px */
+  --fs-h4: 1rem;      /* 16px */
+  --fs-body: 0.9375rem; /* 15px */
+  --fs-small: 0.8125rem; /* 13px */
+
+  /* --- Ölçüler --- */
+  --radius: 6px;
+  --radius-btn: 4px;
+  --shadow-card: 0 1px 3px var(--color-shadow);
+  --shadow-card-hover: 0 6px 18px var(--color-shadow-strong);
+  --shadow-drawer: 0 12px 40px var(--color-shadow-strong);
+  --container: 1200px;
+  --gap: 24px;
+  --header-h: 72px;
+}
+
+/* ------------------------------------------------------------
+   TEMA: navy-gold (varsayılanın açık kopyası — switcher tutarlılığı)
+   ------------------------------------------------------------ */
+[data-theme="navy-gold"] {
+  --color-primary: #0e2947;
+  --color-primary-hover: #1c3d63;
+  --color-secondary: #44536b;
+  --color-accent: #b98e4a;
+  --color-accent-hover: #7f5f2e;
+  --color-accent-soft: #b98e4a; /* koyu zeminlerde ikon/vurgu */
+  --color-bg: #f8f4eb;
+  --color-surface: #ffffff;
+  --color-header-bg: #f8f4eb;
+  --color-topbar-bg: #0e2947;
+  --color-topbar-text: #f0ead9;
+  --color-footer-bg: #0e2947;
+  --color-footer-text: #eae4d6;
+  --color-footer-muted: #b4bccb;
+  --color-text: #24303e;
+  --color-text-muted: #5f6b7a;
+  --color-link: #0e2947;
+  --color-price: #0e2947;
+  --color-price-old: #656f7e;
+  --color-border: #e2dbc9;
+  --color-border-strong: #cfc6ad;
+  --color-success: #226b45;
+  --color-danger: #9c3a2b;
+  --color-badge: #b98e4a;
+  --color-badge-text: #0e2947;
+  --color-on-primary: #f8f4eb;
+  --color-on-accent: #0e2947;
+  --color-focus: #b98e4a;
+  --color-overlay: rgba(14, 41, 71, 0.55);
+  --color-shadow: rgba(14, 41, 71, 0.1);
+  --color-shadow-strong: rgba(14, 41, 71, 0.22);
+  --color-swatch-ring: #0e2947;
+  --color-rating: #b98e4a;
+}
+
+/* ------------------------------------------------------------
+   TEMA: warm-clay — kil kahvesi + bej (ürün tonlarına uygun)
+   ------------------------------------------------------------ */
+[data-theme="warm-clay"] {
+  --color-primary: #6e4530;
+  --color-primary-hover: #85543b;
+  --color-secondary: #7a5c48;
+  --color-accent: #a05c2e;
+  --color-accent-hover: #7f4a26;
+  --color-accent-soft: #d29a5e; /* koyu zeminlerde ikon/vurgu */
+  --color-bg: #f6efe6;
+  --color-surface: #fffdf9;
+  --color-header-bg: #f6efe6;
+  --color-topbar-bg: #4a2e1f;
+  --color-topbar-text: #f3e8dc;
+  --color-footer-bg: #4a2e1f;
+  --color-footer-text: #f0e6da;
+  --color-footer-muted: #c9b6a6;
+  --color-text: #33261e;
+  --color-text-muted: #6d5c4e;
+  --color-link: #6e4530;
+  --color-price: #6e4530;
+  --color-price-old: #7d6f63;
+  --color-border: #e6dbc9;
+  --color-border-strong: #d3c3ab;
+  --color-success: #276b45;
+  --color-danger: #9c3a2b;
+  --color-badge: #a05c2e;
+  --color-badge-text: #fff7ee;
+  --color-on-primary: #f8efe6;
+  --color-on-accent: #fff7ee;
+  --color-focus: #a05c2e;
+  --color-overlay: rgba(74, 46, 31, 0.55);
+  --color-shadow: rgba(74, 46, 31, 0.1);
+  --color-shadow-strong: rgba(74, 46, 31, 0.22);
+  --color-swatch-ring: #6e4530;
+  --color-rating: #a05c2e;
+}
+
+/* ------------------------------------------------------------
+   TEMA: charcoal-brass — antrasit + pirinç
+   ------------------------------------------------------------ */
+[data-theme="charcoal-brass"] {
+  --color-primary: #26292e;
+  --color-primary-hover: #3a3f47;
+  --color-secondary: #4b5158;
+  --color-accent: #8f7132;
+  --color-accent-hover: #6f5827;
+  --color-accent-soft: #b08e42; /* koyu zeminlerde ikon/vurgu */
+  --color-bg: #f4f3f0;
+  --color-surface: #ffffff;
+  --color-header-bg: #f4f3f0;
+  --color-topbar-bg: #1d2024;
+  --color-topbar-text: #e8e6e0;
+  --color-footer-bg: #1d2024;
+  --color-footer-text: #e5e3de;
+  --color-footer-muted: #a7abb1;
+  --color-text: #26292e;
+  --color-text-muted: #5c6168;
+  --color-link: #26292e;
+  --color-price: #26292e;
+  --color-price-old: #6d7278;
+  --color-border: #dfddd7;
+  --color-border-strong: #c6c3ba;
+  --color-success: #226b45;
+  --color-danger: #9c3a2b;
+  --color-badge: #8f7132;
+  --color-badge-text: #ffffff;
+  --color-on-primary: #f2f1ee;
+  --color-on-accent: #ffffff;
+  --color-focus: #8f7132;
+  --color-overlay: rgba(29, 32, 36, 0.55);
+  --color-shadow: rgba(29, 32, 36, 0.1);
+  --color-shadow-strong: rgba(29, 32, 36, 0.22);
+  --color-swatch-ring: #26292e;
+  --color-rating: #8f7132;
+}
+
+/* ------------------------------------------------------------
+   TEMA: sage-linen — adaçayı yeşili + keten
+   ------------------------------------------------------------ */
+[data-theme="sage-linen"] {
+  --color-primary: #46573f;
+  --color-primary-hover: #586d4f;
+  --color-secondary: #5d6d56;
+  --color-accent: #8a6d33;
+  --color-accent-hover: #6d5628;
+  --color-accent-soft: #bfa057; /* koyu zeminlerde ikon/vurgu */
+  --color-bg: #f6f3ea;
+  --color-surface: #fffdf6;
+  --color-header-bg: #f6f3ea;
+  --color-topbar-bg: #37432f;
+  --color-topbar-text: #ebeadb;
+  --color-footer-bg: #37432f;
+  --color-footer-text: #e9e7da;
+  --color-footer-muted: #b3bba9;
+  --color-text: #2c332c;
+  --color-text-muted: #5c665c;
+  --color-link: #46573f;
+  --color-price: #46573f;
+  --color-price-old: #6c756c;
+  --color-border: #dfdaca;
+  --color-border-strong: #c7c1ab;
+  --color-success: #276b45;
+  --color-danger: #9c3a2b;
+  --color-badge: #8a6d33;
+  --color-badge-text: #fffbee;
+  --color-on-primary: #eef1e8;
+  --color-on-accent: #fffbee;
+  --color-focus: #8a6d33;
+  --color-overlay: rgba(55, 67, 47, 0.55);
+  --color-shadow: rgba(55, 67, 47, 0.1);
+  --color-shadow-strong: rgba(55, 67, 47, 0.22);
+  --color-swatch-ring: #46573f;
+  --color-rating: #8a6d33;
+}

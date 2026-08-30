@@ -1,0 +1,23 @@
+{
+  "name": "gir-decor-site",
+  "version": "1.0.0",
+  "description": "GIR D\u00e9cor \u2014 FR/TR statik WooCommerce-tarz\u0131 ma\u011faza klonu",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.js",
+    "serve": "node tools/serve.js",
+    "images": "node tools/images.js",
+    "validate": "node tools/validate.js && node tools/contrast.js && html-validate index.html fr/*.html tr/*.html",
+    "test": "node tools/interactions.js",
+    "screenshots": "node tools/screenshot.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "html-validate": "^11.10.0",
+    "lighthouse": "^13.4.1",
+    "playwright": "^1.62.1",
+    "sharp": "^0.35.4"
+  }
+}

@@ -1,0 +1,240 @@
+{
+  "lang": "tr",
+  "langName": "Türkçe",
+  "otherLangLabel": "Français",
+  "meta": {
+    "home": {
+      "title": "GIR Décor — Bambu Paneller, Fayans ve Sundurmalar | Belçika",
+      "description": "GIR Décor; doğal bambu duvar panelleri, fayans ve pencere sundurmalarında Belçikalı uzmanınız. Premium kalite, Belçika geneli teslimat, ücretsiz teklif."
+    },
+    "category": {
+      "title": "Bambu Paneller — Duvar Panelleri | GIR Décor",
+      "description": "122 × 280 cm doğal bambu duvar panelleri; premium mat yüzey, 5 mm sürdürülebilir bambu. Dört renk: Fildişi, Keten, Kil ve Kamel. Belçika geneli teslimat."
+    },
+    "product": {
+      "titleSuffix": " | GIR Décor"
+    },
+    "contact": {
+      "title": "İletişim — GIR Décor | Brüksel, Belçika",
+      "description": "Bambu duvar panelleri, fayans ve pencere sundurmaları için GIR Décor ile iletişime geçin. Belçika'da ücretsiz teklif."
+    },
+    "soon": {
+      "titleSuffix": " — Yakında | GIR Décor"
+    }
+  },
+  "skipToContent": "Ana içeriğe geç",
+  "topbar": {
+    "usp1": "Belçika geneli teslimat",
+    "usp2": "Premium kalite",
+    "usp3": "Ücretsiz teklif",
+    "phoneLabel": "Bizi arayın:"
+  },
+  "header": {
+    "searchPlaceholder": "Ürün ara…",
+    "searchLabel": "Ara",
+    "searchButton": "Ara",
+    "account": "Hesabım",
+    "cart": "Sepet",
+    "cartOpen": "Sepeti aç",
+    "menu": "Menü",
+    "menuOpen": "Menüyü aç",
+    "menuClose": "Menüyü kapat",
+    "langSwitch": "Dil",
+    "logoAlt": "GIR Décoration — Fayans ve pencere sundurmaları — Belçika"
+  },
+  "nav": {
+    "home": "Ana Sayfa",
+    "wallPanels": "Duvar Panelleri",
+    "bambooPanels": "Bambu Paneller",
+    "tiles": "Fayanslar",
+    "awnings": "Pencere Sundurmaları",
+    "contact": "İletişim",
+    "submenuOpen": "Alt menüyü aç"
+  },
+  "breadcrumb": {
+    "home": "Ana Sayfa",
+    "ariaLabel": "Sayfa yolu"
+  },
+  "home": {
+    "heroTitle": "Doğal Bambu Duvar Panelleri",
+    "heroSubtitle": "Duvarlarınıza sıcaklık, karakter ve dayanıklılık. 122 × 280 cm büyük ebat, premium mat yüzey, sürdürülebilir bambu — Belçika'nın her yerine teslimat.",
+    "heroCta": "Koleksiyonu Keşfet",
+    "heroSecondary": "Teklif İste",
+    "heroImageAlt": "Sıcak bir oturma odasında doğal bambu duvar panelleri",
+    "featuredTitle": "Bambu Panellerimiz",
+    "featuredSubtitle": "Dört doğal renk, tek cömert ebat: 122 × 280 cm.",
+    "viewAll": "Tüm panelleri gör",
+    "whyTitle": "Neden Bambu?",
+    "why1Title": "Doğası gereği sürdürülebilir",
+    "why1Text": "Bambu günde bir metreye kadar uzar: stilinizden ödün vermeden dekorasyonunuzu çevreye duyarlı kılan yenilenebilir bir kaynaktır.",
+    "why2Title": "Kolay ve hızlı montaj",
+    "why2Text": "122 × 280 cm'lik tek panel bütün bir duvarı kaplar. Montaj yapıştırıcısı ile uygulanır; özel alet ve belirgin derz gerektirmez.",
+    "why3Title": "Premium mat yüzey",
+    "why3Text": "Mat yüzey bambunun doğal damar yapısını öne çıkarır, ışığı emer ve mekâna zarif, sakin bir atmosfer kazandırır.",
+    "ctaTitle": "Belçika'da bir projeniz mi var?",
+    "ctaText": "Fayans, duvar paneli veya pencere sundurması: ekibimiz size yol gösterir ve 48 saat içinde ücretsiz teklif hazırlar.",
+    "ctaButton": "Bize Ulaşın"
+  },
+  "category": {
+    "h1": "Bambu Paneller",
+    "description": "Duvarlarınıza doğal bir sıcaklık ve karakter katmak için bambu duvar panellerimizi keşfedin. 5 mm kalınlığında sürdürülebilir bambudan üretilen büyük ebatlı panellerimiz (122 × 280 cm), geniş yüzeyleri belirgin derz olmadan hızla kaplar. Premium mat yüzey, bambunun doğal damar yapısını öne çıkarır; hem modern hem de sıcak tonlu iç mekânlarla kusursuz uyum sağlar. Fildişi, Keten, Kil ve Kamel olmak üzere dört renk seçeneğiyle sunulan paneller; yatak odası, oturma odası, mutfak ve ofis gibi mekânlarda çoğu yüzeye yapıştırılarak kolayca uygulanır. Hızlı büyüyen bir bitki olan bambu, çevreye duyarlı bir dekorasyon tercihidir. Belçika'nın duvar kaplama uzmanı GIR Décor güvencesiyle panellerinizi online sipariş edin veya ücretsiz teklif isteyin.",
+    "filtersTitle": "Filtreler",
+    "filtersOpen": "Filtreler",
+    "filtersClose": "Filtreleri kapat",
+    "filtersApply": "Uygula",
+    "filtersReset": "Sıfırla",
+    "categoriesTitle": "Kategoriler",
+    "priceTitle": "Fiyata göre filtrele",
+    "priceFrom": "En düşük fiyat",
+    "priceTo": "En yüksek fiyat",
+    "finishTitle": "Yüzey",
+    "thicknessTitle": "Kalınlık",
+    "sortLabel": "Sırala",
+    "sortDefault": "Varsayılan sıralama",
+    "sortPriceAsc": "Fiyat: artan",
+    "sortPriceDesc": "Fiyat: azalan",
+    "sortNameAsc": "İsim (A–Z)",
+    "sortNewest": "Yeni gelenler",
+    "resultsCount": "{total} sonuçtan {shown} tanesi gösteriliyor",
+    "resultsCountAll": "{total} sonucun tamamı gösteriliyor",
+    "noResults": "Filtrelerinize uyan ürün bulunamadı.",
+    "paginationLabel": "Sayfalama",
+    "paginationPrev": "Önceki",
+    "paginationNext": "Sonraki",
+    "paginationPage": "Sayfa"
+  },
+  "card": {
+    "inStock": "Stokta",
+    "vat": "KDV dahil",
+    "perM2": "≈ {price} / m²",
+    "view": "Ürünü incele",
+    "addToCart": "Sepete ekle",
+    "hoverAlt": "oda içinde görünüm"
+  },
+  "badge": {
+    "promo": "İndirim",
+    "new": "Yeni"
+  },
+  "product": {
+    "sku": "Ürün kodu",
+    "inStock": "Stokta — 4–7 iş gününde kargoda",
+    "vat": "KDV dahil",
+    "perM2": "≈ {price} / m²",
+    "colorTitle": "Renk: ",
+    "quantity": "Adet",
+    "quantityMinus": "Adedi azalt",
+    "quantityPlus": "Adedi artır",
+    "addToCart": "Sepete ekle",
+    "requestQuote": "Teklif iste",
+    "quoteMailSubject": "Teklif talebi — {name} ({sku})",
+    "quoteMailBody": "Merhaba GIR Décor,%0D%0A%0D%0AŞu ürün için teklif almak istiyorum: {name} (kod: {sku}).%0D%0AAdet: %0D%0APosta kodu: %0D%0A%0D%0ATeşekkürler.",
+    "tabDescription": "Açıklama",
+    "tabSpecs": "Özellikler",
+    "tabDelivery": "Teslimat",
+    "deliveryText": "Belçika içi standart teslimat: 4–7 iş günü. 250 € üzeri siparişlerde teslimat ücretsizdir. Paneller palet üzerinde düz şekilde paketlenir ve kapı önüne teslim edilir. Brüksel'deki depomuzdan randevuyla ücretsiz teslim alma mümkündür. Açılmamış paneller 14 gün içinde iade edilebilir.",
+    "specFinish": "Yüzey",
+    "specMaterial": "Malzeme",
+    "specWidth": "Genişlik",
+    "specHeight": "Yükseklik",
+    "specThickness": "Kalınlık",
+    "specDimensions": "Ölçüler",
+    "specArea": "Panel başına alan",
+    "roomsTitle": "Bu mekânlar için ideal",
+    "roomBedroom": "Yatak odası",
+    "roomLiving": "Oturma odası",
+    "roomKitchen": "Mutfak",
+    "roomOffice": "Ofis",
+    "infographicNote": "Not: Yukarıdaki infografikte yer alan metinler orijinal görselde Hollandacadır.",
+    "galleryLabel": "Ürün galerisi",
+    "galleryThumbLabel": "{n}. görseli göster",
+    "imageAltProduct": "panel görünümü",
+    "imageAltRoom": "oda içinde görünüm",
+    "imageAltInfographic": "özellik infografiği (metinler Hollandaca)",
+    "imageAltTexture": "doku detayı",
+    "relatedTitle": "Bunlar da ilginizi çekebilir",
+    "addedToCart": "Sepete eklendi"
+  },
+  "cart": {
+    "title": "Sepetiniz",
+    "close": "Sepeti kapat",
+    "empty": "Sepetiniz boş.",
+    "emptyCta": "Panelleri keşfedin",
+    "subtotal": "Ara toplam",
+    "vatNote": "KDV dahil — teslimat teklifte hesaplanır",
+    "quoteCta": "Bu sepet için teklif iste",
+    "quoteMailSubject": "Teklif talebi — GIR Décor sepeti",
+    "remove": "Kaldır",
+    "itemUnit": "panel",
+    "note": "Demo mağaza: sipariş teklif ile tamamlanır, online ödeme yoktur."
+  },
+  "search": {
+    "resultsTitle": "\"{query}\" için sonuçlar",
+    "noResults": "\"{query}\" için ürün bulunamadı.",
+    "clear": "Aramayı temizle"
+  },
+  "footer": {
+    "aboutTitle": "GIR Décor",
+    "aboutText": "GIR Décoration — fayans ve pencere sundurmaları. Duvar kaplamada Belçikalı uzmanınız: kalitesi ve dayanıklılığıyla seçilmiş bambu paneller, fayanslar ve sundurmalar.",
+    "menuTitle": "Mağaza",
+    "serviceTitle": "Müşteri Hizmetleri",
+    "serviceShipping": "Teslimat",
+    "serviceReturns": "İade",
+    "serviceQuote": "Teklif iste",
+    "serviceFaq": "Sık sorulan sorular",
+    "contactTitle": "İletişim",
+    "hoursLabel": "Çalışma saatleri",
+    "paymentTitle": "Güvenli ödeme",
+    "paymentNote": "Bancontact · Visa · Mastercard · PayPal · Havale",
+    "trustText": "Kalite · Tasarım · Dayanıklılık",
+    "madeIn": "Belçika",
+    "rights": "© {year} GIR Décoration. Tüm hakları saklıdır.",
+    "demoNote": "Demo sitesi — fiyatlar ve iletişim bilgileri geçicidir.",
+    "markAlt": "GIR monogramı"
+  },
+  "cookie": {
+    "text": "Deneyiminizi iyileştirmek ve site trafiğini ölçmek için çerezler kullanıyoruz.",
+    "accept": "Kabul et",
+    "decline": "Reddet"
+  },
+  "soon": {
+    "title": "Yakında",
+    "tilesTitle": "Fayanslar",
+    "awningsTitle": "Pencere Sundurmaları",
+    "text": "Bu koleksiyon çok yakında GIR Décor'da. Teklif ve kişisel öneriler için şimdiden bize ulaşabilirsiniz.",
+    "backHome": "Ana sayfaya dön",
+    "contactCta": "Bize ulaşın"
+  },
+  "contact": {
+    "h1": "İletişim",
+    "intro": "Bambu panellerimiz, fayanslarımız veya sundurmalarımız hakkında sorunuz mu var? Bize yazın ya da bizi arayın: 48 iş saati içinde yanıtlıyoruz, teklif her zaman ücretsiz.",
+    "formTitle": "Bize mesaj gönderin",
+    "formName": "Ad Soyad",
+    "formEmail": "E-posta",
+    "formSubject": "Konu",
+    "formMessage": "Mesajınız",
+    "formSend": "Mesajı gönder",
+    "formNote": "Form, e-posta uygulamanızı açar (demo — sunucuya gönderim yoktur).",
+    "infoTitle": "İletişim bilgileri",
+    "infoPhone": "Telefon",
+    "infoEmail": "E-posta",
+    "infoAddress": "Adres",
+    "infoHours": "Çalışma saatleri"
+  },
+  "lightbox": {
+    "label": "Görsel görüntüleyici",
+    "close": "Görüntüleyiciyi kapat",
+    "prev": "Önceki görsel",
+    "next": "Sonraki görsel"
+  },
+  "themeSwitcher": {
+    "label": "Tema (dev)",
+    "navyGold": "Lacivert & Altın (logo)",
+    "warmClay": "Sıcak Kil",
+    "charcoalBrass": "Antrasit & Pirinç",
+    "sageLinen": "Adaçayı & Keten"
+  },
+  "a11y": {
+    "mainNav": "Ana gezinme",
+    "mobileMenu": "Mobil menü"
+  }
+}
