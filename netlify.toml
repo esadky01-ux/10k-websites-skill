@@ -1,0 +1,6 @@
+# GIR Décor — Netlify yapılandırması (repo kökünden deploy edilirse)
+# Site projesi gir/ altındadır; build gir/dist üretir.
+[build]
+  base = "gir"
+  command = "npm run build"
+  publish = "dist"

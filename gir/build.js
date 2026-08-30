@@ -884,5 +884,15 @@ for (const lang of ["fr", "tr"]) {
 }
 write("index.html", renderRootRedirect());
 
-console.log(`build tamam: ${out.length} sayfa`);
+/* ---------- dist/ — yayın (deploy) klasörü ----------
+   Netlify/statik hosting için yalnızca çalışma zamanı dosyaları:
+   sayfalar + css + js + assets. (data/, tools/, analysis/ build-time.) */
+const DIST = path.join(ROOT, "dist");
+fs.rmSync(DIST, { recursive: true, force: true });
+fs.mkdirSync(DIST, { recursive: true });
+for (const entry of ["index.html", "fr", "tr", "css", "js", "assets"]) {
+  fs.cpSync(path.join(ROOT, entry), path.join(DIST, entry), { recursive: true });
+}
+
+console.log(`build tamam: ${out.length} sayfa + dist/ yayın klasörü`);
 out.forEach((f) => console.log("  " + f));

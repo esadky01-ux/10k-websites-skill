@@ -28,6 +28,22 @@ değişince gerekir.
 5. **Görsel varyantları:** yeni ürün görseli eklerseniz `node tools/images.js`
    (400/800/1600 WebP + swatch üretir).
 
+## Yayınlama (Netlify)
+
+`node build.js` artık yayına hazır **`dist/`** klasörünü de üretir (yalnızca
+sayfalar + css + js + assets). `netlify.toml` hazırdır:
+
+```toml
+[build]
+  command = "npm run build"
+  publish = "dist"
+```
+
+- **Git ile:** repoyu Netlify'a bağlayın; build `dist`'i üretir, deploy oradan yapılır.
+  (Bu repo `gir/` alt klasöründeyse kökteki `netlify.toml` `base = "gir"` ayarını içerir.)
+- **Build'siz:** `dist/` klasörünü (veya zip'ini) Netlify **Deploys → drag & drop**
+  alanına bırakmanız yeterli.
+
 ## Doğrulama araçları
 
 ```bash
