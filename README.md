@@ -33,4 +33,4 @@ public/media/categories/  Higgsfield ile üretilen kategori görselleri
 ## Yapılandırma
 
 İletişim bilgileri, WhatsApp numarası, çalışma saatleri ve site adresi `src/lib/site.ts` dosyasında tanımlıdır.
-`public/logo.png` eklenirse üst bardaki SVG logo yerine otomatik olarak o kullanılır.
+`src/components/Logo.tsx` içinde `LogoSvg` (tam logo, `light` prop ile koyu zemin sürümü) ve `LogoMark` (yalnızca marka işareti) bileşenleri bulunur; favicon `src/app/icon.svg`, Apple simgesi `src/app/apple-icon.png` dosyasındadır. `public/logo.png` eklenirse üst barda otomatik olarak o kullanılır.

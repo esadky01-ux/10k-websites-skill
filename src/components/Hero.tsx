@@ -7,7 +7,7 @@ export default function Hero() {
     <section className="relative isolate overflow-hidden bg-ink-900 text-white">
       <Image
         src="/media/hero/hero-warehouse.jpg"
-        alt="MAXIMUS Food & Horeca Aarschot deposunda sipariş kontrolü yapan şef ve depo görevlisi"
+        alt="MAXIMUS Food & Horeca Aarschot toptan gıda deposu: raflarda paletlenmiş koliler ve yükleme kapısından gelen gün ışığı"
         fill
         priority
         sizes="100vw"
