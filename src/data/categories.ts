@@ -36,7 +36,7 @@ export const categories: Category[] = [
     name: "Konserve",
     shortName: "Konserve",
     description:
-      "Adal zeytin ve biberler, jalapeño, soyulmuş domates, enginar ve ton balığı. Pizza ve döner mutfağının temel konserveleri.",
+      "Jalapeño, soyulmuş domates, enginar ve ton balığı. Pizza ve döner mutfağının temel konserveleri.",
     image: "/media/categories/konserve.jpg",
   },
   {

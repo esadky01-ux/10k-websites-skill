@@ -60,17 +60,7 @@ export const products: Product[] = [
   { id: "don-kalamar", sku: CESITLI, name: "Kalamar Halkası", brand: "Epic Seafood", category: "dondurulmus", unitsPerCase: 10, unitSize: "1 kg", unitLabel: "Paket" },
 
   // ───────────── Konserve (katalog: Conserven) ─────────────
-  { id: "FD-GRF-005", sku: "FD-GRF-005", name: "Adal Yunan Biberi", brand: "Adal", category: "konserve", unitsPerCase: 1, unitSize: "7 kg", unitLabel: "Teneke" },
-  { id: "FD-GRF-016", sku: "FD-GRF-016", name: "Adal Jalapeño (net 6 kg)", brand: "Adal", category: "konserve", unitsPerCase: 1, unitSize: "13 kg", unitLabel: "Teneke", tags: ["pizza"] },
   { id: "FD-GRF-022", sku: "FD-GRF-022", name: "Elegaz Jalapeño", brand: "Elegaz", category: "konserve", unitsPerCase: 1, unitSize: "1,5 kg", unitLabel: "Kavanoz", tags: ["pizza"] },
-  { id: "FD-GRF-008", sku: "FD-GRF-008", name: "Adal Sivri Biber", brand: "Adal", category: "konserve", unitsPerCase: 1, unitSize: "5 kg", unitLabel: "Teneke", tags: ["döner"] },
-  { id: "FD-KRD-019", sku: "FD-KRD-019", name: "Adal Karışık Zeytin (Tuzlu)", brand: "Adal", category: "konserve", unitsPerCase: 1, unitSize: "1 kg", unitLabel: "Kavanoz" },
-  { id: "FD-GRF-023", sku: "FD-GRF-023", name: "Adal Karışık Zeytin (Tuzlu)", brand: "Adal", category: "konserve", unitsPerCase: 1, unitSize: "400 g", unitLabel: "Kavanoz" },
-  { id: "FD-GRF-018", sku: "FD-GRF-018", name: "Adal Yeşil Kırma Zeytin", brand: "Adal", category: "konserve", unitsPerCase: 1, unitSize: "10 kg", unitLabel: "Teneke" },
-  { id: "FD-GRF-002", sku: "FD-GRF-002", name: "Adal Yeşil Kırma Zeytin", brand: "Adal", category: "konserve", unitsPerCase: 1, unitSize: "400 g", unitLabel: "Kavanoz" },
-  { id: "FD-GRF-009", sku: "FD-GRF-009", name: "Adal Yeşil Kırma Zeytin (Tuzlu)", brand: "Adal", category: "konserve", unitsPerCase: 1, unitSize: "1 kg", unitLabel: "Kavanoz" },
-  { id: "FD-GRF-004", sku: "FD-GRF-004", name: "Adal Yeşil Kırma Zeytin (Tuzlu)", brand: "Adal", category: "konserve", unitsPerCase: 1, unitSize: "400 g", unitLabel: "Kavanoz" },
-  { id: "FD-GRF-017", sku: "FD-GRF-017", name: "Adal Yeşil Zeytin", brand: "Adal", category: "konserve", unitsPerCase: 1, unitSize: "4,1 kg", unitLabel: "Teneke" },
   { id: "FD-PZT-001", sku: "FD-PZT-001", name: "Marco Polo Enginar", brand: "Marco Polo", category: "konserve", unitsPerCase: 1, unitSize: "2.650 ml", unitLabel: "Teneke", tags: ["pizza"] },
   { id: "FD-GRF-014", sku: "FD-GRF-014", name: "Soyulmuş Domates", brand: "Maximus", category: "konserve", unitsPerCase: 1, unitSize: "2,5 kg", unitLabel: "Teneke", tags: ["pizza"] },
   { id: "FD-VIS-002", sku: "FD-VIS-002", name: "La Perla Ton Balığı (Kendi Suyunda)", brand: "La Perla", category: "konserve", unitsPerCase: 1, unitSize: "1.705 g", unitLabel: "Teneke", tags: ["pizza"] },
