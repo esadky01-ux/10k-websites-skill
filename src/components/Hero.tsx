@@ -1,13 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, BadgePercent, MessageCircle, ShieldCheck } from "lucide-react";
+import { ArrowRight, BadgePercent, MessageCircle, Truck } from "lucide-react";
+import { site } from "@/lib/site";
 
 export default function Hero() {
   return (
     <section className="relative isolate overflow-hidden bg-ink-900 text-white">
       <Image
         src="/media/hero/hero-warehouse.jpg"
-        alt="MAXIMUS Food & Horeca Aarschot toptan gıda deposu: raflarda paletlenmiş koliler ve yükleme kapısından gelen gün ışığı"
+        alt="Maximus Food & Horeca Aarschot toptan gıda deposu"
         fill
         priority
         sizes="100vw"
@@ -19,22 +20,23 @@ export default function Hero() {
       <div className="relative mx-auto flex max-w-7xl flex-col justify-center px-4 py-20 sm:px-6 md:min-h-[600px] md:py-28">
         <div className="max-w-2xl animate-fade-up">
           <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-cream-100 backdrop-blur">
-            <span className="h-1.5 w-1.5 rounded-full bg-gold-500" />
-            Aarschot · Belçika · Horeca Toptan Tedarik
+            <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
+            {site.tagline}
           </span>
           <h1 className="mt-5 font-display text-4xl font-bold leading-[1.1] sm:text-5xl lg:text-6xl">
-            Restoranınızın mutfağı için
+            Horeca işletmeniz için
             <span className="block text-gold-500">güvenilir toptan gıda ortağı</span>
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-cream-100/90">
-            Soslardan et ürünlerine, dondurulmuş gıdadan ambalaja kadar tüm Horeca ihtiyaçlarınızı
-            tek çatı altında topluyoruz. Koli bazında sipariş verin, aynı gün WhatsApp ile onay alın.
+            {site.founded} yılından bu yana Belçika ve Hollanda&apos;daki döner, pizza, fritür ve restoran
+            işletmelerine soslar, et ürünleri, dondurulmuş gıda, konserve, ambalaj, içecek ve hijyen
+            ürünlerini tek çatı altından tedarik ediyoruz.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/siparis"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-600 px-7 py-3.5 text-base font-bold text-white shadow-lg shadow-brand-900/40 transition hover:bg-brand-500"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-500 px-7 py-3.5 text-base font-bold text-white shadow-lg shadow-brand-900/40 transition hover:bg-brand-600"
             >
               Hızlı Siparişe Başla
               <ArrowRight className="h-5 w-5" />
@@ -57,8 +59,8 @@ export default function Hero() {
               Aynı gün WhatsApp sipariş onayı
             </li>
             <li className="flex items-center gap-2 text-cream-100">
-              <ShieldCheck className="h-5 w-5 shrink-0 text-gold-500" />
-              Belçika Horeca tedarik garantisi
+              <Truck className="h-5 w-5 shrink-0 text-gold-500" />
+              Belçika &amp; Hollanda&apos;ya teslimat
             </li>
           </ul>
         </div>

@@ -3,6 +3,9 @@ import { ArrowRight, FileText } from "lucide-react";
 import Hero from "@/components/Hero";
 import CategoryGrid from "@/components/CategoryGrid";
 import Advantages from "@/components/Advantages";
+import Partners from "@/components/Partners";
+import { LogoBadge } from "@/components/Logo";
+import { site } from "@/lib/site";
 import { posts } from "@/data/posts";
 
 export default function HomePage() {
@@ -12,6 +15,31 @@ export default function HomePage() {
       <Hero />
       <CategoryGrid />
       <Advantages />
+      <Partners />
+
+      {/* Hakkımızda */}
+      <section id="hakkimizda" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-20">
+        <div className="grid gap-10 md:grid-cols-[280px_1fr] md:items-center">
+          <LogoBadge className="mx-auto w-56 shadow-xl shadow-brand-900/20 md:w-full" />
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-500">Maximus Food</p>
+            <h2 className="mt-2 font-display text-3xl font-bold text-ink-900 sm:text-4xl">
+              Güvenilir toptan tedarikçiniz
+            </h2>
+            <p className="mt-4 leading-relaxed text-ink-700">
+              {site.founded} yılından bu yana Belçika ve Hollanda&apos;daki Horeca profesyonellerini özenle
+              seçilmiş gıda ve gıda dışı ürün yelpazesiyle destekliyoruz. Modern Horeca işletmesinin
+              hızını, baskısını ve marjlarını biliyoruz; bu yüzden güvenebileceğiniz kaliteyi sunuyoruz.
+            </p>
+            <h3 className="mt-6 font-bold text-ink-900">Her şey tek çatı altında</h3>
+            <p className="mt-2 leading-relaxed text-ink-700">
+              Premium dönerden soslara, atıştırmalıklardan ambalaj ve hijyen ürünlerine kadar Maximus,
+              tek bir sabit ortaktan verimli alım yapabilmeniz için eksiksiz bir ürün yelpazesi sunar.
+            </p>
+            <p className="mt-6 text-lg font-bold text-brand-500">{site.tagline}</p>
+          </div>
+        </div>
+      </section>
 
       {/* Nasıl çalışır */}
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-20">

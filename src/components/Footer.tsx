@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { MapPin, Phone, Mail, Clock, MessageCircle } from "lucide-react";
-import { LogoSvg } from "@/components/Logo";
+import Logo from "@/components/Logo";
 import { categories } from "@/data/categories";
 import { site, mapsUrl } from "@/lib/site";
 
@@ -9,11 +9,12 @@ export default function Footer() {
     <footer id="iletisim" className="border-t border-cream-200 bg-cream-100">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-4">
         <div className="md:col-span-2">
-          <LogoSvg />
+          <Logo />
+          <p className="mt-3 text-sm font-bold uppercase tracking-wider text-brand-500">{site.tagline}</p>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-ink-500">
-            {site.name}, Aarschot merkezli B2B toptan gıda tedarikçisidir. Restoran, fritür, döner
-            büfesi, otel ve toplu yemek işletmelerine soslar, et ürünleri, dondurulmuş gıda, ambalaj,
-            içecek ve kuru gıda tedarik ediyoruz.
+            {site.founded} yılından bu yana Belçika ve Hollanda&apos;daki Horeca profesyonellerini özenle seçilmiş
+            gıda ve gıda dışı ürünlerle destekliyoruz. Döner ve pizza malzemelerinde uzman, Aarschot merkezli
+            toptan tedarikçiniz.
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
             <a
@@ -79,7 +80,7 @@ export default function Footer() {
       <div className="border-t border-cream-200">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-5 text-xs text-ink-500 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <span>© {new Date().getFullYear()} {site.name}. Tüm hakları saklıdır.</span>
-          <span>Yalnızca işletmelere (B2B) satış yapılır. Fiyatlar KDV hariç teklif üzerine bildirilir.</span>
+          <span>Yalnızca işletmelere (B2B) satış yapılır. Fiyatlar KDV hariç teklif üzerine bildirilir. Teslimat: Belçika &amp; Hollanda.</span>
         </div>
       </div>
     </footer>

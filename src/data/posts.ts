@@ -48,7 +48,7 @@ export const posts: Post[] = [
 <p>Balık ürünleri ve kroketlerin klasik eşlikçisi. Menüsünde kabeljauw, fishstick veya garnalenkroket bulunan her fritür için zorunlu stok kalemidir.</p>
 
 <h3>6. Pita ve Sarımsak Sosu</h3>
-<p>Döner ve pita servisi yapan fritürlerde sarımsak sosu, mayonezden sonra ikinci sıraya yerleşir. Türk ve Orta Doğu mutfağıyla harmanlanmış menülerde <strong>2,5 kg kova sarımsak sosu</strong> haftalık standart sipariş kalemidir.</p>
+<p>Döner ve pita servisi yapan fritürlerde sarımsak sosu, mayonezden sonra ikinci sıraya yerleşir. Türk ve Orta Doğu mutfağıyla harmanlanmış menülerde <strong>10 kg Pauwels Look kovası</strong> haftalık standart sipariş kalemidir.</p>
 
 <h2>Doğru ambalaj formatını seçmek</h2>
 <p>Ambalaj formatı seçimi, sos maliyetinizin yüzde 10 ile 20'sini etkiler. Üç temel format vardır:</p>
@@ -76,7 +76,7 @@ export const posts: Post[] = [
 </ul>
 
 <h2>MAXIMUS ile toptan sos tedariki</h2>
-<p>Aarschot depomuzda Vandemoortele, Devos Lemmens ve Maximus Select markalarının tüm popüler soslarını kova, şişe ve porsiyon formatlarında stokluyoruz. <a href="/siparis?kategori=soslar">Hızlı sipariş tablosundan</a> koli bazında sipariş verin, aynı gün WhatsApp ile onay alın. Depodan teslim alan işletmeler tüm sos siparişlerinde <strong>yüzde 15 indirimden</strong> yararlanır.</p>
+<p>Aarschot depomuzda Pauwels markasının Cocktail, Andalouse, Look, Samurai ve Mayo Chef kova soslarını, Pauwels fritür mayonezi ve Amerikan sosunu, sambal çeşitlerini ve helal bolonez sosunu stokluyoruz. <a href="/siparis?kategori=soslar">Hızlı sipariş tablosundan</a> koli bazında sipariş verin, aynı gün WhatsApp ile onay alın. Depodan teslim alan işletmeler tüm sos siparişlerinde <strong>yüzde 15 indirimden</strong> yararlanır.</p>
 `,
   },
   {
@@ -100,7 +100,7 @@ export const posts: Post[] = [
 <ol>
   <li><strong>Et ürünleri:</strong> 20 ile 25 kg tavuk döner şişi (haftada 4 ile 6 adet), dana-kuzu döner şişi, marine tavuk kanat, köfte.</li>
   <li><strong>Dondurulmuş ürünler:</strong> Pide ekmeği, patates kızartması, soğan halkası.</li>
-  <li><strong>Soslar:</strong> Sarımsak sosu, acı sos, samurai, mayonez.</li>
+  <li><strong>Soslar:</strong> Pauwels Look (sarımsak) sosu, samurai, sambal, mayonez.</li>
   <li><strong>Ambalaj:</strong> Dürüm sargı kağıdı, alüminyum kap, menü kutusu, peçete, taşıma poşeti.</li>
   <li><strong>İçecekler:</strong> Ayran, kutu gazlı içecek, su, şalgam suyu.</li>
   <li><strong>Kuru gıda:</strong> Pirinç, bulgur, pul biber, ayçiçek yağı.</li>
@@ -142,17 +142,17 @@ export const posts: Post[] = [
 <table>
   <thead><tr><th>Ürün</th><th>Format</th><th>Haftalık miktar</th></tr></thead>
   <tbody>
-    <tr><td>Tavuk Döner Şiş</td><td>1 x 20 kg</td><td>5 şiş</td></tr>
+    <tr><td>Polat Tavuk Döner Şiş</td><td>1 x 20 kg</td><td>5 şiş</td></tr>
     <tr><td>Pide Ekmeği</td><td>60 adet / koli</td><td>4 koli</td></tr>
-    <tr><td>Sarımsak Sosu</td><td>4 x 2,5 kg</td><td>1 koli</td></tr>
-    <tr><td>Dürüm Sargı Kağıdı</td><td>1.000 adet / koli</td><td>1 koli</td></tr>
+    <tr><td>Pauwels Look (Sarımsak) Sosu</td><td>1 x 10 kg</td><td>1 kova</td></tr>
+    <tr><td>Döner Kutusu 26 oz</td><td>100 adet / koli</td><td>3 koli</td></tr>
     <tr><td>Ayran</td><td>20 x 25 cl</td><td>3 koli</td></tr>
-    <tr><td>Patates Kızartması 10 mm</td><td>4 x 2,5 kg</td><td>6 koli</td></tr>
+    <tr><td>Lutosa Patates Kızartması 10 mm</td><td>4 x 2,5 kg</td><td>6 koli</td></tr>
   </tbody>
 </table>
 
 <h2>MAXIMUS ile tek çatı altında tedarik</h2>
-<p>MAXIMUS Food &amp; Horeca olarak döner ve restoran işletmelerinin tüm tedarik ihtiyaçlarını Aarschot depomuzdan karşılıyoruz. <a href="/siparis">Hızlı sipariş tablomuz</a> sayesinde haftalık siparişinizi iki dakikada hazırlayıp WhatsApp ile gönderebilir, aynı gün onay alabilirsiniz.</p>
+<p>Maximus Food &amp; Horeca olarak döner ve pizza malzemelerinde uzmanlaşmış ekibimizle restoran işletmelerinin tüm tedarik ihtiyaçlarını Aarschot depomuzdan Belçika ve Hollanda geneline karşılıyoruz. <a href="/siparis">Hızlı sipariş tablomuz</a> sayesinde haftalık siparişinizi iki dakikada hazırlayıp WhatsApp ile gönderebilir, aynı gün onay alabilirsiniz.</p>
 `,
   },
   {
@@ -201,10 +201,10 @@ export const posts: Post[] = [
   <li><strong>Teslimat tipini seçin.</strong> Sepette "Depodan Teslim Alma (-%15)" seçeneğini işaretleyin.</li>
   <li><strong>WhatsApp ile gönderin.</strong> Sepetiniz otomatik olarak sipariş fişine dönüşür ve ekibimize ulaşır.</li>
   <li><strong>Onay alın.</strong> Aynı iş günü içinde fiyat teklifi ve hazır olma saati size iletilir.</li>
-  <li><strong>Teslim alın.</strong> Nieuwlandlaan 111, 3200 Aarschot adresindeki depomuza gelin; siparişiniz paletlenmiş ve etiketlenmiş şekilde sizi bekler. Dondurulmuş ürünler teslim anına kadar soğuk odada tutulur.</li>
+  <li><strong>Teslim alın.</strong> Nieuwlandlaan 111, Unit 3-4, 3200 Aarschot adresindeki depomuza gelin; siparişiniz paletlenmiş ve etiketlenmiş şekilde sizi bekler. Dondurulmuş ürünler teslim anına kadar soğuk odada tutulur.</li>
 </ol>
 
-<blockquote>Depo teslim saatleri: Pazartesi ile Cuma 07:00 – 17:00, Cumartesi 08:00 – 13:00. Sabah erken saatlerde teslim alan işletmeler, öğle servisine yetişecek şekilde stoklarını yenileyebilir.</blockquote>
+<blockquote>Depo teslim saatleri: Pazartesi ile Cuma 08:00 – 17:00, Cumartesi 09:00 – 13:00. Sabah erken saatlerde teslim alan işletmeler, öğle servisine yetişecek şekilde stoklarını yenileyebilir.</blockquote>
 
 <h2>Dondurulmuş ürünlerde soğuk zincir</h2>
 <p>Depodan teslim alırken soğuk zincir sorumluluğu size geçer. Dondurulmuş ürünler için aracınızda termo kutu veya soğutmalı bölme bulundurun. 30 dakikanın altındaki yolculuklarda kaliteli termo kutular ürün sıcaklığını güvenle korur. Talep eden müşterilerimize depoda ücretsiz termo poşet sağlıyoruz.</p>

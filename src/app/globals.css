@@ -1,25 +1,25 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-50: #fff7ed;
-  --color-brand-100: #ffedd5;
-  --color-brand-500: #ea580c;
-  --color-brand-600: #c2410c;
-  --color-brand-700: #9a3412;
-  --color-brand-900: #431407;
-  --color-ink-900: #0f172a;
-  --color-ink-800: #1e293b;
-  --color-ink-700: #334155;
-  --color-ink-500: #64748b;
-  --color-ink-300: #cbd5e1;
-  --color-cream-50: #f8fafc;
-  --color-cream-100: #f1f5f9;
-  --color-cream-200: #e2e8f0;
-  --color-gold-500: #fb923c;
+  --color-brand-50: #fff3ee;
+  --color-brand-100: #ffe0d3;
+  --color-brand-500: #e42602;
+  --color-brand-600: #c42102;
+  --color-brand-700: #9c1a02;
+  --color-brand-900: #4d0d01;
+  --color-ink-900: #1c1917;
+  --color-ink-800: #292524;
+  --color-ink-700: #44403c;
+  --color-ink-500: #78716c;
+  --color-ink-300: #d6d3d1;
+  --color-cream-50: #fdfaf6;
+  --color-cream-100: #f7f1e8;
+  --color-cream-200: #ebe2d4;
+  --color-gold-500: #f7a41d;
   --color-wa: #25d366;
   --color-wa-dark: #1ebe5b;
   --font-sans: "Segoe UI", "Helvetica Neue", Helvetica, Arial, "Noto Sans", sans-serif;
-  --font-display: "Georgia", "Times New Roman", "Noto Serif", serif;
+  --font-display: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 :root {

@@ -4,7 +4,6 @@ export type Category = {
   shortName: string;
   description: string;
   image: string;
-  accent: string;
 };
 
 export const categories: Category[] = [
@@ -13,54 +12,64 @@ export const categories: Category[] = [
     name: "Soslar",
     shortName: "Soslar",
     description:
-      "Mayonez, ketçap, samurai, andalouse, curry ve fritür sosları. Belçika lezzetinin vazgeçilmezleri, kova ve sıkma şişe formatında.",
+      "Pauwels kova sosları (Cocktail, Andalouse, Look, Samurai, Mayo Chef), sambal, Tabasco ve helal bolonez. Fritür ve döner tezgâhının vazgeçilmezleri.",
     image: "/media/categories/soslar.jpg",
-    accent: "from-amber-500/80",
   },
   {
     slug: "et-urunleri",
     name: "Et Ürünleri",
     shortName: "Et",
     description:
-      "Döner, tavuk, kıyma ve marine etler. Soğuk zincir garantili, HACCP belgeli tedarik.",
+      "Polat döner şişleri, tavuk ve dana ürünleri, helal köfte. Soğuk zincir garantili, HACCP belgeli tedarik.",
     image: "/media/categories/et-urunleri.jpg",
-    accent: "from-red-600/80",
   },
   {
     slug: "dondurulmus",
     name: "Dondurulmuş Ürünler",
     shortName: "Dondurulmuş",
     description:
-      "Patates kızartması, kroket, atıştırmalıklar ve dondurulmuş sebzeler. Fritür ve fast-food işletmeleri için tam kapsamlı seçki.",
+      "Lutosa patates kızartması, Van Reusel atıştırmalıklar, pide ve pizza tabanları. Fritür ve pizzacılar için tam seçki.",
     image: "/media/categories/dondurulmus.jpg",
-    accent: "from-sky-500/80",
+  },
+  {
+    slug: "konserve",
+    name: "Konserve",
+    shortName: "Konserve",
+    description:
+      "Adal zeytin ve biberler, jalapeño, soyulmuş domates, enginar ve ton balığı. Pizza ve döner mutfağının temel konserveleri.",
+    image: "/media/categories/konserve.jpg",
   },
   {
     slug: "ambalaj",
     name: "Ambalaj",
     shortName: "Ambalaj",
     description:
-      "Paket servis kutuları, patates külahları, alüminyum kaplar, peçete ve folyo. Restoranınızın tüm ambalaj ihtiyacı tek adreste.",
+      "Pizza kutuları, patates kapları, döner ve menü kutuları, alüminyum kaplar, taşıma poşetleri ve folyo. Paket servisin tüm ihtiyacı.",
     image: "/media/categories/ambalaj.jpg",
-    accent: "from-stone-500/80",
   },
   {
     slug: "icecekler",
     name: "İçecekler",
     shortName: "İçecekler",
     description:
-      "Gazlı içecekler, su, ayran, meyve suları ve soğuk çay. Kasa ve tepsi bazında hızlı teslimat.",
+      "Coca-Cola, Pepsi, Fanta, Lipton, Uludağ, Kızılay, ayran, enerji içecekleri ve su. Kasa bazında hızlı teslimat.",
     image: "/media/categories/icecekler.jpg",
-    accent: "from-blue-600/80",
   },
   {
     slug: "kuru-gida",
-    name: "Bakliyat & Tahıl",
+    name: "Kuru Gıda",
     shortName: "Kuru Gıda",
     description:
-      "Pirinç, bulgur, un, mercimek, nohut, makarna ve baharatlar. Büyük ambalajlı, uzun raf ömürlü temel gıdalar.",
+      "Caputo ve Ceres unları, pirinç, bulgur, bakliyat, makarna ve baharatlar. Büyük ambalajlı, uzun raf ömürlü temel gıdalar.",
     image: "/media/categories/kuru-gida.jpg",
-    accent: "from-yellow-600/80",
+  },
+  {
+    slug: "hijyen",
+    name: "Hijyen & Temizlik",
+    shortName: "Hijyen",
+    description:
+      "Nitril eldiven, el sabunu, cam temizleyici, ızgara temizleyici, dezenfektan ve Maximus çok amaçlı temizleyici.",
+    image: "/media/categories/hijyen.jpg",
   },
 ];
 

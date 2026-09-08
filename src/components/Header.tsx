@@ -40,8 +40,8 @@ export default function Header() {
       </div>
 
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-        <Link href="/" aria-label="MAXIMUS Food & Horeca ana sayfa" className="shrink-0">
-          <Logo />
+        <Link href="/" aria-label="Maximus Food & Horeca ana sayfa" className="shrink-0">
+          <Logo priority />
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Ana menü">

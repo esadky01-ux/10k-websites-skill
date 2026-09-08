@@ -13,13 +13,15 @@ export const metadata: Metadata = {
     template: `%s | ${site.name}`,
   },
   description:
-    "MAXIMUS Food & Horeca, Aarschot (Belçika) merkezli B2B toptan gıda tedarikçisidir. Restoran, fritür ve otellere soslar, et ürünleri, dondurulmuş gıda, ambalaj, içecek ve kuru gıda. Depodan teslimde %15 indirim, WhatsApp ile aynı gün sipariş onayı.",
+    "Maximus Food & Horeca: Quality Food. Trusted Partner. Aarschot (Belçika) merkezli B2B toptan gıda tedarikçisi. Döner, pizza, fritür ve restoranlara soslar, et, dondurulmuş gıda, konserve, ambalaj, içecek ve hijyen ürünleri. Belçika & Hollanda teslimat, depodan teslimde %15 indirim.",
   keywords: [
     "toptan gıda Aarschot",
     "horeca tedarikçisi Belçika",
     "restoran toptancı",
     "fritür sosları toptan",
     "döner tedarik Belçika",
+    "pizza malzemeleri toptan",
+    "Pauwels sos toptan",
     "B2B gıda toptancısı",
   ],
   openGraph: {
@@ -28,7 +30,7 @@ export const metadata: Metadata = {
     siteName: site.name,
     title: `${site.name} | Aarschot Toptan Gıda & Horeca Tedarikçisi`,
     description:
-      "Belçika Horeca sektörü için toptan gıda: soslar, et, dondurulmuş, ambalaj, içecek ve kuru gıda. Depodan teslimde %15 indirim.",
+      "Quality Food. Trusted Partner. Döner ve pizza malzemelerinde uzman toptan gıda tedarikçisi. Belçika & Hollanda teslimat, depodan teslimde %15 indirim.",
     images: [{ url: "/media/hero/hero-warehouse.jpg", width: 1920, height: 1071, alt: "MAXIMUS Food & Horeca deposu" }],
   },
   robots: { index: true, follow: true },
@@ -49,8 +51,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       addressLocality: site.address.city,
       addressCountry: "BE",
     },
-    openingHours: ["Mo-Fr 07:00-17:00", "Sa 08:00-13:00"],
-    areaServed: "Belgium",
+    foundingDate: String(site.founded),
+    slogan: site.tagline,
+    logo: `${site.url}/logo-badge.jpg`,
+    openingHours: ["Mo-Fr 08:00-17:00", "Sa 09:00-13:00"],
+    areaServed: ["Belgium", "Netherlands"],
   };
 
   return (
