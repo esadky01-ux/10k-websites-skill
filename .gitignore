@@ -30,3 +30,7 @@ next-env.d.ts
 /data/*
 !/data/.gitkeep
 e2e/screenshots/
+
+# ürün görseli gelen kutusu (npm run images ile işlenir)
+/product-images-inbox/*
+!/product-images-inbox/README.md

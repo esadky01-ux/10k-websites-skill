@@ -30,21 +30,37 @@ npm run lint
 npm test               # birim testleri (eşleştirici, ajan, depo, i18n)
 npm run e2e            # Playwright uçtan uca testleri (sunucu çalışırken, BASE_URL)
 npm run whatsapp:dry   # WhatsApp ajanı yerel simülasyon
+npm run images         # product-images-inbox/ içindeki ürün fotoğraflarını işler
 ```
+
+Sesli sipariş asistanı ("Maximus Dijital Plasiyer") için bkz. `docs/voice-agent.md`.
 
 ## Yapı
 
 ```
 src/app/[lang]/     sayfalar (home, bestellen, blog, regio, account, inloggen, registreren)
-src/app/api/        auth, prices, orders, lists, whatsapp/webhook
+src/app/api/        auth, prices, orders, lists, whatsapp/webhook, voice-agent (+ webrtc köprüsü)
 src/i18n/           sözlükler (nl, tr), rota eşlemeleri, sağlayıcı
-src/server/         auth, store (dosya tabanlı), prices (sunucu), whatsapp ajanı
+src/server/         auth, store (dosya tabanlı), prices (sunucu), whatsapp ajanı, voice (sesli asistan)
 src/components/     Header, Hero, CategoryGrid, Advantages, QuickOrderMatrix, CartDrawer, ...
 src/data/           kategoriler (10), Odoo ürün kataloğundan üretilen 559 ürün (SKU, Türkçe ad, orijinal katalog adı ve koli formatı), blog yazıları
 src/lib/            site bilgileri, sepet deposu, WhatsApp fiş oluşturucu
 public/media/hero/        Higgsfield ile üretilen hero görseli
 public/media/categories/  Higgsfield ile üretilen kategori görselleri
+public/media/products/    ürün görselleri (<ürün-id>.webp, `npm run images` üretir)
 ```
+
+## Ürün görselleri
+
+Sipariş matrisinde görseli olan ürünler küçük resimle listelenir; tıklanınca büyür. Görseli olmayan ürünlerde kategori simgesi kalır.
+
+Toplu ekleme:
+
+1. Fotoğrafları `product-images-inbox/` klasörüne koyun. Dosya adı SKU, ürün id veya katalog adı olabilir (`12345.jpg`, `nawras-nohut.jpg`, `NAWRAS NOHUT 900G 10X1_10ST.jpg`). İsterseniz `map.csv` ile `dosyaadı,ürün-id` eşlemesi verin.
+2. `npm run images` çalıştırın: görseller 800×800 WebP olarak `public/media/products/` altına yazılır ve `src/data/product-images.ts` yeniden üretilir.
+3. Commit edin. Eşleşmeyen dosyalar raporlanır; inbox klasörü depoya girmez.
+
+GitHub arayüzünden de yapılabilir: dosyaları doğrudan `public/media/products/` altına `<ürün-id>.webp` adıyla yükleyip `npm run images` ile eşleme dosyasını güncelleyin.
 
 ## Önizleme / yayına alma
 

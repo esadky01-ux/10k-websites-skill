@@ -139,3 +139,66 @@ input[type="number"] {
 .animate-fade-up {
   animation: fade-up 0.7s ease-out both;
 }
+
+@keyframes drawer-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes drawer-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.animate-drawer-in {
+  animation: drawer-in 0.28s ease-out both;
+}
+.animate-drawer-fade {
+  animation: drawer-fade 0.28s ease-out both;
+}
+
+/* Sesli asistan ses dalgası */
+.voice-wave {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 44px;
+}
+.voice-wave span {
+  display: block;
+  width: 6px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--color-brand-500, #e42602);
+  opacity: 0.35;
+  transition: height 0.2s ease, opacity 0.2s ease;
+}
+.voice-wave--listening span {
+  opacity: 1;
+  animation: voice-bar 0.9s ease-in-out infinite;
+}
+.voice-wave--speaking span {
+  opacity: 1;
+  background: var(--color-gold-500, #f7a41d);
+  animation: voice-bar 0.55s ease-in-out infinite;
+}
+.voice-wave--thinking span {
+  opacity: 0.8;
+  background: var(--color-ink-500, #6b6560);
+  animation: voice-dot 1.2s ease-in-out infinite;
+}
+@keyframes voice-bar {
+  0%, 100% { height: 8px; }
+  50% { height: 36px; }
+}
+@keyframes voice-dot {
+  0%, 100% { height: 8px; opacity: 0.3; }
+  50% { height: 14px; opacity: 1; }
+}

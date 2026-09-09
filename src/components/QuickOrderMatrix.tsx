@@ -10,7 +10,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { useI18n } from "@/i18n/I18nProvider";
 import { localePath } from "@/i18n/config";
 import { formatEur } from "@/lib/format";
-import ProductIcon from "@/components/ProductIcon";
+import ProductThumb from "@/components/ProductThumb";
 import QtyCounter from "@/components/QtyCounter";
 import Link from "next/link";
 
@@ -145,7 +145,7 @@ export default function QuickOrderMatrix() {
                     return (
                       <article key={p.id} className={`rounded-2xl border bg-white p-4 shadow-sm ${inCart ? "border-brand-500/60 bg-brand-50/40" : "border-cream-200"}`}>
                         <div className="flex items-start gap-3">
-                          <ProductIcon category={p.category} size="sm" />
+                          <ProductThumb id={p.id} category={p.category} name={productName(p, lang)} size="sm" />
                           <div className="min-w-0 flex-1">
                             <p className="font-semibold leading-snug text-ink-900">{productName(p, lang)}</p>
                             <p className="text-xs text-ink-500">{p.brand}{p.sku !== "—" && <> · <span className="font-mono">{p.sku}</span></>}</p>
@@ -188,7 +188,7 @@ export default function QuickOrderMatrix() {
                         <tr key={p.id} className={`transition ${line ? "bg-brand-50/50" : "hover:bg-cream-50"}`}>
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-3">
-                              <ProductIcon category={p.category} />
+                              <ProductThumb id={p.id} category={p.category} name={productName(p, lang)} />
                               <div className="min-w-0">
                                 <p className="font-semibold text-ink-900">{productName(p, lang)}</p>
                                 <p className="text-xs text-ink-500">{p.brand}{p.sku !== "—" && <> · <span className="font-mono">{p.sku}</span></>}</p>
