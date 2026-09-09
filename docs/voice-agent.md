@@ -16,7 +16,7 @@ Web Speech API (STT, tr-TR/nl-BE)  ──►    POST /api/voice-agent
                                             └─ ANTHROPIC_API_KEY yoksa kural tabanlı yedek
   { text, lang, actions }          ◄──
   actions → CartProvider (setQuantity/remove/open)
-  text → speechSynthesis (TTS), barge-in ile kesilebilir
+  text → POST /api/voice-agent/tts (OpenAI TTS, mp3) → <audio>; TTS yoksa speechSynthesis; barge-in ile kesilebilir
 
 Canlı ses (isteğe bağlı)
 RTCPeerConnection ──SDP offer──►  POST /api/voice-agent/webrtc ──Bearer VOICE_API_KEY──► ses sağlayıcısı
@@ -60,8 +60,12 @@ Chrome'un "sayfayı çevir" özelliği DOM'daki metin düğümlerini değiştiri
 | `VOICE_MODEL` | İsteğe bağlı model / ses kimliği; sorgu parametresi olarak eklenir. |
 | `VOICE_STT_URL` | Whisper uyumlu transkripsiyon uç noktası (multipart `file`, `model`, `language` → `{ text }`). Kayıt yedeğini etkinleştirir. |
 | `VOICE_STT_MODEL` | STT model adı, varsayılan `whisper-1`. |
+| `OPENAI_API_KEY` | Doğal ses (TTS) anahtarı; yoksa `VOICE_API_KEY` kullanılır. Tanımlıysa yanıtlar OpenAI TTS ile mp3 olarak üretilir. |
+| `VOICE_TTS_URL` / `VOICE_TTS_MODEL` / `VOICE_TTS_VOICE` | Varsayılan `https://api.openai.com/v1/audio/speech`, `tts-1`, `onyx`. `VOICE_TTS_DISABLED=1` tarayıcı sesine döndürür. |
 
-`GET /api/voice-agent` → `{ agent, greetings, brain: "claude" | "fallback", realtime: boolean, stt: boolean }`
+`GET /api/voice-agent` → `{ agent, greetings, brain: "claude" | "fallback", realtime: boolean, stt: boolean, tts: boolean }`
+
+`POST /api/voice-agent/tts` `{ text }` → `audio/mpeg`. Aynı cümle sunucuda bellek içinde önbelleklenir (karşılama tekrarları ücretsiz).
 
 ## Neden WebRTC, WebSocket değil?
 

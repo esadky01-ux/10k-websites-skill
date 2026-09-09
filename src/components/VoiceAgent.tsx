@@ -10,7 +10,8 @@ import { describeError, logClientError } from "@/components/VoiceAgentBoundary";
  * Maximus Dijital Plasiyer – sesli sipariş asistanı (prototip).
  *
  * Tarayıcı modu (varsayılan): Web Speech API konuşmayı metne çevirir → POST /api/voice-agent (Claude araç döngüsü)
- * → dönen sepet eylemleri gerçek sepete uygulanır → yanıt speechSynthesis ile seslendirilir.
+ * → dönen sepet eylemleri gerçek sepete uygulanır → yanıt sunucu TTS (OpenAI, mp3) ile seslendirilir;
+ *   TTS yapılandırılmamışsa veya hata verirse tarayıcının speechSynthesis sesine düşer.
  * Barge-in: asistan konuşurken müşteri konuşmaya başlarsa seslendirme anında kesilir.
  * Canlı mod: VOICE_API_KEY tanımlıysa mikrofon sesi WebRTC ile sağlayıcıya gider (sinyalleşme /api/voice-agent/webrtc).
  */
@@ -19,7 +20,7 @@ type VoiceLang = "tr" | "nl" | "ku";
 type Status = "idle" | "listening" | "thinking" | "speaking" | "error" | "unsupported";
 type Action = { type: "add"; productId: string; cases: number; units: number } | { type: "remove"; productId: string } | { type: "open_cart" };
 type Turn = { text: string; lang: VoiceLang; actions: Action[] };
-type Config = { agent: string; greetings: Record<VoiceLang, string>; realtime: boolean; stt: boolean };
+type Config = { agent: string; greetings: Record<VoiceLang, string>; realtime: boolean; stt: boolean; tts: boolean };
 type Mode = "speech" | "recorder";
 
 type SRResultList = ArrayLike<{ isFinal: boolean; 0: { transcript: string } }>;
@@ -131,6 +132,8 @@ export default function VoiceAgent() {
   const chunksRef = useRef<Blob[]>([]);
   const configRef = useRef<Config | null>(null);
   const modeRef = useRef<Mode>("speech");
+  const ttsAudioRef = useRef<HTMLAudioElement | null>(null);
+  const ttsUrlRef = useRef<string | null>(null);
 
   /** Yakalanan hatayı kullanıcıya küçük puntoyla gösterir ve sunucu loguna yazar. */
   const report = useCallback((where: string, err: unknown) => {
@@ -144,8 +147,26 @@ export default function VoiceAgent() {
     setVoiceLang(l);
   }, []);
 
-  /** Yanıtı seslendirir; bitince dinlemeye döner. */
-  const speak = useCallback(
+  /** Konuşmayı durdurur (barge-in, kapatma): sunucu sesi ve tarayıcı sesi. */
+  const stopSpeaking = useCallback(() => {
+    safe(() => {
+      const a = ttsAudioRef.current;
+      if (a) {
+        a.pause();
+        a.removeAttribute("src");
+        a.load();
+      }
+    }, "audio.pause");
+    if (ttsUrlRef.current) {
+      safe(() => URL.revokeObjectURL(ttsUrlRef.current as string), "revokeObjectURL");
+      ttsUrlRef.current = null;
+    }
+    safe(() => window.speechSynthesis?.cancel(), "cancel");
+    speakingRef.current = false;
+  }, []);
+
+  /** Tarayıcının kendi sesi (yedek). */
+  const speakBrowser = useCallback(
     (text: string, l: VoiceLang) =>
       new Promise<void>((resolve) => {
         const done = () => {
@@ -163,7 +184,6 @@ export default function VoiceAgent() {
           const v = voices.find((x) => x.lang?.toLowerCase().startsWith(TTS_LANG[l].toLowerCase())) ?? voices.find((x) => x.lang?.toLowerCase().startsWith(TTS_LANG[l].slice(0, 2)));
           if (v) u.voice = v;
           u.rate = 1.02;
-          lastSpokenRef.current = norm(text);
           u.onstart = () => {
             speakingRef.current = true;
             setStatus("speaking");
@@ -179,6 +199,59 @@ export default function VoiceAgent() {
         }
       }),
     [],
+  );
+
+  /** Sunucu TTS (OpenAI mp3) ile seslendirir; başarısızsa tarayıcı sesine düşer. Bitince dinlemeye döner. */
+  const speak = useCallback(
+    async (text: string, l: VoiceLang) => {
+      lastSpokenRef.current = norm(text);
+      stopSpeaking();
+      const el = ttsAudioRef.current;
+      if (!configRef.current?.tts || !el) return speakBrowser(text, l);
+      try {
+        const res = await fetch("/api/voice-agent/tts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text, lang: l }) });
+        if (!res.ok) {
+          const body = (await res.json().catch(() => ({}))) as { detail?: string };
+          throw new Error(`tts ${res.status}${body.detail ? ` (${body.detail})` : ""}`);
+        }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        ttsUrlRef.current = url;
+        await new Promise<void>((resolve) => {
+          let settled = false;
+          const done = () => {
+            if (settled) return;
+            settled = true;
+            speakingRef.current = false;
+            if (ttsUrlRef.current === url) {
+              safe(() => URL.revokeObjectURL(url), "revokeObjectURL");
+              ttsUrlRef.current = null;
+            }
+            setStatus(activeRef.current ? "listening" : "idle");
+            resolve();
+          };
+          el.onplay = () => {
+            speakingRef.current = true;
+            setStatus("speaking");
+          };
+          el.onended = done;
+          el.onerror = done;
+          el.onpause = () => {
+            if (el.ended || el.currentTime === 0 || !el.src) done();
+          };
+          el.src = url;
+          el.play().catch((err) => {
+            report("audio.play", err);
+            done();
+          });
+          window.setTimeout(done, Math.min(45_000, 3_000 + text.length * 120));
+        });
+      } catch (err) {
+        report("tts", err);
+        await speakBrowser(text, l);
+      }
+    },
+    [report, speakBrowser, stopSpeaking],
   );
 
   /** Sunucudan gelen sepet eylemlerini gerçek sepete uygular (addToCart). */
@@ -346,8 +419,7 @@ export default function VoiceAgent() {
       };
       recorderRef.current = rec;
       rec.start(250);
-      safe(() => window.speechSynthesis?.cancel(), "cancel");
-      speakingRef.current = false;
+      stopSpeaking();
       setRecording(true);
       setNotice("");
       setStatus("listening");
@@ -359,7 +431,7 @@ export default function VoiceAgent() {
       setNotice(name === "NotAllowedError" || name === "SecurityError" ? tv.micDenied : name === "NotFoundError" || name === "OverconstrainedError" ? tv.noMic : tv.error);
       setStatus("error");
     }
-  }, [report, stopRecording, tv.error, tv.insecure, tv.micDenied, tv.noMic, tv.unsupported, uploadRecording]);
+  }, [report, stopRecording, stopSpeaking, tv.error, tv.insecure, tv.micDenied, tv.noMic, tv.unsupported, uploadRecording]);
 
   /** Web Speech API takıldığında kayıt moduna geç (otomatik). */
   const switchToRecorder = useCallback(
@@ -419,8 +491,7 @@ export default function VoiceAgent() {
         }
         // Barge-in: müşteri konuşmaya başladı, asistanı sustur
         if ((finalText || interimText) && speakingRef.current) {
-          safe(() => window.speechSynthesis?.cancel(), "cancel");
-          speakingRef.current = false;
+          stopSpeaking();
           setStatus("listening");
         }
         if (interimText) setInterim(interimText);
@@ -506,7 +577,7 @@ export default function VoiceAgent() {
         switchToRecorder("SpeechRecognition sonuç vermedi", new Error(heardTooLong ? `sound heard, no result in ${NO_RESULT_AFTER_SOUND_MS / 1000}s` : `no result in ${NO_RESULT_HARD_MS / 1000}s`));
       }
     }, WATCHDOG_MS);
-  }, [handleUtterance, report, stopListening, switchToRecorder, tv.insecure, tv.micDenied]);
+  }, [handleUtterance, report, stopListening, stopSpeaking, switchToRecorder, tv.insecure, tv.micDenied]);
 
   /** Panel açılınca yapılandırmayı al ve karşılama cümlesini söyle. */
   useEffect(() => {
@@ -544,13 +615,12 @@ export default function VoiceAgent() {
   const closePanel = useCallback(() => {
     stopListening();
     stopRecording();
-    safe(() => window.speechSynthesis?.cancel(), "cancel");
-    speakingRef.current = false;
+    stopSpeaking();
     safe(() => pcRef.current?.close(), "pc.close");
     pcRef.current = null;
     setLive(false);
     setOpen(false);
-  }, [stopListening, stopRecording]);
+  }, [stopListening, stopRecording, stopSpeaking]);
 
   // Bileşen kaldırılırken (sayfa geçişi) mikrofon, seslendirme ve WebRTC bağlantısını bırak
   useEffect(
@@ -560,6 +630,7 @@ export default function VoiceAgent() {
       safe(() => recRef.current?.abort(), "abort");
       recRef.current = null;
       safe(() => window.speechSynthesis?.cancel(), "cancel");
+      safe(() => ttsAudioRef.current?.pause(), "audio.pause");
       safe(() => pcRef.current?.close(), "pc.close");
       pcRef.current = null;
       safe(() => recorderRef.current?.stop(), "recorder.stop");
@@ -754,6 +825,7 @@ export default function VoiceAgent() {
             </div>
             <p className="mt-2 text-center text-[11px] text-ink-500">{tv.hold} · {tv.tap}</p>
             <audio ref={audioRef} autoPlay hidden />
+            <audio ref={ttsAudioRef} playsInline preload="auto" hidden data-testid="voice-tts-audio" />
           </div>
         </section>
       )}
