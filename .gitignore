@@ -29,3 +29,4 @@ next-env.d.ts
 # müşteri verisi (dosya tabanlı depo)
 /data/*
 !/data/.gitkeep
+e2e/screenshots/

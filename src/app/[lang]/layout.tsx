@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       siteName: site.name,
       title: t.siteTitle,
       description: t.ogDescription,
-      images: [{ url: "/media/hero/hero-warehouse.jpg", width: 1920, height: 1071, alt: "Maximus Food & Horeca" }],
+      images: [{ url: "/media/hero/hero-warehouse.jpg", width: 1920, height: 1086, alt: "Maximus Food & Horeca" }],
     },
     robots: { index: true, follow: true },
   };
