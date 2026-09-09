@@ -2,9 +2,17 @@
 
 Aarschot (Belçika) merkezli **Maximus Food & Horeca** için kurumsal B2B toptan gıda sipariş platformu.
 Slogan: *Quality Food. Trusted Partner.* — 2020'den bu yana Belçika ve Hollanda'daki Horeca işletmelerine döner, pizza ve fritür malzemeleri.
-Next.js (App Router) · TypeScript · Tailwind CSS v4 · Lucide React.
+Next.js (App Router) · TypeScript · Tailwind CSS v4 · Lucide React · Anthropic SDK.
+
+Ana dil Felemenkçe (`/`), ikinci dil Türkçe (`/tr`).
 
 ## Özellikler
+
+- **İki dil:** Felemenkçe kök URL'ler (`/bestellen`, `/regio`, `/blog`, `/account`), Türkçe `/tr/...` (`/tr/siparis`, `/tr/bolgeler`, `/tr/hesap`). `src/proxy.ts` Türkçe URL parçalarını klasörlere eşler; hreflang, canonical ve çok dilli sitemap otomatik.
+- **Müşteri hesabı:** kayıt, giriş (scrypt + imzalı çerez), giriş yapan müşteri fiyatları görür (`/api/prices`, sunucu tarafı), WhatsApp'a gönderilen sipariş hesaba kaydedilir, "Son siparişi tekrarla" ve kayıtlı sabit listeler.
+- **Bölge SEO sayfaları:** 28 Belçika bölgesi için `/regio/[slug]` ve `/tr/bolgeler/[slug]`; Service, FAQPage ve BreadcrumbList JSON-LD, geo meta etiketleri. Yeni bölge eklemek için `src/data/regions.ts` dizisine kayıt eklemek yeterlidir.
+- **Mobil kart görünümü:** sipariş tablosu dar ekranlarda kart listesine dönüşür.
+- **WhatsApp sipariş ajanı:** `docs/whatsapp-agent.md`.
 
 - **Ana sayfa:** kurumsal üst bar (gerçek Maximus logosu, adres, telefon, Sepetim), Higgsfield ile üretilmiş sinematik hero görseli, sekiz kategori kartı, B2B avantajları, partner markalar şeridi, hakkımızda bölümü, üç adımlı sipariş akışı ve blog önizlemesi. Ürünler ana sayfada listelenmez.
 - **Hızlı Sipariş (`/siparis`):** `QuickOrderMatrix` tablosu ile onlarca koliyi tek ekrandan girme; kategori sekmeleri, Türkçe karakter duyarlı canlı arama, koli ve paket/adet sayaçları, "Fiyat için giriş yapın" rozeti.
@@ -15,15 +23,22 @@ Next.js (App Router) · TypeScript · Tailwind CSS v4 · Lucide React.
 
 ```bash
 npm install
-npm run dev     # http://localhost:3000
-npm run build   # üretim derlemesi
+cp .env.example .env
+npm run dev            # http://localhost:3000
+npm run build          # üretim derlemesi
 npm run lint
+npm test               # birim testleri (eşleştirici, ajan, depo, i18n)
+npm run e2e            # Playwright uçtan uca testleri (sunucu çalışırken, BASE_URL)
+npm run whatsapp:dry   # WhatsApp ajanı yerel simülasyon
 ```
 
 ## Yapı
 
 ```
-src/app/            sayfalar (/, /siparis, /blog, /blog/[slug]), sitemap, robots
+src/app/[lang]/     sayfalar (home, bestellen, blog, regio, account, inloggen, registreren)
+src/app/api/        auth, prices, orders, lists, whatsapp/webhook
+src/i18n/           sözlükler (nl, tr), rota eşlemeleri, sağlayıcı
+src/server/         auth, store (dosya tabanlı), prices (sunucu), whatsapp ajanı
 src/components/     Header, Hero, CategoryGrid, Advantages, QuickOrderMatrix, CartDrawer, ...
 src/data/           kategoriler (10), Odoo ürün kataloğundan üretilen 559 ürün (SKU, Türkçe ad, orijinal katalog adı ve koli formatı), blog yazıları
 src/lib/            site bilgileri, sepet deposu, WhatsApp fiş oluşturucu

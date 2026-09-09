@@ -1,6 +1,7 @@
 "use client";
 
 import { Minus, Plus } from "lucide-react";
+import { useI18n } from "@/i18n/I18nProvider";
 
 type Props = {
   value: number;
@@ -10,6 +11,7 @@ type Props = {
 };
 
 export default function QtyCounter({ value, onChange, label, compact = false }: Props) {
+  const { t } = useI18n();
   const size = compact ? "h-8 w-8" : "h-9 w-9";
   return (
     <div className="flex flex-col items-center gap-1">
@@ -20,7 +22,7 @@ export default function QtyCounter({ value, onChange, label, compact = false }: 
       >
         <button
           type="button"
-          aria-label={`${label} azalt`}
+          aria-label={`${label} ${t.common.decrease}`}
           onClick={() => onChange(Math.max(0, value - 1))}
           disabled={value === 0}
           className={`${size} flex items-center justify-center rounded-l-lg text-ink-700 transition hover:bg-cream-100 disabled:opacity-30`}
@@ -42,7 +44,7 @@ export default function QtyCounter({ value, onChange, label, compact = false }: 
         />
         <button
           type="button"
-          aria-label={`${label} artır`}
+          aria-label={`${label} ${t.common.increase}`}
           onClick={() => onChange(value + 1)}
           className={`${size} flex items-center justify-center rounded-r-lg text-ink-700 transition hover:bg-cream-100`}
         >

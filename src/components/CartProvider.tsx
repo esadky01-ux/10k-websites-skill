@@ -13,6 +13,8 @@ type CartContextValue = {
   setQuantity: (productId: string, cases: number, units: number) => void;
   remove: (productId: string) => void;
   clear: () => void;
+  /** Sepeti verilen satırlarla değiştirir (tekrar sipariş / kayıtlı liste). */
+  loadLines: (lines: CartLine[]) => void;
   open: () => void;
   close: () => void;
   totalCases: number;
@@ -51,6 +53,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const clear = useCallback(() => updateCart((prev) => ({ ...prev, lines: [] })), []);
+  const loadLines = useCallback((next: CartLine[]) => {
+    updateCart((prev) => ({ ...prev, lines: next.filter((l) => l.cases > 0 || l.units > 0).map((l) => ({ productId: l.productId, cases: Math.floor(l.cases), units: Math.floor(l.units) })) }));
+  }, []);
   const open = useCallback(() => setIsOpen(true), []);
   const close = useCallback(() => setIsOpen(false), []);
 
@@ -66,13 +71,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setQuantity,
       remove,
       clear,
+      loadLines,
       open,
       close,
       totalCases,
       totalUnits,
       lineCount: lines.length,
     };
-  }, [lines, delivery, isOpen, hydrated, setDelivery, setQuantity, remove, clear, open, close]);
+  }, [lines, delivery, isOpen, hydrated, setDelivery, setQuantity, remove, clear, loadLines, open, close]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

@@ -18,6 +18,7 @@ export const site = {
   pickupDiscount: 0.15,
   url: "https://maximusfood.be",
   serviceArea: "Belçika & Hollanda",
+  geo: { lat: 50.9932, lng: 4.8377 },
 };
 
 export type Partner = {
