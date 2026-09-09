@@ -1,7 +1,7 @@
 /**
  * Sesli asistan köprüsü.
  *
- *  GET  /api/voice-agent  → yapılandırma: asistan adı, karşılama cümleleri, gerçek zamanlı ses köprüsünün hazır olup olmadığı.
+ *  GET  /api/voice-agent  → yapılandırma: asistan adı, karşılama cümleleri, gerçek zamanlı köprü ve sunucu STT hazır mı.
  *  POST /api/voice-agent  → bir konuşma turu: { transcript, lang, history, cart } → { text, lang, actions }
  *
  * Tarayıcı konuşmayı metne çevirir (Web Speech API) ve buraya gönderir; dönen eylemleri gerçek sepete uygular,
@@ -10,7 +10,7 @@
 import { NextResponse } from "next/server";
 import { runVoiceTurn, type VoiceCartLine, type VoiceHistoryItem } from "@/server/voice/agent";
 import { AGENT_NAME, GREETINGS, type VoiceLang } from "@/server/voice/prompt";
-import { realtimeConfigured } from "@/server/voice/realtime";
+import { realtimeConfigured, sttConfigured } from "@/server/voice/realtime";
 
 export const runtime = "nodejs";
 
@@ -22,6 +22,7 @@ export async function GET() {
     greetings: GREETINGS,
     brain: process.env.ANTHROPIC_API_KEY ? "claude" : "fallback",
     realtime: realtimeConfigured(),
+    stt: sttConfigured(),
   });
 }
 

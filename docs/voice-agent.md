@@ -30,6 +30,18 @@ ses akışı tarayıcı ↔ sağlayıcı arasında doğrudan (WebRTC); data chan
 - **Barge-in**: asistan konuşurken tanıma açık kalır; ara sonuç gelir gelmez `speechSynthesis.cancel()` çağrılır. Yankı koruması, asistanın kendi cümlesini mikrofondan geri duymasını yok sayar.
 - **Araç bağlantısı**: sunucu yalnızca eylem listesi döndürür (`add` / `remove` / `open_cart`); gerçek sepet güncellemesi istemcide `CartProvider.setQuantity` ile yapılır, böylece sipariş matrisi ve sepet paneli anında güncellenir.
 
+## Dayanıklılık ve kayıt yedeği
+
+- Bileşen bir React Error Boundary içindedir: beklenmeyen istisnada sayfa çökmez, sağ altta uyarı + gerçek hata adı/mesajı
+  (küçük punto) ve "tekrar dene" görünür. Hata ayrıca `POST /api/voice-agent/log` ile sunucu loguna yazılır.
+- Tüm tarayıcı ses API çağrıları sarmalıdır; mikrofon izni, mikrofon yok, ağ ve güvensiz bağlantı durumları panelde
+  nazik uyarı olarak görünür, altında hata ayrıntısı yazar.
+- **Kayıt yedeği (MediaRecorder → sunucu STT):** Web Speech API yoksa, başlatılamazsa, sürekli kapanırsa veya
+  15 saniye içinde hiç sonuç vermezse asistan otomatik olarak kayıt moduna geçer: mikrofon `MediaRecorder` ile kaydedilir,
+  `POST /api/voice-agent/transcribe` ile Whisper uyumlu STT servisine (`VOICE_STT_URL`, `VOICE_API_KEY`) gönderilir, dönen
+  metin aynı Claude turuna girer. Böylece cihazın konuşma tanıma motoruna bağımlılık kalkar. STT tanımlı değilse panel
+  bunu açıkça söyler.
+
 ## Yapılandırma (.env)
 
 | Değişken | Açıklama |
@@ -39,8 +51,10 @@ ses akışı tarayıcı ↔ sağlayıcı arasında doğrudan (WebRTC); data chan
 | `VOICE_API_KEY` | Gerçek zamanlı ses sağlayıcısının anahtarı. Yalnızca sunucuda okunur, tarayıcıya inmez. |
 | `VOICE_REALTIME_URL` | Sağlayıcının SDP uç noktası (WebRTC). `VOICE_API_KEY` ile birlikte dolduğunda panelde "Canlı ses" butonu belirir. |
 | `VOICE_MODEL` | İsteğe bağlı model / ses kimliği; sorgu parametresi olarak eklenir. |
+| `VOICE_STT_URL` | Whisper uyumlu transkripsiyon uç noktası (multipart `file`, `model`, `language` → `{ text }`). Kayıt yedeğini etkinleştirir. |
+| `VOICE_STT_MODEL` | STT model adı, varsayılan `whisper-1`. |
 
-`GET /api/voice-agent` → `{ agent, greetings, brain: "claude" | "fallback", realtime: boolean }`
+`GET /api/voice-agent` → `{ agent, greetings, brain: "claude" | "fallback", realtime: boolean, stt: boolean }`
 
 ## Neden WebRTC, WebSocket değil?
 

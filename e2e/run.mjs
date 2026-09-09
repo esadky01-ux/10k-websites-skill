@@ -300,32 +300,78 @@ await check("voice agent survives a throwing speech engine (mobile) without cras
   await mp2.addInitScript(() => {
     class ThrowingSR {
       constructor() { window.__sr = this; }
-      start() { if (!window.__threw) { window.__threw = true; throw new DOMException("audio capture failed", "InvalidStateError"); } }
+      start() { throw new DOMException("audio capture failed", "InvalidStateError"); }
       stop() {}
       abort() { throw new Error("abort failed"); }
     }
     window.SpeechRecognition = ThrowingSR;
     Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() { throw new Error("synth broken"); }, getVoices() { throw new Error("no voices"); }, speak() { throw new Error("speak broken"); } } });
     window.SpeechSynthesisUtterance = class { constructor(t) { this.text = t; } };
+    // Kayıt yedeğinde mikrofon izni reddedilir
+    Object.defineProperty(navigator, "mediaDevices", { configurable: true, value: { getUserMedia: async () => { throw new DOMException("Permission denied", "NotAllowedError"); } } });
+    window.MediaRecorder = class { static isTypeSupported() { return true; } };
   });
   await mp2.goto(`${BASE}/tr`, { waitUntil: "networkidle" });
   await mp2.click("[data-testid=voice-open]");
   await mp2.waitForSelector("[data-testid=voice-reply]");
   await mp2.click("[data-testid=voice-mic]");
-  await mp2.waitForSelector("[data-testid=voice-panel] [role=alert]");
-  const notice = await mp2.textContent("[data-testid=voice-panel] [role=alert]");
-  assert(/kullanılamıyor|durdu/.test(notice ?? ""), `notice: ${notice}`);
+  // Fırlatan motor → otomatik kayıt modu, gerçek hata küçük puntoyla görünür
+  await mp2.waitForSelector("[data-testid=voice-mode]");
+  const detail = await mp2.textContent("[data-testid=voice-detail]");
+  assert(/InvalidStateError: audio capture failed/.test(detail ?? ""), `detail: ${detail}`);
   assert(await mp2.locator("[data-testid=voice-panel]").isVisible(), "panel still visible");
   assert(await mp2.locator("h1").first().isVisible(), "page content still rendered");
-  assert(pageErrors.length === 0, `uncaught: ${pageErrors.join(" | ")}`);
-  // İkinci denemede motor açılır; mikrofon izni reddi → nazik uyarı, sayfa ayakta
+  // Kayıt modunda mikrofon izni reddi → nazik uyarı, sayfa ayakta
   await mp2.click("[data-testid=voice-mic]");
-  await mp2.waitForFunction(() => document.querySelector("[data-testid=voice-status]")?.textContent?.includes("Dinliyor"));
-  await mp2.evaluate(() => { if (window.__sr.onerror) window.__sr.onerror({ error: "not-allowed" }); });
   await mp2.waitForFunction(() => /Mikrofon izni/.test(document.querySelector("[data-testid=voice-panel] [role=alert]")?.textContent ?? ""));
-  assert(pageErrors.length === 0, `uncaught after denial: ${pageErrors.join(" | ")}`);
+  const detail2 = await mp2.textContent("[data-testid=voice-detail]");
+  assert(/NotAllowedError/.test(detail2 ?? ""), `detail2: ${detail2}`);
+  assert(pageErrors.length === 0, `uncaught: ${pageErrors.join(" | ")}`);
   await mp2.screenshot({ path: `${OUT}/voice-agent-error.png` });
   await mctx.close();
+});
+await check("voice agent falls back to recorder mode when speech recognition is missing", async () => {
+  const rctx = await browser.newContext({ viewport: { width: 390, height: 760 }, locale: "tr-TR", userAgent: "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Mobile Safari/537.36" });
+  const rp = await rctx.newPage();
+  const pageErrors = [];
+  rp.on("pageerror", (e) => pageErrors.push(String(e)));
+  await rp.addInitScript(() => {
+    delete window.SpeechRecognition;
+    delete window.webkitSpeechRecognition;
+    Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() {}, getVoices() { return []; }, speak(u) { setTimeout(() => { if (u.onstart) u.onstart(); if (u.onend) u.onend(); }, 0); } } });
+    window.SpeechSynthesisUtterance = class { constructor(t) { this.text = t; } };
+    // Sahte mikrofon ve MediaRecorder
+    const track = { stop() {} };
+    Object.defineProperty(navigator, "mediaDevices", { configurable: true, value: { getUserMedia: async () => ({ getTracks: () => [track] }) } });
+    class FakeRecorder {
+      static isTypeSupported() { return true; }
+      constructor(stream, opts) { this.stream = stream; this.mimeType = (opts && opts.mimeType) || "audio/webm"; this.state = "inactive"; window.__rec = this; }
+      start() { this.state = "recording"; }
+      stop() { this.state = "inactive"; if (this.ondataavailable) this.ondataavailable({ data: new Blob([new Uint8Array(4000)], { type: "audio/webm" }) }); if (this.onstop) this.onstop(); }
+    }
+    window.MediaRecorder = FakeRecorder;
+  });
+  await rp.goto(`${BASE}/tr`, { waitUntil: "networkidle" });
+  await rp.click("[data-testid=voice-open]");
+  await rp.waitForSelector("[data-testid=voice-reply]");
+  await rp.click("[data-testid=voice-mic]");
+  await rp.waitForSelector("[data-testid=voice-mode]");
+  assert((await rp.getAttribute("[data-testid=voice-mic]", "data-mode")) === "recorder", "recorder mode active");
+  // Kayıt: bas → durdur → sunucuya gönder → STT tanımlı olmadığı için nazik uyarı
+  await rp.click("[data-testid=voice-mic]");
+  await rp.waitForFunction(() => window.__rec && window.__rec.state === "recording");
+  await rp.click("[data-testid=voice-mic]");
+  await rp.waitForFunction(() => /VOICE_STT_URL/.test(document.querySelector("[data-testid=voice-panel] [role=alert]")?.textContent ?? ""));
+  assert(await rp.locator("h1").first().isVisible(), "page content still rendered");
+  assert(pageErrors.length === 0, `uncaught: ${pageErrors.join(" | ")}`);
+  await rp.screenshot({ path: `${OUT}/voice-agent-recorder.png` });
+  await rctx.close();
+});
+await check("voice agent transcribe and log endpoints respond", async () => {
+  const log = await ctx.request.post(`${BASE}/api/voice-agent/log`, { data: { where: "e2e", name: "TestError", message: "hello" } });
+  assert(log.status() === 204, `log status ${log.status()}`);
+  const tr = await ctx.request.post(`${BASE}/api/voice-agent/transcribe`, { multipart: { audio: { name: "a.webm", mimeType: "audio/webm", buffer: Buffer.alloc(2000) }, lang: "tr" } });
+  assert(tr.status() === 503, `expected 503 without VOICE_STT_URL, got ${tr.status()}`);
 });
 await check("voice agent API validates input and reports mode", async () => {
   const cfg = await (await ctx.request.get(`${BASE}/api/voice-agent`)).json();

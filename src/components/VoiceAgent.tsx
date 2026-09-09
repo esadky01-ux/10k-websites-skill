@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Mic, MicOff, X, Radio, Square } from "lucide-react";
+import { Mic, MicOff, X, Radio, Square, Disc } from "lucide-react";
 import { useCart } from "@/components/CartProvider";
 import { useI18n } from "@/i18n/I18nProvider";
+import { describeError, logClientError } from "@/components/VoiceAgentBoundary";
 
 /**
  * Maximus Dijital Plasiyer – sesli sipariş asistanı (prototip).
@@ -18,7 +19,8 @@ type VoiceLang = "tr" | "nl" | "ku";
 type Status = "idle" | "listening" | "thinking" | "speaking" | "error" | "unsupported";
 type Action = { type: "add"; productId: string; cases: number; units: number } | { type: "remove"; productId: string } | { type: "open_cart" };
 type Turn = { text: string; lang: VoiceLang; actions: Action[] };
-type Config = { agent: string; greetings: Record<VoiceLang, string>; realtime: boolean };
+type Config = { agent: string; greetings: Record<VoiceLang, string>; realtime: boolean; stt: boolean };
+type Mode = "speech" | "recorder";
 
 type SRResultList = ArrayLike<{ isFinal: boolean; 0: { transcript: string } }>;
 type SREvent = { resultIndex: number; results: SRResultList };
@@ -62,6 +64,17 @@ const isMobile = () => typeof navigator !== "undefined" && /Android|iPhone|iPad|
 const RESTART_DELAY_MS = 300;
 const MAX_RESTARTS = 8;
 const RESTART_WINDOW_MS = 20_000;
+/** Bu süre içinde motor hiç sonuç vermezse kayıt yedeğine geçilir. */
+const NO_RESULT_TIMEOUT_MS = 15_000;
+const STT_LANG: Record<VoiceLang, string> = { tr: "tr", nl: "nl", ku: "ku" };
+
+function pickMime(): string {
+  if (typeof MediaRecorder === "undefined") return "";
+  for (const m of ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus", "audio/ogg"]) {
+    if (safe(() => MediaRecorder.isTypeSupported(m), "isTypeSupported")) return m;
+  }
+  return "";
+}
 
 export default function VoiceAgent() {
   const cart = useCart();
@@ -77,6 +90,9 @@ export default function VoiceAgent() {
   const [notice, setNotice] = useState("");
   const [config, setConfig] = useState<Config | null>(null);
   const [live, setLive] = useState(false);
+  const [detail, setDetail] = useState("");
+  const [mode, setMode] = useState<Mode>("speech");
+  const [recording, setRecording] = useState(false);
 
   const recRef = useRef<SR | null>(null);
   const activeRef = useRef(false);
@@ -91,6 +107,20 @@ export default function VoiceAgent() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const restartsRef = useRef<number[]>([]);
   const restartTimerRef = useRef<number | null>(null);
+  const noResultTimerRef = useRef<number | null>(null);
+  const gotResultRef = useRef(false);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const configRef = useRef<Config | null>(null);
+  const modeRef = useRef<Mode>("speech");
+
+  /** Yakalanan hatayı kullanıcıya küçük puntoyla gösterir ve sunucu loguna yazar. */
+  const report = useCallback((where: string, err: unknown) => {
+    console.warn(`[voice-agent] ${where}:`, err);
+    setDetail(`${where} → ${describeError(err)}`);
+    logClientError(where, err);
+  }, []);
 
   const setLang = useCallback((l: VoiceLang) => {
     langRef.current = l;
@@ -179,13 +209,14 @@ export default function VoiceAgent() {
         setLastReply(turn.text);
         busyRef.current = false;
         await speak(turn.text, turn.lang ?? langRef.current);
-      } catch {
+      } catch (err) {
         busyRef.current = false;
+        report("api", err);
         setNotice(tv.error);
         setStatus(activeRef.current ? "listening" : "error");
       }
     },
-    [applyActions, cart.lines, setLang, speak, tv.error],
+    [applyActions, cart.lines, report, setLang, speak, tv.error],
   );
 
   const stopListening = useCallback(() => {
@@ -193,6 +224,10 @@ export default function VoiceAgent() {
     if (restartTimerRef.current !== null) {
       window.clearTimeout(restartTimerRef.current);
       restartTimerRef.current = null;
+    }
+    if (noResultTimerRef.current !== null) {
+      window.clearTimeout(noResultTimerRef.current);
+      noResultTimerRef.current = null;
     }
     const r = recRef.current;
     recRef.current = null;
@@ -206,25 +241,139 @@ export default function VoiceAgent() {
     if (!speakingRef.current) setStatus("idle");
   }, []);
 
-  const startListening = useCallback(() => {
-    const Ctor = getRecognition();
-    if (!Ctor) {
-      setStatus("unsupported");
-      setNotice(tv.unsupported);
-      return;
+  /** Kayıt yedeği: MediaRecorder ile ses al, sunucudaki STT servisine gönder, metni aynı tura sok. */
+  const stopRecording = useCallback(() => {
+    const r = recorderRef.current;
+    recorderRef.current = null;
+    if (r && r.state !== "inactive") safe(() => r.stop(), "recorder.stop");
+    else {
+      streamRef.current?.getTracks().forEach((t) => safe(() => t.stop(), "track.stop"));
+      streamRef.current = null;
     }
+    setRecording(false);
+  }, []);
+
+  const uploadRecording = useCallback(
+    async (blob: Blob) => {
+      if (blob.size < 1000) {
+        setNotice(tv.noSpeech);
+        setStatus("idle");
+        return;
+      }
+      setStatus("thinking");
+      setNotice(tv.uploading);
+      try {
+        const form = new FormData();
+        form.append("audio", blob, "voice.webm");
+        form.append("lang", STT_LANG[langRef.current]);
+        const res = await fetch("/api/voice-agent/transcribe", { method: "POST", body: form });
+        if (res.status === 503) {
+          setNotice(tv.sttMissing);
+          setStatus("error");
+          return;
+        }
+        if (!res.ok) throw new Error(`transcribe ${res.status}`);
+        const { text } = (await res.json()) as { text?: string };
+        setNotice("");
+        if (!text?.trim()) {
+          setNotice(tv.noSpeech);
+          setStatus("idle");
+          return;
+        }
+        await handleUtterance(text.trim());
+      } catch (err) {
+        report("transcribe", err);
+        setNotice(tv.error);
+        setStatus("error");
+      }
+    },
+    [handleUtterance, report, tv.error, tv.noSpeech, tv.sttMissing, tv.uploading],
+  );
+
+  const startRecording = useCallback(async () => {
+    if (recorderRef.current) return;
     if (typeof window !== "undefined" && window.isSecureContext === false) {
       setNotice(tv.insecure);
       setStatus("error");
       return;
     }
-    if (recRef.current) return;
-    const r = safe(() => new Ctor(), "SpeechRecognition oluşturma");
-    if (!r) {
-      setNotice(tv.unavailable);
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
+      setNotice(tv.unsupported);
+      setStatus("unsupported");
+      return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+      const mime = pickMime();
+      const rec = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
+      chunksRef.current = [];
+      rec.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) chunksRef.current.push(e.data);
+      };
+      rec.onerror = (e) => {
+        report("recorder", (e as { error?: unknown }).error ?? e);
+        stopRecording();
+        setNotice(tv.error);
+        setStatus("error");
+      };
+      rec.onstop = () => {
+        stream.getTracks().forEach((t) => safe(() => t.stop(), "track.stop"));
+        streamRef.current = null;
+        const blob = new Blob(chunksRef.current, { type: rec.mimeType || mime || "audio/webm" });
+        chunksRef.current = [];
+        void uploadRecording(blob);
+      };
+      recorderRef.current = rec;
+      rec.start(250);
+      safe(() => window.speechSynthesis?.cancel(), "cancel");
+      speakingRef.current = false;
+      setRecording(true);
+      setNotice("");
+      setStatus("listening");
+      // Güvenlik: 30 sn'den uzun kayıt otomatik biter
+      window.setTimeout(() => recorderRef.current === rec && stopRecording(), 30_000);
+    } catch (err) {
+      report("getUserMedia", err);
+      const name = (err as { name?: string })?.name ?? "";
+      setNotice(name === "NotAllowedError" || name === "SecurityError" ? tv.micDenied : name === "NotFoundError" || name === "OverconstrainedError" ? tv.noMic : tv.error);
+      setStatus("error");
+    }
+  }, [report, stopRecording, tv.error, tv.insecure, tv.micDenied, tv.noMic, tv.unsupported, uploadRecording]);
+
+  /** Web Speech API takıldığında kayıt moduna geç (otomatik). */
+  const switchToRecorder = useCallback(
+    (why: string, err?: unknown) => {
+      if (modeRef.current === "recorder") return;
+      if (err !== undefined) report(why, err);
+      modeRef.current = "recorder";
+      setMode("recorder");
+      setNotice(configRef.current && !configRef.current.stt ? tv.sttMissing : tv.recorderHint);
+      setStatus("idle");
+    },
+    [report, tv.recorderHint, tv.sttMissing],
+  );
+
+  const startListening = useCallback(() => {
+    if (typeof window !== "undefined" && window.isSecureContext === false) {
+      setNotice(tv.insecure);
       setStatus("error");
       return;
     }
+    const Ctor = getRecognition();
+    if (!Ctor) {
+      switchToRecorder("SpeechRecognition yok");
+      return;
+    }
+    if (recRef.current) return;
+    let r: SR | null = null;
+    try {
+      r = new Ctor();
+    } catch (err) {
+      switchToRecorder("SpeechRecognition oluşturma", err);
+      return;
+    }
+    gotResultRef.current = false;
     const mobile = isMobile();
     safe(() => {
       r.lang = RECOG_LANG[langRef.current];
@@ -235,6 +384,7 @@ export default function VoiceAgent() {
 
     r.onresult = (e) => {
       try {
+        gotResultRef.current = true;
         let finalText = "";
         let interimText = "";
         const results = e?.results;
@@ -259,7 +409,7 @@ export default function VoiceAgent() {
         if (n.length > 6 && lastSpokenRef.current && (lastSpokenRef.current.includes(n) || n.includes(lastSpokenRef.current))) return;
         void handleUtterance(clean);
       } catch (err) {
-        console.warn("[voice-agent] onresult:", err);
+        report("onresult", err);
       }
     };
 
@@ -269,14 +419,10 @@ export default function VoiceAgent() {
         stopListening();
         setNotice(tv.micDenied);
         setStatus("error");
-      } else if (code === "audio-capture") {
+      } else if (code === "audio-capture" || code === "network") {
+        // Motor bu cihazda çalışmıyor → kayıt yedeği
         stopListening();
-        setNotice(tv.noMic);
-        setStatus("error");
-      } else if (code === "network") {
-        stopListening();
-        setNotice(tv.error);
-        setStatus("error");
+        switchToRecorder(`SpeechRecognition ${code}`, new Error(code));
       } else if (code === "language-not-supported") {
         safe(() => {
           r.lang = "tr-TR";
@@ -290,24 +436,20 @@ export default function VoiceAgent() {
       const now = Date.now();
       restartsRef.current = restartsRef.current.filter((t) => now - t < RESTART_WINDOW_MS);
       if (restartsRef.current.length >= MAX_RESTARTS) {
-        // Motor sürekli kapanıyor (izin/donanım sorunu); döngüye girmeden nazikçe dur
+        // Motor sürekli kapanıyor; döngüye girmeden kayıt yedeğine geç
         stopListening();
-        setNotice(tv.restartFailed);
-        setStatus("error");
+        switchToRecorder("SpeechRecognition sürekli kapanıyor", new Error(`${MAX_RESTARTS} restarts in ${RESTART_WINDOW_MS / 1000}s`));
         return;
       }
       restartsRef.current.push(now);
       restartTimerRef.current = window.setTimeout(() => {
         restartTimerRef.current = null;
         if (!activeRef.current || recRef.current !== r) return;
-        const ok = safe(() => {
+        try {
           r.start();
-          return true;
-        }, "yeniden başlatma");
-        if (!ok) {
+        } catch (err) {
           stopListening();
-          setNotice(tv.restartFailed);
-          setStatus("error");
+          switchToRecorder("yeniden başlatma", err);
         }
       }, RESTART_DELAY_MS);
     };
@@ -316,17 +458,24 @@ export default function VoiceAgent() {
     activeRef.current = true;
     restartsRef.current = [];
     setNotice("");
+    setDetail("");
     setStatus("listening");
-    const started = safe(() => {
+    try {
       r.start();
-      return true;
-    }, "start");
-    if (!started) {
+    } catch (err) {
       stopListening();
-      setNotice(tv.unavailable);
-      setStatus("error");
+      switchToRecorder("start", err);
+      return;
     }
-  }, [handleUtterance, stopListening, tv.error, tv.insecure, tv.micDenied, tv.noMic, tv.restartFailed, tv.unavailable, tv.unsupported]);
+    // Motor açık görünüp hiç sonuç üretmiyorsa (Android'de sık görülür) kayıt yedeğine geç
+    noResultTimerRef.current = window.setTimeout(() => {
+      noResultTimerRef.current = null;
+      if (activeRef.current && recRef.current === r && !gotResultRef.current && !busyRef.current) {
+        stopListening();
+        switchToRecorder("SpeechRecognition sonuç vermedi", new Error(`no result in ${NO_RESULT_TIMEOUT_MS / 1000}s`));
+      }
+    }, NO_RESULT_TIMEOUT_MS);
+  }, [handleUtterance, report, stopListening, switchToRecorder, tv.insecure, tv.micDenied]);
 
   /** Panel açılınca yapılandırmayı al ve karşılama cümlesini söyle. */
   useEffect(() => {
@@ -336,6 +485,7 @@ export default function VoiceAgent() {
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
       .then((c: Config) => {
         setConfig(c);
+        configRef.current = c;
         const g = c?.greetings?.[langRef.current] ?? c?.greetings?.tr;
         if (g) {
           setLastReply(g);
@@ -343,8 +493,11 @@ export default function VoiceAgent() {
           void speak(g, langRef.current);
         }
       })
-      .catch(() => setNotice(tv.error));
-  }, [open, speak, tv.error]);
+      .catch((err) => {
+        report("config", err);
+        setNotice(tv.error);
+      });
+  }, [open, report, speak, tv.error]);
 
   // Escape ile kapat; kapanınca dinlemeyi ve konuşmayı durdur
   useEffect(() => {
@@ -356,13 +509,14 @@ export default function VoiceAgent() {
 
   const closePanel = useCallback(() => {
     stopListening();
+    stopRecording();
     safe(() => window.speechSynthesis?.cancel(), "cancel");
     speakingRef.current = false;
     safe(() => pcRef.current?.close(), "pc.close");
     pcRef.current = null;
     setLive(false);
     setOpen(false);
-  }, [stopListening]);
+  }, [stopListening, stopRecording]);
 
   // Bileşen kaldırılırken (sayfa geçişi) mikrofon, seslendirme ve WebRTC bağlantısını bırak
   useEffect(
@@ -374,20 +528,40 @@ export default function VoiceAgent() {
       safe(() => window.speechSynthesis?.cancel(), "cancel");
       safe(() => pcRef.current?.close(), "pc.close");
       pcRef.current = null;
+      safe(() => recorderRef.current?.stop(), "recorder.stop");
+      recorderRef.current = null;
+      streamRef.current?.getTracks().forEach((t) => safe(() => t.stop(), "track.stop"));
+      streamRef.current = null;
     },
     [],
   );
 
   // Bas-konuş (uzun basış) veya tıkla-dinle (kısa dokunuş)
   const onPressStart = () => {
+    if (modeRef.current === "recorder") {
+      pressRef.current = { at: Date.now(), wasActive: !!recorderRef.current };
+      if (!recorderRef.current) void startRecording().catch((err) => report("startRecording", err));
+      return;
+    }
     pressRef.current = { at: Date.now(), wasActive: activeRef.current };
-    if (!activeRef.current) safe(startListening, "startListening");
+    if (!activeRef.current) {
+      try {
+        startListening();
+      } catch (err) {
+        report("startListening", err);
+        setNotice(tv.error);
+      }
+    }
   };
   const onPressEnd = () => {
     const p = pressRef.current;
     pressRef.current = null;
     if (!p) return;
     const held = Date.now() - p.at > 450;
+    if (modeRef.current === "recorder") {
+      if (held || p.wasActive) stopRecording();
+      return;
+    }
     if (held || p.wasActive) safe(stopListening, "stopListening");
   };
 
@@ -452,8 +626,8 @@ export default function VoiceAgent() {
     setStatus("idle");
   }, []);
 
-  const statusLabel = { idle: tv.idle, listening: tv.listening, thinking: tv.thinking, speaking: tv.speaking, error: tv.idle, unsupported: tv.idle }[status];
-  const listening = status === "listening";
+  const statusLabel = { idle: mode === "recorder" ? tv.tapRecord : tv.idle, listening: mode === "recorder" ? tv.recording : tv.listening, thinking: tv.thinking, speaking: tv.speaking, error: tv.idle, unsupported: tv.idle }[status];
+  const listening = mode === "recorder" ? recording : status === "listening";
 
   return (
     <>
@@ -485,6 +659,7 @@ export default function VoiceAgent() {
                 <p className="text-sm font-bold leading-tight">{config?.agent ?? tv.name}</p>
                 <p className="text-[11px] text-cream-100/70" data-testid="voice-status">
                   {statusLabel} · <span className="uppercase" data-testid="voice-lang">{voiceLang}</span>
+                  {mode === "recorder" && <span className="ml-1 rounded bg-white/15 px-1.5 py-0.5 text-[10px] font-semibold" data-testid="voice-mode">{tv.recorder}</span>}
                 </p>
               </div>
             </div>
@@ -509,6 +684,7 @@ export default function VoiceAgent() {
             </div>
 
             {notice && <p className="mt-2 text-xs font-semibold text-brand-600" role="alert">{notice}</p>}
+            {detail && <p className="mt-1 break-words font-mono text-[10px] leading-snug text-ink-500" data-testid="voice-detail">{detail}</p>}
 
             <div className="mt-3 flex items-center gap-3">
               <button
@@ -519,12 +695,13 @@ export default function VoiceAgent() {
                 onPointerLeave={() => pressRef.current && onPressEnd()}
                 className={`flex h-14 flex-1 items-center justify-center gap-2 rounded-full text-base font-bold text-white shadow-lg transition select-none ${listening ? "bg-red-600 shadow-red-900/30" : "bg-brand-500 shadow-brand-900/30 hover:bg-brand-600"}`}
                 aria-pressed={listening}
-                aria-label={listening ? tv.stop : tv.tap}
+                aria-label={mode === "recorder" ? (listening ? tv.stopRecord : tv.tapRecord) : listening ? tv.stop : tv.tap}
                 data-testid="voice-mic"
+                data-mode={mode}
                 disabled={live}
               >
-                {listening ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
-                {listening ? tv.stop : tv.tap}
+                {listening ? <MicOff className="h-5 w-5" /> : mode === "recorder" ? <Disc className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
+                {mode === "recorder" ? (listening ? tv.stopRecord : tv.tapRecord) : listening ? tv.stop : tv.tap}
               </button>
               {config?.realtime && (
                 <button
