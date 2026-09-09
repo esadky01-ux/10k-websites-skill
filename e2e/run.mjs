@@ -536,23 +536,31 @@ await check("voice agent's silent unlock clip is a valid, playable WAV", async (
   const wp = await wctx.newPage();
   const pageErrors = [];
   wp.on("pageerror", (e) => pageErrors.push(String(e)));
+  // Kilit açma sırasında ses öğesine verilen klibi yakala (gerçek play() çağrısı aynen devam eder)
+  await wp.addInitScript(() => {
+    const realPlay = HTMLMediaElement.prototype.play;
+    window.__unlockSrc = null;
+    HTMLMediaElement.prototype.play = function () {
+      if (!window.__unlockSrc && typeof this.src === "string" && this.src.startsWith("data:audio/wav")) window.__unlockSrc = this.src;
+      return realPlay.call(this);
+    };
+  });
   await wp.goto(`${BASE}/tr`, { waitUntil: "networkidle" });
   await wp.click("[data-testid=voice-open]");
-  await wp.waitForSelector("[data-testid=voice-tts-audio]", { state: "attached" });
-  // Dokunuş sonrası ses öğesine atanan kilit açma klibini gerçek Chromium'da bir dokunuş içinde çal
+  await wp.waitForFunction(() => !!window.__unlockSrc);
+  // Yakalanan klibi gerçek Chromium'da bir dokunuş içinde çal
   await wp.evaluate(() => {
     const b = document.createElement("button"); b.id = "__play"; b.textContent = "play"; document.body.appendChild(b);
     b.onclick = () => {
-      const src = document.querySelector("[data-testid=voice-tts-audio]").getAttribute("src") || "";
-      const a = new Audio(src);
+      const a = new Audio(window.__unlockSrc);
       window.__wav = null;
-      a.play().then(() => { window.__wav = { ok: true, duration: a.duration, src: src.slice(0, 20) }; }).catch((e) => { window.__wav = { ok: false, error: e.name + ": " + e.message }; });
+      a.play().then(() => { window.__wav = { ok: true, duration: a.duration }; }).catch((e) => { window.__wav = { ok: false, error: e.name + ": " + e.message }; });
     };
   });
   await wp.click("#__play");
   await wp.waitForFunction(() => window.__wav !== null);
   const r = await wp.evaluate(() => window.__wav);
-  assert(r.ok && r.duration > 0.01 && r.src.startsWith("data:audio/wav"), `unlock clip: ${JSON.stringify(r)}`);
+  assert(r.ok && r.duration > 0.01, `unlock clip: ${JSON.stringify(r)}`);
   assert((await wp.locator("[data-testid=voice-detail]").count()) === 0, "unlock must not surface an error line");
   assert(pageErrors.length === 0, `uncaught: ${pageErrors.join(" | ")}`);
   await wctx.close();
