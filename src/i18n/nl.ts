@@ -15,7 +15,7 @@ export const nl = {
     ],
   },
   nav: { home: "Home", products: "Producten", regions: "Leveringsgebied", blog: "Blog", contact: "Contact", account: "Mijn account", login: "Inloggen", register: "Registreren", logout: "Uitloggen" },
-  header: { call: "Bel", cart: "Winkelmandje", langSwitch: "Türkçe", langSwitchAria: "Schakel naar Turks" },
+  header: { call: "Bel", cart: "Winkelmandje", langSwitch: "Türkçe", langSwitchAria: "Schakel naar Turks", menu: "Menu" },
   hero: {
     badge: "Quality Food. Trusted Partner.",
     title1: "Uw betrouwbare groothandel",

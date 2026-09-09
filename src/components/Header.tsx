@@ -2,6 +2,7 @@ import Link from "next/link";
 import { MapPin, Phone, Clock } from "lucide-react";
 import Logo from "@/components/Logo";
 import HeaderActions from "@/components/HeaderActions";
+import MobileMenu from "@/components/MobileMenu";
 import LangSwitch from "@/components/LangSwitch";
 import { site, mapsUrl } from "@/lib/site";
 import { getDictionary, localePath, type Locale } from "@/i18n";
@@ -50,17 +51,11 @@ export default function Header({ lang }: { lang: Locale }) {
             </Link>
           ))}
         </nav>
-        <HeaderActions />
+        <div className="flex items-center gap-2 sm:gap-3">
+          <HeaderActions />
+          <MobileMenu items={nav} menuLabel={t.header.menu} closeLabel={t.common.close} />
+        </div>
       </div>
-
-      <nav className="scroll-tabs flex gap-1 overflow-x-auto border-t border-cream-200 px-2 py-1.5 lg:hidden" aria-label={t.nav.home}>
-        {nav.map((item) => (
-          <Link key={item.href} href={item.href} className="whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium text-ink-700 hover:bg-cream-100">
-            {item.label}
-          </Link>
-        ))}
-        <LangSwitch className="ml-auto whitespace-nowrap rounded-full border border-cream-200 px-3 py-1.5 text-sm font-semibold text-ink-700 md:hidden" />
-      </nav>
     </header>
   );
 }

@@ -10,7 +10,7 @@ export const tr: Dictionary = {
     keywords: ["toptan gıda Aarschot", "horeca tedarikçisi Belçika", "döner tedarik Belçika", "pizza malzemeleri toptan", "Pauwels sos toptan", "B2B gıda toptancısı"],
   },
   nav: { home: "Ana Sayfa", products: "Ürünler", regions: "Teslimat Bölgeleri", blog: "Blog", contact: "İletişim", account: "Hesabım", login: "Giriş Yap", register: "Kayıt Ol", logout: "Çıkış" },
-  header: { call: "Ara", cart: "Sepetim", langSwitch: "Nederlands", langSwitchAria: "Hollandacaya geç" },
+  header: { call: "Ara", cart: "Sepetim", langSwitch: "Nederlands", langSwitchAria: "Hollandacaya geç", menu: "Menü" },
   hero: {
     badge: "Quality Food. Trusted Partner.",
     title1: "Horeca işletmeniz için",
