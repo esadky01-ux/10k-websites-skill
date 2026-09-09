@@ -4,7 +4,7 @@
  *  Yapılandırma yoksa 503 { error: "stt-not-configured" }.
  */
 import { NextResponse } from "next/server";
-import { SttError, sttConfigured, transcribeAudio } from "@/server/voice/realtime";
+import { safeDetail, SttError, sttConfigured, transcribeAudio } from "@/server/voice/realtime";
 
 export const runtime = "nodejs";
 
@@ -29,9 +29,9 @@ export async function POST(req: Request) {
     const text = await transcribeAudio(audio, `voice.${ext}`, lang);
     return NextResponse.json({ text });
   } catch (err) {
-    console.error("[voice-agent/transcribe]", err);
+    console.error("[voice-agent/transcribe]", safeDetail(String((err as Error)?.stack ?? err)));
     // Sağlayıcı yanıtı (anahtar içermez) istemciye küçük puntoyla gösterilsin diye aktarılır
-    const detail = err instanceof SttError ? `upstream ${err.status}: ${err.detail}` : (err as Error)?.message ?? String(err);
-    return NextResponse.json({ error: "stt-upstream", detail: detail.slice(0, 300) }, { status: 502 });
+    const detail = safeDetail(err instanceof SttError ? `upstream ${err.status}: ${err.detail}` : ((err as Error)?.message ?? String(err)));
+    return NextResponse.json({ error: "stt-upstream", detail }, { status: 502 });
   }
 }

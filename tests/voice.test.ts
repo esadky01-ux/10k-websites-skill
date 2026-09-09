@@ -48,3 +48,49 @@ test("fallback removes from cart and opens the cart", async () => {
   const op = fallbackVoiceTurn({ transcript: "sepeti aç", lang: "tr", history: [], cart });
   assert.deepEqual(op.actions, [{ type: "open_cart" }]);
 });
+
+test("cleanApiKey extracts the token from a pasted curl example and redactSecrets masks it", async () => {
+  const { cleanApiKey, redactSecrets } = await import("../src/server/voice/secrets");
+  const pasted = `curl https://api.openai.com/v1/audio/speech \\\n  -H "Authorization: Bearer sk-proj-ABCdef123456789012345678_-xyz" \\\n  -H "Content-Type: application/json"`;
+  assert.equal(cleanApiKey(pasted), "sk-proj-ABCdef123456789012345678_-xyz");
+  assert.equal(cleanApiKey("  sk-abcdefghijklmnopqrstuvwxyz1234 \n"), "sk-abcdefghijklmnopqrstuvwxyz1234");
+  assert.equal(cleanApiKey('"Bearer other-provider-token-ABCDEFGH"'), "other-provider-token-ABCDEFGH");
+  assert.equal(cleanApiKey(""), undefined);
+  assert.equal(cleanApiKey("curl https://example.com"), undefined);
+  const msg = redactSecrets('Headers.append: "Bearer sk-proj-ABCdef123456789012345678_-xyz" is an invalid header value; Authorization: Bearer abc', "other-provider-token-ABCDEFGH");
+  assert.ok(!msg.includes("sk-proj-ABCdef"), msg);
+  assert.ok(!/Bearer abc/.test(msg), msg);
+  assert.equal(redactSecrets("token other-provider-token-ABCDEFGH leaked", "other-provider-token-ABCDEFGH"), "token *** leaked");
+});
+
+test("TTS and STT send only the clean token as Bearer even when the env holds a pasted curl example", async () => {
+  process.env.OPENAI_API_KEY = 'curl https://api.openai.com/v1/audio/speech -H "Authorization: Bearer sk-proj-TESTKEY0123456789abcdefghij" -d @body.json';
+  process.env.VOICE_API_KEY = "Bearer sk-VOICEKEY0123456789abcdefghijk\n";
+  process.env.VOICE_TTS_URL = "https://tts.example.test/speech";
+  process.env.VOICE_STT_URL = "https://stt.example.test/transcriptions";
+  const seen: { url: string; auth: string | null }[] = [];
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+    const headers = new Headers(init?.headers);
+    seen.push({ url: String(input), auth: headers.get("authorization") });
+    if (String(input).includes("speech")) return new Response(new Uint8Array(512), { status: 200, headers: { "Content-Type": "audio/mpeg" } });
+    return new Response(JSON.stringify({ text: "beş koli tabasco" }), { status: 200, headers: { "Content-Type": "application/json" } });
+  }) as typeof fetch;
+  try {
+    const { synthesizeSpeech, transcribeAudio, ttsConfigured, sttConfigured } = await import("../src/server/voice/realtime");
+    assert.equal(ttsConfigured(), true);
+    assert.equal(sttConfigured(), true);
+    const audio = await synthesizeSpeech("merhaba abi " + Date.now());
+    assert.equal(audio.length, 512);
+    const text = await transcribeAudio(new Blob([new Uint8Array(2000)], { type: "audio/webm" }), "voice.webm", "tr");
+    assert.equal(text, "beş koli tabasco");
+    assert.equal(seen[0].auth, "Bearer sk-proj-TESTKEY0123456789abcdefghij");
+    assert.equal(seen[1].auth, "Bearer sk-VOICEKEY0123456789abcdefghijk");
+  } finally {
+    globalThis.fetch = realFetch;
+    delete process.env.OPENAI_API_KEY;
+    delete process.env.VOICE_API_KEY;
+    delete process.env.VOICE_TTS_URL;
+    delete process.env.VOICE_STT_URL;
+  }
+});

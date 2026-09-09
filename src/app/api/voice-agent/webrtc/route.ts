@@ -7,7 +7,7 @@
  * WebRTC ile eşler arası gider, sunucu yalnızca sinyalleşmeyi yapar.
  */
 import { NextResponse } from "next/server";
-import { forwardOffer, realtimeConfigured } from "@/server/voice/realtime";
+import { forwardOffer, realtimeConfigured, safeDetail } from "@/server/voice/realtime";
 
 export const runtime = "nodejs";
 
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     const { status, body, contentType } = await forwardOffer(offer);
     return new NextResponse(body, { status, headers: { "Content-Type": contentType } });
   } catch (err) {
-    console.error("[voice-agent/webrtc]", err);
+    console.error("[voice-agent/webrtc]", safeDetail(String((err as Error)?.stack ?? err)));
     return NextResponse.json({ error: "Ses sağlayıcısına ulaşılamadı" }, { status: 502 });
   }
 }
