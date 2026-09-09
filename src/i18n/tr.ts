@@ -285,5 +285,5 @@ export const tr: Dictionary = {
     columns: { company: "İşletme", contact: "İlgili kişi", phone: "Telefon", email: "E-posta", status: "Durum", actions: "İşlem", date: "Tarih", lines: "Kalem", delivery: "Teslimat", estimate: "Tahmini" },
   },
   notFound: { title: "Sayfa bulunamadı", text: "Aradığınız sayfa taşınmış veya kaldırılmış olabilir.", home: "Ana sayfaya dön" },
-  common: { hours: "Pzt – Cum 08:00 – 17:00 · Cmt 09:00 – 13:00", pcs: "adet", case: "koli", increase: "artır", decrease: "azalt" },
+  common: { hours: "Pzt – Cum 08:00 – 17:00 · Cmt 09:00 – 13:00", pcs: "adet", case: "koli", increase: "artır", decrease: "azalt", enlarge: "büyüt", close: "kapat" },
 };

@@ -290,7 +290,7 @@ export const nl = {
     columns: { company: "Zaak", contact: "Contact", phone: "Telefoon", email: "E-mail", status: "Status", actions: "Acties", date: "Datum", lines: "Lijnen", delivery: "Levering", estimate: "Indicatief" },
   },
   notFound: { title: "Pagina niet gevonden", text: "De pagina die u zoekt is verplaatst of bestaat niet meer.", home: "Terug naar home" },
-  common: { hours: "ma – vr 08:00 – 17:00 · za 09:00 – 13:00", pcs: "stuks", case: "colli", increase: "verhogen", decrease: "verlagen" },
+  common: { hours: "ma – vr 08:00 – 17:00 · za 09:00 – 13:00", pcs: "stuks", case: "colli", increase: "verhogen", decrease: "verlagen", enlarge: "vergroten", close: "sluiten" },
 };
 
 export type Dictionary = typeof nl;
