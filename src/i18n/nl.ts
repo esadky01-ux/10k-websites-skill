@@ -306,7 +306,13 @@ export const nl = {
     error: "Even geen verbinding, probeer opnieuw.",
     hint: "Zeg bv. \"5 dozen mayonaise\" of \"3 dozen kip döner erbij\".",
     live: "Live spraak",
+    unavailable: "De spraakassistent is even niet beschikbaar op dit toestel.",
+    retry: "Opnieuw",
+    insecure: "Spraak werkt alleen via een beveiligde (https) verbinding.",
+    noMic: "Geen microfoon gevonden op dit toestel.",
+    restartFailed: "Het luisteren is gestopt. Tik opnieuw om verder te gaan.",
   },
+  errorPage: { title: "Er ging iets mis", text: "De pagina kon niet geladen worden. Probeer het opnieuw; als het blijft gebeuren, bel ons gerust.", retry: "Opnieuw proberen" },
   common: { hours: "ma – vr 08:00 – 17:00 · za 09:00 – 13:00", pcs: "stuks", case: "colli", increase: "verhogen", decrease: "verlagen", enlarge: "vergroten", close: "sluiten" },
 };
 

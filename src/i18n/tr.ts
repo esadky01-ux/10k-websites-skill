@@ -301,6 +301,12 @@ export const tr: Dictionary = {
     error: "Bağlantı kurulamadı, tekrar dener misin abi?",
     hint: "Örn. \"Bana 5 koli mayonez yaz\" veya \"3 kutu dana döner ekle\".",
     live: "Canlı ses",
+    unavailable: "Sesli asistan bu cihazda şu an kullanılamıyor.",
+    retry: "Tekrar dene",
+    insecure: "Ses yalnızca güvenli (https) bağlantıda çalışır.",
+    noMic: "Bu cihazda mikrofon bulunamadı.",
+    restartFailed: "Dinleme durdu. Devam etmek için tekrar dokun.",
   },
+  errorPage: { title: "Bir sorun oluştu", text: "Sayfa yüklenemedi. Tekrar deneyin; sorun sürerse bizi arayabilirsiniz.", retry: "Tekrar dene" },
   common: { hours: "Pzt – Cum 08:00 – 17:00 · Cmt 09:00 – 13:00", pcs: "adet", case: "koli", increase: "artır", decrease: "azalt", enlarge: "büyüt", close: "kapat" },
 };

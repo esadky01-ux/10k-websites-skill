@@ -292,6 +292,41 @@ await check("voice agent adds a spoken order to the cart", async () => {
   await vp.screenshot({ path: `${OUT}/voice-agent.png` });
   await vctx.close();
 });
+await check("voice agent survives a throwing speech engine (mobile) without crashing the page", async () => {
+  const mctx = await browser.newContext({ viewport: { width: 390, height: 760 }, locale: "tr-TR", userAgent: "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Mobile Safari/537.36" });
+  const mp2 = await mctx.newPage();
+  const pageErrors = [];
+  mp2.on("pageerror", (e) => pageErrors.push(String(e)));
+  await mp2.addInitScript(() => {
+    class ThrowingSR {
+      constructor() { window.__sr = this; }
+      start() { if (!window.__threw) { window.__threw = true; throw new DOMException("audio capture failed", "InvalidStateError"); } }
+      stop() {}
+      abort() { throw new Error("abort failed"); }
+    }
+    window.SpeechRecognition = ThrowingSR;
+    Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() { throw new Error("synth broken"); }, getVoices() { throw new Error("no voices"); }, speak() { throw new Error("speak broken"); } } });
+    window.SpeechSynthesisUtterance = class { constructor(t) { this.text = t; } };
+  });
+  await mp2.goto(`${BASE}/tr`, { waitUntil: "networkidle" });
+  await mp2.click("[data-testid=voice-open]");
+  await mp2.waitForSelector("[data-testid=voice-reply]");
+  await mp2.click("[data-testid=voice-mic]");
+  await mp2.waitForSelector("[data-testid=voice-panel] [role=alert]");
+  const notice = await mp2.textContent("[data-testid=voice-panel] [role=alert]");
+  assert(/kullanılamıyor|durdu/.test(notice ?? ""), `notice: ${notice}`);
+  assert(await mp2.locator("[data-testid=voice-panel]").isVisible(), "panel still visible");
+  assert(await mp2.locator("h1").first().isVisible(), "page content still rendered");
+  assert(pageErrors.length === 0, `uncaught: ${pageErrors.join(" | ")}`);
+  // İkinci denemede motor açılır; mikrofon izni reddi → nazik uyarı, sayfa ayakta
+  await mp2.click("[data-testid=voice-mic]");
+  await mp2.waitForFunction(() => document.querySelector("[data-testid=voice-status]")?.textContent?.includes("Dinliyor"));
+  await mp2.evaluate(() => { if (window.__sr.onerror) window.__sr.onerror({ error: "not-allowed" }); });
+  await mp2.waitForFunction(() => /Mikrofon izni/.test(document.querySelector("[data-testid=voice-panel] [role=alert]")?.textContent ?? ""));
+  assert(pageErrors.length === 0, `uncaught after denial: ${pageErrors.join(" | ")}`);
+  await mp2.screenshot({ path: `${OUT}/voice-agent-error.png` });
+  await mctx.close();
+});
 await check("voice agent API validates input and reports mode", async () => {
   const cfg = await (await ctx.request.get(`${BASE}/api/voice-agent`)).json();
   assert(cfg.agent === "Maximus Dijital Plasiyer" && cfg.greetings?.tr, "config");
