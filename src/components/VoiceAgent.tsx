@@ -31,6 +31,8 @@ type SR = {
   onresult: ((e: SREvent) => void) | null;
   onend: (() => void) | null;
   onerror: ((e: { error: string }) => void) | null;
+  onsoundstart: (() => void) | null;
+  onspeechstart: (() => void) | null;
   start: () => void;
   stop: () => void;
   abort: () => void;
@@ -64,8 +66,21 @@ const isMobile = () => typeof navigator !== "undefined" && /Android|iPhone|iPad|
 const RESTART_DELAY_MS = 300;
 const MAX_RESTARTS = 8;
 const RESTART_WINDOW_MS = 20_000;
-/** Bu süre içinde motor hiç sonuç vermezse kayıt yedeğine geçilir. */
-const NO_RESULT_TIMEOUT_MS = 15_000;
+/** Ses algılandı ama bu süre içinde sonuç gelmediyse motor bozuk sayılır → kayıt yedeği. */
+const NO_RESULT_AFTER_SOUND_MS = 10_000;
+/** Hiç ses algılanmadan geçen üst sınır (kullanıcı sessiz olabilir; yalnızca motor sürekli kapanıyorsa geçilir). */
+const NO_RESULT_HARD_MS = 60_000;
+const WATCHDOG_MS = 2_500;
+
+/** Cihaz dili Türkçe/Felemenkçe ise tanıma o dille başlar; aksi halde site dili. */
+function initialVoiceLang(siteLang: VoiceLang): VoiceLang {
+  if (typeof navigator === "undefined") return siteLang;
+  const l = (navigator.language || "").toLowerCase();
+  if (l.startsWith("tr")) return "tr";
+  if (l.startsWith("nl")) return "nl";
+  if (l.startsWith("ku")) return "ku";
+  return siteLang;
+}
 const STT_LANG: Record<VoiceLang, string> = { tr: "tr", nl: "nl", ku: "ku" };
 
 function pickMime(): string {
@@ -109,6 +124,8 @@ export default function VoiceAgent() {
   const restartTimerRef = useRef<number | null>(null);
   const noResultTimerRef = useRef<number | null>(null);
   const gotResultRef = useRef(false);
+  const heardAtRef = useRef(0);
+  const sessionStartRef = useRef(0);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -226,7 +243,7 @@ export default function VoiceAgent() {
       restartTimerRef.current = null;
     }
     if (noResultTimerRef.current !== null) {
-      window.clearTimeout(noResultTimerRef.current);
+      window.clearInterval(noResultTimerRef.current);
       noResultTimerRef.current = null;
     }
     const r = recRef.current;
@@ -377,6 +394,8 @@ export default function VoiceAgent() {
       return;
     }
     gotResultRef.current = false;
+    heardAtRef.current = 0;
+    sessionStartRef.current = Date.now();
     const mobile = isMobile();
     safe(() => {
       r.lang = RECOG_LANG[langRef.current];
@@ -415,6 +434,11 @@ export default function VoiceAgent() {
         report("onresult", err);
       }
     };
+
+    r.onsoundstart = () => {
+      if (!heardAtRef.current) heardAtRef.current = Date.now();
+    };
+    r.onspeechstart = r.onsoundstart;
 
     r.onerror = (e) => {
       const code = e?.error ?? "";
@@ -470,20 +494,27 @@ export default function VoiceAgent() {
       switchToRecorder("start", err);
       return;
     }
-    // Motor açık görünüp hiç sonuç üretmiyorsa (Android'de sık görülür) kayıt yedeğine geç
-    noResultTimerRef.current = window.setTimeout(() => {
-      noResultTimerRef.current = null;
-      if (activeRef.current && recRef.current === r && !gotResultRef.current && !busyRef.current) {
+    // Bekçi: ses algılandı ama sonuç gelmiyorsa (Android'de sık görülür) kayıt yedeğine geç.
+    // Kullanıcı sadece sessizse beklemeye devam eder; motor uzun süre hiç sonuç vermeden sürekli kapanıyorsa yine geçer.
+    noResultTimerRef.current = window.setInterval(() => {
+      if (!activeRef.current || recRef.current !== r || gotResultRef.current || busyRef.current) return;
+      const now = Date.now();
+      const heardTooLong = heardAtRef.current > 0 && now - heardAtRef.current > NO_RESULT_AFTER_SOUND_MS;
+      const stuck = now - sessionStartRef.current > NO_RESULT_HARD_MS && restartsRef.current.length >= 3;
+      if (heardTooLong || stuck) {
         stopListening();
-        switchToRecorder("SpeechRecognition sonuç vermedi", new Error(`no result in ${NO_RESULT_TIMEOUT_MS / 1000}s`));
+        switchToRecorder("SpeechRecognition sonuç vermedi", new Error(heardTooLong ? `sound heard, no result in ${NO_RESULT_AFTER_SOUND_MS / 1000}s` : `no result in ${NO_RESULT_HARD_MS / 1000}s`));
       }
-    }, NO_RESULT_TIMEOUT_MS);
+    }, WATCHDOG_MS);
   }, [handleUtterance, report, stopListening, switchToRecorder, tv.insecure, tv.micDenied]);
 
   /** Panel açılınca yapılandırmayı al ve karşılama cümlesini söyle. */
   useEffect(() => {
     if (!open || greetedRef.current) return;
     greetedRef.current = true;
+    const l = initialVoiceLang(siteLang);
+    langRef.current = l;
+    setVoiceLang(l);
     fetch("/api/voice-agent")
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
       .then((c: Config) => {
@@ -500,7 +531,7 @@ export default function VoiceAgent() {
         report("config", err);
         setNotice(tv.error);
       });
-  }, [open, report, speak, tv.error]);
+  }, [open, report, siteLang, speak, tv.error]);
 
   // Escape ile kapat; kapanınca dinlemeyi ve konuşmayı durdur
   useEffect(() => {
