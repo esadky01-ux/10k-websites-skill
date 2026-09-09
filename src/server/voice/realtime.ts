@@ -8,8 +8,20 @@
  *   VOICE_REALTIME_URL  sağlayıcının SDP uç noktası, örn. https://api.<saglayici>.com/v1/realtime
  *   VOICE_MODEL         isteğe bağlı model/ses kimliği; sorgu parametresi olarak eklenir
  */
+import { cleanApiKey, redactSecrets } from "./secrets";
+
+/** VOICE_API_KEY temizlenmiş hali (curl örneği yapıştırılmışsa yalnızca token). */
+export function voiceKey(): string | undefined {
+  return cleanApiKey(process.env.VOICE_API_KEY);
+}
+
+/** Hata ayrıntısını anahtar sızdırmadan döndürür. */
+export function safeDetail(text: string): string {
+  return redactSecrets(text, voiceKey(), cleanApiKey(process.env.OPENAI_API_KEY)).slice(0, 300);
+}
+
 export function realtimeConfigured(): boolean {
-  return !!(process.env.VOICE_API_KEY && process.env.VOICE_REALTIME_URL);
+  return !!(voiceKey() && process.env.VOICE_REALTIME_URL);
 }
 
 export async function forwardOffer(offerSdp: string): Promise<{ status: number; body: string; contentType: string }> {
@@ -17,7 +29,7 @@ export async function forwardOffer(offerSdp: string): Promise<{ status: number; 
   if (process.env.VOICE_MODEL) url.searchParams.set("model", process.env.VOICE_MODEL);
   const res = await fetch(url, {
     method: "POST",
-    headers: { Authorization: `Bearer ${process.env.VOICE_API_KEY}`, "Content-Type": "application/sdp" },
+    headers: { Authorization: `Bearer ${voiceKey()}`, "Content-Type": "application/sdp" },
     body: offerSdp,
     signal: AbortSignal.timeout(15_000),
   });
@@ -33,7 +45,7 @@ export async function forwardOffer(offerSdp: string): Promise<{ status: number; 
  *   VOICE_API_KEY    Bearer anahtarı (gerçek zamanlı köprüyle ortak)
  */
 export function sttConfigured(): boolean {
-  return !!(process.env.VOICE_API_KEY && process.env.VOICE_STT_URL);
+  return !!(voiceKey() && process.env.VOICE_STT_URL);
 }
 
 export class SttError extends Error {
@@ -51,7 +63,7 @@ async function postStt(audio: Blob, filename: string, lang?: string): Promise<Re
   if (lang) form.append("language", lang);
   return fetch(process.env.VOICE_STT_URL as string, {
     method: "POST",
-    headers: { Authorization: `Bearer ${process.env.VOICE_API_KEY}` },
+    headers: { Authorization: `Bearer ${voiceKey()}` },
     body: form,
     signal: AbortSignal.timeout(30_000),
   });
@@ -61,7 +73,7 @@ async function postStt(audio: Blob, filename: string, lang?: string): Promise<Re
 export async function transcribeAudio(audio: Blob, filename: string, lang?: string): Promise<string> {
   let res = await postStt(audio, filename, lang);
   if (res.status === 400 && lang) res = await postStt(audio, filename);
-  if (!res.ok) throw new SttError(res.status, (await res.text()).replace(/\s+/g, " ").slice(0, 300));
+  if (!res.ok) throw new SttError(res.status, safeDetail((await res.text()).replace(/\s+/g, " ")));
   const data = (await res.json()) as { text?: string };
   return (data.text ?? "").trim();
 }
@@ -77,7 +89,7 @@ export async function transcribeAudio(audio: Blob, filename: string, lang?: stri
 const TTS_DEFAULT_URL = "https://api.openai.com/v1/audio/speech";
 
 function ttsKey(): string | undefined {
-  return process.env.OPENAI_API_KEY || process.env.VOICE_API_KEY || undefined;
+  return cleanApiKey(process.env.OPENAI_API_KEY) ?? voiceKey();
 }
 
 export function ttsConfigured(): boolean {
@@ -107,7 +119,7 @@ export async function synthesizeSpeech(text: string): Promise<Buffer> {
     body: JSON.stringify({ model, voice, input: text, response_format: "mp3", speed: 1.0 }),
     signal: AbortSignal.timeout(30_000),
   });
-  if (!res.ok) throw new TtsError(res.status, (await res.text()).replace(/\s+/g, " ").slice(0, 300));
+  if (!res.ok) throw new TtsError(res.status, safeDetail((await res.text()).replace(/\s+/g, " ")));
   const buf = Buffer.from(await res.arrayBuffer());
   if (ttsCache.size >= TTS_CACHE_MAX) ttsCache.delete(ttsCache.keys().next().value as string);
   ttsCache.set(key, buf);

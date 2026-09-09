@@ -11,7 +11,9 @@ export function describeError(err: unknown): string {
   const e = err as { name?: string; message?: string } | undefined;
   const name = e?.name || "Error";
   const message = e?.message || String(err ?? "");
-  return `${name}: ${message}`.slice(0, 300);
+  // Hassas değerler (anahtar, Bearer, Authorization) ekranda asla görünmesin
+  const redacted = `${name}: ${message}`.replace(/sk-[A-Za-z0-9_-]{8,}/g, "sk-***").replace(/(bearer\s+)[^\s"']+/gi, "$1***").replace(/(authorization\s*[:=]\s*)[^\r\n]+/gi, "$1***");
+  return redacted.slice(0, 300);
 }
 
 /** İstemci hatasını sunucu loguna gönderir (Vercel Functions logunda görünür). Asla fırlatmaz. */
@@ -21,7 +23,7 @@ export function logClientError(where: string, err: unknown) {
     void fetch("/api/voice-agent/log", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ where, name: e?.name ?? "Error", message: e?.message ?? String(err ?? ""), stack: e?.stack ?? "", ua: typeof navigator !== "undefined" ? navigator.userAgent : "" }),
+      body: JSON.stringify({ where, name: e?.name ?? "Error", message: describeError(err), stack: (e?.stack ?? "").replace(/sk-[A-Za-z0-9_-]{8,}/g, "sk-***"), ua: typeof navigator !== "undefined" ? navigator.userAgent : "" }),
       keepalive: true,
     }).catch(() => undefined);
   } catch {
