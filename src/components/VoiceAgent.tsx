@@ -87,8 +87,11 @@ function pickMime(): string {
   return "";
 }
 
-/** Kullanıcı dokunuşunda ses kilidini açmak için 0,1 sn sessiz WAV. */
-const SILENT_WAV = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=";
+/**
+ * Kullanıcı dokunuşunda ses kilidini açmak için 50 ms sessiz WAV (8 kHz, mono, 16 bit, 400 örnek).
+ * Önceki sürümde veri bloğu 0 bayttı; Firefox ve Android Chrome bunu NotSupportedError ile reddediyordu.
+ */
+const SILENT_WAV = "data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YSADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==";
 
 export default function VoiceAgent() {
   const cart = useCart();
@@ -129,6 +132,7 @@ export default function VoiceAgent() {
   const firstStartRef = useRef(0);
   const speechEndedAtRef = useRef(0);
   const audioUnlockedRef = useRef(false);
+  const audioCtxRef = useRef<AudioContext | null>(null);
   const pendingAudioRef = useRef<{ url: string; text: string; lang: VoiceLang } | null>(null);
   const pausedForSpeechRef = useRef(false);
   const startListeningRef = useRef<() => void>(() => undefined);
@@ -159,9 +163,22 @@ export default function VoiceAgent() {
    */
   const unlockAudio = useCallback(() => {
     if (audioUnlockedRef.current) return;
+    // 1) Web Audio bağlamını dokunuş içinde başlat (Safari/Chrome otomatik oynatma politikası)
+    try {
+      const w = window as unknown as { AudioContext?: typeof AudioContext; webkitAudioContext?: typeof AudioContext };
+      const Ctx = w.AudioContext ?? w.webkitAudioContext;
+      if (Ctx) {
+        if (!audioCtxRef.current) audioCtxRef.current = new Ctx();
+        void audioCtxRef.current.resume().catch(() => undefined);
+      }
+    } catch (err) {
+      console.debug("[voice-agent] AudioContext:", err);
+    }
+    // 2) Panel içindeki <audio> öğesini sessiz bir WAV ile bir kez çalıştır; sonraki mp3'ler dokunuş olmadan çalabilir.
+    //    Başarısızlık akışı asla bozmaz: ne uyarı ne mod değişimi; gerçek mp3 gelince yine denenir ("Sesi aç" düğmesi yedek).
     const el = ttsAudioRef.current;
     if (el) {
-      safe(() => {
+      try {
         el.muted = false;
         el.volume = 1;
         el.src = SILENT_WAV;
@@ -170,18 +187,23 @@ export default function VoiceAgent() {
           pr.then(() => {
             audioUnlockedRef.current = true;
             el.pause();
-          }).catch((err: unknown) => report("audio.unlock", err));
+          }).catch((err: unknown) => console.debug("[voice-agent] audio.unlock:", err));
         } else audioUnlockedRef.current = true;
-      }, "audio.unlock");
+      } catch (err) {
+        console.debug("[voice-agent] audio.unlock:", err);
+      }
     }
-    safe(() => {
+    // 3) speechSynthesis ısındır (tarayıcı sesi yedeği için)
+    try {
       const synth = window.speechSynthesis;
       if (synth) {
         synth.resume();
         synth.getVoices();
       }
-    }, "synth.warmup");
-  }, [report]);
+    } catch (err) {
+      console.debug("[voice-agent] synth.warmup:", err);
+    }
+  }, []);
 
   /** Mobilde konuşma sırasında tanımayı duraklat (ses odağı çatışması); konuşma bitince geri başlat. */
   const pauseListeningForSpeech = useCallback(() => {
@@ -780,6 +802,8 @@ export default function VoiceAgent() {
       recRef.current = null;
       safe(() => window.speechSynthesis?.cancel(), "cancel");
       safe(() => ttsAudioRef.current?.pause(), "audio.pause");
+      safe(() => void audioCtxRef.current?.close(), "audioCtx.close");
+      audioCtxRef.current = null;
       safe(() => pcRef.current?.close(), "pc.close");
       pcRef.current = null;
       safe(() => recorderRef.current?.stop(), "recorder.stop");
