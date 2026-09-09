@@ -70,6 +70,9 @@ export default function QuickOrderMatrix() {
         </div>
       );
     }
+    if (customer && customer.status !== "approved") {
+      return <span className="inline-flex items-center gap-1 rounded-full bg-gold-500/20 px-2.5 py-1 text-xs font-semibold text-yellow-800" title={t.auth.pendingTitle}><Lock className="h-3 w-3" />{tt.pendingPrice}</span>;
+    }
     if (customer) return <span className="text-xs text-ink-500">—</span>;
     return (
       <Link href={localePath(lang, "login")} className="inline-flex items-center gap-1.5 rounded-full border border-cream-200 px-3 py-1.5 text-xs font-semibold text-ink-700 hover:border-brand-500 hover:text-brand-600">

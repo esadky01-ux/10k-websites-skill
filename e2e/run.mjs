@@ -114,14 +114,39 @@ const email = `e2e-${Date.now()}@example.com`;
 await check("register via form lands on account page", async () => {
   await page.goto(`${BASE}/registreren`, { waitUntil: "networkidle" });
   await page.fill('input[name="company"]', "E2E Dönerzaak");
-  await page.fill('input[name="contact"]', "Test Persoon");
+  await page.fill('input[name="firstName"]', "Test");
+  await page.fill('input[name="lastName"]', "Persoon");
   await page.fill('input[name="phone"]', "+32 470 00 00 00");
   await page.fill('input[name="email"]', email);
   await page.fill('input[name="password"]', "wachtwoord123");
   await page.click('button[type="submit"]');
   await page.waitForURL(/\/account$/, { timeout: 15000 });
   await page.waitForSelector("text=E2E Dönerzaak");
-  await page.screenshot({ path: `${OUT}/account-empty.png` });
+  await page.waitForSelector('[data-testid="status-banner"]');
+  await page.screenshot({ path: `${OUT}/account-pending.png` });
+});
+await check("pending account sees no prices, prices API returns 403", async () => {
+  const r = await ctx.request.get(`${BASE}/api/prices`);
+  assert(r.status() === 403, `status ${r.status()}`);
+  await page.goto(`${BASE}/bestellen?categorie=icecekler`, { waitUntil: "networkidle" });
+  await page.waitForSelector("table");
+  await page.waitForSelector("table >> text=Na goedkeuring");
+  assert(!/€ \d/.test(await page.locator("table").innerText()), "no prices for pending account");
+});
+await check("admin logs in at /beheer and approves the customer", async () => {
+  const admin = await browser.newContext({ viewport: { width: 1400, height: 900 } });
+  const ap = await admin.newPage();
+  await ap.goto(`${BASE}/beheer`, { waitUntil: "networkidle" });
+  await ap.fill('input[name="password"]', process.env.ADMIN_PASSWORD ?? "e2e-admin");
+  await ap.click('button[type="submit"]');
+  await ap.waitForSelector("text=E2E Dönerzaak");
+  await ap.screenshot({ path: `${OUT}/admin-pending.png`, fullPage: true });
+  const btn = ap.locator('button[data-testid^="approve-"]').first();
+  await btn.click();
+  await ap.waitForSelector("text=Goedgekeurd");
+  await ap.screenshot({ path: `${OUT}/admin-approved.png`, fullPage: true });
+  await admin.close();
+  await page.reload({ waitUntil: "networkidle" });
 });
 await check("logged-in order page shows prices and estimate in cart", async () => {
   await page.goto(`${BASE}/bestellen?categorie=icecekler`, { waitUntil: "networkidle" });
@@ -217,8 +242,8 @@ await check("mobile home renders without horizontal overflow", async () => {
   await mp.screenshot({ path: `${OUT}/mobile-home.png` });
 });
 await check("no console errors during run", async () => {
-  // 401 yanıtları tasarım gereği (yanlış şifre, oturumsuz fiyat isteği)
-  const real = consoleErrors.filter((e) => !/favicon|404|401/.test(e));
+  // 401/403 yanıtları tasarım gereği (yanlış şifre, oturumsuz veya onaysız fiyat isteği)
+  const real = consoleErrors.filter((e) => !/favicon|404|401|403/.test(e));
   assert(real.length === 0, real.slice(0, 3).join(" | "));
 });
 

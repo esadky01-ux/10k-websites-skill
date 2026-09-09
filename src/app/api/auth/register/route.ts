@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getStore } from "@/server/store";
 import { hashPassword, publicProfile, setSessionCookie } from "@/server/auth";
+import { notifyOwnerNewRegistration } from "@/server/notify";
 
 export async function POST(req: Request) {
   let body: Record<string, string>;
@@ -12,9 +13,11 @@ export async function POST(req: Request) {
   const email = (body.email ?? "").toLowerCase().trim();
   const password = body.password ?? "";
   const company = (body.company ?? "").trim();
-  const contact = (body.contact ?? "").trim();
+  const firstName = (body.firstName ?? "").trim();
+  const lastName = (body.lastName ?? "").trim();
+  const contact = `${firstName} ${lastName}`.trim();
   const phone = (body.phone ?? "").trim();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || password.length < 8 || !company || !contact || !phone) {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || password.length < 8 || !company || !firstName || !lastName || !phone) {
     return NextResponse.json({ error: "required" }, { status: 400 });
   }
   const store = getStore();
@@ -26,6 +29,8 @@ export async function POST(req: Request) {
     passwordHash: hashPassword(password),
     company,
     vat: (body.vat ?? "").trim() || undefined,
+    firstName,
+    lastName,
     contact,
     phone,
     street: (body.street ?? "").trim() || undefined,
@@ -34,7 +39,9 @@ export async function POST(req: Request) {
     country: (body.country ?? "BE").trim() || "BE",
     businessType: (body.businessType ?? "").trim() || undefined,
     lang: body.lang === "tr" ? "tr" : "nl",
+    status: "pending",
   });
+  void notifyOwnerNewRegistration(customer);
   await setSessionCookie(customer.id);
   return NextResponse.json({ customer: publicProfile(customer) }, { status: 201 });
 }

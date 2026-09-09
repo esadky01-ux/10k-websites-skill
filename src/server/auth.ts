@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { getStore, type CustomerRecord } from "./store";
 
 const COOKIE = "mx_session";
+const ADMIN_COOKIE = "mx_admin";
 const MAX_AGE = 60 * 60 * 24 * 30; // 30 gün
 
 function secret(): string {
@@ -86,3 +87,31 @@ export function publicProfile(c: CustomerRecord) {
   return rest;
 }
 export type PublicProfile = ReturnType<typeof publicProfile>;
+
+// ───────────── Yönetici oturumu (ADMIN_PASSWORD ile) ─────────────
+export function adminPasswordConfigured(): boolean {
+  return !!process.env.ADMIN_PASSWORD;
+}
+
+export function verifyAdminPassword(password: string): boolean {
+  const expected = process.env.ADMIN_PASSWORD;
+  if (!expected) return false;
+  const a = Buffer.from(password), b = Buffer.from(expected);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
+
+export async function setAdminCookie() {
+  const store = await cookies();
+  store.set(ADMIN_COOKIE, createSessionToken("admin"), { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 60 * 60 * 12 });
+}
+
+export async function clearAdminCookie() {
+  const store = await cookies();
+  store.set(ADMIN_COOKIE, "", { httpOnly: true, path: "/", maxAge: 0 });
+}
+
+export async function isAdmin(): Promise<boolean> {
+  const store = await cookies();
+  const payload = readSessionToken(store.get(ADMIN_COOKIE)?.value);
+  return payload?.sub === "admin";
+}

@@ -22,7 +22,10 @@ test("session tokens are signed and expire", () => {
 
 test("FileStore persists customers, orders and lists", async () => {
   const store = new FileStore(mkdtempSync(path.join(tmpdir(), "mx-store-")));
-  const c = await store.createCustomer({ email: "Test@Example.com", passwordHash: "x", company: "Zaak", contact: "Ali", phone: "0467 07 71 64", country: "BE", lang: "nl" });
+  const c = await store.createCustomer({ email: "Test@Example.com", passwordHash: "x", company: "Zaak", firstName: "Ali", lastName: "Yılmaz", contact: "Ali Yılmaz", phone: "0467 07 71 64", country: "BE", lang: "nl", status: "pending" });
+  assert.equal((await store.listCustomers()).length, 1);
+  await store.setCustomerStatus(c.id, "approved");
+  assert.equal((await store.getCustomerById(c.id))?.status, "approved");
   assert.equal((await store.getCustomerByEmail("test@example.com"))?.id, c.id);
   assert.equal((await store.getCustomerByPhone("+32467077164"))?.id, c.id);
   await store.createOrder({ customerId: c.id, delivery: "depo", lines: [{ productId: "fd-drk-023", cases: 2, units: 0 }], status: "whatsapp" });

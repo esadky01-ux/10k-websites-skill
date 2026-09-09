@@ -77,7 +77,8 @@ export default function AccountPanel() {
           <p className="text-sm text-ink-500">{customer.email}</p>
           {customer.vat && <p className="text-sm text-ink-500">{customer.vat}</p>}
           {(customer.street || customer.city) && <p className="mt-2 text-sm text-ink-500">{[customer.street, [customer.postcode, customer.city].filter(Boolean).join(" ")].filter(Boolean).join(", ")}</p>}
-          <p className="mt-4 text-xs text-ink-500">{ta.prices}</p>
+          <span className={`mt-3 inline-block rounded-full px-2.5 py-1 text-xs font-semibold ${customer.status === "approved" ? "bg-wa/15 text-wa-dark" : customer.status === "pending" ? "bg-gold-500/20 text-yellow-800" : "bg-brand-50 text-brand-700"}`}>{ta.statusLabel[customer.status]}</span>
+          {customer.status === "approved" && <p className="mt-4 text-xs text-ink-500">{ta.prices}</p>}
           <Link href={localePath(lang, "order")} className="mt-3 inline-flex items-center gap-2 rounded-full bg-brand-500 px-4 py-2 text-sm font-bold text-white hover:bg-brand-600">{ta.goOrder} <ArrowRight className="h-4 w-4" /></Link>
         </div>
         <button type="button" onClick={async () => { leaving.current = true; await logout(); router.push(localePath(lang)); }} className="inline-flex items-center gap-2 text-sm font-semibold text-ink-500 hover:text-brand-500">
@@ -86,6 +87,12 @@ export default function AccountPanel() {
       </aside>
 
       <div className="space-y-8">
+        {customer.status !== "approved" && (
+          <div className={`rounded-2xl border p-5 ${customer.status === "pending" ? "border-gold-500/60 bg-gold-500/10" : "border-brand-500/40 bg-brand-50"}`} data-testid="status-banner">
+            <p className="font-bold text-ink-900">{customer.status === "pending" ? t.auth.pendingTitle : t.auth.rejectedTitle}</p>
+            <p className="mt-1 text-sm text-ink-700">{customer.status === "pending" ? t.auth.pendingText : t.auth.rejectedText}</p>
+          </div>
+        )}
         {orders[0] && (
           <button type="button" onClick={() => reorder(orders[0].lines)} className="flex w-full items-center justify-between gap-4 rounded-2xl bg-ink-900 p-5 text-left text-white transition hover:bg-ink-800" data-testid="reorder-last">
             <span>

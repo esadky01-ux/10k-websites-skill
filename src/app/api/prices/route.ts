@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const customer = await currentCustomer();
   if (!customer) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  if (customer.status !== "approved") return NextResponse.json({ error: "pending", status: customer.status }, { status: 403 });
   return NextResponse.json({ prices: getPricesForCustomer(customer.pricelist), currency: "EUR" }, {
     headers: { "Cache-Control": "private, no-store" },
   });

@@ -13,6 +13,9 @@ export type CustomerRecord = {
   passwordHash: string;
   company: string;
   vat?: string;
+  firstName: string;
+  lastName: string;
+  /** Tam ad (firstName + lastName) */
   contact: string;
   phone: string;
   street?: string;
@@ -21,6 +24,9 @@ export type CustomerRecord = {
   country: string;
   businessType?: string;
   lang: "nl" | "tr";
+  /** Hesap durumu: yeni kayıtlar onay bekler; fiyatlar yalnızca onaylı hesaplara gösterilir */
+  status: "pending" | "approved" | "rejected";
+  approvedAt?: string;
   createdAt: string;
   /** Odoo'daki res.partner id'si (ileride) */
   odooPartnerId?: number;
@@ -67,6 +73,9 @@ export interface CustomerStore {
   getCustomerById(id: string): Promise<CustomerRecord | undefined>;
   getCustomerByPhone(phone: string): Promise<CustomerRecord | undefined>;
   createCustomer(c: Omit<CustomerRecord, "id" | "createdAt">): Promise<CustomerRecord>;
+  listCustomers(): Promise<CustomerRecord[]>;
+  setCustomerStatus(id: string, status: CustomerRecord["status"]): Promise<CustomerRecord | undefined>;
+  listAllOrders(limit?: number): Promise<OrderRecord[]>;
   listOrders(customerId: string, limit?: number): Promise<OrderRecord[]>;
   createOrder(o: Omit<OrderRecord, "id" | "createdAt">): Promise<OrderRecord>;
   listSavedLists(customerId: string): Promise<SavedList[]>;
@@ -141,6 +150,23 @@ export class FileStore implements CustomerStore {
       d.customers.push(rec);
       return rec;
     });
+  }
+  async listCustomers() {
+    const d = await this.read();
+    return [...d.customers].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  }
+  setCustomerStatus(id: string, status: CustomerRecord["status"]) {
+    return this.mutate((d) => {
+      const c = d.customers.find((x) => x.id === id);
+      if (!c) return undefined;
+      c.status = status;
+      if (status === "approved") c.approvedAt = new Date().toISOString();
+      return c;
+    });
+  }
+  async listAllOrders(limit = 50) {
+    const d = await this.read();
+    return [...d.orders].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, limit);
   }
   async listOrders(customerId: string, limit = 20) {
     const d = await this.read();

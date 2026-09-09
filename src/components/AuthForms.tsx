@@ -84,7 +84,8 @@ export function RegisterForm() {
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label={t.auth.company + " *"}><input name="company" required className={input} /></Field>
         <Field label={t.auth.vat}><input name="vat" placeholder="BE0123.456.789" className={input} /></Field>
-        <Field label={t.auth.contact + " *"}><input name="contact" required autoComplete="name" className={input} /></Field>
+        <Field label={t.auth.firstName + " *"}><input name="firstName" required autoComplete="given-name" className={input} /></Field>
+        <Field label={t.auth.lastName + " *"}><input name="lastName" required autoComplete="family-name" className={input} /></Field>
         <Field label={t.auth.phone + " *"}><input name="phone" type="tel" required autoComplete="tel" placeholder="+32 4xx xx xx xx" className={input} /></Field>
         <Field label={t.auth.businessType}>
           <select name="businessType" className={input} defaultValue={t.auth.businessTypes[0]}>

@@ -14,6 +14,7 @@ export const routeSlugs = {
   account: { nl: "account", tr: "hesap" },
   login: { nl: "inloggen", tr: "giris" },
   register: { nl: "registreren", tr: "kayit" },
+  admin: { nl: "beheer", tr: "yonetim" },
 } as const;
 
 export type RouteKey = keyof typeof routeSlugs;
