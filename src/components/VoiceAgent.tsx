@@ -759,14 +759,14 @@ export default function VoiceAgent() {
           aria-label={tv.name}
           data-testid="voice-panel"
         >
-          <header className="flex items-center justify-between bg-ink-900 px-4 py-3 text-white">
+          <header className="notranslate flex items-center justify-between bg-ink-900 px-4 py-3 text-white" translate="no">
             <div className="flex items-center gap-2">
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-500"><Mic className="h-4 w-4" /></span>
               <div>
-                <p className="text-sm font-bold leading-tight">{config?.agent ?? tv.name}</p>
+                <p className="text-sm font-bold leading-tight"><span>{config?.agent ?? tv.name}</span></p>
                 <p className="text-[11px] text-cream-100/70" data-testid="voice-status">
-                  {statusLabel} · <span className="uppercase" data-testid="voice-lang">{voiceLang}</span>
-                  {mode === "recorder" && <span className="ml-1 rounded bg-white/15 px-1.5 py-0.5 text-[10px] font-semibold" data-testid="voice-mode">{tv.recorder}</span>}
+                  <span>{statusLabel}</span> · <span className="uppercase" data-testid="voice-lang">{voiceLang}</span>
+                  {mode === "recorder" && <span className="ml-1 rounded bg-white/15 px-1.5 py-0.5 text-[10px] font-semibold" data-testid="voice-mode"><span>{tv.recorder}</span></span>}
                 </p>
               </div>
             </div>
@@ -775,25 +775,25 @@ export default function VoiceAgent() {
             </button>
           </header>
 
-          <div className="px-4 pb-4 pt-3">
+          <div className="notranslate px-4 pb-4 pt-3" translate="no">
             <div className={`voice-wave voice-wave--${status}`} aria-hidden>
               {[0, 1, 2, 3, 4].map((i) => <span key={i} style={{ animationDelay: `${i * 0.12}s` }} />)}
             </div>
 
-            <div className="mt-3 min-h-[72px] space-y-2 text-sm">
+            <div className="notranslate mt-3 min-h-[72px] space-y-2 text-sm" translate="no">
               {lastReply && (
-                <p className="rounded-2xl rounded-tl-sm bg-cream-100 px-3 py-2 text-ink-900" data-testid="voice-reply">{lastReply}</p>
+                <p className="rounded-2xl rounded-tl-sm bg-cream-100 px-3 py-2 text-ink-900" data-testid="voice-reply"><span>{lastReply}</span></p>
               )}
               {(interim || lastUser) && (
-                <p className={`ml-8 rounded-2xl rounded-tr-sm px-3 py-2 ${interim ? "bg-brand-50 text-ink-500 italic" : "bg-brand-500 text-white"}`} data-testid="voice-user">{interim || lastUser}</p>
+                <p className={`ml-8 rounded-2xl rounded-tr-sm px-3 py-2 ${interim ? "bg-brand-50 text-ink-500 italic" : "bg-brand-500 text-white"}`} data-testid="voice-user"><span>{interim || lastUser}</span></p>
               )}
-              {!lastReply && !lastUser && <p className="text-xs text-ink-500">{tv.hint}</p>}
+              {!lastReply && !lastUser && <p className="text-xs text-ink-500"><span>{tv.hint}</span></p>}
             </div>
 
-            {notice && <p className="mt-2 text-xs font-semibold text-brand-600" role="alert">{notice}</p>}
-            {detail && <p className="mt-1 break-words font-mono text-[10px] leading-snug text-ink-500" data-testid="voice-detail">{detail}</p>}
+            {notice && <p className="mt-2 text-xs font-semibold text-brand-600" role="alert"><span>{notice}</span></p>}
+            {detail && <p className="mt-1 break-words font-mono text-[10px] leading-snug text-ink-500" data-testid="voice-detail"><span>{detail}</span></p>}
 
-            <div className="mt-3 flex items-center gap-3">
+            <div className="notranslate mt-3 flex items-center gap-3" translate="no">
               <button
                 type="button"
                 onPointerDown={onPressStart}
@@ -808,7 +808,7 @@ export default function VoiceAgent() {
                 disabled={live}
               >
                 {listening ? <MicOff className="h-5 w-5" /> : mode === "recorder" ? <Disc className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
-                {mode === "recorder" ? (listening ? tv.stopRecord : tv.tapRecord) : listening ? tv.stop : tv.tap}
+                <span>{mode === "recorder" ? (listening ? tv.stopRecord : tv.tapRecord) : listening ? tv.stop : tv.tap}</span>
               </button>
               {config?.realtime && (
                 <button
@@ -819,11 +819,11 @@ export default function VoiceAgent() {
                   title={tv.live}
                 >
                   {live ? <Square className="h-4 w-4" /> : <Radio className="h-4 w-4" />}
-                  {tv.live}
+                  <span>{tv.live}</span>
                 </button>
               )}
             </div>
-            <p className="mt-2 text-center text-[11px] text-ink-500">{tv.hold} · {tv.tap}</p>
+            <p className="mt-2 text-center text-[11px] text-ink-500"><span>{tv.hold}</span> · <span>{tv.tap}</span></p>
             <audio ref={audioRef} autoPlay hidden />
             <audio ref={ttsAudioRef} playsInline preload="auto" hidden data-testid="voice-tts-audio" />
           </div>

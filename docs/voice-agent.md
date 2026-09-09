@@ -46,8 +46,8 @@ ses akışı tarayıcı ↔ sağlayıcı arasında doğrudan (WebRTC); data chan
 ### Chrome otomatik çeviri uyarısı
 
 Chrome'un "sayfayı çevir" özelliği DOM'daki metin düğümlerini değiştirir; React bu düğümleri yeniden düzenlerken
-`NotFoundError: insertBefore` hatası oluşur. Sesli asistan, sepet paneli, üst çubuk butonları ve miktar sayaçları bu yüzden
-`translate="no"` ile işaretlidir. Site zaten Türkçe ve Felemenkçe sunulduğundan dil için sağ üstteki dil değiştirici kullanılmalı.
+`NotFoundError: insertBefore` hatası oluşur. Bu yüzden `<html translate="no">` ve `<meta name="google" content="notranslate">` ile sayfa çevirisi tamamen kapalıdır;
+sesli asistanın kapsayıcıları ayrıca `translate="no"` taşır ve tüm dinamik metinler sabit `<span>` içinde render edilir. Site zaten Türkçe ve Felemenkçe sunulduğundan dil için sağ üstteki dil değiştirici kullanılmalı.
 
 ## Yapılandırma (.env)
 

@@ -402,6 +402,48 @@ await check("voice agent transcribe, tts and log endpoints respond", async () =>
   const tr = await ctx.request.post(`${BASE}/api/voice-agent/transcribe`, { multipart: { audio: { name: "a.webm", mimeType: "audio/webm", buffer: Buffer.alloc(2000) }, lang: "tr" } });
   assert(tr.status() === 503, `expected 503 without VOICE_STT_URL, got ${tr.status()}`);
 });
+await check("page opts out of Google Translate and the voice panel survives a translated DOM", async () => {
+  const gctx = await browser.newContext({ viewport: { width: 390, height: 760 }, locale: "tr-TR", userAgent: "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Mobile Safari/537.36" });
+  const gp = await gctx.newPage();
+  const pageErrors = [];
+  gp.on("pageerror", (e) => pageErrors.push(String(e)));
+  await gp.addInitScript(() => {
+    class FakeSR { constructor() { window.__sr = this; } start() {} stop() {} abort() {} }
+    window.SpeechRecognition = FakeSR;
+    Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() {}, getVoices() { return []; }, speak(u) { setTimeout(() => { if (u.onstart) u.onstart(); if (u.onend) u.onend(); }, 0); } } });
+    window.SpeechSynthesisUtterance = class { constructor(t) { this.text = t; } };
+  });
+  await gp.goto(`${BASE}/`, { waitUntil: "networkidle" });
+  assert((await gp.getAttribute("html", "translate")) === "no", "html translate=no");
+  assert((await gp.locator('meta[name="google"][content="notranslate"]').count()) === 1, "meta notranslate");
+  await gp.click("[data-testid=voice-open]");
+  await gp.waitForSelector("[data-testid=voice-reply]");
+  // Google Translate taklidi: paneldeki her metin düğümünü <font> içine sar ve metnini değiştir
+  await gp.evaluate(() => {
+    const walker = document.createTreeWalker(document.querySelector("[data-testid=voice-panel]"), NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    for (const n of nodes) {
+      if (!n.nodeValue.trim()) continue;
+      const font = document.createElement("font");
+      n.parentNode.insertBefore(font, n);
+      font.appendChild(n);
+      n.nodeValue = "[çeviri] " + n.nodeValue;
+    }
+  });
+  // Durum değişimleri, yeni balonlar ve uyarılar çevrilmiş DOM üzerinde render edilmeli
+  await gp.click("[data-testid=voice-mic]");
+  await gp.waitForFunction(() => /Dinliyor|Luistert/.test(document.querySelector("[data-testid=voice-status]")?.textContent ?? ""));
+  await gp.evaluate(() => { window.__sr.onresult({ resultIndex: 0, results: [Object.assign([{ transcript: "bana 5 koli tabasco 350ml yaz" }], { isFinal: true })] }); });
+  await gp.waitForFunction(() => /Ekledim abi/.test(document.querySelector("[data-testid=voice-reply]")?.textContent ?? ""));
+  await gp.evaluate(() => { if (window.__sr.onerror) window.__sr.onerror({ error: "not-allowed" }); });
+  await gp.waitForFunction(() => /Mikrofon izni/.test(document.querySelector("[data-testid=voice-panel] [role=alert]")?.textContent ?? ""));
+  await gp.click("[data-testid=voice-close]");
+  await gp.waitForSelector("[data-testid=voice-open]");
+  assert((await gp.locator("[data-testid=voice-boundary]").count()) === 0, "no error boundary shown");
+  assert(pageErrors.length === 0, `uncaught: ${pageErrors.join(" | ")}`);
+  await gctx.close();
+});
 await check("voice agent API validates input and reports mode", async () => {
   const cfg = await (await ctx.request.get(`${BASE}/api/voice-agent`)).json();
   assert(cfg.agent === "Maximus Dijital Plasiyer" && cfg.greetings?.tr, "config");

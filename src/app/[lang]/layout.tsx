@@ -39,6 +39,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       images: [{ url: "/media/hero/hero-warehouse.jpg", width: 1920, height: 1086, alt: "Maximus Food & Horeca" }],
     },
     robots: { index: true, follow: true },
+    // Chrome/Google Translate sayfayı çevirmesin: çeviri DOM'u değiştirir ve React (insertBefore) hatası verir.
+    // Site zaten Türkçe ve Felemenkçe sunulur; dil değiştirici kullanılmalı.
+    other: { google: "notranslate" },
   };
 }
 
@@ -72,7 +75,7 @@ export default async function LangLayout({ children, params }: { children: React
   };
 
   return (
-    <html lang={htmlLang[lang]} className="h-full antialiased">
+    <html lang={htmlLang[lang]} translate="no" className="notranslate h-full antialiased">
       <body className="flex min-h-full flex-col">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(orgJsonLd) }} />
         <I18nProvider lang={lang} t={t}>
