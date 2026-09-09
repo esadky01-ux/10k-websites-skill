@@ -249,7 +249,7 @@ await check("voice agent adds a spoken order to the cart", async () => {
     class FakeSR {
       constructor() { window.__sr = this; this.onresult = null; this.onend = null; this.onerror = null; }
       start() {}
-      stop() { this.onend && this.onend(); }
+      stop() { if (this.onend) this.onend(); }
       abort() {}
     }
     window.SpeechRecognition = FakeSR;
@@ -260,7 +260,7 @@ await check("voice agent adds a spoken order to the cart", async () => {
       value: {
         cancel() {},
         getVoices() { return []; },
-        speak(u) { window.__spoken.push(u.text); setTimeout(() => { u.onstart && u.onstart(); setTimeout(() => u.onend && u.onend(), 5); }, 0); },
+        speak(u) { window.__spoken.push(u.text); setTimeout(() => { if (u.onstart) u.onstart(); setTimeout(() => { if (u.onend) u.onend(); }, 5); }, 0); },
       },
     });
     window.SpeechSynthesisUtterance = class { constructor(t) { this.text = t; } };
