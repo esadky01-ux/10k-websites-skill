@@ -436,6 +436,7 @@ await check("page opts out of Google Translate and the voice panel survives a tr
   await gp.waitForFunction(() => /Dinliyor|Luistert/.test(document.querySelector("[data-testid=voice-status]")?.textContent ?? ""));
   await gp.evaluate(() => { window.__sr.onresult({ resultIndex: 0, results: [Object.assign([{ transcript: "bana 5 koli tabasco 350ml yaz" }], { isFinal: true })] }); });
   await gp.waitForFunction(() => /Ekledim abi/.test(document.querySelector("[data-testid=voice-reply]")?.textContent ?? ""));
+  await gp.waitForFunction(() => /Dinliyor|Luistert/.test(document.querySelector("[data-testid=voice-status]")?.textContent ?? "") && !!window.__sr.onerror);
   await gp.evaluate(() => { if (window.__sr.onerror) window.__sr.onerror({ error: "not-allowed" }); });
   await gp.waitForFunction(() => /Mikrofon izni|Microfoon geweigerd/.test(document.querySelector("[data-testid=voice-panel] [role=alert]")?.textContent ?? ""));
   await gp.click("[data-testid=voice-close]");
@@ -443,6 +444,92 @@ await check("page opts out of Google Translate and the voice panel survives a tr
   assert((await gp.locator("[data-testid=voice-boundary]").count()) === 0, "no error boundary shown");
   assert(pageErrors.length === 0, `uncaught: ${pageErrors.join(" | ")}`);
   await gctx.close();
+});
+await check("voice agent hears a short greeting right after speaking (echo guard) and resumes listening on mobile", async () => {
+  const hctx = await browser.newContext({ viewport: { width: 390, height: 760 }, locale: "tr-TR", userAgent: "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Mobile Safari/537.36" });
+  const hp = await hctx.newPage();
+  const pageErrors = [];
+  hp.on("pageerror", (e) => pageErrors.push(String(e)));
+  await hp.addInitScript(() => {
+    window.__srCount = 0;
+    class FakeSR { constructor() { window.__sr = this; window.__srCount++; } start() {} stop() {} abort() {} }
+    window.SpeechRecognition = FakeSR;
+    window.__spoken = [];
+    Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() {}, resume() {}, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); setTimeout(() => { if (u.onstart) u.onstart(); setTimeout(() => { if (u.onend) u.onend(); }, 400); }, 0); } } });
+    window.SpeechSynthesisUtterance = class { constructor(t) { this.text = t; } };
+  });
+  await hp.goto(`${BASE}/tr`, { waitUntil: "networkidle" });
+  await hp.click("[data-testid=voice-open]");
+  await hp.waitForFunction(() => (window.__spoken || []).some((s) => /Selamünaleyküm/.test(s)));
+  await hp.click("[data-testid=voice-mic]");
+  await hp.waitForFunction(() => document.querySelector("[data-testid=voice-status]")?.textContent?.includes("Dinliyor"));
+  const before = await hp.evaluate(() => window.__srCount);
+  // Karşılamanın hemen ardından kısa bir "selamünaleyküm": yankı değil, müşterinin sözü
+  await hp.evaluate(() => { window.__sr.onresult({ resultIndex: 0, results: [Object.assign([{ transcript: "selamünaleyküm" }], { isFinal: true })] }); });
+  await hp.waitForFunction(() => /Aleykümselam abi/.test(document.querySelector("[data-testid=voice-reply]")?.textContent ?? ""));
+  // Mobil yarı çift yönlü: konuşma bittikten sonra dinleme yeni bir motorla otomatik devam eder
+  await hp.waitForFunction((n) => window.__srCount > n && /Dinliyor/.test(document.querySelector("[data-testid=voice-status]")?.textContent ?? ""), before);
+  // İkinci cümle de işlenir
+  await hp.evaluate(() => { window.__sr.onresult({ resultIndex: 0, results: [Object.assign([{ transcript: "bana 5 koli tabasco 350ml yaz" }], { isFinal: true })] }); });
+  await hp.waitForFunction(() => /Ekledim abi/.test(document.querySelector("[data-testid=voice-reply]")?.textContent ?? ""));
+  assert(pageErrors.length === 0, `uncaught: ${pageErrors.join(" | ")}`);
+  await hctx.close();
+});
+await check("voice agent shows an unmute button when autoplay is blocked and plays after the tap", async () => {
+  const actx = await browser.newContext({ viewport: { width: 390, height: 760 }, locale: "tr-TR", userAgent: "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Mobile Safari/537.36" });
+  const ap = await actx.newPage();
+  await ap.addInitScript(() => {
+    class FakeSR { constructor() { window.__sr = this; } start() {} stop() {} abort() {} }
+    window.SpeechRecognition = FakeSR;
+    Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() {}, resume() {}, getVoices() { return []; }, speak(u) { setTimeout(() => { if (u.onstart) u.onstart(); if (u.onend) u.onend(); }, 0); } } });
+    window.SpeechSynthesisUtterance = class { constructor(t) { this.text = t; } };
+    // İlk play() çağrıları otomatik oynatma engeline takılır; kullanıcı "Sesi aç"a dokununca izin verilir
+    window.__plays = 0; window.__allowPlay = false;
+    HTMLMediaElement.prototype.play = function () {
+      window.__plays++;
+      if (!window.__allowPlay) return Promise.reject(new DOMException("play() failed because the user didn't interact", "NotAllowedError"));
+      setTimeout(() => { this.dispatchEvent(new Event("play")); setTimeout(() => this.dispatchEvent(new Event("ended")), 50); }, 0);
+      return Promise.resolve();
+    };
+    HTMLMediaElement.prototype.pause = function () {};
+  });
+  await ap.route("**/api/voice-agent", async (route) => {
+    if (route.request().method() !== "GET") return route.continue();
+    const res = await route.fetch();
+    await route.fulfill({ json: { ...(await res.json()), tts: true } });
+  });
+  await ap.route("**/api/voice-agent/tts", (route) => route.fulfill({ status: 200, contentType: "audio/mpeg", body: Buffer.alloc(4000, 1) }));
+  await ap.goto(`${BASE}/tr`, { waitUntil: "networkidle" });
+  await ap.click("[data-testid=voice-open]");
+  await ap.waitForSelector("[data-testid=voice-unmute]");
+  const detail = await ap.textContent("[data-testid=voice-detail]");
+  assert(/NotAllowedError/.test(detail ?? ""), `detail: ${detail}`);
+  await ap.evaluate(() => { window.__allowPlay = true; });
+  await ap.click("[data-testid=voice-unmute]");
+  await ap.waitForFunction(() => !document.querySelector("[data-testid=voice-unmute]"));
+  assert((await ap.evaluate(() => window.__plays)) >= 2, "played after unmute");
+  await actx.close();
+});
+await check("voice agent follows the site language switch", async () => {
+  const lctx = await browser.newContext({ viewport: { width: 1400, height: 900 }, locale: "tr-TR" });
+  const lp = await lctx.newPage();
+  await lp.addInitScript(() => {
+    class FakeSR { constructor() { window.__sr = this; } start() {} stop() {} abort() {} }
+    window.SpeechRecognition = FakeSR;
+    Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() {}, resume() {}, getVoices() { return []; }, speak(u) { setTimeout(() => { if (u.onstart) u.onstart(); if (u.onend) u.onend(); }, 0); } } });
+    window.SpeechSynthesisUtterance = class { constructor(t) { this.text = t; } };
+  });
+  await lp.goto(`${BASE}/tr`, { waitUntil: "networkidle" });
+  await lp.click("[data-testid=voice-open]");
+  await lp.waitForFunction(() => /Selamünaleyküm/.test(document.querySelector("[data-testid=voice-reply]")?.textContent ?? ""));
+  assert((await lp.textContent("[data-testid=voice-lang]"))?.toLowerCase() === "tr", "starts in site language");
+  await lp.click('a[hreflang="nl-BE"]');
+  await lp.waitForURL((u) => !/\/tr(\/|$)/.test(u.pathname));
+  await lp.waitForFunction(() => (document.querySelector("[data-testid=voice-lang]")?.textContent ?? "").toLowerCase() === "nl" || !!document.querySelector("[data-testid=voice-open]"));
+  if (await lp.locator("[data-testid=voice-open]").count()) await lp.click("[data-testid=voice-open]");
+  await lp.waitForFunction(() => /Dag baas/.test(document.querySelector("[data-testid=voice-reply]")?.textContent ?? ""));
+  assert((await lp.textContent("[data-testid=voice-lang]"))?.toLowerCase() === "nl", "follows site language");
+  await lctx.close();
 });
 await check("voice agent API validates input and reports mode", async () => {
   const cfg = await (await ctx.request.get(`${BASE}/api/voice-agent`)).json();
