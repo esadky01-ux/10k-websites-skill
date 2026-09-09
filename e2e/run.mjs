@@ -256,7 +256,7 @@ const FAKE_MEDIA = () => {
   Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() {}, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); } } });
   window.SpeechSynthesisUtterance = class { constructor(t) { this.text = t; } };
 };
-const ORDER_RESULT = { transkript: "bana 5 koli tabasco 350 ml yaz", dil: "tr", eklenenler: [{ id: "fd-szn-020", isim: "Tabasco Acı Sos", koli: 5, adet: 0, adetMetni: "5 koli", ambalaj: "12 x 350 ml", birimFiyat: null }], bulunamayanlar: ["uzay mekiği"], toplamTutar: null, yedek: false };
+const ORDER_RESULT = { transkript: "bana 5 koli tabasco 350 ml yaz", dil: "tr", eklenenler: [{ id: "fd-szn-020", isim: "Tabasco Acı Sos", koli: 5, adet: 0, adetMetni: "5 koli", ambalaj: "12 x 350 ml", birimFiyat: null }], secenekler: [{ sorgu: "tavuk döner", koli: 2, adet: 0, adetMetni: "2 koli", adaylar: [{ id: "fd-don-035", isim: "Düzgün Hindi-Dana Döner", ambalaj: "1 x 10 kg", etiket: "1 x 10 kg", birimFiyat: null }, { id: "fd-don-038", isim: "Düzgün Hindi-Dana Döner", ambalaj: "1 x 15 kg", etiket: "1 x 15 kg", birimFiyat: null }] }], bulunamayanlar: ["uzay mekiği"], toplamTutar: null, yedek: false };
 
 await check("voice order: record → server result → cart lines + summary card", async () => {
   const vctx = await browser.newContext({ viewport: { width: 390, height: 760 }, locale: "tr-TR", userAgent: "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Mobile Safari/537.36" });
@@ -287,8 +287,17 @@ await check("voice order: record → server result → cart lines + summary card
   assert(/bana 5 koli tabasco/.test(await vp.textContent("[data-testid=voice-transcript]")), "transcript shown");
   assert(/5 koli/.test(await vp.textContent("[data-testid=voice-added]")), "added line shown");
   assert(/uzay mekiği/.test(await vp.textContent("[data-testid=voice-missing]")), "missing line shown");
-  const cartLines = await vp.evaluate(() => JSON.parse(localStorage.getItem("maximus-cart-v1") ?? "{}").lines ?? []);
+  let cartLines = await vp.evaluate(() => JSON.parse(localStorage.getItem("maximus-cart-v1") ?? "{}").lines ?? []);
   assert(cartLines.length === 1 && cartLines[0].productId === "fd-szn-020" && cartLines[0].cases === 5, `cart: ${JSON.stringify(cartLines)}`);
+  // "Hangisi olsun?" chip'i: seçilen varyant istenen miktarla sepete girer, kartta eklenenlere taşınır
+  assert(/Hangisi olsun/.test(await vp.textContent("[data-testid=voice-choices]")), "variant chooser shown");
+  assert((await vp.locator("[data-testid=voice-choice]").count()) === 2, "two variant chips");
+  await vp.click('[data-testid=voice-choice][data-product-id="fd-don-038"]');
+  await vp.waitForFunction(() => !document.querySelector("[data-testid=voice-choices]"));
+  assert(/15 kg/.test(await vp.textContent("[data-testid=voice-added]")), "chosen variant listed as added");
+  cartLines = await vp.evaluate(() => JSON.parse(localStorage.getItem("maximus-cart-v1") ?? "{}").lines ?? []);
+  const doner = cartLines.find((l) => l.productId === "fd-don-038");
+  assert(doner && doner.cases === 2, `variant in cart: ${JSON.stringify(cartLines)}`);
   // "Özeti dinle": yalnızca dokunuşla; TTS başarısızsa tarayıcı sesine düşer
   await vp.route("**/api/voice-agent/tts", (route) => route.fulfill({ status: 502, json: { error: "tts-upstream", detail: "upstream 401" } }));
   await vp.click("[data-testid=voice-listen]");

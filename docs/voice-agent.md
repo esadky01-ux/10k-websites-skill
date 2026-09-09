@@ -29,6 +29,32 @@ MediaRecorder (webm/opus, mp4)  ──POST──►       /api/voice-agent/order
 - **Belirsiz ürünler** (aynı ürün birden fazla boyutta) sepete eklenmez; "bulunamayanlar" listesinde seçeneklerle
   gösterilir: `mayonez (Pauwels Mayonez 1 L / 3 L / 9,2 kg?)`.
 
+## Varyant seçici ve eşleştirme hassasiyeti
+
+- Eşleştirici net bir ürün bulamayıp aynı aileden birden fazla varyant görürse (tavuk döner 10/15/20 kg, pirinç 900 g / 5 kg)
+  sonuç `secenekler` altında döner; kart "Hangisi olsun?" başlığıyla chip'ler gösterir, tek dokunuşla istenen miktar sepete girer.
+- Bir adayın listeye girmesi için sorgudaki en az bir **ürün kelimesi** (ad/marka) eşleşmeli; sayı ve boyut ekleri ("25'lik",
+  "onluk", "20 kg") tek başına eşleşme sayılmaz, yalnızca doğru boyutu öne çıkaran ipucudur. Böylece "ayran 25'lik" yalnızca
+  ayran ürünlerini getirir, 25 litrelik yağ veya 25 kg döner listeye giremez.
+- Aday listesi en iyi puana yakın olanlarla (2,5 puan bandı, en fazla 5) sınırlıdır.
+
+## Kürtçe ve yöresel kelimeler: "eğitim" nasıl yapılır
+
+OpenAI Whisper ve GPT-4o-mini yeniden eğitilemez; pratikte üç katmanlı bir sözlük yaklaşımı kullanılır ve hepsi
+`src/data/voice-vocab.ts` dosyasından beslenir:
+
+1. **Whisper ipucu (`WHISPER_HINT`):** marka adları ve nadir kelimeler (Kurmancî dahil) transkripsiyon isteğine `prompt`
+   olarak verilir; model bu kelimeleri duyduğunda doğru yazma eğilimi gösterir. Yeni bir kelime sık yanlış yazılıyorsa buraya ekleyin.
+2. **Kalem çıkarımı sözlüğü:** aynı sözlük GPT-4o-mini talimatına "goşt=et, mirîşk=tavuk, dew=ayran…" biçiminde eklenir;
+   model sorguyu katalog diliyle yazar.
+3. **Eşleştirici eş anlamlıları:** sözlük `searchProducts` içinde sorgu genişletmesine katılır; "mirîşk" doğrudan tavuk
+   ürünlerini bulur, "onluk" 10 kg ipucuna dönüşür.
+
+Katalogda karşılığı olmayan bir kelime geldiğinde sistem onu `MAXIMUS_DATA_DIR/voice-unmatched.jsonl` dosyasına
+(`{ at, query, transcript }`) yazar. Haftada bir bu dosyaya bakıp yeni kelimeleri `VOICE_VOCAB` içine eklemek, sahadaki
+"eğitim" döngüsüdür. Örnek satır: `"goşt": ["döner", "et"]`. Anahtar tarafına kelimeyi Kürtçe yazıldığı gibi (aksanlı ve aksansız
+iki biçimde) koymak, transkripsiyon farklarını tolere eder.
+
 ## Yapılandırma (.env)
 
 | Değişken | Açıklama |

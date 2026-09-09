@@ -36,8 +36,10 @@ test("buildResult adds matched lines, lists missing ones and totals only with pr
   assert.equal(noPrice.eklenenler[0].koli, 5);
   assert.equal(noPrice.eklenenler[0].birimFiyat, null);
   assert.equal(noPrice.toplamTutar, null);
-  assert.equal(noPrice.bulunamayanlar.length, 2);
-  assert.match(noPrice.bulunamayanlar[0], /Mayonez/);
+  assert.equal(noPrice.secenekler.length, 1, "mayonnaise becomes a variant choice");
+  assert.equal(noPrice.secenekler[0].koli, 1);
+  assert.ok(noPrice.secenekler[0].adaylar.length >= 3);
+  assert.deepEqual(noPrice.bulunamayanlar, ["uzay mekiği"]);
   assert.match(summaryText(noPrice), /Sepete ekledim: 5 koli .*Tabasco/);
   const id = noPrice.eklenenler[0].id;
   const priced = buildResult("x", items, "nl", { [id]: 2.5 }, false);
@@ -109,4 +111,21 @@ test("cleanApiKey extracts the token from a pasted curl example and redactSecret
   const msg = redactSecrets('Headers.append: "Bearer sk-proj-ABCdef123456789012345678_-xyz" is an invalid header value; Authorization: Bearer abc', "other-provider-token-ABCDEFGH");
   assert.ok(!msg.includes("sk-proj-ABCdef"), msg);
   assert.ok(!/Bearer abc/.test(msg), msg);
+});
+
+test("matcher keeps variants within the product family and uses size hints", async () => {
+  const { matchItem } = await import("../src/server/voice/order");
+  const ayran = matchItem({ query: "ayran 25'lik", quantity: 2, unit: "koli" });
+  assert.ok(ayran.product, "25'lik resolves to the 25 cl ayran");
+  assert.equal(ayran.product!.unitSize, "25 cl");
+  const doner = matchItem({ query: "tavuk döner", quantity: 1, unit: "koli" });
+  assert.equal(doner.product, undefined);
+  assert.ok(doner.alternatives.length >= 3 && doner.alternatives.every((p) => p.category === "et-urunleri"), "only döner variants offered");
+  const onluk = matchItem({ query: "onluk tavuk döner", quantity: 1, unit: "koli" });
+  const onlukSizes = onluk.product ? [onluk.product.unitSize] : onluk.alternatives.map((p) => p.unitSize);
+  assert.ok(onlukSizes.length > 0 && onlukSizes.every((u) => u === "10 kg"), `onluk → only 10 kg variants (${onlukSizes.join(",")})`);
+  const ku = matchItem({ query: "mirîşk", quantity: 1, unit: "koli" });
+  assert.ok(ku.alternatives.length > 0 && /Tavuk/.test(ku.alternatives[0].name), "Kurdish mirîşk → tavuk products");
+  const rice = matchItem({ query: "pirinç", quantity: 1, unit: "koli" });
+  assert.ok(rice.alternatives.length >= 3 && rice.alternatives.every((p) => /pirin/i.test(p.name)), "generic rice lists rice variants only");
 });
