@@ -437,7 +437,7 @@ await check("page opts out of Google Translate and the voice panel survives a tr
   await gp.evaluate(() => { window.__sr.onresult({ resultIndex: 0, results: [Object.assign([{ transcript: "bana 5 koli tabasco 350ml yaz" }], { isFinal: true })] }); });
   await gp.waitForFunction(() => /Ekledim abi/.test(document.querySelector("[data-testid=voice-reply]")?.textContent ?? ""));
   await gp.evaluate(() => { if (window.__sr.onerror) window.__sr.onerror({ error: "not-allowed" }); });
-  await gp.waitForFunction(() => /Mikrofon izni/.test(document.querySelector("[data-testid=voice-panel] [role=alert]")?.textContent ?? ""));
+  await gp.waitForFunction(() => /Mikrofon izni|Microfoon geweigerd/.test(document.querySelector("[data-testid=voice-panel] [role=alert]")?.textContent ?? ""));
   await gp.click("[data-testid=voice-close]");
   await gp.waitForSelector("[data-testid=voice-open]");
   assert((await gp.locator("[data-testid=voice-boundary]").count()) === 0, "no error boundary shown");
