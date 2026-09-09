@@ -36,19 +36,32 @@ export function sttConfigured(): boolean {
   return !!(process.env.VOICE_API_KEY && process.env.VOICE_STT_URL);
 }
 
-export async function transcribeAudio(audio: Blob, filename: string, lang?: string): Promise<string> {
+export class SttError extends Error {
+  constructor(public status: number, public detail: string) {
+    super(`STT ${status}: ${detail}`);
+    this.name = "SttError";
+  }
+}
+
+async function postStt(audio: Blob, filename: string, lang?: string): Promise<Response> {
   const form = new FormData();
   form.append("file", audio, filename);
   form.append("model", process.env.VOICE_STT_MODEL ?? "whisper-1");
   form.append("response_format", "json");
   if (lang) form.append("language", lang);
-  const res = await fetch(process.env.VOICE_STT_URL as string, {
+  return fetch(process.env.VOICE_STT_URL as string, {
     method: "POST",
     headers: { Authorization: `Bearer ${process.env.VOICE_API_KEY}` },
     body: form,
     signal: AbortSignal.timeout(30_000),
   });
-  if (!res.ok) throw new Error(`STT ${res.status}: ${(await res.text()).slice(0, 200)}`);
+}
+
+/** Sesi STT servisine gönderir. Sağlayıcı `language` alanını reddederse (400) bir kez dilsiz tekrar dener. */
+export async function transcribeAudio(audio: Blob, filename: string, lang?: string): Promise<string> {
+  let res = await postStt(audio, filename, lang);
+  if (res.status === 400 && lang) res = await postStt(audio, filename);
+  if (!res.ok) throw new SttError(res.status, (await res.text()).replace(/\s+/g, " ").slice(0, 300));
   const data = (await res.json()) as { text?: string };
   return (data.text ?? "").trim();
 }

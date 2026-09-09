@@ -268,6 +268,8 @@ await check("voice agent adds a spoken order to the cart", async () => {
   await vp.goto(`${BASE}/tr`, { waitUntil: "networkidle" });
   await vp.click("[data-testid=voice-open]");
   await vp.waitForSelector("[data-testid=voice-reply]");
+  // Chrome otomatik çevirisi DOM'u bozmasın diye panel translate="no"
+  assert((await vp.getAttribute("[data-testid=voice-panel]", "translate")) === "no", "panel notranslate");
   const greeting = await vp.textContent("[data-testid=voice-reply]");
   assert(/Selamünaleyküm abi/.test(greeting ?? ""), `greeting: ${greeting}`);
   await vp.click("[data-testid=voice-mic]");

@@ -272,7 +272,10 @@ export default function VoiceAgent() {
           setStatus("error");
           return;
         }
-        if (!res.ok) throw new Error(`transcribe ${res.status}`);
+        if (!res.ok) {
+          const body = (await res.json().catch(() => ({}))) as { error?: string; detail?: string };
+          throw new Error(`transcribe ${res.status}${body.detail ? ` (${body.detail})` : ""}`);
+        }
         const { text } = (await res.json()) as { text?: string };
         setNotice("");
         if (!text?.trim()) {
@@ -635,7 +638,8 @@ export default function VoiceAgent() {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="fixed bottom-5 right-5 z-[45] flex h-14 w-14 items-center justify-center rounded-full bg-brand-500 text-white shadow-xl shadow-brand-900/30 transition hover:scale-105 hover:bg-brand-600 sm:h-16 sm:w-16"
+          className="notranslate fixed bottom-5 right-5 z-[45] flex h-14 w-14 items-center justify-center rounded-full bg-brand-500 text-white shadow-xl shadow-brand-900/30 transition hover:scale-105 hover:bg-brand-600 sm:h-16 sm:w-16"
+          translate="no"
           aria-label={tv.open}
           title={tv.name}
           data-testid="voice-open"
@@ -647,7 +651,8 @@ export default function VoiceAgent() {
 
       {open && (
         <section
-          className="fixed bottom-4 right-4 z-[45] w-[min(92vw,360px)] overflow-hidden rounded-3xl border border-cream-200 bg-white shadow-2xl"
+          className="notranslate fixed bottom-4 right-4 z-[45] w-[min(92vw,360px)] overflow-hidden rounded-3xl border border-cream-200 bg-white shadow-2xl"
+          translate="no"
           role="dialog"
           aria-label={tv.name}
           data-testid="voice-panel"

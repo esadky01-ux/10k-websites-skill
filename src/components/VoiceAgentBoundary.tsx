@@ -48,7 +48,7 @@ export default class VoiceAgentBoundary extends Component<Props, State> {
   render() {
     if (!this.state.error) return this.props.children;
     return (
-      <div className="fixed bottom-4 right-4 z-[45] w-[min(92vw,360px)] rounded-2xl border border-cream-200 bg-white px-4 py-3 text-sm text-ink-800 shadow-2xl" role="alert" data-testid="voice-boundary">
+      <div className="notranslate fixed bottom-4 right-4 z-[45] w-[min(92vw,360px)] rounded-2xl border border-cream-200 bg-white px-4 py-3 text-sm text-ink-800 shadow-2xl" translate="no" role="alert" data-testid="voice-boundary">
         <div className="flex items-center gap-3">
           <MicOff className="h-5 w-5 shrink-0 text-brand-500" />
           <span className="flex-1">{this.props.label}</span>

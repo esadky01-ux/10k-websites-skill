@@ -4,11 +4,11 @@
  *  Yapılandırma yoksa 503 { error: "stt-not-configured" }.
  */
 import { NextResponse } from "next/server";
-import { sttConfigured, transcribeAudio } from "@/server/voice/realtime";
+import { SttError, sttConfigured, transcribeAudio } from "@/server/voice/realtime";
 
 export const runtime = "nodejs";
 
-const LANG_CODES: Record<string, string> = { tr: "tr", nl: "nl", ku: "ku" };
+const LANG_CODES: Record<string, string> = { tr: "tr", nl: "nl" };
 const MAX_BYTES = 8 * 1024 * 1024;
 
 export async function POST(req: Request) {
@@ -22,6 +22,7 @@ export async function POST(req: Request) {
   const audio = form.get("audio");
   if (!(audio instanceof Blob) || audio.size === 0) return NextResponse.json({ error: "audio alanı gerekli" }, { status: 400 });
   if (audio.size > MAX_BYTES) return NextResponse.json({ error: "kayıt çok büyük" }, { status: 413 });
+  // Whisper Kürtçe desteklemez; dil belirtmeden gönderilir
   const lang = LANG_CODES[String(form.get("lang") ?? "")];
   const ext = audio.type.includes("mp4") ? "mp4" : audio.type.includes("ogg") ? "ogg" : audio.type.includes("wav") ? "wav" : "webm";
   try {
@@ -29,6 +30,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ text });
   } catch (err) {
     console.error("[voice-agent/transcribe]", err);
-    return NextResponse.json({ error: "Ses çözümlenemedi" }, { status: 502 });
+    // Sağlayıcı yanıtı (anahtar içermez) istemciye küçük puntoyla gösterilsin diye aktarılır
+    const detail = err instanceof SttError ? `upstream ${err.status}: ${err.detail}` : (err as Error)?.message ?? String(err);
+    return NextResponse.json({ error: "stt-upstream", detail: detail.slice(0, 300) }, { status: 502 });
   }
 }

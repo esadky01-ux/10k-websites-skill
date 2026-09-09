@@ -40,7 +40,14 @@ ses akışı tarayıcı ↔ sağlayıcı arasında doğrudan (WebRTC); data chan
   15 saniye içinde hiç sonuç vermezse asistan otomatik olarak kayıt moduna geçer: mikrofon `MediaRecorder` ile kaydedilir,
   `POST /api/voice-agent/transcribe` ile Whisper uyumlu STT servisine (`VOICE_STT_URL`, `VOICE_API_KEY`) gönderilir, dönen
   metin aynı Claude turuna girer. Böylece cihazın konuşma tanıma motoruna bağımlılık kalkar. STT tanımlı değilse panel
-  bunu açıkça söyler.
+  bunu açıkça söyler. Sağlayıcı hata dönerse (`upstream 4xx/5xx`) panel altındaki küçük puntolu satırda
+  sağlayıcının yanıtı görünür; aynı satır sunucu loguna da yazılır.
+
+### Chrome otomatik çeviri uyarısı
+
+Chrome'un "sayfayı çevir" özelliği DOM'daki metin düğümlerini değiştirir; React bu düğümleri yeniden düzenlerken
+`NotFoundError: insertBefore` hatası oluşur. Sesli asistan, sepet paneli, üst çubuk butonları ve miktar sayaçları bu yüzden
+`translate="no"` ile işaretlidir. Site zaten Türkçe ve Felemenkçe sunulduğundan dil için sağ üstteki dil değiştirici kullanılmalı.
 
 ## Yapılandırma (.env)
 

@@ -98,7 +98,7 @@ export default function CartDrawer() {
   return (
     <>
       <div aria-hidden onClick={close} className={`fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-[2px] transition-opacity duration-300 ${isOpen ? "opacity-100" : "pointer-events-none opacity-0"}`} />
-      <aside role="dialog" aria-modal="true" aria-label={tc.title} className={`fixed inset-y-0 right-0 z-50 flex w-full max-w-lg flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}>
+      <aside role="dialog" aria-modal="true" aria-label={tc.title} translate="no" className={`notranslate fixed inset-y-0 right-0 z-50 flex w-full max-w-lg flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}>
         <div className="flex items-center justify-between border-b border-cream-200 px-5 py-4">
           <div className="flex items-center gap-2">
             <ShoppingCart className="h-5 w-5 text-brand-500" />

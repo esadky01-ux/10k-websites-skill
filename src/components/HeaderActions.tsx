@@ -13,7 +13,7 @@ export default function HeaderActions() {
   const { customer, loading } = useAuth();
   const { lang, t } = useI18n();
   return (
-    <div className="flex items-center gap-2 sm:gap-3">
+    <div className="notranslate flex items-center gap-2 sm:gap-3" translate="no">
       <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="hidden items-center gap-2 rounded-full border border-cream-200 px-4 py-2.5 text-sm font-semibold text-ink-800 transition hover:border-ink-300 md:inline-flex">
         <Phone className="h-4 w-4 text-brand-500" />
         <span className="hidden lg:inline">{site.phoneDisplay}</span>

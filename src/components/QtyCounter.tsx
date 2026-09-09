@@ -14,7 +14,7 @@ export default function QtyCounter({ value, onChange, label, compact = false }: 
   const { t } = useI18n();
   const size = compact ? "h-8 w-8" : "h-9 w-9";
   return (
-    <div className="flex flex-col items-center gap-1">
+    <div className="notranslate flex flex-col items-center gap-1" translate="no">
       <div
         className={`flex items-center rounded-lg border ${
           value > 0 ? "border-brand-500 bg-brand-50" : "border-cream-200 bg-white"
