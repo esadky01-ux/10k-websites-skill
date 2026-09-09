@@ -1,14 +1,14 @@
 /**
- * Metin-ses: { text } → audio/mpeg (OpenAI TTS, model tts-1, ses onyx). Tarayıcı bunu Audio nesnesiyle çalar.
+ * "Özeti dinle": { text } → audio/mpeg (OpenAI TTS). Yalnızca kullanıcı dokunuşuyla çağrılır, asla otomatik çalınmaz.
  * Yapılandırma yoksa 503 { error: "tts-not-configured" }; istemci tarayıcının kendi sesine düşer.
  */
 import { NextResponse } from "next/server";
-import { safeDetail, synthesizeSpeech, ttsConfigured, TtsError } from "@/server/voice/realtime";
+import { openaiConfigured, safeDetail, synthesizeSpeech, UpstreamError } from "@/server/voice/openai";
 
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
-  if (!ttsConfigured()) return NextResponse.json({ error: "tts-not-configured" }, { status: 503 });
+  if (!openaiConfigured() || process.env.VOICE_TTS_DISABLED === "1") return NextResponse.json({ error: "tts-not-configured" }, { status: 503 });
   let body: { text?: unknown };
   try {
     body = (await req.json()) as { text?: unknown };
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     return new NextResponse(new Uint8Array(audio), { status: 200, headers: { "Content-Type": "audio/mpeg", "Cache-Control": "private, max-age=3600", "Content-Length": String(audio.length) } });
   } catch (err) {
     console.error("[voice-agent/tts]", safeDetail(String((err as Error)?.stack ?? err)));
-    const detail = safeDetail(err instanceof TtsError ? `upstream ${err.status}: ${err.detail}` : ((err as Error)?.message ?? String(err)));
+    const detail = safeDetail(err instanceof UpstreamError ? `upstream ${err.status}: ${err.detail}` : ((err as Error)?.message ?? String(err)));
     return NextResponse.json({ error: "tts-upstream", detail }, { status: 502 });
   }
 }
