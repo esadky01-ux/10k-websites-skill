@@ -369,7 +369,34 @@ await check("voice agent falls back to recorder mode when speech recognition is 
   await rp.screenshot({ path: `${OUT}/voice-agent-recorder.png` });
   await rctx.close();
 });
-await check("voice agent transcribe and log endpoints respond", async () => {
+await check("voice agent falls back to browser speech when server TTS fails", async () => {
+  const tctx = await browser.newContext({ viewport: { width: 1400, height: 900 }, locale: "tr-TR" });
+  const tp = await tctx.newPage();
+  await tp.addInitScript(() => {
+    class FakeSR { constructor() { window.__sr = this; } start() {} stop() {} abort() {} }
+    window.SpeechRecognition = FakeSR;
+    window.__spoken = [];
+    Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() {}, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); setTimeout(() => { if (u.onstart) u.onstart(); if (u.onend) u.onend(); }, 0); } } });
+    window.SpeechSynthesisUtterance = class { constructor(t) { this.text = t; } };
+  });
+  // Yapılandırma TTS var desin, TTS uç noktası ise hata versin → tarayıcı sesi devreye girmeli
+  await tp.route("**/api/voice-agent", async (route) => {
+    if (route.request().method() !== "GET") return route.continue();
+    const res = await route.fetch();
+    const json = await res.json();
+    await route.fulfill({ json: { ...json, tts: true } });
+  });
+  await tp.route("**/api/voice-agent/tts", (route) => route.fulfill({ status: 502, json: { error: "tts-upstream", detail: "upstream 401: invalid key" } }));
+  await tp.goto(`${BASE}/tr`, { waitUntil: "networkidle" });
+  await tp.click("[data-testid=voice-open]");
+  await tp.waitForFunction(() => (window.__spoken || []).some((s) => /Selamünaleyküm/.test(s)));
+  const detail = await tp.textContent("[data-testid=voice-detail]");
+  assert(/tts 502/.test(detail ?? "") && /invalid key/.test(detail ?? ""), `detail: ${detail}`);
+  await tctx.close();
+});
+await check("voice agent transcribe, tts and log endpoints respond", async () => {
+  const tts = await ctx.request.post(`${BASE}/api/voice-agent/tts`, { data: { text: "merhaba" } });
+  assert(tts.status() === 503, `expected 503 without TTS key, got ${tts.status()}`);
   const log = await ctx.request.post(`${BASE}/api/voice-agent/log`, { data: { where: "e2e", name: "TestError", message: "hello" } });
   assert(log.status() === 204, `log status ${log.status()}`);
   const tr = await ctx.request.post(`${BASE}/api/voice-agent/transcribe`, { multipart: { audio: { name: "a.webm", mimeType: "audio/webm", buffer: Buffer.alloc(2000) }, lang: "tr" } });

@@ -10,7 +10,7 @@
 import { NextResponse } from "next/server";
 import { runVoiceTurn, type VoiceCartLine, type VoiceHistoryItem } from "@/server/voice/agent";
 import { AGENT_NAME, GREETINGS, type VoiceLang } from "@/server/voice/prompt";
-import { realtimeConfigured, sttConfigured } from "@/server/voice/realtime";
+import { realtimeConfigured, sttConfigured, ttsConfigured } from "@/server/voice/realtime";
 
 export const runtime = "nodejs";
 
@@ -23,6 +23,7 @@ export async function GET() {
     brain: process.env.ANTHROPIC_API_KEY ? "claude" : "fallback",
     realtime: realtimeConfigured(),
     stt: sttConfigured(),
+    tts: ttsConfigured(),
   });
 }
 

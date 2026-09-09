@@ -65,3 +65,51 @@ export async function transcribeAudio(audio: Blob, filename: string, lang?: stri
   const data = (await res.json()) as { text?: string };
   return (data.text ?? "").trim();
 }
+
+/**
+ * Sunucu tarafı metin-ses (TTS): yanıtlar OpenAI TTS ile mp3 olarak üretilir, tarayıcı Audio ile çalar.
+ *
+ *   VOICE_TTS_URL    varsayılan https://api.openai.com/v1/audio/speech
+ *   VOICE_TTS_MODEL  varsayılan tts-1
+ *   VOICE_TTS_VOICE  varsayılan onyx (alloy, echo, fable, nova, shimmer de olur)
+ *   Anahtar: OPENAI_API_KEY, yoksa VOICE_API_KEY
+ */
+const TTS_DEFAULT_URL = "https://api.openai.com/v1/audio/speech";
+
+function ttsKey(): string | undefined {
+  return process.env.OPENAI_API_KEY || process.env.VOICE_API_KEY || undefined;
+}
+
+export function ttsConfigured(): boolean {
+  return !!ttsKey() && process.env.VOICE_TTS_DISABLED !== "1";
+}
+
+export class TtsError extends Error {
+  constructor(public status: number, public detail: string) {
+    super(`TTS ${status}: ${detail}`);
+    this.name = "TtsError";
+  }
+}
+
+/** Aynı cümle için tekrar üretim yapmamak adına küçük bellek içi önbellek (karşılama cümleleri sık tekrar eder). */
+const ttsCache = new Map<string, Buffer>();
+const TTS_CACHE_MAX = 60;
+
+export async function synthesizeSpeech(text: string): Promise<Buffer> {
+  const model = process.env.VOICE_TTS_MODEL ?? "tts-1";
+  const voice = process.env.VOICE_TTS_VOICE ?? "onyx";
+  const key = `${model}|${voice}|${text}`;
+  const hit = ttsCache.get(key);
+  if (hit) return hit;
+  const res = await fetch(process.env.VOICE_TTS_URL ?? TTS_DEFAULT_URL, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${ttsKey()}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ model, voice, input: text, response_format: "mp3", speed: 1.0 }),
+    signal: AbortSignal.timeout(30_000),
+  });
+  if (!res.ok) throw new TtsError(res.status, (await res.text()).replace(/\s+/g, " ").slice(0, 300));
+  const buf = Buffer.from(await res.arrayBuffer());
+  if (ttsCache.size >= TTS_CACHE_MAX) ttsCache.delete(ttsCache.keys().next().value as string);
+  ttsCache.set(key, buf);
+  return buf;
+}
