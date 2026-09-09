@@ -241,6 +241,65 @@ await check("mobile home renders without horizontal overflow", async () => {
   assert(scrollW <= 390, `overflow ${scrollW}`);
   await mp.screenshot({ path: `${OUT}/mobile-home.png` });
 });
+// Sesli asistan: sahte SpeechRecognition/speechSynthesis ile tam akış (API → sepet eylemi → yanıt)
+await check("voice agent adds a spoken order to the cart", async () => {
+  const vctx = await browser.newContext({ viewport: { width: 1400, height: 900 }, locale: "tr-TR" });
+  const vp = await vctx.newPage();
+  await vp.addInitScript(() => {
+    class FakeSR {
+      constructor() { window.__sr = this; this.onresult = null; this.onend = null; this.onerror = null; }
+      start() {}
+      stop() { this.onend && this.onend(); }
+      abort() {}
+    }
+    window.SpeechRecognition = FakeSR;
+    window.__spoken = [];
+    // window.speechSynthesis salt okunur bir getter; defineProperty ile değiştirilir
+    Object.defineProperty(window, "speechSynthesis", {
+      configurable: true,
+      value: {
+        cancel() {},
+        getVoices() { return []; },
+        speak(u) { window.__spoken.push(u.text); setTimeout(() => { u.onstart && u.onstart(); setTimeout(() => u.onend && u.onend(), 5); }, 0); },
+      },
+    });
+    window.SpeechSynthesisUtterance = class { constructor(t) { this.text = t; } };
+  });
+  await vp.goto(`${BASE}/tr`, { waitUntil: "networkidle" });
+  await vp.click("[data-testid=voice-open]");
+  await vp.waitForSelector("[data-testid=voice-reply]");
+  const greeting = await vp.textContent("[data-testid=voice-reply]");
+  assert(/Selamünaleyküm abi/.test(greeting ?? ""), `greeting: ${greeting}`);
+  await vp.click("[data-testid=voice-mic]");
+  await vp.waitForFunction(() => document.querySelector("[data-testid=voice-status]")?.textContent?.includes("Dinliyor"));
+  await vp.evaluate(() => {
+    const results = [Object.assign([{ transcript: "bana 5 koli tabasco 350ml yaz" }], { isFinal: true })];
+    window.__sr.onresult({ resultIndex: 0, results });
+  });
+  await vp.waitForFunction(() => /Ekledim abi/.test(document.querySelector("[data-testid=voice-reply]")?.textContent ?? ""));
+  const cartLines = await vp.evaluate(() => JSON.parse(localStorage.getItem("maximus-cart-v1") ?? "{}").lines ?? []);
+  assert(cartLines.length === 1 && cartLines[0].cases === 5, `cart: ${JSON.stringify(cartLines)}`);
+  const spoken = await vp.evaluate(() => window.__spoken);
+  assert(spoken.some((s) => /Ekledim abi, başka ne lazım/.test(s)), `spoken: ${spoken.join(" | ")}`);
+  // Felemenkçeye anında geçiş
+  await vp.evaluate(() => {
+    const results = [Object.assign([{ transcript: "twee dozen tabasco 350ml graag" }], { isFinal: true })];
+    window.__sr.onresult({ resultIndex: 0, results });
+  });
+  await vp.waitForFunction(() => /Staat erop baas/.test(document.querySelector("[data-testid=voice-reply]")?.textContent ?? ""));
+  const langBadge = await vp.textContent("[data-testid=voice-lang]");
+  assert((langBadge ?? "").toLowerCase() === "nl", `lang badge: ${langBadge}`);
+  await vp.screenshot({ path: `${OUT}/voice-agent.png` });
+  await vctx.close();
+});
+await check("voice agent API validates input and reports mode", async () => {
+  const cfg = await (await ctx.request.get(`${BASE}/api/voice-agent`)).json();
+  assert(cfg.agent === "Maximus Dijital Plasiyer" && cfg.greetings?.tr, "config");
+  const bad = await ctx.request.post(`${BASE}/api/voice-agent`, { data: {} });
+  assert(bad.status() === 400, `expected 400, got ${bad.status()}`);
+  const rtc = await ctx.request.post(`${BASE}/api/voice-agent/webrtc`, { headers: { "Content-Type": "application/sdp" }, data: "v=0" });
+  assert(rtc.status() === 503, `expected 503 without VOICE_API_KEY, got ${rtc.status()}`);
+});
 await check("no console errors during run", async () => {
   // 401/403 yanıtları tasarım gereği (yanlış şifre, oturumsuz veya onaysız fiyat isteği)
   const real = consoleErrors.filter((e) => !/favicon|404|401|403/.test(e));

@@ -4,6 +4,7 @@ import "../globals.css";
 import { CartProvider } from "@/components/CartProvider";
 import { AuthProvider } from "@/components/AuthProvider";
 import CartDrawer from "@/components/CartDrawer";
+import VoiceAgent from "@/components/VoiceAgent";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { I18nProvider } from "@/i18n/I18nProvider";
@@ -80,6 +81,7 @@ export default async function LangLayout({ children, params }: { children: React
               <main className="flex-1">{children}</main>
               <Footer lang={lang} />
               <CartDrawer />
+              <VoiceAgent />
             </CartProvider>
           </AuthProvider>
         </I18nProvider>

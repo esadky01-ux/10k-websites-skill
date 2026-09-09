@@ -290,6 +290,23 @@ export const nl = {
     columns: { company: "Zaak", contact: "Contact", phone: "Telefoon", email: "E-mail", status: "Status", actions: "Acties", date: "Datum", lines: "Lijnen", delivery: "Levering", estimate: "Indicatief" },
   },
   notFound: { title: "Pagina niet gevonden", text: "De pagina die u zoekt is verplaatst of bestaat niet meer.", home: "Terug naar home" },
+  voice: {
+    name: "Maximus Digitale Vertegenwoordiger",
+    open: "Spraakassistent",
+    close: "sluiten",
+    idle: "Tik om te spreken",
+    listening: "Luistert…",
+    thinking: "Denkt na…",
+    speaking: "Spreekt…",
+    hold: "Houd ingedrukt om te spreken",
+    tap: "Tik om te luisteren",
+    stop: "Stop",
+    unsupported: "Spraakherkenning wordt niet ondersteund in deze browser. Gebruik Chrome, Edge of Safari.",
+    micDenied: "Microfoon geweigerd. Sta de microfoon toe in de browserinstellingen.",
+    error: "Even geen verbinding, probeer opnieuw.",
+    hint: "Zeg bv. \"5 dozen mayonaise\" of \"3 dozen kip döner erbij\".",
+    live: "Live spraak",
+  },
   common: { hours: "ma – vr 08:00 – 17:00 · za 09:00 – 13:00", pcs: "stuks", case: "colli", increase: "verhogen", decrease: "verlagen", enlarge: "vergroten", close: "sluiten" },
 };
 
