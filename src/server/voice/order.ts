@@ -1,0 +1,123 @@
+/**
+ * Hızlı Sesli Sipariş sunucu hattı:
+ *   ses (webm/mp4) → Whisper metin → GPT-4o-mini kalem çıkarımı → deterministik katalog eşleştirme (559 ürün)
+ *   → istemcinin sepete ekleyeceği satırlar + onay kartı verisi.
+ *
+ * GPT çıkarımı başarısız olursa veya anahtar yoksa kural tabanlı ayrıştırıcı (parseOrderText) devreye girer,
+ * böylece metin elde edildiği sürece sipariş yine sepete düşer.
+ */
+import { getProduct, formatPackaging, productName, type Product } from "@/data/products";
+import { parseOrderText, searchProducts, normalize, type Match } from "@/server/whatsapp/matcher";
+import { extractOrderItems, transcribeAudio, type ExtractedItem } from "./openai";
+
+export type VoiceLang = "tr" | "nl" | "ku";
+export type AddedLine = { id: string; isim: string; koli: number; adet: number; adetMetni: string; ambalaj: string; birimFiyat: number | null };
+export type OrderAudioResult = {
+  transkript: string;
+  dil: VoiceLang;
+  eklenenler: AddedLine[];
+  bulunamayanlar: string[];
+  toplamTutar: number | null;
+  /** Kural tabanlı yedek çalıştıysa true (GPT çıkarımı yapılamadı). */
+  yedek: boolean;
+};
+
+const UNIT_WORD: Record<VoiceLang, { koli: string; adet: string }> = { tr: { koli: "koli", adet: "adet" }, nl: { koli: "colli", adet: "stuks" }, ku: { koli: "qutî", adet: "heb" } };
+
+/** Aynı ürün farklı boyutlarda mı? (aynı ad, aynı boyut ve koli formatı → gerçekten aynı kalem) */
+function sameItem(a: Match, b: Match): boolean {
+  return normalize(a.product.name) === normalize(b.product.name) && a.product.unitSize === b.product.unitSize && a.product.unitsPerCase === b.product.unitsPerCase;
+}
+
+/** Kalemi kataloga çözer: net eşleşme → ürün; belirsiz → alternatif listesi; hiç yok → undefined. */
+export function matchItem(item: ExtractedItem): { product?: Product; alternatives: Product[] } {
+  const hits = searchProducts(item.query, 5);
+  const best = hits[0];
+  const second = hits[1];
+  if (!best) return { alternatives: [] };
+  const confident = best.score >= 5 && (!second || best.score - second.score >= 2 || sameItem(best, second));
+  if (confident) return { product: best.product, alternatives: [] };
+  return { alternatives: hits.slice(0, 3).map((h) => h.product) };
+}
+
+export function detectLang(text: string, hint?: string): VoiceLang {
+  if (hint === "tr" || hint === "nl" || hint === "ku") return hint;
+  const t = text.toLowerCase();
+  if (/\b(ez|dixwazim|spas|bira|silav|çend|qutî|rojbaş)\b/.test(t)) return "ku";
+  if (/\b(graag|dozen|doos|stuks|alstublieft|bedankt|twee|drie|vier|vijf|kaas|frieten|bestellen)\b/.test(t)) return "nl";
+  return "tr";
+}
+
+/** Metinden kalemleri çıkarır: önce GPT-4o-mini, olmazsa kural tabanlı. */
+export async function itemsFromTranscript(transcript: string, useLlm: boolean): Promise<{ items: ExtractedItem[]; lang: VoiceLang; yedek: boolean }> {
+  if (useLlm) {
+    try {
+      const ex = await extractOrderItems(transcript);
+      return { items: ex.items, lang: detectLang(transcript, ex.language), yedek: false };
+    } catch (err) {
+      console.warn("[voice-order] LLM çıkarımı başarısız, kural tabanlı yedek:", (err as Error)?.message);
+    }
+  }
+  const cleaned = transcript.replace(/\b(bana|lütfen|yaz|ekle|ekleyiver|koy|gönder|istiyorum|zet|erbij|erop|graag|alstublieft|bide|min re)\b/gi, " ").replace(/\s+/g, " ").trim();
+  const items = parseOrderText(cleaned).map((l) => ({ query: l.query, quantity: l.quantity, unit: l.unit }));
+  return { items, lang: detectLang(transcript), yedek: true };
+}
+
+/** Kalemleri eşleştirir, fiyat verilmişse tutar hesaplar. */
+export function buildResult(transcript: string, items: ExtractedItem[], lang: VoiceLang, prices: Record<string, number> | null, yedek: boolean): OrderAudioResult {
+  const eklenenler: AddedLine[] = [];
+  const bulunamayanlar: string[] = [];
+  const u = UNIT_WORD[lang];
+  const pl = lang === "nl" ? "nl" : "tr";
+  for (const item of items) {
+    const { product, alternatives } = matchItem(item);
+    if (!product) {
+      const alts = alternatives.map((p) => `${productName(p, pl)} ${formatPackaging(p)}`).join(lang === "nl" ? " / " : " / ");
+      bulunamayanlar.push(alts ? `${item.query} (${alts}?)` : item.query);
+      continue;
+    }
+    const koli = item.unit === "koli" ? item.quantity : 0;
+    const adet = item.unit === "adet" ? item.quantity : 0;
+    const ex = eklenenler.find((l) => l.id === product.id);
+    if (ex) {
+      ex.koli += koli;
+      ex.adet += adet;
+      ex.adetMetni = qtyText(ex.koli, ex.adet, u);
+      continue;
+    }
+    const price = prices ? (prices[product.id] ?? null) : null;
+    eklenenler.push({ id: product.id, isim: productName(product, pl), koli, adet, adetMetni: qtyText(koli, adet, u), ambalaj: formatPackaging(product), birimFiyat: price });
+  }
+  let toplamTutar: number | null = null;
+  if (prices) {
+    toplamTutar = 0;
+    for (const l of eklenenler) {
+      const p = getProduct(l.id);
+      const unit = l.birimFiyat ?? 0;
+      toplamTutar += unit * (l.adet + l.koli * (p?.unitsPerCase ?? 1));
+    }
+    toplamTutar = Math.round(toplamTutar * 100) / 100;
+  }
+  return { transkript: transcript, dil: lang, eklenenler, bulunamayanlar, toplamTutar, yedek };
+}
+
+function qtyText(koli: number, adet: number, u: { koli: string; adet: string }): string {
+  return [koli ? `${koli} ${u.koli}` : "", adet ? `${adet} ${u.adet}` : ""].filter(Boolean).join(" + ");
+}
+
+/** Uçtan uca: ses → sonuç. `prices` yalnızca onaylı müşteri için verilir. */
+export async function processOrderAudio(audio: Blob, filename: string, langHint: VoiceLang | undefined, prices: Record<string, number> | null, useLlm = true): Promise<OrderAudioResult> {
+  const transcript = await transcribeAudio(audio, filename, langHint && langHint !== "ku" ? langHint : undefined);
+  if (!transcript) return { transkript: "", dil: langHint ?? "tr", eklenenler: [], bulunamayanlar: [], toplamTutar: null, yedek: false };
+  const { items, lang, yedek } = await itemsFromTranscript(transcript, useLlm);
+  return buildResult(transcript, items, langHint ?? lang, prices, yedek);
+}
+
+/** Onay kartını sesli okumak için kısa özet cümlesi (kullanıcı isteğiyle çalınır, asla otomatik değil). */
+export function summaryText(r: OrderAudioResult): string {
+  const lang = r.dil;
+  if (!r.eklenenler.length) return lang === "nl" ? "Ik kon geen product herkennen, probeer het nog eens." : lang === "ku" ? "Min tu hilber nas nekir, dîsa biceribîne." : "Ürün anlayamadım abi, bir daha söyler misin?";
+  const list = r.eklenenler.map((l) => `${l.adetMetni} ${l.isim}`).join(", ");
+  const missing = r.bulunamayanlar.length ? (lang === "nl" ? ` Niet gevonden: ${r.bulunamayanlar.join(", ")}.` : lang === "ku" ? ` Nehat dîtin: ${r.bulunamayanlar.join(", ")}.` : ` Bulamadıklarım: ${r.bulunamayanlar.join(", ")}.`) : "";
+  return lang === "nl" ? `Toegevoegd: ${list}.${missing} Nog iets, baas?` : lang === "ku" ? `Zêde kirin: ${list}.${missing} Tiştekî din, bira?` : `Sepete ekledim: ${list}.${missing} Başka ne lazım abi?`;
+}

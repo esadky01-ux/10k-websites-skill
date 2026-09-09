@@ -33,15 +33,15 @@ npm run whatsapp:dry   # WhatsApp ajanı yerel simülasyon
 npm run images         # product-images-inbox/ içindeki ürün fotoğraflarını işler
 ```
 
-Sesli sipariş asistanı ("Maximus Dijital Plasiyer") için bkz. `docs/voice-agent.md`.
+Hızlı Sesli Sipariş (bas-konuş → Whisper → GPT-4o-mini → sepet) için bkz. `docs/voice-agent.md`.
 
 ## Yapı
 
 ```
 src/app/[lang]/     sayfalar (home, bestellen, blog, regio, account, inloggen, registreren)
-src/app/api/        auth, prices, orders, lists, whatsapp/webhook, voice-agent (+ webrtc köprüsü)
+src/app/api/        auth, prices, orders, lists, whatsapp/webhook, voice-agent (order-audio, tts, log)
 src/i18n/           sözlükler (nl, tr), rota eşlemeleri, sağlayıcı
-src/server/         auth, store (dosya tabanlı), prices (sunucu), whatsapp ajanı, voice (sesli asistan)
+src/server/         auth, store (dosya tabanlı), prices (sunucu), whatsapp ajanı, voice (sesli sipariş hattı)
 src/components/     Header, Hero, CategoryGrid, Advantages, QuickOrderMatrix, CartDrawer, ...
 src/data/           kategoriler (10), Odoo ürün kataloğundan üretilen 559 ürün (SKU, Türkçe ad, orijinal katalog adı ve koli formatı), blog yazıları
 src/lib/            site bilgileri, sepet deposu, WhatsApp fiş oluşturucu
