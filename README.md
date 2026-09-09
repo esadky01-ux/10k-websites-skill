@@ -46,6 +46,16 @@ public/media/hero/        Higgsfield ile üretilen hero görseli
 public/media/categories/  Higgsfield ile üretilen kategori görselleri
 ```
 
+## Önizleme / yayına alma
+
+- **Vercel (en hızlı):** vercel.com/new → GitHub deposunu seçin → branch → `AUTH_SECRET` ve `ADMIN_PASSWORD` ortam değişkenlerini girin → Deploy. Önizlemede müşteri verisi geçici dosyadadır; kalıcı veri için Odoo bağlantısı veya bir veritabanı gerekir.
+- **Kendi sunucunuz (Node 22):** `npm ci && npm run build && npm start`. `MAXIMUS_DATA_DIR` ile kalıcı bir veri dizini verin.
+- **Yerel:** `npm install && cp .env.example .env && npm run dev` → http://localhost:3000
+
+## Müşteri onayı
+
+Yeni kayıtlar "onay bekliyor" durumundadır; fiyatlar yalnızca onaylı hesaplara gösterilir. `/beheer` (Türkçe: `/tr/yonetim`) panelinde `ADMIN_PASSWORD` ile giriş yapıp bekleyen kayıtları onaylayın veya reddedin. `ADMIN_WHATSAPP` ve WhatsApp Cloud API tanımlıysa her yeni kayıt sahibe WhatsApp ile bildirilir.
+
 ## Yapılandırma
 
 İletişim bilgileri, WhatsApp numarası, çalışma saatleri, partner listesi ve site adresi `src/lib/site.ts` dosyasında tanımlıdır.
