@@ -25,7 +25,7 @@ npm run lint
 ```
 src/app/            sayfalar (/, /siparis, /blog, /blog/[slug]), sitemap, robots
 src/components/     Header, Hero, CategoryGrid, Advantages, QuickOrderMatrix, CartDrawer, ...
-src/data/           kategoriler (8), katalogdan alınan ürünler (SKU ve koli formatlarıyla), blog yazıları
+src/data/           kategoriler (10), Odoo ürün kataloğundan üretilen 559 ürün (SKU, Türkçe ad, orijinal katalog adı ve koli formatı), blog yazıları
 src/lib/            site bilgileri, sepet deposu, WhatsApp fiş oluşturucu
 public/media/hero/        Higgsfield ile üretilen hero görseli
 public/media/categories/  Higgsfield ile üretilen kategori görselleri
@@ -36,4 +36,4 @@ public/media/categories/  Higgsfield ile üretilen kategori görselleri
 İletişim bilgileri, WhatsApp numarası, çalışma saatleri, partner listesi ve site adresi `src/lib/site.ts` dosyasında tanımlıdır.
 Logo dosyaları: `public/logo.png` (kırmızı, açık zemin), `public/logo-white.png` (koyu zemin), `public/logo-badge.jpg` (yuvarlak rozet). Favicon `src/app/icon.png`, Apple simgesi `src/app/apple-icon.png`.
 
-Katalogda sayfası paylaşılmayan kategorilerde (Et Ürünleri, Dondurulmuş, Kuru Gıda) ürün numarası yerine "Çeşitli" yazılıdır; gerçek katalog sayfaları eklendiğinde `src/data/products.ts` güncellenmelidir.
+Ürün listesi `Product_product_template.pdf` dışa aktarımından otomatik üretilmiştir; ürün adları Türkçeleştirilmiş, orijinal Hollandaca ad `nameNl` alanında ve sipariş tablosunda küçük yazıyla korunmuştur. Adal markalı ürünler kapsam dışıdır. Fiyatlar siteye alınmamıştır.

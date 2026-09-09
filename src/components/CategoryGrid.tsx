@@ -27,7 +27,7 @@ export default function CategoryGrid() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
         {categories.map((cat, i) => {
           const count = products.filter((p) => p.category === cat.slug).length;
           return (
@@ -40,8 +40,8 @@ export default function CategoryGrid() {
                 src={cat.image}
                 alt={cat.name}
                 fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                priority={i < 4}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
+                priority={i < 5}
                 className="object-cover transition duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-ink-900/95 via-ink-900/40 to-transparent" />
@@ -54,8 +54,8 @@ export default function CategoryGrid() {
                     <ArrowUpRight className="h-4.5 w-4.5" />
                   </span>
                 </div>
-                <h3 className="mt-3 font-display text-xl font-bold lg:text-2xl">{cat.name}</h3>
-                <p className="mt-1.5 line-clamp-2 text-sm text-cream-100/85">{cat.description}</p>
+                <h3 className="mt-3 font-display text-lg font-bold lg:text-xl">{cat.name}</h3>
+                <p className="mt-1.5 line-clamp-2 text-xs text-cream-100/85 sm:text-sm">{cat.description}</p>
               </div>
             </Link>
           );

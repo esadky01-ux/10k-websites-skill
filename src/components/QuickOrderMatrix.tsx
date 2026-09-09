@@ -37,7 +37,7 @@ export default function QuickOrderMatrix() {
     return products.filter((p) => {
       if (active && p.category !== active) return false;
       if (!q) return true;
-      const hay = normalize(`${p.name} ${p.brand} ${p.sku} ${(p.tags ?? []).join(" ")}`);
+      const hay = normalize(`${p.name} ${p.nameNl} ${p.brand} ${p.sku} ${(p.tags ?? []).join(" ")}`);
       return q.split(/\s+/).every((w) => hay.includes(w));
     });
   }, [active, query]);
@@ -174,6 +174,9 @@ export default function QuickOrderMatrix() {
                               <p className="text-xs text-ink-500">
                                 {p.brand} · <span className="font-mono">{p.sku}</span>
                               </p>
+                              {p.nameNl !== p.name && (
+                                <p className="text-[11px] text-ink-300" title="Katalog adı">{p.nameNl}</p>
+                              )}
                               {p.tags?.includes("çok satan") && (
                                 <span className="mt-1 inline-block rounded bg-gold-500/20 px-1.5 py-0.5 text-[10px] font-bold uppercase text-yellow-800">
                                   Çok satan

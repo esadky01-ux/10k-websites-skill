@@ -45,7 +45,7 @@ export function buildWhatsAppMessage({ lines, delivery, company, note }: Input) 
       totalCases += line.cases;
       totalUnits += line.units;
       rows.push(
-        `${idx}. ${p.name} — ${p.brand}\n   ${formatPackaging(p)} · SKU ${p.sku}\n   ➜ ${parts.join(" + ")}`
+        `${idx}. ${p.name} — ${p.brand}\n   ${p.nameNl !== p.name ? p.nameNl + "\n   " : ""}${formatPackaging(p)}${p.sku !== "—" ? " · SKU " + p.sku : ""}\n   ➜ ${parts.join(" + ")}`
       );
       idx++;
     }

@@ -12,7 +12,7 @@ export const categories: Category[] = [
     name: "Soslar",
     shortName: "Soslar",
     description:
-      "Pauwels kova sosları (Cocktail, Andalouse, Look, Samurai, Mayo Chef), sambal, Tabasco ve helal bolonez. Fritür ve döner tezgâhının vazgeçilmezleri.",
+      "Pauwels kova ve şişe sosları (Andalouse, Samurai, Cocktail, Curry, Mayo Chef), Bicky, sambal, Tabasco ve helal bolonez. Fritür ve döner tezgâhının vazgeçilmezleri.",
     image: "/media/categories/soslar.jpg",
   },
   {
@@ -20,7 +20,7 @@ export const categories: Category[] = [
     name: "Et Ürünleri",
     shortName: "Et",
     description:
-      "Polat döner şişleri, tavuk ve dana ürünleri, helal köfte. Soğuk zincir garantili, HACCP belgeli tedarik.",
+      "Maximus, Dost, Düzgün, Polat ve Efendi döner şişleri; tavuk, dana ve hindi ürünleri; helal köfte, salam ve pepperoni. Soğuk zincir garantili.",
     image: "/media/categories/et-urunleri.jpg",
   },
   {
@@ -28,47 +28,63 @@ export const categories: Category[] = [
     name: "Dondurulmuş Ürünler",
     shortName: "Dondurulmuş",
     description:
-      "Lutosa patates kızartması, Van Reusel atıştırmalıklar, pide ve pizza tabanları. Fritür ve pizzacılar için tam seçki.",
+      "Lutosa ve Sela patates kızartması, Van Reusel, Mekkafood ve Dunya atıştırmalıkları, kroketler, deniz ürünleri ve tatlılar.",
     image: "/media/categories/dondurulmus.jpg",
   },
   {
     slug: "konserve",
-    name: "Konserve",
+    name: "Konserve & Turşu",
     shortName: "Konserve",
     description:
-      "Jalapeño, soyulmuş domates, enginar ve ton balığı. Pizza ve döner mutfağının temel konserveleri.",
+      "Soyulmuş domates, pizza sosu, jalapeño, Yunan biberi, enginar, ton balığı, hamsi, kapari ve turşular. Pizza ve döner mutfağının temel konserveleri.",
     image: "/media/categories/konserve.jpg",
   },
   {
-    slug: "ambalaj",
-    name: "Ambalaj",
-    shortName: "Ambalaj",
+    slug: "peynir-sut",
+    name: "Peynir & Süt Ürünleri",
+    shortName: "Peynir",
     description:
-      "Pizza kutuları, patates kapları, döner ve menü kutuları, alüminyum kaplar, taşıma poşetleri ve folyo. Paket servisin tüm ihtiyacı.",
-    image: "/media/categories/ambalaj.jpg",
+      "Rendelenmiş ve blok mozzarella, Gouda, Gorgonzola, Gazi beyaz peynir, parmesan ve krema. Pizzacılar için tam seçki.",
+    image: "/media/categories/peynir-sut.jpg",
+  },
+  {
+    slug: "ekmek-hamur",
+    name: "Ekmek & Hamur İşleri",
+    shortName: "Ekmek",
+    description:
+      "Fırat döner pidesi, gobit ekmeği, lahmacun tabanları, dürüm lavaşı ve tortilla, Foster ve Piazzola pizza hamur topları.",
+    image: "/media/categories/ekmek-hamur.jpg",
+  },
+  {
+    slug: "kuru-gida",
+    name: "Kuru Gıda & Baharat",
+    shortName: "Kuru Gıda",
+    description:
+      "Caputo ve Primo unları, Barilla makarnalar, Hane ve Nawras bakliyat ve pirinç, baharatlar, kızartma ve zeytinyağları, çay ve şeker.",
+    image: "/media/categories/kuru-gida.jpg",
   },
   {
     slug: "icecekler",
     name: "İçecekler",
     shortName: "İçecekler",
     description:
-      "Coca-Cola, Pepsi, Fanta, Lipton, Uludağ, Kızılay, ayran, enerji içecekleri ve su. Kasa bazında hızlı teslimat.",
+      "Coca-Cola, Pepsi, Fanta, Lipton, Looza, Capri Sun, Uludağ, Kızılay, Çamlıca, ayran, şalgam, enerji içecekleri, su, bira ve Kavaklıdere şarapları.",
     image: "/media/categories/icecekler.jpg",
   },
   {
-    slug: "kuru-gida",
-    name: "Kuru Gıda",
-    shortName: "Kuru Gıda",
+    slug: "ambalaj",
+    name: "Ambalaj",
+    shortName: "Ambalaj",
     description:
-      "Caputo ve Ceres unları, pirinç, bulgur, bakliyat, makarna ve baharatlar. Büyük ambalajlı, uzun raf ömürlü temel gıdalar.",
-    image: "/media/categories/kuru-gida.jpg",
+      "Pizza kutuları, patates ve frikandel kapları, döner, menü ve hamburger kutuları, alüminyum kaplar, taşıma poşetleri, sargı kağıdı, çatal-bıçak ve peçete.",
+    image: "/media/categories/ambalaj.jpg",
   },
   {
     slug: "hijyen",
-    name: "Hijyen & Temizlik",
+    name: "Hijyen & Mutfak",
     shortName: "Hijyen",
     description:
-      "Nitril eldiven, el sabunu, cam temizleyici, ızgara temizleyici, dezenfektan ve Maximus çok amaçlı temizleyici.",
+      "Nitril eldiven, el sabunu, cam ve ızgara temizleyici, dezenfektan, tuvalet kağıdı, çöp poşeti ve döner bıçağı gibi mutfak ekipmanları.",
     image: "/media/categories/hijyen.jpg",
   },
 ];
