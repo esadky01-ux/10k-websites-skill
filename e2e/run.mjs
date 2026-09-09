@@ -531,6 +531,40 @@ await check("voice agent follows the site language switch", async () => {
   assert((await lp.textContent("[data-testid=voice-lang]"))?.toLowerCase() === "nl", "follows site language");
   await lctx.close();
 });
+await check("voice agent's silent unlock clip is a valid, playable WAV", async () => {
+  const wctx = await browser.newContext({ viewport: { width: 1400, height: 900 }, locale: "tr-TR" });
+  const wp = await wctx.newPage();
+  const pageErrors = [];
+  wp.on("pageerror", (e) => pageErrors.push(String(e)));
+  // Kilit açma sırasında ses öğesine verilen klibi yakala (gerçek play() çağrısı aynen devam eder)
+  await wp.addInitScript(() => {
+    const realPlay = HTMLMediaElement.prototype.play;
+    window.__unlockSrc = null;
+    HTMLMediaElement.prototype.play = function () {
+      if (!window.__unlockSrc && typeof this.src === "string" && this.src.startsWith("data:audio/wav")) window.__unlockSrc = this.src;
+      return realPlay.call(this);
+    };
+  });
+  await wp.goto(`${BASE}/tr`, { waitUntil: "networkidle" });
+  await wp.click("[data-testid=voice-open]");
+  await wp.waitForFunction(() => !!window.__unlockSrc);
+  // Yakalanan klibi gerçek Chromium'da bir dokunuş içinde çal
+  await wp.evaluate(() => {
+    const b = document.createElement("button"); b.id = "__play"; b.textContent = "play"; document.body.appendChild(b);
+    b.onclick = () => {
+      const a = new Audio(window.__unlockSrc);
+      window.__wav = null;
+      a.play().then(() => { window.__wav = { ok: true, duration: a.duration }; }).catch((e) => { window.__wav = { ok: false, error: e.name + ": " + e.message }; });
+    };
+  });
+  await wp.click("#__play");
+  await wp.waitForFunction(() => window.__wav !== null);
+  const r = await wp.evaluate(() => window.__wav);
+  assert(r.ok && r.duration > 0.01, `unlock clip: ${JSON.stringify(r)}`);
+  assert((await wp.locator("[data-testid=voice-detail]").count()) === 0, "unlock must not surface an error line");
+  assert(pageErrors.length === 0, `uncaught: ${pageErrors.join(" | ")}`);
+  await wctx.close();
+});
 await check("voice agent API validates input and reports mode", async () => {
   const cfg = await (await ctx.request.get(`${BASE}/api/voice-agent`)).json();
   assert(cfg.agent === "Maximus Dijital Plasiyer" && cfg.greetings?.tr, "config");
