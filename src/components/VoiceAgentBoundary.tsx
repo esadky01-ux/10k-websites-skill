@@ -51,14 +51,14 @@ export default class VoiceAgentBoundary extends Component<Props, State> {
       <div className="notranslate fixed bottom-4 right-4 z-[45] w-[min(92vw,360px)] rounded-2xl border border-cream-200 bg-white px-4 py-3 text-sm text-ink-800 shadow-2xl" translate="no" role="alert" data-testid="voice-boundary">
         <div className="flex items-center gap-3">
           <MicOff className="h-5 w-5 shrink-0 text-brand-500" />
-          <span className="flex-1">{this.props.label}</span>
+          <span className="flex-1"><span>{this.props.label}</span></span>
           <button type="button" onClick={() => this.setState({ error: null })} className="inline-flex items-center gap-1 rounded-full border border-cream-200 px-3 py-1.5 text-xs font-semibold hover:bg-cream-100" data-testid="voice-boundary-retry">
             <RotateCcw className="h-3.5 w-3.5" />
-            {this.props.retry}
+            <span>{this.props.retry}</span>
           </button>
         </div>
         <p className="mt-2 break-words font-mono text-[10px] leading-snug text-ink-500" data-testid="voice-boundary-detail">
-          {describeError(this.state.error)}
+          <span>{describeError(this.state.error)}</span>
         </p>
       </div>
     );
