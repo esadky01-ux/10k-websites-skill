@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Mic, MicOff, X, Radio, Square, Disc } from "lucide-react";
+import { Mic, MicOff, X, Radio, Square, Disc, Volume2 } from "lucide-react";
 import { useCart } from "@/components/CartProvider";
 import { useI18n } from "@/i18n/I18nProvider";
 import { describeError, logClientError } from "@/components/VoiceAgentBoundary";
@@ -63,25 +63,20 @@ function safe<T>(fn: () => T, label: string): T | undefined {
 
 const isMobile = () => typeof navigator !== "undefined" && /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 
-/** Chrome Android sessizlikte/her sonuçta oturumu kapatır; yeniden başlatma gecikmeli ve sınırlı yapılır. */
+/** Chrome Android sessizlikte/her sonuçta oturumu kapatır; yeniden başlatma gecikmeli yapılır. */
 const RESTART_DELAY_MS = 300;
-const MAX_RESTARTS = 8;
-const RESTART_WINDOW_MS = 20_000;
+/** Bu süreden kısa yaşayan oturumlar "hızlı kapanma" sayılır; art arda bu kadar olursa motor bozuk kabul edilir. */
+const FAST_END_MS = 1_500;
+const MAX_FAST_ENDS = 5;
 /** Ses algılandı ama bu süre içinde sonuç gelmediyse motor bozuk sayılır → kayıt yedeği. */
 const NO_RESULT_AFTER_SOUND_MS = 10_000;
 /** Hiç ses algılanmadan geçen üst sınır (kullanıcı sessiz olabilir; yalnızca motor sürekli kapanıyorsa geçilir). */
 const NO_RESULT_HARD_MS = 60_000;
 const WATCHDOG_MS = 2_500;
-
-/** Cihaz dili Türkçe/Felemenkçe ise tanıma o dille başlar; aksi halde site dili. */
-function initialVoiceLang(siteLang: VoiceLang): VoiceLang {
-  if (typeof navigator === "undefined") return siteLang;
-  const l = (navigator.language || "").toLowerCase();
-  if (l.startsWith("tr")) return "tr";
-  if (l.startsWith("nl")) return "nl";
-  if (l.startsWith("ku")) return "ku";
-  return siteLang;
-}
+/** Asistan konuştuktan sonra bu süre içinde gelen ve söylenenle neredeyse aynı olan metin yankı sayılır. */
+const ECHO_WINDOW_MS = 1_500;
+/** Mobil tarayıcılarda ses çalma ve tanıma aynı anda ses odağı için yarışır: yarı çift yönlü çalışırız. */
+const HALF_DUPLEX = () => isMobile();
 const STT_LANG: Record<VoiceLang, string> = { tr: "tr", nl: "nl", ku: "ku" };
 
 function pickMime(): string {
@@ -91,6 +86,9 @@ function pickMime(): string {
   }
   return "";
 }
+
+/** Kullanıcı dokunuşunda ses kilidini açmak için 0,1 sn sessiz WAV. */
+const SILENT_WAV = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=";
 
 export default function VoiceAgent() {
   const cart = useCart();
@@ -103,6 +101,7 @@ export default function VoiceAgent() {
   const [interim, setInterim] = useState("");
   const [lastUser, setLastUser] = useState("");
   const [lastReply, setLastReply] = useState("");
+  const lastReplyRef = useRef("");
   const [notice, setNotice] = useState("");
   const [config, setConfig] = useState<Config | null>(null);
   const [live, setLive] = useState(false);
@@ -121,12 +120,19 @@ export default function VoiceAgent() {
   const greetedRef = useRef(false);
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const restartsRef = useRef<number[]>([]);
   const restartTimerRef = useRef<number | null>(null);
   const noResultTimerRef = useRef<number | null>(null);
   const gotResultRef = useRef(false);
   const heardAtRef = useRef(0);
   const sessionStartRef = useRef(0);
+  const fastEndsRef = useRef(0);
+  const firstStartRef = useRef(0);
+  const speechEndedAtRef = useRef(0);
+  const audioUnlockedRef = useRef(false);
+  const pendingAudioRef = useRef<{ url: string; text: string; lang: VoiceLang } | null>(null);
+  const pausedForSpeechRef = useRef(false);
+  const startListeningRef = useRef<() => void>(() => undefined);
+  const [audioBlocked, setAudioBlocked] = useState(false);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -145,6 +151,59 @@ export default function VoiceAgent() {
   const setLang = useCallback((l: VoiceLang) => {
     langRef.current = l;
     setVoiceLang(l);
+  }, []);
+
+  /**
+   * Mobil otomatik oynatma kilidi: kullanıcı dokunuşu içinde ses öğesini sessiz bir WAV ile bir kez çalıştırırız;
+   * sonrasında fetch ile gelen mp3'ler aynı öğe üzerinden gesture olmadan çalabilir. speechSynthesis de ısıtılır.
+   */
+  const unlockAudio = useCallback(() => {
+    if (audioUnlockedRef.current) return;
+    const el = ttsAudioRef.current;
+    if (el) {
+      safe(() => {
+        el.muted = false;
+        el.volume = 1;
+        el.src = SILENT_WAV;
+        const pr = el.play();
+        if (pr && typeof pr.then === "function") {
+          pr.then(() => {
+            audioUnlockedRef.current = true;
+            el.pause();
+          }).catch((err: unknown) => report("audio.unlock", err));
+        } else audioUnlockedRef.current = true;
+      }, "audio.unlock");
+    }
+    safe(() => {
+      const synth = window.speechSynthesis;
+      if (synth) {
+        synth.resume();
+        synth.getVoices();
+      }
+    }, "synth.warmup");
+  }, [report]);
+
+  /** Mobilde konuşma sırasında tanımayı duraklat (ses odağı çatışması); konuşma bitince geri başlat. */
+  const pauseListeningForSpeech = useCallback(() => {
+    if (!HALF_DUPLEX() || !activeRef.current || !recRef.current) return;
+    pausedForSpeechRef.current = true;
+    const r = recRef.current;
+    recRef.current = null;
+    r.onresult = null;
+    r.onend = null;
+    r.onerror = null;
+    safe(() => r.abort(), "abort");
+    if (noResultTimerRef.current !== null) {
+      window.clearInterval(noResultTimerRef.current);
+      noResultTimerRef.current = null;
+    }
+  }, []);
+  const resumeListeningAfterSpeech = useCallback(() => {
+    if (!pausedForSpeechRef.current) return;
+    pausedForSpeechRef.current = false;
+    if (!activeRef.current) return;
+    activeRef.current = false; // startListening yeniden true yapar
+    window.setTimeout(() => startListeningRef.current(), 150);
   }, []);
 
   /** Konuşmayı durdurur (barge-in, kapatma): sunucu sesi ve tarayıcı sesi. */
@@ -169,8 +228,13 @@ export default function VoiceAgent() {
   const speakBrowser = useCallback(
     (text: string, l: VoiceLang) =>
       new Promise<void>((resolve) => {
+        const startedAt = Date.now();
+        let started = false;
         const done = () => {
           speakingRef.current = false;
+          speechEndedAtRef.current = Date.now();
+          // Android Chrome bazen hiç konuşmadan anında "bitti" der; kullanıcıya belli et
+          if (!started || (text.length > 20 && Date.now() - startedAt < 300)) setAudioBlocked(true);
           setStatus(activeRef.current ? "listening" : "idle");
           resolve();
         };
@@ -185,6 +249,7 @@ export default function VoiceAgent() {
           if (v) u.voice = v;
           u.rate = 1.02;
           u.onstart = () => {
+            started = true;
             speakingRef.current = true;
             setStatus("speaking");
           };
@@ -201,58 +266,105 @@ export default function VoiceAgent() {
     [],
   );
 
+  /** mp3 URL'sini panel içindeki <audio> ile çalar; oynatma reddedilirse "Sesi aç" düğmesi için bekletir. */
+  const playUrl = useCallback(
+    (url: string, text: string, l: VoiceLang) =>
+      new Promise<boolean>((resolve) => {
+        const el = ttsAudioRef.current;
+        if (!el) return resolve(false);
+        let settled = false;
+        let playedOk = false;
+        const done = () => {
+          if (settled) return;
+          settled = true;
+          speakingRef.current = false;
+          speechEndedAtRef.current = Date.now();
+          if (ttsUrlRef.current === url) {
+            safe(() => URL.revokeObjectURL(url), "revokeObjectURL");
+            ttsUrlRef.current = null;
+          }
+          setStatus(activeRef.current ? "listening" : "idle");
+          resolve(playedOk);
+        };
+        el.onplay = () => {
+          playedOk = true;
+          speakingRef.current = true;
+          setAudioBlocked(false);
+          setStatus("speaking");
+        };
+        el.onended = done;
+        el.onerror = done;
+        el.onpause = () => {
+          if (el.ended || !el.src) done();
+        };
+        ttsUrlRef.current = url;
+        el.muted = false;
+        el.volume = 1;
+        el.src = url;
+        el.play().catch((err: unknown) => {
+          // Otomatik oynatma engeli: sesi bekletip kullanıcıya "Sesi aç" düğmesi göster
+          report("audio.play", err);
+          pendingAudioRef.current = { url, text, lang: l };
+          ttsUrlRef.current = null;
+          setAudioBlocked(true);
+          settled = true;
+          speakingRef.current = false;
+          setStatus(activeRef.current ? "listening" : "idle");
+          resolve(false);
+        });
+        window.setTimeout(done, Math.min(45_000, 3_000 + text.length * 120));
+      }),
+    [report],
+  );
+
   /** Sunucu TTS (OpenAI mp3) ile seslendirir; başarısızsa tarayıcı sesine düşer. Bitince dinlemeye döner. */
   const speak = useCallback(
     async (text: string, l: VoiceLang) => {
       lastSpokenRef.current = norm(text);
       stopSpeaking();
-      const el = ttsAudioRef.current;
-      if (!configRef.current?.tts || !el) return speakBrowser(text, l);
+      pauseListeningForSpeech();
       try {
-        const res = await fetch("/api/voice-agent/tts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text, lang: l }) });
-        if (!res.ok) {
-          const body = (await res.json().catch(() => ({}))) as { detail?: string };
-          throw new Error(`tts ${res.status}${body.detail ? ` (${body.detail})` : ""}`);
+        const el = ttsAudioRef.current;
+        if (!configRef.current?.tts || !el) {
+          await speakBrowser(text, l);
+          return;
         }
-        const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
-        ttsUrlRef.current = url;
-        await new Promise<void>((resolve) => {
-          let settled = false;
-          const done = () => {
-            if (settled) return;
-            settled = true;
-            speakingRef.current = false;
-            if (ttsUrlRef.current === url) {
-              safe(() => URL.revokeObjectURL(url), "revokeObjectURL");
-              ttsUrlRef.current = null;
-            }
-            setStatus(activeRef.current ? "listening" : "idle");
-            resolve();
-          };
-          el.onplay = () => {
-            speakingRef.current = true;
-            setStatus("speaking");
-          };
-          el.onended = done;
-          el.onerror = done;
-          el.onpause = () => {
-            if (el.ended || el.currentTime === 0 || !el.src) done();
-          };
-          el.src = url;
-          el.play().catch((err) => {
-            report("audio.play", err);
-            done();
-          });
-          window.setTimeout(done, Math.min(45_000, 3_000 + text.length * 120));
-        });
-      } catch (err) {
-        report("tts", err);
-        await speakBrowser(text, l);
+        try {
+          const res = await fetch("/api/voice-agent/tts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text, lang: l }) });
+          if (!res.ok) {
+            const body = (await res.json().catch(() => ({}))) as { detail?: string };
+            throw new Error(`tts ${res.status}${body.detail ? ` (${body.detail})` : ""}`);
+          }
+          const blob = await res.blob();
+          if (blob.size < 200) throw new Error(`tts empty audio (${blob.size} bytes)`);
+          const url = URL.createObjectURL(blob);
+          const ok = await playUrl(url, text, l);
+          if (!ok && !pendingAudioRef.current) await speakBrowser(text, l);
+        } catch (err) {
+          report("tts", err);
+          await speakBrowser(text, l);
+        }
+      } finally {
+        resumeListeningAfterSpeech();
       }
     },
-    [report, speakBrowser, stopSpeaking],
+    [pauseListeningForSpeech, playUrl, report, resumeListeningAfterSpeech, speakBrowser, stopSpeaking],
   );
+
+  /** "Sesi aç": kullanıcı dokunuşu içinde bekleyen sesi çalar (otomatik oynatma engeli aşılır). */
+  const unmute = useCallback(() => {
+    audioUnlockedRef.current = true;
+    setAudioBlocked(false);
+    const pending = pendingAudioRef.current;
+    pendingAudioRef.current = null;
+    if (pending) {
+      void playUrl(pending.url, pending.text, pending.lang).then((ok) => {
+        if (!ok) void speakBrowser(pending.text, pending.lang);
+      });
+    } else if (lastReplyRef.current) {
+      void speak(lastReplyRef.current, langRef.current);
+    }
+  }, [playUrl, speak, speakBrowser]);
 
   /** Sunucudan gelen sepet eylemlerini gerçek sepete uygular (addToCart). */
   const applyActions = useCallback(
@@ -297,6 +409,7 @@ export default function VoiceAgent() {
           }, "lang değişimi");
         }
         setLastReply(turn.text);
+        lastReplyRef.current = turn.text;
         busyRef.current = false;
         await speak(turn.text, turn.lang ?? langRef.current);
       } catch (err) {
@@ -468,6 +581,7 @@ export default function VoiceAgent() {
     gotResultRef.current = false;
     heardAtRef.current = 0;
     sessionStartRef.current = Date.now();
+    firstStartRef.current = Date.now();
     const mobile = isMobile();
     safe(() => {
       r.lang = RECOG_LANG[langRef.current];
@@ -497,9 +611,16 @@ export default function VoiceAgent() {
         if (interimText) setInterim(interimText);
         const clean = finalText.trim();
         if (!clean) return;
-        // Yankı koruması: kendi söylediğimizi mikrofondan geri duymuş olabiliriz
+        // Yankı koruması: yalnızca asistan konuşurken/konuştuktan hemen sonra gelen ve söylenenin neredeyse tamamı olan metin.
+        // (Kısa bir "selamünaleyküm" karşılamanın içinde geçse bile müşterinin sözüdür, yok sayılmaz.)
         const n = norm(clean);
-        if (n.length > 6 && lastSpokenRef.current && (lastSpokenRef.current.includes(n) || n.includes(lastSpokenRef.current))) return;
+        const spoken = lastSpokenRef.current;
+        const recentlySpoke = speakingRef.current || Date.now() - speechEndedAtRef.current < ECHO_WINDOW_MS;
+        const nearlyWhole = spoken.length > 0 && n.length >= spoken.length * 0.7 && (spoken.includes(n) || n.includes(spoken));
+        if (recentlySpoke && nearlyWhole) {
+          setInterim("");
+          return;
+        }
         void handleUtterance(clean);
       } catch (err) {
         report("onresult", err);
@@ -531,18 +652,18 @@ export default function VoiceAgent() {
 
     r.onend = () => {
       if (!activeRef.current || recRef.current !== r) return;
-      const now = Date.now();
-      restartsRef.current = restartsRef.current.filter((t) => now - t < RESTART_WINDOW_MS);
-      if (restartsRef.current.length >= MAX_RESTARTS) {
-        // Motor sürekli kapanıyor; döngüye girmeden kayıt yedeğine geç
+      const lived = Date.now() - sessionStartRef.current;
+      fastEndsRef.current = lived < FAST_END_MS ? fastEndsRef.current + 1 : 0;
+      if (fastEndsRef.current >= MAX_FAST_ENDS) {
+        // Motor açılır açılmaz kapanıyor (izin/donanım/ses odağı sorunu); döngüye girmeden kayıt yedeğine geç
         stopListening();
-        switchToRecorder("SpeechRecognition sürekli kapanıyor", new Error(`${MAX_RESTARTS} restarts in ${RESTART_WINDOW_MS / 1000}s`));
+        switchToRecorder("SpeechRecognition sürekli kapanıyor", new Error(`${MAX_FAST_ENDS} sessions ended within ${FAST_END_MS} ms`));
         return;
       }
-      restartsRef.current.push(now);
       restartTimerRef.current = window.setTimeout(() => {
         restartTimerRef.current = null;
         if (!activeRef.current || recRef.current !== r) return;
+        sessionStartRef.current = Date.now();
         try {
           r.start();
         } catch (err) {
@@ -554,7 +675,7 @@ export default function VoiceAgent() {
 
     recRef.current = r;
     activeRef.current = true;
-    restartsRef.current = [];
+    fastEndsRef.current = 0;
     setNotice("");
     setDetail("");
     setStatus("listening");
@@ -571,7 +692,7 @@ export default function VoiceAgent() {
       if (!activeRef.current || recRef.current !== r || gotResultRef.current || busyRef.current) return;
       const now = Date.now();
       const heardTooLong = heardAtRef.current > 0 && now - heardAtRef.current > NO_RESULT_AFTER_SOUND_MS;
-      const stuck = now - sessionStartRef.current > NO_RESULT_HARD_MS && restartsRef.current.length >= 3;
+      const stuck = now - firstStartRef.current > NO_RESULT_HARD_MS && fastEndsRef.current >= 3;
       if (heardTooLong || stuck) {
         stopListening();
         switchToRecorder("SpeechRecognition sonuç vermedi", new Error(heardTooLong ? `sound heard, no result in ${NO_RESULT_AFTER_SOUND_MS / 1000}s` : `no result in ${NO_RESULT_HARD_MS / 1000}s`));
@@ -583,9 +704,8 @@ export default function VoiceAgent() {
   useEffect(() => {
     if (!open || greetedRef.current) return;
     greetedRef.current = true;
-    const l = initialVoiceLang(siteLang);
-    langRef.current = l;
-    setVoiceLang(l);
+    langRef.current = siteLang;
+    setVoiceLang(siteLang);
     fetch("/api/voice-agent")
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
       .then((c: Config) => {
@@ -594,6 +714,7 @@ export default function VoiceAgent() {
         const g = c?.greetings?.[langRef.current] ?? c?.greetings?.tr;
         if (g) {
           setLastReply(g);
+          lastReplyRef.current = g;
           historyRef.current = [{ role: "assistant", text: g }];
           void speak(g, langRef.current);
         }
@@ -604,6 +725,31 @@ export default function VoiceAgent() {
       });
   }, [open, report, siteLang, speak, tv.error]);
 
+  // Site dili değişince (dil değiştirici) asistan da o dile geçer: tanıma dili, geçmiş ve karşılama sıfırlanır
+  const prevSiteLangRef = useRef(siteLang);
+  useEffect(() => {
+    if (prevSiteLangRef.current === siteLang) return;
+    prevSiteLangRef.current = siteLang;
+    langRef.current = siteLang;
+    setVoiceLang(siteLang);
+    historyRef.current = [];
+    safe(() => {
+      if (recRef.current) recRef.current.lang = RECOG_LANG[siteLang];
+    }, "lang değişimi");
+    const g = configRef.current?.greetings?.[siteLang];
+    if (g) {
+      setLastReply(g);
+      lastReplyRef.current = g;
+      historyRef.current = [{ role: "assistant", text: g }];
+      if (open) void speak(g, siteLang);
+    }
+  }, [open, siteLang, speak]);
+
+  // startListening'i konuşma sonrası devam ettirmek için ref'te tut
+  useEffect(() => {
+    startListeningRef.current = startListening;
+  }, [startListening]);
+
   // Escape ile kapat; kapanınca dinlemeyi ve konuşmayı durdur
   useEffect(() => {
     if (!open) return;
@@ -613,6 +759,9 @@ export default function VoiceAgent() {
   }, [open]);
 
   const closePanel = useCallback(() => {
+    pausedForSpeechRef.current = false;
+    pendingAudioRef.current = null;
+    setAudioBlocked(false);
     stopListening();
     stopRecording();
     stopSpeaking();
@@ -643,6 +792,7 @@ export default function VoiceAgent() {
 
   // Bas-konuş (uzun basış) veya tıkla-dinle (kısa dokunuş)
   const onPressStart = () => {
+    unlockAudio();
     if (modeRef.current === "recorder") {
       pressRef.current = { at: Date.now(), wasActive: !!recorderRef.current };
       if (!recorderRef.current) void startRecording().catch((err) => report("startRecording", err));
@@ -739,7 +889,11 @@ export default function VoiceAgent() {
       {!open && (
         <button
           type="button"
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setOpen(true);
+            // Panel bir sonraki render'da oluşur; ses öğesi hazır olunca kilidi aç
+            window.setTimeout(unlockAudio, 0);
+          }}
           className="notranslate fixed bottom-5 right-5 z-[45] flex h-14 w-14 items-center justify-center rounded-full bg-brand-500 text-white shadow-xl shadow-brand-900/30 transition hover:scale-105 hover:bg-brand-600 sm:h-16 sm:w-16"
           translate="no"
           aria-label={tv.open}
@@ -790,6 +944,12 @@ export default function VoiceAgent() {
               {!lastReply && !lastUser && <p className="text-xs text-ink-500"><span>{tv.hint}</span></p>}
             </div>
 
+            {audioBlocked && (
+              <button type="button" onClick={unmute} className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full border border-brand-500 bg-brand-50 px-3 py-2 text-sm font-bold text-brand-600" data-testid="voice-unmute">
+                <Volume2 className="h-4 w-4" />
+                <span>{tv.unmute}</span>
+              </button>
+            )}
             {notice && <p className="mt-2 text-xs font-semibold text-brand-600" role="alert"><span>{notice}</span></p>}
             {detail && <p className="mt-1 break-words font-mono text-[10px] leading-snug text-ink-500" data-testid="voice-detail"><span>{detail}</span></p>}
 

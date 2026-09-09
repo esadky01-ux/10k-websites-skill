@@ -314,6 +314,7 @@ export const tr: Dictionary = {
     uploading: "Gönderiyor…",
     sttMissing: "Sunucu tarafı ses tanıma tanımlı değil (VOICE_STT_URL).",
     noSpeech: "Bir şey anlaşılmadı. Tekrar dener misin abi?",
+    unmute: "Sesi aç (dokun; telefonun medya sesini de açın)",
   },
   errorPage: { title: "Bir sorun oluştu", text: "Sayfa yüklenemedi. Tekrar deneyin; sorun sürerse bizi arayabilirsiniz.", retry: "Tekrar dene" },
   common: { hours: "Pzt – Cum 08:00 – 17:00 · Cmt 09:00 – 13:00", pcs: "adet", case: "koli", increase: "artır", decrease: "azalt", enlarge: "büyüt", close: "kapat" },

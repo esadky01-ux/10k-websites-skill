@@ -319,6 +319,7 @@ export const nl = {
     uploading: "Verstuurt…",
     sttMissing: "Serverzijde spraakherkenning is niet ingesteld (VOICE_STT_URL).",
     noSpeech: "Niets verstaan. Probeer opnieuw.",
+    unmute: "Geluid aanzetten (tik en zet het mediavolume aan)",
   },
   errorPage: { title: "Er ging iets mis", text: "De pagina kon niet geladen worden. Probeer het opnieuw; als het blijft gebeuren, bel ons gerust.", retry: "Opnieuw proberen" },
   common: { hours: "ma – vr 08:00 – 17:00 · za 09:00 – 13:00", pcs: "stuks", case: "colli", increase: "verhogen", decrease: "verlagen", enlarge: "vergroten", close: "sluiten" },

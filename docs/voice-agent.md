@@ -49,6 +49,18 @@ Chrome'un "sayfayı çevir" özelliği DOM'daki metin düğümlerini değiştiri
 `NotFoundError: insertBefore` hatası oluşur. Bu yüzden `<html translate="no">` ve `<meta name="google" content="notranslate">` ile sayfa çevirisi tamamen kapalıdır;
 sesli asistanın kapsayıcıları ayrıca `translate="no"` taşır ve tüm dinamik metinler sabit `<span>` içinde render edilir. Site zaten Türkçe ve Felemenkçe sunulduğundan dil için sağ üstteki dil değiştirici kullanılmalı.
 
+### Mobil ses ve dinleme döngüsü
+
+- **Ses kilidi:** mikrofon/panel dokunuşunda panel içindeki `<audio>` sessiz bir WAV ile bir kez çalıştırılır; sonraki mp3'ler
+  aynı öğe üzerinden dokunuş olmadan çalar. Tarayıcı yine de engellerse panelde "Sesi aç" düğmesi çıkar; dokununca bekleyen
+  ses çalınır. Tarayıcı sesi anında "bitti" derse (Android'de görülür) aynı düğme gösterilir.
+- **Yarı çift yönlü (mobil):** ses çalma ile tanıma aynı anda ses odağı için yarıştığından mobilde asistan konuşurken tanıma
+  duraklatılır, konuşma bitince otomatik yeniden başlar. Masaüstünde tanıma açık kalır (barge-in).
+- **Yankı koruması** yalnızca asistan konuşurken veya bitiminden 1,5 sn sonra gelen ve söylenen cümlenin en az %70'i olan
+  metni yok sayar; kısa bir "selamünaleyküm" karşılamanın içinde geçse de işlenir.
+- **Dil:** asistan sitenin aktif dilinde başlar; dil değiştirici kullanılınca tanıma dili, geçmiş ve karşılama o dile geçer.
+  Konuşma sırasında müşteri başka dile geçerse yanıt ve tanıma dili yine ona uyar.
+
 ## Yapılandırma (.env)
 
 | Değişken | Açıklama |
