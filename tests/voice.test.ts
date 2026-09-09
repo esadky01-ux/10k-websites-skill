@@ -129,3 +129,47 @@ test("matcher keeps variants within the product family and uses size hints", asy
   const rice = matchItem({ query: "pirinç", quantity: 1, unit: "koli" });
   assert.ok(rice.alternatives.length >= 3 && rice.alternatives.every((p) => /pirin/i.test(p.name)), "generic rice lists rice variants only");
 });
+
+test("Kurdish guide: prompt carries the alias table and the LLM request includes it", async () => {
+  const { EXTRACT_SYSTEM } = await import("../src/server/voice/openai");
+  for (const needle of ["mrişk / mirîşk = tavuk / kip", "goşt = et / vlees", "hêk = yumurta / eieren", "birinc = pirinç / rijst", "kartol / sêva erdê = patates / friet", "du=2", "deh=10", "kîlo = kg", "dane / heb = adet"]) {
+    assert.ok(EXTRACT_SYSTEM.includes(needle), `prompt lacks: ${needle}`);
+  }
+  process.env.OPENAI_API_KEY = "sk-TESTKEY0123456789abcdefghijklmnop";
+  const realFetch = globalThis.fetch;
+  let systemSeen = "";
+  globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+    const url = String(input);
+    if (url.includes("transcriptions")) return new Response(JSON.stringify({ text: "sê koli mirîşk bîst kîlo û du dane rûn" }), { status: 200, headers: { "Content-Type": "application/json" } });
+    const body = JSON.parse(String(init?.body)) as { messages: { role: string; content: string }[] };
+    systemSeen = body.messages[0].content;
+    return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify({ language: "ku", items: [{ query: "tavuk döner 20 kg", quantity: 3, unit: "koli" }, { query: "yağ", quantity: 2, unit: "adet" }] }) } }] }), { status: 200, headers: { "Content-Type": "application/json" } });
+  }) as typeof fetch;
+  try {
+    const { processOrderAudio } = await import("../src/server/voice/order");
+    const r = await processOrderAudio(new Blob([new Uint8Array(3000)], { type: "audio/webm" }), "order.webm", "ku", null);
+    assert.ok(systemSeen.includes("Kurmancî"), "system prompt sent with Kurdish guide");
+    assert.equal(r.dil, "ku");
+    const doner = r.secenekler.find((c) => c.sorgu === "tavuk döner 20 kg") ?? null;
+    assert.ok(doner && doner.koli === 3 && doner.adaylar.every((a) => /20 kg/.test(a.ambalaj)), "3 koli of 20 kg chicken döner offered as variants");
+  } finally {
+    globalThis.fetch = realFetch;
+    delete process.env.OPENAI_API_KEY;
+  }
+});
+
+test("Kurdish fallback translation works without an LLM", async () => {
+  const { translateKurdish } = await import("../src/data/voice-vocab");
+  assert.equal(translateKurdish("sê koli mirîşk bîst kîlo"), "3 koli tavuk 20 kg");
+  assert.equal(translateKurdish("pênc karton hêk"), "5 koli yumurta");
+  assert.equal(translateKurdish("du dane birinc"), "2 adet pirinç");
+  const { itemsFromTranscript, buildResult } = await import("../src/server/voice/order");
+  const r = await itemsFromTranscript("sê koli mirîşk bîst kîlo", false);
+  assert.equal(r.items.length, 1);
+  assert.equal(r.items[0].quantity, 3);
+  assert.equal(r.items[0].unit, "koli");
+  assert.match(r.items[0].query, /tavuk 20 kg/);
+  const built = buildResult("sê koli mirîşk bîst kîlo", r.items, "ku", null, true);
+  const all = [...built.eklenenler.map((l) => l.ambalaj), ...built.secenekler.flatMap((c) => c.adaylar.map((a) => a.ambalaj))];
+  assert.ok(all.length > 0 && all.every((a) => /20 kg/.test(a)), `20 kg chicken variants: ${all.join(", ")}`);
+});

@@ -7,7 +7,7 @@
  *   VOICE_TTS_URL    varsayılan https://api.openai.com/v1/audio/speech           (VOICE_TTS_MODEL: tts-1, VOICE_TTS_VOICE: onyx)
  */
 import { cleanApiKey, redactSecrets } from "./secrets";
-import { VOICE_VOCAB, WHISPER_HINT } from "@/data/voice-vocab";
+import { kurdishGuideText, VOICE_VOCAB, WHISPER_HINT } from "@/data/voice-vocab";
 
 const STT_URL = "https://api.openai.com/v1/audio/transcriptions";
 const LLM_URL = "https://api.openai.com/v1/chat/completions";
@@ -64,13 +64,15 @@ export async function transcribeAudio(audio: Blob, filename: string, lang?: stri
 export type ExtractedItem = { query: string; quantity: number; unit: "koli" | "adet" };
 export type Extraction = { items: ExtractedItem[]; language: "tr" | "nl" | "ku" | "other" };
 
-const EXTRACT_SYSTEM = `Sen bir toptan gıda sipariş ayrıştırıcısısın. Müşterinin konuşma metninden (Türkçe, Felemenkçe/Flamanca, Kürtçe veya karışık) sipariş kalemlerini çıkar.
+export const EXTRACT_SYSTEM = `Sen bir toptan gıda sipariş ayrıştırıcısısın. Müşterinin konuşma metninden (Türkçe, Felemenkçe/Flamanca, Kürtçe veya karışık) sipariş kalemlerini çıkar.
 Kurallar:
 - Her kalem için ürün adını olduğu gibi (marka, boyut, örn. "kip döner 20 kg", "pauwels samurai 3 liter", "tabasco 350ml") "query" alanına yaz; miktarı "quantity" olarak sayıya çevir (bir=1, iki/twee=2, üç/drie=3, ...). Miktar söylenmediyse 1.
 - Birim: koli/kutu/doos/dozen/colli/qutî → "koli"; adet/tane/paket/pak/stuk/stuks/şişe/fles/kova → "adet". Belirtilmediyse "koli".
 - Selamlaşma, sohbet ve sipariş dışı sözleri atla. Ürün uydurma; yalnızca söylenenleri çıkar.
 - "language": metnin baskın dili (tr, nl, ku, other).
-- Saha sözlüğü (Kürtçe/yöresel → katalog): ${Object.entries(VOICE_VOCAB).map(([k, v]) => `${k}=${v[0]}`).join(", ")}. Bu kelimeleri "query" alanında katalog karşılığıyla yaz.
+- Kürtçe terimler: "query" alanına ASLA Kürtçe kelime yazma; aşağıdaki kılavuzla katalog karşılığına çevir. Kılavuzda olmayan Kürtçe kelimeyi en yakın Türkçe ürün adıyla yaz.
+${kurdishGuideText()}
+- Yöresel/esnaf sözlüğü: ${Object.entries(VOICE_VOCAB).filter(([k]) => /^[a-z0-9' ]+$/i.test(k)).map(([k, v]) => `${k}=${v[0]}`).join(", ")}.
 Yalnızca JSON döndür.`;
 
 const EXTRACT_SCHEMA = {

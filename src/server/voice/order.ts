@@ -11,6 +11,7 @@ import path from "node:path";
 import { getProduct, formatPackaging, productName, type Product } from "@/data/products";
 import { parseOrderText, searchProducts, normalize, type Match } from "@/server/whatsapp/matcher";
 import { extractOrderItems, transcribeAudio, type ExtractedItem } from "./openai";
+import { translateKurdish } from "@/data/voice-vocab";
 
 export type VoiceLang = "tr" | "nl" | "ku";
 export type AddedLine = { id: string; isim: string; koli: number; adet: number; adetMetni: string; ambalaj: string; birimFiyat: number | null };
@@ -66,7 +67,8 @@ export async function itemsFromTranscript(transcript: string, useLlm: boolean): 
       console.warn("[voice-order] LLM çıkarımı başarısız, kural tabanlı yedek:", (err as Error)?.message);
     }
   }
-  const cleaned = transcript.replace(/\b(bana|lütfen|yaz|ekle|ekleyiver|koy|gönder|istiyorum|zet|erbij|erop|graag|alstublieft|bide|min re)\b/gi, " ").replace(/\s+/g, " ").trim();
+  // Kural tabanlı yedek: Kürtçe sayı/birim/ürün kelimeleri önce katalog diline çevrilir
+  const cleaned = translateKurdish(transcript).replace(/\b(bana|lütfen|yaz|ekle|ekleyiver|koy|gönder|istiyorum|zet|erbij|erop|graag|alstublieft|bide|min re|ji bo min|kerem bike)\b/gi, " ").replace(/\s+/g, " ").trim();
   const items = parseOrderText(cleaned).map((l) => ({ query: l.query, quantity: l.quantity, unit: l.unit }));
   return { items, lang: detectLang(transcript), yedek: true };
 }

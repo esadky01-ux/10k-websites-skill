@@ -50,6 +50,13 @@ OpenAI Whisper ve GPT-4o-mini yeniden eğitilemez; pratikte üç katmanlı bir s
 3. **Eşleştirici eş anlamlıları:** sözlük `searchProducts` içinde sorgu genişletmesine katılır; "mirîşk" doğrudan tavuk
    ürünlerini bulur, "onluk" 10 kg ipucuna dönüşür.
 
+Ayrıca `KURDISH_GUIDE` (aynı dosyada) sektörel bir Kurmancî kılavuzudur: ürünler (mrişk/mirîşk = tavuk/kip, goşt = et/vlees,
+hêk = yumurta/eieren, rûn = yağ/olie, birinc = pirinç/rijst, penîr = peynir/kaas, nan = ekmek/pita/durum, pîvaz = soğan,
+kartol/sêva erdê = patates/friet…), sayılar (du=2 … deh=10, bîst=20) ve birimler (koli/karton/qutî = koli, teneke, kîlo = kg,
+dane/heb = adet). GPT-4o-mini talimatına okunaklı biçimde eklenir ve modele "query alanına asla Kürtçe kelime yazma, katalog
+karşılığını yaz" kuralı verilir; LLM olmadan çalışan kural tabanlı yedek de aynı kılavuzla deterministik çeviri yapar
+(`translateKurdish`: "sê koli mirîşk bîst kîlo" → "3 koli tavuk 20 kg").
+
 Katalogda karşılığı olmayan bir kelime geldiğinde sistem onu `MAXIMUS_DATA_DIR/voice-unmatched.jsonl` dosyasına
 (`{ at, query, transcript }`) yazar. Haftada bir bu dosyaya bakıp yeni kelimeleri `VOICE_VOCAB` içine eklemek, sahadaki
 "eğitim" döngüsüdür. Örnek satır: `"goşt": ["döner", "et"]`. Anahtar tarafına kelimeyi Kürtçe yazıldığı gibi (aksanlı ve aksansız
