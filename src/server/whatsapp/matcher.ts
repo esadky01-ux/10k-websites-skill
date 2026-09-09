@@ -4,6 +4,7 @@
  * ANTHROPIC_API_KEY yoksa kural tabanlı ayrıştırıcı tek başına da çalışır.
  */
 import { products, type Product } from "@/data/products";
+import { VOICE_VOCAB } from "@/data/voice-vocab";
 
 export type Match = { product: Product; score: number };
 export type ParsedLine = { raw: string; quantity: number; unit: "koli" | "adet"; query: string; sizeHint?: string };
@@ -33,6 +34,15 @@ const SYNONYMS: Record<string, string[]> = {
   yag: ["olie"], olie: ["yag"], un: ["bloem"], bloem: ["un"], nohut: ["kikkererwten"], mercimek: ["linzen"], pirinc: ["rijst"],
   domates: ["tomaten"], tomaten: ["domates"], rendelenmis: ["geraspte"], geraspte: ["rendelenmis"], dilimlenmis: ["gesneden"],
 };
+
+// Saha sözlüğü (Kürtçe/yöresel) eş anlamlılara eklenir; anahtarlar normalize edilir
+for (const [k, v] of Object.entries(VOICE_VOCAB)) {
+  const key = normalize(k);
+  SYNONYMS[key] = [...(SYNONYMS[key] ?? []), ...v];
+}
+
+/** Sayı, birim ve "25lik/onluk" gibi boyut ekleri: tek başına ürün adı eşleşmesi sayılmaz. */
+const SIZE_LIKE = /^(\d+([.,]\d+)?|\d+(kg|g|gr|l|lt|liter|cl|ml|cm|st)|lik|luk|lık|lük|kg|gr|g|l|lt|liter|cl|ml|cm)$/;
 
 type Indexed = { product: Product; tokens: Set<string>; text: string; sizeTokens: string[] };
 let index: Indexed[] | null = null;
@@ -64,23 +74,35 @@ export function searchProducts(query: string, limit = 5): Match[] {
   const expanded = expand(qTokens);
   const sizeInQuery = normalize(query).match(/\d+(?:[.,]\d+)?\s*(kg|g|gr|l|liter|cl|ml|cm|st|stuks)/g)?.map((s) => s.replace(/\s/g, "")) ?? [];
   const results: Match[] = [];
+  const numbersInQuery = qTokens.filter((t) => /^\d+([.,]\d+)?$/.test(t));
+  // "onluk" → "10 kg" gibi boyut anlamlı eş anlamlılar kelime değil sayı ipucu olur
+  for (const t of qTokens) for (const syn of SYNONYMS[t] ?? []) {
+    const m = normalize(syn).match(/^(\d+([.,]\d+)?)/);
+    if (m && !numbersInQuery.includes(m[1])) numbersInQuery.push(m[1]);
+  }
   for (const item of buildIndex()) {
     let score = 0;
     let matchedOriginal = 0;
+    let matchedWords = 0;
     for (const t of qTokens) {
-      if (item.tokens.has(t)) { score += 3; matchedOriginal++; continue; }
-      if ([...item.tokens].some((it) => it.startsWith(t) && t.length >= 3)) { score += 1.5; matchedOriginal += 0.5; continue; }
-      const syns = (SYNONYMS[t] ?? []).map(normalize);
-      if (syns.some((s) => item.tokens.has(s))) { score += 2.5; matchedOriginal++; }
+      if (SIZE_LIKE.test(t)) continue; // boyut/sayı: aşağıda ipucu olarak değerlendirilir
+      if (item.tokens.has(t)) { score += 3; matchedOriginal++; matchedWords++; continue; }
+      if ([...item.tokens].some((it) => it.startsWith(t) && t.length >= 3)) { score += 1.5; matchedOriginal += 0.5; matchedWords++; continue; }
+      const syns = (SYNONYMS[t] ?? []).map(normalize).flatMap((x) => x.split(" ")).filter((x) => x && !SIZE_LIKE.test(x));
+      if (syns.some((sy) => item.tokens.has(sy))) { score += 2.5; matchedOriginal++; matchedWords++; }
     }
-    if (matchedOriginal === 0) continue;
+    // Alakasız kategoriye kaymayı önler: en az bir ürün kelimesi (ad/marka) eşleşmeli
+    if (matchedWords === 0) continue;
+    const wordTokens = qTokens.filter((t) => !SIZE_LIKE.test(t)).length;
     // Sorgudaki tüm anlamlı kelimeler eşleştiyse bonus
-    if (matchedOriginal >= qTokens.length) score += 2;
+    if (wordTokens > 0 && matchedOriginal >= wordTokens) score += 2;
     // Boyut eşleşmesi (20kg, 10 kg, 24x33cl)
-    for (const s of sizeInQuery) {
-      if (item.sizeTokens.some((st) => st === s || st.replace(",", ".") === s.replace(",", "."))) score += 3;
-      else if (item.text.includes(s)) score += 2;
+    for (const sz of sizeInQuery) {
+      if (item.sizeTokens.some((st) => st === sz || st.replace(",", ".") === sz.replace(",", "."))) score += 3;
+      else if (item.text.includes(sz)) score += 2;
     }
+    // Çıplak sayı ("25'lik", "onluk" → "10 kg"): boyutla uyuşuyorsa küçük ipucu
+    for (const n of numbersInQuery) if (item.sizeTokens.some((st) => st.startsWith(n) && /^\d+([.,]\d+)?[a-z]/.test(st))) score += 2.5;
     // Marka sorguda geçiyorsa bonus
     if (qTokens.includes(normalize(item.product.brand).split(" ")[0])) score += 1;
     // Kısa ürün adları (daha az fazladan kelime) hafif öncelikli

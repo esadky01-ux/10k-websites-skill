@@ -7,6 +7,7 @@
  *   VOICE_TTS_URL    varsayılan https://api.openai.com/v1/audio/speech           (VOICE_TTS_MODEL: tts-1, VOICE_TTS_VOICE: onyx)
  */
 import { cleanApiKey, redactSecrets } from "./secrets";
+import { VOICE_VOCAB, WHISPER_HINT } from "@/data/voice-vocab";
 
 const STT_URL = "https://api.openai.com/v1/audio/transcriptions";
 const LLM_URL = "https://api.openai.com/v1/chat/completions";
@@ -43,6 +44,8 @@ export async function transcribeAudio(audio: Blob, filename: string, lang?: stri
     form.append("file", audio, filename);
     form.append("model", process.env.VOICE_STT_MODEL ?? "whisper-1");
     form.append("response_format", "json");
+    // Marka ve saha kelimeleri ipucu: Whisper nadir kelimeleri (Kurmancî dahil) doğru yazsın
+    form.append("prompt", WHISPER_HINT);
     if (withLang && lang) form.append("language", lang);
     return fetch(process.env.VOICE_STT_URL ?? STT_URL, {
       method: "POST",
@@ -67,6 +70,7 @@ Kurallar:
 - Birim: koli/kutu/doos/dozen/colli/qutî → "koli"; adet/tane/paket/pak/stuk/stuks/şişe/fles/kova → "adet". Belirtilmediyse "koli".
 - Selamlaşma, sohbet ve sipariş dışı sözleri atla. Ürün uydurma; yalnızca söylenenleri çıkar.
 - "language": metnin baskın dili (tr, nl, ku, other).
+- Saha sözlüğü (Kürtçe/yöresel → katalog): ${Object.entries(VOICE_VOCAB).map(([k, v]) => `${k}=${v[0]}`).join(", ")}. Bu kelimeleri "query" alanında katalog karşılığıyla yaz.
 Yalnızca JSON döndür.`;
 
 const EXTRACT_SCHEMA = {

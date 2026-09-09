@@ -17,7 +17,9 @@ import { formatEur } from "@/lib/format";
 
 type Status = "idle" | "recording" | "processing" | "done" | "error";
 type Added = { id: string; isim: string; koli: number; adet: number; adetMetni: string; ambalaj: string; birimFiyat: number | null };
-type Result = { transkript: string; dil: "tr" | "nl" | "ku"; eklenenler: Added[]; bulunamayanlar: string[]; toplamTutar: number | null; yedek: boolean };
+type Candidate = { id: string; isim: string; ambalaj: string; etiket: string; birimFiyat: number | null };
+type Choice = { sorgu: string; koli: number; adet: number; adetMetni: string; adaylar: Candidate[] };
+type Result = { transkript: string; dil: "tr" | "nl" | "ku"; eklenenler: Added[]; secenekler: Choice[]; bulunamayanlar: string[]; toplamTutar: number | null; yedek: boolean };
 type Config = { configured: boolean; tts: boolean; maxSeconds: number };
 
 const MAX_SECONDS = 30;
@@ -210,6 +212,26 @@ export default function VoiceAgent() {
     }
   }, [config, releaseStream, report, stopRecording, tv.error, tv.insecure, tv.micDenied, tv.noMic, tv.unsupported, upload]);
 
+  /** "Hangisi olsun?" chip'i: seçilen varyantı istenen miktarla sepete ekler ve karta taşır. */
+  const chooseVariant = useCallback(
+    (choice: Choice, cand: Candidate) => {
+      if (!result) return;
+      applyToCart([{ id: cand.id, isim: cand.isim, koli: choice.koli, adet: choice.adet, adetMetni: choice.adetMetni, ambalaj: cand.ambalaj, birimFiyat: cand.birimFiyat }]);
+      setResult((prev) => {
+        if (!prev) return prev;
+        const eklenenler = [...prev.eklenenler];
+        const ex = eklenenler.find((l) => l.id === cand.id);
+        if (ex) {
+          ex.koli += choice.koli;
+          ex.adet += choice.adet;
+          ex.adetMetni = [ex.koli ? `${ex.koli} ${tv.caseWord}` : "", ex.adet ? `${ex.adet} ${tv.unitWord}` : ""].filter(Boolean).join(" + ");
+        } else eklenenler.push({ id: cand.id, isim: cand.isim, koli: choice.koli, adet: choice.adet, adetMetni: choice.adetMetni, ambalaj: cand.ambalaj, birimFiyat: cand.birimFiyat });
+        return { ...prev, eklenenler, secenekler: prev.secenekler.filter((c) => c !== choice) };
+      });
+    },
+    [applyToCart, result, tv.caseWord, tv.unitWord],
+  );
+
   const toggleRecording = () => {
     if (status === "processing") return;
     if (recorderRef.current) stopRecording();
@@ -365,6 +387,32 @@ export default function VoiceAgent() {
                     ))}
                   </ul>
                 )}
+                {result.secenekler.length > 0 && (
+                  <div className="mt-3 space-y-3" data-testid="voice-choices">
+                    {result.secenekler.map((c, i) => (
+                      <div key={i} className="rounded-xl border border-gold-500/40 bg-white p-2.5">
+                        <p className="text-xs font-bold text-ink-900">
+                          <span>{tv.which}</span> <span className="font-normal text-ink-500">· {c.adetMetni} {c.sorgu}</span>
+                        </p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {c.adaylar.map((cand) => (
+                            <button
+                              key={cand.id}
+                              type="button"
+                              onClick={() => chooseVariant(c, cand)}
+                              className="inline-flex items-center gap-1 rounded-full border border-brand-500 bg-brand-50 px-3 py-1.5 text-xs font-bold text-brand-600 transition hover:bg-brand-500 hover:text-white"
+                              data-testid="voice-choice"
+                              data-product-id={cand.id}
+                            >
+                              <span>{cand.etiket}</span>
+                              <span className="font-normal">· {tv.add}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 {result.bulunamayanlar.length > 0 && (
                   <ul className="mt-2 space-y-1" data-testid="voice-missing">
                     {result.bulunamayanlar.map((m, i) => (
@@ -375,7 +423,7 @@ export default function VoiceAgent() {
                     ))}
                   </ul>
                 )}
-                {result.eklenenler.length === 0 && result.bulunamayanlar.length === 0 && <p className="mt-2 text-ink-700"><span>{tv.nothing}</span></p>}
+                {result.eklenenler.length === 0 && result.secenekler.length === 0 && result.bulunamayanlar.length === 0 && <p className="mt-2 text-ink-700"><span>{tv.nothing}</span></p>}
                 <p className="mt-2 border-t border-cream-200 pt-2 text-xs text-ink-500">
                   <span>{result.toplamTutar !== null ? `${tv.total}: ${formatEur(result.toplamTutar, lang)} ${tv.exclVat}` : tv.priceNote}</span>
                 </p>
@@ -422,8 +470,9 @@ export default function VoiceAgent() {
 }
 
 /** Onay kartı için okunacak özet (istemci tarafı, sözlükten). */
-function summaryFor(r: Result, tv: { spokenAdded: string; spokenMissing: string; spokenNothing: string; spokenMore: string }): string {
-  if (!r.eklenenler.length) return tv.spokenNothing;
+function summaryFor(r: Result, tv: { spokenAdded: string; spokenMissing: string; spokenNothing: string; spokenMore: string; spokenChoose: string }): string {
+  if (!r.eklenenler.length && !r.secenekler.length) return tv.spokenNothing;
+  if (!r.eklenenler.length) return `${tv.spokenChoose} ${r.secenekler.map((c) => c.sorgu).join(", ")}.`;
   const list = r.eklenenler.map((l) => `${l.adetMetni} ${l.isim}`).join(", ");
   const missing = r.bulunamayanlar.length ? ` ${tv.spokenMissing} ${r.bulunamayanlar.join(", ")}.` : "";
   return `${tv.spokenAdded} ${list}.${missing} ${tv.spokenMore}`;
