@@ -1,14 +1,19 @@
 import Link from "next/link";
-import Image from "next/image";
+import { existsSync } from "fs";
+import path from "path";
+import HeroMedia from "@/components/HeroMedia";
 import { ArrowRight, BadgePercent, MessageCircle, Truck } from "lucide-react";
 import { site } from "@/lib/site";
 import { fill, getDictionary, localePath, type Locale } from "@/i18n";
+
+/** Hero videosu public/media/hero altında varsa kullanılır (build sırasında kontrol edilir). */
+const heroVideo = existsSync(path.join(process.cwd(), "public", "media", "hero", "hero-loop.mp4")) ? "/media/hero/hero-loop.mp4" : undefined;
 
 export default function Hero({ lang }: { lang: Locale }) {
   const t = getDictionary(lang).hero;
   return (
     <section className="relative isolate overflow-hidden bg-ink-900 text-white">
-      <Image src="/media/hero/hero-warehouse.jpg" alt="Maximus Food & Horeca Aarschot" fill priority sizes="100vw" className="object-cover object-[70%_center]" />
+      <HeroMedia video={heroVideo} poster="/media/hero/hero-warehouse.jpg" alt="Maximus Food & Horeca Aarschot" />
       <div className="absolute inset-0 bg-gradient-to-r from-ink-900/95 via-ink-900/70 to-ink-900/20" />
       <div className="absolute inset-0 bg-gradient-to-t from-ink-900/80 via-transparent to-transparent" />
       <div className="relative mx-auto flex max-w-7xl flex-col justify-center px-4 py-20 sm:px-6 md:min-h-[600px] md:py-28">

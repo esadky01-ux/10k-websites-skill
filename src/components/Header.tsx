@@ -53,7 +53,7 @@ export default function Header({ lang }: { lang: Locale }) {
         <HeaderActions />
       </div>
 
-      <nav className="flex gap-1 overflow-x-auto border-t border-cream-200 px-2 py-1.5 lg:hidden" aria-label={t.nav.home}>
+      <nav className="scroll-tabs flex gap-1 overflow-x-auto border-t border-cream-200 px-2 py-1.5 lg:hidden" aria-label={t.nav.home}>
         {nav.map((item) => (
           <Link key={item.href} href={item.href} className="whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium text-ink-700 hover:bg-cream-100">
             {item.label}

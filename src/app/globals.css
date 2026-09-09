@@ -37,6 +37,15 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Yatay kaydırılan sekme satırlarında kaydırma çubuğunu gizle (dokunmatik ve tekerlek kaydırma çalışmaya devam eder) */
+.scroll-tabs {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scroll-tabs::-webkit-scrollbar {
+  display: none;
+}
+
 /* Sayısal alanlarda tarayıcı oklarını gizle */
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
