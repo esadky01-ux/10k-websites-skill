@@ -538,7 +538,7 @@ await check("voice agent's silent unlock clip is a valid, playable WAV", async (
   wp.on("pageerror", (e) => pageErrors.push(String(e)));
   await wp.goto(`${BASE}/tr`, { waitUntil: "networkidle" });
   await wp.click("[data-testid=voice-open]");
-  await wp.waitForSelector("[data-testid=voice-tts-audio]");
+  await wp.waitForSelector("[data-testid=voice-tts-audio]", { state: "attached" });
   // Dokunuş sonrası ses öğesine atanan kilit açma klibini gerçek Chromium'da bir dokunuş içinde çal
   await wp.evaluate(() => {
     const b = document.createElement("button"); b.id = "__play"; b.textContent = "play"; document.body.appendChild(b);
