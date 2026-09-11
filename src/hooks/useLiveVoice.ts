@@ -363,7 +363,10 @@ export function useLiveVoice({ lang, cart, idleSeconds = IDLE_DEFAULT, maxSecond
       dc.onerror = (e) => report("datachannel", (e as { error?: unknown }).error ?? e);
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
-      const res = await fetch("/api/realtime-session", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sdp: offer.sdp, lang }) });
+      // Yerel açıklama uygulandıktan sonraki SDP'yi gönder (tarayıcı satır sonlarını CRLF ile üretir; sunucu kırpmaz).
+      const sdp = pc.localDescription?.sdp || offer.sdp || "";
+      if (!sdp.startsWith("v=0")) throw new Error("SDP offer empty");
+      const res = await fetch("/api/realtime-session", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sdp, lang }) });
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as { error?: string; detail?: string };
         throw new Error(`${res.status} ${body.error ?? ""}${body.detail ? ` (${body.detail})` : ""}`.trim());

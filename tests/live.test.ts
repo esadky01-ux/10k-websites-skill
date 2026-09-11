@@ -7,12 +7,12 @@ test("createLiveSession posts the SDP offer to /v1/live/sessions with delegation
   const realFetch = globalThis.fetch;
   globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
     seen.push({ url: String(input), auth: new Headers(init?.headers).get("authorization"), body: JSON.parse(String(init?.body)) as Record<string, unknown> });
-    return new Response(JSON.stringify({ id: "sess_123", transport: { type: "webrtc", sdp: "v=0\r\nanswer" } }), { status: 201, headers: { "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ session: { id: "sess_123" }, transport: { type: "webrtc", sdp: "v=0\r\nanswer" } }), { status: 201, headers: { "Content-Type": "application/json" } });
   }) as typeof fetch;
   try {
     const { createLiveSession, liveConfigured } = await import("../src/server/voice/live");
     assert.equal(liveConfigured(), true);
-    const s = await createLiveSession("v=0\r\noffer", "tr");
+    const s = await createLiveSession("v=0\r\no=- 1 1 IN IP4 0.0.0.0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111", "tr");
     assert.equal(s.id, "sess_123");
     assert.equal(s.sdp, "v=0\r\nanswer");
     assert.equal(s.model, "gpt-live-1");
@@ -22,7 +22,7 @@ test("createLiveSession posts the SDP offer to /v1/live/sessions with delegation
     const body = seen[0].body as { session: { model: string; instructions: string; delegation: { type: string; responses: { model: string; tools: { name: string }[]; tool_choice: string } } }; transport: { type: string; sdp: string } };
     assert.equal(body.session.model, "gpt-live-1");
     assert.equal(body.transport.type, "webrtc");
-    assert.equal(body.transport.sdp, "v=0\r\noffer");
+    assert.equal(body.transport.sdp, "v=0\r\no=- 1 1 IN IP4 0.0.0.0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\n", "every line CRLF-terminated, including the last");
     assert.equal(body.session.delegation.type, "responses");
     assert.equal(body.session.delegation.responses.tool_choice, "auto");
     assert.deepEqual(body.session.delegation.responses.tools.map((t) => t.name), ["search_catalog", "add_to_cart", "show_cart", "open_cart"]);
@@ -84,4 +84,11 @@ test("runTool: search_catalog finds products, add_to_cart adds to existing quant
   assert.equal(opened, 1);
   assert.equal(extractToolCall({ type: "response.event", event: { type: "response.output_item.done", item: { type: "function_call", call_id: "c1", name: "add_to_cart", arguments: "{}" } } })?.call_id, "c1");
   assert.equal(extractToolCall({ type: "session.started" }), null);
+});
+
+test("normalizeSdp restores CRLF line endings and the trailing newline the parser needs", async () => {
+  const { normalizeSdp } = await import("../src/server/voice/live");
+  assert.equal(normalizeSdp("v=0\r\na=x"), "v=0\r\na=x\r\n");
+  assert.equal(normalizeSdp("v=0\na=x\n"), "v=0\r\na=x\r\n");
+  assert.equal(normalizeSdp("v=0\r\na=x\r\n"), "v=0\r\na=x\r\n");
 });
