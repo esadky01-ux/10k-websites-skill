@@ -42,12 +42,16 @@ function pickMime(): string {
   return "";
 }
 
-export default function VoiceAgent() {
+/**
+ * @param embedded  Modal içinde sekme olarak: yüzen düğme ve kendi kapatma başlığı olmadan, tam genişlikte.
+ * @param onClose   Gömülü kullanımda "Sepete git" sonrası üst bileşeni kapatmak için.
+ */
+export default function VoiceAgent({ embedded = false, onClose }: { embedded?: boolean; onClose?: () => void } = {}) {
   const cart = useCart();
   const { lang, t } = useI18n();
   const tv = t.voice;
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(embedded);
   const [status, setStatus] = useState<Status>("idle");
   const [seconds, setSeconds] = useState(0);
   const [result, setResult] = useState<Result | null>(null);
@@ -271,7 +275,8 @@ export default function VoiceAgent() {
   }, [config, report, result, tv]);
 
   const goToCart = () => {
-    setOpen(false);
+    setOpen(embedded);
+    onClose?.();
     cart.open();
   };
 
@@ -286,15 +291,16 @@ export default function VoiceAgent() {
     stopRecording();
     safe(() => audioRef.current?.pause(), "audio.pause");
     safe(() => window.speechSynthesis?.cancel(), "cancel");
-    setOpen(false);
-  }, [stopRecording]);
+    setOpen(embedded);
+    if (embedded) onClose?.();
+  }, [embedded, onClose, stopRecording]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open || embedded) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && closePanel();
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, closePanel]);
+  }, [open, embedded, closePanel]);
 
   // Bileşen kaldırılırken mikrofon ve sesi bırak
   useEffect(
@@ -313,7 +319,7 @@ export default function VoiceAgent() {
 
   return (
     <>
-      {!open && (
+      {!embedded && !open && (
         <button
           type="button"
           onClick={() => setOpen(true)}
@@ -330,23 +336,25 @@ export default function VoiceAgent() {
 
       {open && (
         <section
-          className="notranslate fixed bottom-4 right-4 z-[45] w-[min(92vw,380px)] overflow-hidden rounded-3xl border border-cream-200 bg-white shadow-2xl"
+          className={embedded ? "notranslate w-full" : "notranslate fixed bottom-4 right-4 z-[45] w-[min(92vw,380px)] overflow-hidden rounded-3xl border border-cream-200 bg-white shadow-2xl"}
           translate="no"
-          role="dialog"
+          role={embedded ? undefined : "dialog"}
           aria-label={tv.name}
-          data-testid="voice-panel"
+          data-testid={embedded ? "voice-push-panel" : "voice-panel"}
         >
-          <header className="notranslate flex items-center justify-between bg-ink-900 px-4 py-3 text-white" translate="no">
+          <header className={`notranslate flex items-center justify-between px-4 py-3 ${embedded ? "border-b border-cream-200 bg-cream-50 text-ink-900" : "bg-ink-900 text-white"}`} translate="no">
             <div className="flex items-center gap-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-500"><Mic className="h-4 w-4" /></span>
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-500 text-white"><Mic className="h-4 w-4" /></span>
               <div>
                 <p className="text-sm font-bold leading-tight"><span>{tv.name}</span></p>
-                <p className="text-[11px] text-cream-100/70" data-testid="voice-status"><span>{statusLabel}</span></p>
+                <p className={`text-[11px] ${embedded ? "text-ink-500" : "text-cream-100/70"}`} data-testid="voice-status"><span>{statusLabel}</span></p>
               </div>
             </div>
-            <button type="button" onClick={closePanel} className="rounded-full p-1.5 text-cream-100/80 hover:bg-white/10 hover:text-white" aria-label={tv.close} data-testid="voice-close">
-              <X className="h-5 w-5" />
-            </button>
+            {!embedded && (
+              <button type="button" onClick={closePanel} className="rounded-full p-1.5 text-cream-100/80 hover:bg-white/10 hover:text-white" aria-label={tv.close} data-testid="voice-close">
+                <X className="h-5 w-5" />
+              </button>
+            )}
           </header>
 
           <div className="notranslate px-4 pb-4 pt-3" translate="no">

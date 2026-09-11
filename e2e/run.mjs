@@ -342,9 +342,103 @@ await check("voice order: gentle notices for missing config, denied microphone a
   assert(pageErrors.length === 0, `uncaught: ${pageErrors.join(" | ")}`);
   await dctx.close();
 });
+// Canlı görüşme (GPT-Live): sahte RTCPeerConnection + stub'lanmış /api/realtime-session ile araç çağrısı akışı
+const FAKE_RTC = () => {
+  const track = { enabled: true, stop() {} };
+  Object.defineProperty(navigator, "mediaDevices", { configurable: true, value: { getUserMedia: async () => ({ getTracks: () => [track], getAudioTracks: () => [track] }) } });
+  window.AudioContext = undefined;
+  window.__dcSent = [];
+  class FakeChannel {
+    constructor(label) { this.label = label; this.readyState = "connecting"; window.__dc = this; }
+    send(msg) { window.__dcSent.push(JSON.parse(msg)); }
+    close() { this.readyState = "closed"; }
+  }
+  class FakePC {
+    constructor() { this.connectionState = "new"; window.__pc = this; }
+    addTrack() {}
+    createDataChannel(label) { return new FakeChannel(label); }
+    async createOffer() { return { type: "offer", sdp: "v=0\r\no=fake offer" }; }
+    async setLocalDescription() {}
+    async setRemoteDescription(desc) {
+      window.__answer = desc;
+      const dc = window.__dc;
+      setTimeout(() => { dc.readyState = "open"; if (dc.onopen) dc.onopen(); if (dc.onmessage) dc.onmessage({ data: JSON.stringify({ type: "session.started" }) }); }, 10);
+    }
+    close() { this.connectionState = "closed"; }
+  }
+  window.RTCPeerConnection = FakePC;
+  window.__emit = (ev) => window.__dc.onmessage({ data: JSON.stringify(ev) });
+};
+await check("live voice: WebRTC offer → session → captions, tool call adds to cart, end call", async () => {
+  const lctx = await browser.newContext({ viewport: { width: 390, height: 760 }, locale: "tr-TR" });
+  const lp = await lctx.newPage();
+  const pageErrors = [];
+  lp.on("pageerror", (e) => pageErrors.push(String(e)));
+  await lp.addInitScript(FAKE_RTC);
+  await lp.route("**/api/voice-agent", (route) => (route.request().method() === "GET" ? route.fulfill({ json: { configured: true, tts: false, maxSeconds: 30, live: true, liveModel: "gpt-live-1" } }) : route.continue()));
+  await lp.route("**/api/realtime-session", async (route) => {
+    const body = route.request().postDataJSON();
+    assert(/^v=0/.test(body.sdp) && body.lang === "tr", "offer + lang posted");
+    await route.fulfill({ status: 201, json: { id: "sess_e2e", sdp: "v=0\r\no=fake answer", model: "gpt-live-1", backendModel: "gpt-5.6-terra" } });
+  });
+  await lp.goto(`${BASE}/tr`, { waitUntil: "networkidle" });
+  await lp.click("[data-testid=voice-open]");
+  await lp.waitForSelector("[data-testid=live-start]:not([disabled])");
+  assert((await lp.getAttribute("[data-testid=voice-tab-live]", "aria-selected")) === "true", "live tab default when configured");
+  await lp.click("[data-testid=live-start]");
+  await lp.waitForSelector("[data-testid=live-end]");
+  await lp.waitForFunction(() => /Dinliyor/.test(document.querySelector("[data-testid=live-status]")?.textContent ?? ""));
+  assert((await lp.evaluate(() => window.__dc.label)) === "oai-events", "data channel label");
+  assert((await lp.evaluate(() => window.__answer.type)) === "answer", "remote answer applied");
+  assert((await lp.evaluate(() => window.__dcSent.some((m) => m.type === "session.start"))) === false, "no session.start sent on the channel");
+  await lp.evaluate(() => window.__emit({ type: "session.input_transcript.delta", delta: "beş koli tabasco" }));
+  await lp.waitForFunction(() => /beş koli tabasco/.test(document.querySelector("[data-testid=live-captions]")?.textContent ?? ""));
+  await lp.evaluate(() => window.__emit({ type: "session.delegation.created" }));
+  await lp.waitForFunction(() => /Düşünüyor/.test(document.querySelector("[data-testid=live-status]")?.textContent ?? ""));
+  await lp.evaluate(() => window.__emit({ type: "response.event", event: { type: "response.output_item.done", item: { type: "function_call", call_id: "call_1", name: "search_catalog", arguments: JSON.stringify({ query: "tabasco 350 ml" }) } } }));
+  await lp.waitForFunction(() => window.__dcSent.some((m) => m.type === "response.item.create" && m.item.call_id === "call_1"));
+  const searchOut = await lp.evaluate(() => JSON.parse(window.__dcSent.find((m) => m.type === "response.item.create" && m.item.call_id === "call_1").item.output));
+  assert(searchOut.results.some((r) => r.id === "fd-szn-020"), "search_catalog returned tabasco");
+  assert((await lp.evaluate(() => window.__dcSent.filter((m) => m.type === "response.create").length)) === 1, "response.create after tool output");
+  await lp.evaluate(() => window.__emit({ type: "response.event", event: { type: "response.output_item.done", item: { type: "function_call", call_id: "call_2", name: "add_to_cart", arguments: JSON.stringify({ productId: "fd-szn-020", cases: 5, units: 0 }) } } }));
+  await lp.waitForFunction(() => /add_to_cart/.test(document.querySelector("[data-testid=live-tools]")?.textContent ?? ""));
+  const stored = await lp.evaluate(() => JSON.parse(localStorage.getItem("maximus-cart-v1") ?? "{}"));
+  const line = (stored.lines ?? []).find((l) => l.productId === "fd-szn-020");
+  assert(line && line.cases === 5, `cart line via tool call: ${JSON.stringify(stored.lines)}`);
+  await lp.evaluate(() => window.__emit({ type: "session.output_transcript.delta", delta: "Ekledim, 5 koli Tabasco. Başka?" }));
+  await lp.waitForFunction(() => /Konuşuyor/.test(document.querySelector("[data-testid=live-status]")?.textContent ?? ""));
+  assert(/Ekledim/.test(await lp.textContent("[data-testid=live-captions]")), "assistant caption shown");
+  await lp.click("[data-testid=live-mute]");
+  await lp.waitForFunction(() => window.__dcSent.some((m) => m.type === "session.input_audio.mute"));
+  await lp.click("[data-testid=live-end]");
+  await lp.waitForSelector("[data-testid=live-start]");
+  assert((await lp.evaluate(() => window.__dcSent.some((m) => m.type === "session.close"))) === true, "session.close sent");
+  assert((await lp.evaluate(() => window.__pc.connectionState)) === "closed", "peer connection closed");
+  assert(/Görüşme bitti/.test(await lp.textContent("[data-testid=live-ended]")), "ended notice");
+  await lp.screenshot({ path: `${OUT}/voice-live.png` });
+  // Bas-konuş sekmesi yedek olarak erişilebilir
+  await lp.click("[data-testid=voice-tab-push]");
+  await lp.waitForSelector("[data-testid=voice-mic]");
+  assert(pageErrors.length === 0, `uncaught: ${pageErrors.join(" | ")}`);
+  await lctx.close();
+});
+await check("live voice: without server config the push-to-talk tab is the default and live start is disabled", async () => {
+  const cctx = await browser.newContext({ viewport: { width: 390, height: 760 }, locale: "nl-BE" });
+  const cp = await cctx.newPage();
+  await cp.goto(`${BASE}/nl`, { waitUntil: "networkidle" });
+  await cp.click("[data-testid=voice-open]");
+  await cp.waitForSelector("[data-testid=voice-push-panel]");
+  assert((await cp.getAttribute("[data-testid=voice-tab-push]", "aria-selected")) === "true", "push tab default without live");
+  await cp.click("[data-testid=voice-tab-live]");
+  await cp.waitForSelector("[data-testid=live-start][disabled]");
+  assert(/nog niet ingesteld/.test(await cp.textContent("[data-testid=live-panel] [role=alert]")), "Dutch not-configured notice");
+  const rs = await ctx.request.post(`${BASE}/api/realtime-session`, { data: { sdp: "v=0\r\no=test", lang: "tr" } });
+  assert(rs.status() === 503, `realtime-session without key → 503, got ${rs.status()}`);
+  await cctx.close();
+});
 await check("voice order API: config, validation and secret-free errors", async () => {
   const cfg = await (await ctx.request.get(`${BASE}/api/voice-agent`)).json();
-  assert(cfg.configured === false && typeof cfg.maxSeconds === "number", "config shape");
+  assert(cfg.configured === false && cfg.live === false && typeof cfg.maxSeconds === "number", "config shape");
   const oa = await ctx.request.post(`${BASE}/api/voice-agent/order-audio`, { multipart: { audio: { name: "a.webm", mimeType: "audio/webm", buffer: Buffer.alloc(2000) }, lang: "tr" } });
   assert(oa.status() === 503, `expected 503 without key, got ${oa.status()}`);
   const tts = await ctx.request.post(`${BASE}/api/voice-agent/tts`, { data: { text: "merhaba" } });

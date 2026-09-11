@@ -4,7 +4,7 @@ import "../globals.css";
 import { CartProvider } from "@/components/CartProvider";
 import { AuthProvider } from "@/components/AuthProvider";
 import CartDrawer from "@/components/CartDrawer";
-import VoiceAgent from "@/components/VoiceAgent";
+import VoicePlasiyerModal from "@/components/VoicePlasiyerModal";
 import VoiceAgentBoundary from "@/components/VoiceAgentBoundary";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -86,7 +86,7 @@ export default async function LangLayout({ children, params }: { children: React
               <Footer lang={lang} />
               <CartDrawer />
               <VoiceAgentBoundary label={t.voice.unavailable} retry={t.voice.retry}>
-                <VoiceAgent />
+                <VoicePlasiyerModal />
               </VoiceAgentBoundary>
             </CartProvider>
           </AuthProvider>
