@@ -1,6 +1,51 @@
-# Hızlı Sesli Sipariş
+# Sesli asistan: Maximus Dijital Plasiyer (canlı) + Hızlı Sesli Sipariş (bas-konuş)
 
-Sitenin sağ alt köşesindeki mikrofon, WhatsApp mantığında çalışan bir bas-konuş sipariş aracı açar. Müşteri
+Sağ alt köşedeki mikrofon iki sekmeli bir pencere açar:
+
+- **Canlı görüşme** — GPT-Live (`gpt-live-1`) ile uçtan uca WebRTC ses: müşteri telefon görüşmesi gibi konuşur, plasiyer
+  aynı dilde anında cevap verir, araya girme (barge-in) modelin kendi konuşma algılamasıyla çalışır, ürünler tarayıcıdaki
+  sepete araç çağrısıyla eklenir. Durumlar: Bağlanıyor · Dinliyor · Düşünüyor · Konuşuyor · Sessizde.
+- **Bas-konuş** — aşağıda anlatılan Whisper → GPT-4o-mini → katalog eşleştirme akışı. Canlı görüşme sunucuda kapalıysa
+  (`VOICE_LIVE_DISABLED=1` ya da anahtar yok) veya tarayıcı WebRTC desteklemiyorsa varsayılan sekme budur.
+
+## Canlı görüşme (GPT-Live, WebRTC)
+
+```
+Tarayıcı (src/hooks/useLiveVoice.ts)                     Sunucu                              OpenAI
+getUserMedia → RTCPeerConnection                         
+  addTrack(mikrofon), createDataChannel("oai-events")    
+  createOffer → SDP  ──POST /api/realtime-session──►     src/server/voice/live.ts
+     { sdp, lang }                                        POST /v1/live/sessions  ────────►   { session: { model: gpt-live-1,
+                                                            Authorization: Bearer <sunucu>      instructions, delegation:
+                                                                                                { type: responses, responses:
+                                                                                                  { model: gpt-5.6-terra, tools }}},
+                                                                                                transport: { type: webrtc, sdp }}
+  setRemoteDescription(answer)  ◄── 201 { id, sdp } ◄──  ◄── { id, transport: { sdp } } ◄──
+  ses: WebRTC medya (mikrofon → model, model sesi → <audio autoplay>)
+  veri kanalı olayları: session.started · session.input_transcript.delta (müşteri altyazı)
+      · session.output_transcript.delta (plasiyer altyazı) · session.delegation.created (düşünüyor)
+      · response.event{ response.output_item.done: function_call }  → araç tarayıcıda çalışır
+            search_catalog → searchProducts (katalog istemcide)       add_to_cart → CartProvider.setQuantity
+            show_cart → sepet satırları                               open_cart  → sepet paneli
+        → response.item.create { function_call_output } + response.create
+      · session.close (biz) / session.closed { reason } (model)   · session.input_audio.mute / unmute (mikrofon)
+```
+
+- **Neden `/v1/live/sessions`?** `gpt-live-1` Realtime uç noktalarında (`/v1/realtime/sessions`, `client_secrets`) çalışmaz;
+  Live API'de oturum, sunucunun SDP teklifini ilettiği tek HTTP isteğiyle açılır ve API anahtarı tarayıcıya hiç inmez
+  (geçici anahtar/`client_secret` gerekmez). Kanalda ayrıca `session.start` gönderilmez.
+- **Kişilik ve dil:** `liveInstructions(lang)` — "Maximus Food Dijital Plasiyeri", Türkçe/Felemenkçe otomatik eşleme,
+  kısa cümleler, Kürtçe kelime rehberi (`KURDISH_GUIDE`), adres/saat/-%15 depodan teslim bilgisi, fiyat söylememe.
+  Araç çağıran arka uç modelin kuralları `BACKEND_INSTRUCTIONS` içindedir (önce ara, belirsizse en fazla üç boyut sor).
+- **Maliyet koruması:** oturum 90 sn sessizlikte ve en geç 10 dakikada `session.close` ile kapanır; pencere kapatılınca
+  da kapanır. Live API dakika başına (saniye bazlı) ücretlendirilir, arka uç model token'ları ayrıca sayılır; ücretsiz
+  katman yoktur ve eşzamanlı oturum sayısı hesabın katmanına bağlıdır (Tier 1'de 25).
+- **Arayüz:** `src/components/VoicePlasiyerModal.tsx` — canlı dalga formu (mikrofon seviyesinden), son 8 altyazı satırı,
+  araç işlemleri rozetleri, Mikrofon kapat/aç · Sepete git · Görüşmeyi bitir. Hatalar `/api/voice-agent/log` ile loglanır.
+
+# Hızlı Sesli Sipariş (bas-konuş sekmesi)
+
+"Bas-konuş" sekmesi WhatsApp mantığında çalışan bir kayıt-gönder sipariş aracıdır. Müşteri
 düğmeye dokunur, siparişini söyler, tekrar dokunur; ses sunucuda çözülür, ürünler sepete eklenir ve ekranda
 onay kartı çıkar. Ses hiçbir zaman otomatik çalınmaz; "Özeti dinle" yalnızca dokunuşla çalışır.
 
@@ -70,8 +115,13 @@ iki biçimde) koymak, transkripsiyon farklarını tolere eder.
 | `VOICE_STT_MODEL` / `VOICE_LLM_MODEL` / `VOICE_TTS_MODEL` / `VOICE_TTS_VOICE` | Varsayılan `whisper-1`, `gpt-4o-mini`, `tts-1`, `onyx`. |
 | `VOICE_STT_URL` / `VOICE_LLM_URL` / `VOICE_TTS_URL` | Uç nokta geçersiz kılma (OpenAI uyumlu sağlayıcılar). |
 | `VOICE_TTS_DISABLED=1` | "Özeti dinle" düğmesini kapatır. |
+| `VOICE_LIVE_MODEL` | Canlı görüşme konuşma modeli, varsayılan `gpt-live-1`. |
+| `VOICE_LIVE_BACKEND_MODEL` | Araç çağıran arka uç model, varsayılan `gpt-5.6-terra` (`gpt-5.6-luna` daha ucuz). |
+| `VOICE_LIVE_URL` | Live oturum uç noktası geçersiz kılma (varsayılan `https://api.openai.com/v1/live/sessions`). |
+| `VOICE_LIVE_DISABLED=1` | Canlı görüşmeyi kapatır; yalnızca bas-konuş kalır. |
 
-`GET /api/voice-agent` → `{ configured, tts, maxSeconds }`. Anahtar yoksa arayüz düğmeyi devre dışı bırakır ve nedenini yazar.
+`GET /api/voice-agent` → `{ configured, tts, maxSeconds, live, liveModel }`. `POST /api/realtime-session { sdp, lang }` →
+`201 { id, sdp, model, backendModel }`; anahtar yoksa 503 `live-not-configured`, üst hizmet hatasında 502 (ayrıntı maskeli). Anahtar yoksa arayüz düğmeyi devre dışı bırakır ve nedenini yazar.
 
 ## Güvenlik
 
@@ -82,6 +132,8 @@ iki biçimde) koymak, transkripsiyon farklarını tolere eder.
 ## Test
 
 ```bash
-npm test      # eşleştirme, kural tabanlı yedek, sahte fetch ile Whisper→GPT→eşleştirme (Bearer doğrulaması), anahtar temizleme
-npm run e2e   # sahte MediaRecorder ile kayıt → sonuç kartı → sepet → "Özeti dinle" yedeği → "Sepete git"; uyarılar; API doğrulama
+npm test      # eşleştirme, kural tabanlı yedek, sahte fetch ile Whisper→GPT→eşleştirme (Bearer doğrulaması), anahtar temizleme,
+              # Live oturum isteği (/v1/live/sessions gövdesi, araçlar, Bearer), tarayıcı araç yürütücüsü (runTool)
+npm run e2e   # bas-konuş: sahte MediaRecorder ile kayıt → kart → sepet; canlı: sahte RTCPeerConnection + stub oturum →
+              # altyazı, araç çağrısı → sepet satırı, response.item.create/response.create, mute, session.close; uyarılar; API
 ```
