@@ -18,8 +18,9 @@ export async function POST(req: Request) {
   } catch {
     return NextResponse.json({ error: "Geçersiz JSON" }, { status: 400 });
   }
-  const sdp = typeof body.sdp === "string" ? body.sdp.trim() : "";
-  if (!sdp.startsWith("v=0")) return NextResponse.json({ error: "sdp alanı (WebRTC teklifi) gerekli" }, { status: 400 });
+  // SDP'yi kırpma: son satırın CRLF'si ayrıştırıcı için zorunlu (normalizeSdp tamamlar).
+  const sdp = typeof body.sdp === "string" ? body.sdp : "";
+  if (!/^v=0\r?\n/.test(sdp)) return NextResponse.json({ error: "sdp alanı (WebRTC teklifi) gerekli" }, { status: 400 });
   const lang = body.lang === "nl" ? "nl" : "tr";
   try {
     const session = await createLiveSession(sdp, lang);
@@ -27,6 +28,6 @@ export async function POST(req: Request) {
   } catch (err) {
     console.error("[realtime-session]", safeDetail(String((err as Error)?.stack ?? err)));
     const detail = safeDetail(err instanceof UpstreamError ? `upstream ${err.status}: ${err.detail}` : ((err as Error)?.message ?? String(err)));
-    return NextResponse.json({ error: "live-upstream", detail }, { status: 502 });
+    return NextResponse.json({ error: "live-upstream", detail, sdpBytes: sdp.length }, { status: 502 });
   }
 }

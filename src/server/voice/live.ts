@@ -79,6 +79,15 @@ export const LIVE_TOOLS = [
 
 export type LiveSession = { id: string; sdp: string; model: string; backendModel: string };
 
+/**
+ * SDP'yi OpenAI'nin ayrıştırıcısının beklediği biçime getirir: her satır CRLF ile biter, son satır dahil.
+ * Sondaki satır sonu silinirse (ör. trim) üst hizmet "failed to unmarshal SDP: EOF" döndürür.
+ */
+export function normalizeSdp(sdp: string): string {
+  const lines = sdp.replace(/\r\n/g, "\n").split("\n").filter((l, i, arr) => !(l === "" && i === arr.length - 1));
+  return lines.join("\r\n") + "\r\n";
+}
+
 /** Tarayıcının SDP teklifiyle Live oturumu açar; SDP cevabını döndürür. */
 export async function createLiveSession(sdp: string, lang: "tr" | "nl"): Promise<LiveSession> {
   const body = {
@@ -90,7 +99,7 @@ export async function createLiveSession(sdp: string, lang: "tr" | "nl"): Promise
         responses: { model: LIVE_BACKEND_MODEL(), instructions: BACKEND_INSTRUCTIONS, tools: LIVE_TOOLS, tool_choice: "auto" },
       },
     },
-    transport: { type: "webrtc", sdp },
+    transport: { type: "webrtc", sdp: normalizeSdp(sdp) },
   };
   const res = await fetch(process.env.VOICE_LIVE_URL ?? LIVE_URL, {
     method: "POST",
@@ -99,8 +108,8 @@ export async function createLiveSession(sdp: string, lang: "tr" | "nl"): Promise
     signal: AbortSignal.timeout(20_000),
   });
   if (!res.ok) throw new UpstreamError("llm", res.status, safeDetail((await res.text()).replace(/\s+/g, " ")));
-  const data = (await res.json()) as { id?: string; transport?: { sdp?: string } };
+  const data = (await res.json()) as { id?: string; session?: { id?: string }; transport?: { sdp?: string } };
   const answer = data.transport?.sdp;
   if (!answer) throw new UpstreamError("llm", 502, "Live yanıtında SDP cevabı yok");
-  return { id: data.id ?? "", sdp: answer, model: LIVE_MODEL(), backendModel: LIVE_BACKEND_MODEL() };
+  return { id: data.session?.id ?? data.id ?? "", sdp: answer, model: LIVE_MODEL(), backendModel: LIVE_BACKEND_MODEL() };
 }
