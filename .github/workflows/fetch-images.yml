@@ -1,0 +1,30 @@
+name: Fetch Dogus BV site images
+
+on:
+  push:
+    branches: [claude/dogus-bv-website-bi7f49]
+    paths:
+      - ".github/workflows/fetch-images.yml"
+      - "sites/dogus-bv/tools/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pillow
+      - run: python sites/dogus-bv/tools/fetch_images.py
+      - name: Commit optimized images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sites/dogus-bv/images
+          git commit -m "Add optimized Dogus BV site images (generated via Higgsfield) [skip ci]" || echo "nothing to commit"
+          git push
