@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="nl-BE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  DOGUS BV - kurumsal site (tek dosya + images klasörü)
+
+  YER TUTUCULAR (yayından önce bul-ve-değiştir):
+    +32 3 000 00 00        -> vaste telefoon (ayrıca tel:+3230000000 bağlantıları)
+    +32 470 00 00 00       -> GSM / WhatsApp (ayrıca wa.me/32470000000 bağlantısı)
+    info@dogusbv.be        -> e-posta (form mailto dahil)
+    BE 0000.000.000        -> BTW-nummer
+    https://www.dogusbv.be -> gerçek domain (canonical, og:url, og:image, JSON-LD)
+    Openingsuren           -> contact bölümündeki saatler
+
+  FORM: şimdilik mailto (ziyaretçinin e-posta programı açılır).
+  Formspree'ye geçiş: <form> etiketinde action="https://formspree.io/f/XXXXXXXX" method="POST"
+  yapın ve data-mailto="on" özniteliğini kaldırın. Alan adları (name, telefoon, email,
+  gemeente, dienst, bericht) olduğu gibi çalışır.
+
+  GÖRSELLER: images/ klasöründeki foto's Higgsfield ile üretilmiş yer tutuculardır.
+  Gerçek werf-foto's ile aynı dosya adlarıyla değiştirilebilir.
+-->
+<title>Ramen, Deuren en Rolluiken in Antwerpen | Dogus BV</title>
+<meta name="description" content="Dogus BV levert en plaatst PVC- en aluminiumramen, voordeuren, schuiframen en rolluiken in Antwerpen en omgeving. Eigen plaatsingsteam, profielen van aluplast en Aluprof, gratis opmeting.">
+<link rel="canonical" href="https://www.dogusbv.be/">
+<meta name="theme-color" content="#1B2430">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="nl_BE">
+<meta property="og:site_name" content="Dogus BV">
+<meta property="og:title" content="Ramen, Deuren en Rolluiken in Antwerpen | Dogus BV">
+<meta property="og:description" content="PVC- en aluminiumramen, voordeuren en rolluiken, geleverd en geplaatst door ons eigen team. Renovatie en nieuwbouw in Antwerpen en omgeving. Gratis opmeting.">
+<meta property="og:url" content="https://www.dogusbv.be/">
+<meta property="og:image" content="https://www.dogusbv.be/images/og-dogus-bv.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ramen, Deuren en Rolluiken in Antwerpen | Dogus BV">
+<meta name="twitter:description" content="PVC- en aluminiumramen, voordeuren en rolluiken, geleverd en geplaatst door ons eigen team in Antwerpen en omgeving.">
+<meta name="twitter:image" content="https://www.dogusbv.be/images/og-dogus-bv.jpg">
+<link rel="icon" href="images/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Source+Sans+3:wght@400;600&display=swap">
+<link rel="preload" as="image" href="images/hero-aluminium-ramen-rijwoning-antwerpen.webp" fetchpriority="high">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": "https://www.dogusbv.be/#bedrijf",
+  "name": "Dogus BV",
+  "description": "Verkoop en plaatsing van PVC- en aluminiumramen, voordeuren, schuiframen en rolluiken. Renovatie en nieuwbouw in Antwerpen en omgeving.",
+  "url": "https://www.dogusbv.be/",
+  "telephone": "+32 3 000 00 00",
+  "email": "info@dogusbv.be",
+  "image": "https://www.dogusbv.be/images/og-dogus-bv.jpg",
+  "logo": "https://www.dogusbv.be/images/logo-dogus-bv.png",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Louisalei 76/6",
+    "postalCode": "2660",
+    "addressLocality": "Hoboken (Antwerpen)",
+    "addressRegion": "Antwerpen",
+    "addressCountry": "BE"
+  },
+  "areaServed": [
+    {"@type": "City", "name": "Antwerpen"},
+    {"@type": "City", "name": "Hoboken"},
+    {"@type": "City", "name": "Wilrijk"},
+    {"@type": "City", "name": "Mortsel"},
+    {"@type": "City", "name": "Edegem"},
+    {"@type": "City", "name": "Schoten"},
+    {"@type": "City", "name": "Deurne"}
+  ],
+  "knowsLanguage": ["nl", "tr", "en"],
+  "openingHoursSpecification": [
+    {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "08:00", "closes": "17:00"}
+  ],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Diensten",
+    "itemListElement": [
+      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "PVC en aluminium ramen", "areaServed": "Antwerpen"}},
+      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Voordeuren en schuiframen", "areaServed": "Antwerpen"}},
+      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Rolluiken en zonwering", "areaServed": "Antwerpen"}}
+    ]
+  }
+}
+</script>
+<style>
+:root{
+  --navy:#1B2430;
+  --navy-2:#27333F;
+  --navy-3:#0F161F;
+  --orange:#E8641B;
+  --orange-2:#C9530F;
+  --bg:#F5F3EE;
+  --bg-2:#ECE8E0;
+  --white:#FFFFFF;
+  --line:#D8D3C8;
+  --line-2:#C4BEB1;
+  --text:#1B2430;
+  --muted:#5C6572;
+  --on-navy:#F5F3EE;
+  --on-navy-muted:#B9C0C9;
+  --font-display:"Archivo","Arial Narrow",Arial,Helvetica,sans-serif;
+  --font-body:"Source Sans 3","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --header-h:76px;
+  --radius:3px;
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--header-h) + 16px);-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:1.0625rem;line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit}
+h1,h2,h3{font-family:var(--font-display);color:var(--navy);margin:0;line-height:1.1;letter-spacing:-.01em;text-wrap:balance}
+h1{font-weight:800;font-size:clamp(2.15rem,4.6vw,3.5rem);line-height:1.06}
+h2{font-weight:800;font-size:clamp(1.75rem,3.1vw,2.5rem)}
+h3{font-weight:700;font-size:1.375rem}
+p{margin:0}
+ul,ol{margin:0;padding:0;list-style:none}
+button{font:inherit;color:inherit}
+.container{width:100%;max-width:1180px;margin-inline:auto;padding-inline:20px}
+.skip-link{position:absolute;left:-999px;top:8px;background:var(--navy);color:#fff;padding:10px 14px;z-index:1000}
+.skip-link:focus{left:8px}
+:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 24px;border-radius:var(--radius);font-family:var(--font-display);font-weight:700;font-size:1rem;letter-spacing:.01em;text-decoration:none;border:2px solid transparent;cursor:pointer;transition:background-color .2s var(--ease),color .2s var(--ease),border-color .2s var(--ease),transform .2s var(--ease)}
+.btn-primary{background:var(--orange);color:#fff;border-color:var(--orange)}
+.btn-primary:hover{background:var(--orange-2);border-color:var(--orange-2)}
+.btn-navy{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn-navy:hover{background:var(--navy-3);border-color:var(--navy-3)}
+.btn-outline{background:transparent;color:var(--navy);border-color:var(--navy)}
+.btn-outline:hover{background:var(--navy);color:#fff}
+.btn-outline-light{background:transparent;color:#fff;border-color:rgba(255,255,255,.6)}
+.btn-outline-light:hover{background:#fff;color:var(--navy);border-color:#fff}
+.btn-sm{padding:10px 16px;font-size:.9375rem}
+.btn:active{transform:translateY(1px)}
+
+/* Header */
+.site-header{position:sticky;top:0;z-index:100;background:var(--white);border-bottom:1px solid var(--line);transition:box-shadow .25s var(--ease)}
+.site-header.is-scrolled{box-shadow:0 6px 24px -12px rgba(27,36,48,.35)}
+.header-inner{height:var(--header-h);display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:inline-flex;align-items:center;text-decoration:none}
+.brand img{height:46px;width:auto}
+.site-nav ul{display:flex;align-items:center;gap:6px}
+.site-nav a{display:block;padding:10px 14px;font-family:var(--font-display);font-weight:600;font-size:.9375rem;color:var(--navy);text-decoration:none;border-bottom:2px solid transparent;transition:border-color .2s var(--ease)}
+.site-nav a:hover{border-bottom-color:var(--orange)}
+.header-actions{display:flex;align-items:center;gap:12px}
+.header-phone{font-family:var(--font-display);font-weight:600;font-size:.9375rem;color:var(--navy);text-decoration:none;font-variant-numeric:tabular-nums;white-space:nowrap}
+.header-phone:hover{color:var(--orange)}
+.nav-toggle{display:none;width:46px;height:46px;border:1px solid var(--line-2);background:var(--white);border-radius:var(--radius);padding:0;cursor:pointer;position:relative}
+.nav-toggle span{position:absolute;left:12px;right:12px;height:2px;background:var(--navy);transition:transform .25s var(--ease),opacity .2s var(--ease)}
+.nav-toggle span:nth-child(1){top:15px}
+.nav-toggle span:nth-child(2){top:22px}
+.nav-toggle span:nth-child(3){top:29px}
+.nav-open .nav-toggle span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-open .nav-toggle span:nth-child(2){opacity:0}
+.nav-open .nav-toggle span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* Hero */
+.hero{padding-block:56px 64px;background:var(--bg)}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.eyebrow{font-family:var(--font-display);font-weight:600;font-size:.8125rem;letter-spacing:.09em;text-transform:uppercase;color:var(--orange);margin-bottom:18px}
+.hero h1{margin-bottom:22px}
+.hero .lead{font-size:1.1875rem;line-height:1.6;color:var(--text);max-width:34em;margin-bottom:30px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+.hero-note{color:var(--muted);font-size:.9375rem}
+.hero-media{position:relative}
+.hero-media img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radius)}
+.hero-media::before{content:"";position:absolute;top:-14px;right:-14px;width:36%;height:38%;border-top:4px solid var(--orange);border-right:4px solid var(--orange);pointer-events:none}
+.hero-media::after{content:"";position:absolute;bottom:-14px;left:-14px;width:36%;height:38%;border-bottom:4px solid var(--navy);border-left:4px solid var(--navy);pointer-events:none}
+
+/* Trust strip */
+.trust{background:var(--navy);color:var(--on-navy)}
+.trust ul{display:grid;grid-template-columns:repeat(4,1fr)}
+.trust li{padding:26px 26px 26px 0;border-left:1px solid rgba(255,255,255,.14);padding-left:26px}
+.trust li:first-child{border-left:0;padding-left:0}
+.trust .t-title{font-family:var(--font-display);font-weight:700;font-size:1.0625rem;color:#fff;margin-bottom:6px}
+.trust .t-text{color:var(--on-navy-muted);font-size:.9375rem;line-height:1.5}
+
+/* Sections */
+.section{padding-block:80px}
+.section-head{max-width:46em;margin-bottom:40px}
+.section-head h2{margin-bottom:14px}
+.section-head p{font-size:1.125rem;color:var(--muted)}
+.section-alt{background:var(--bg-2)}
+
+/* Services */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);display:flex;flex-direction:column;overflow:hidden}
+.card-media{aspect-ratio:4/3;overflow:hidden;background:var(--bg-2)}
+.card-media img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
+.card:hover .card-media img{transform:scale(1.04)}
+.card-body{padding:24px 26px 28px;display:flex;flex-direction:column;gap:14px;flex:1}
+.card-body p{color:var(--muted)}
+.feature-list li{position:relative;padding-left:20px;margin-bottom:8px;line-height:1.45}
+.feature-list li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;background:var(--orange)}
+.card-link{margin-top:auto;padding-top:6px;font-family:var(--font-display);font-weight:700;color:var(--navy);text-decoration:underline;text-decoration-color:var(--orange);text-underline-offset:5px;text-decoration-thickness:2px}
+.card-link:hover{color:var(--orange)}
+
+/* About + why */
+.about-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:start}
+.about-text h2{margin-bottom:22px}
+.about-text p{margin-bottom:18px;max-width:36em}
+.about-text p:last-child{margin-bottom:0}
+.about-facts{margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:16px 24px;border-top:1px solid var(--line-2);padding-top:22px}
+.about-facts dt{font-family:var(--font-display);font-weight:600;font-size:.8125rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.about-facts dd{margin:0;font-weight:600}
+.why{background:var(--navy);color:var(--on-navy);padding:40px 40px 44px;border-radius:var(--radius);position:relative;overflow:hidden}
+.why h2{color:#fff;font-size:clamp(1.5rem,2.4vw,2rem);margin-bottom:28px}
+.why ol{counter-reset:why;display:grid;gap:22px}
+.why li{counter-increment:why;display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start}
+.why li::before{content:counter(why,decimal-leading-zero);font-family:var(--font-display);font-weight:800;font-size:1.5rem;color:var(--orange);line-height:1.1;padding-top:2px}
+.why strong{display:block;font-family:var(--font-display);font-weight:700;font-size:1.0625rem;color:#fff;margin-bottom:4px}
+.why span{color:var(--on-navy-muted);font-size:.9375rem;line-height:1.5}
+
+/* Gallery */
+.gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.gallery figure{margin:0}
+.gal-btn{display:block;width:100%;padding:0;border:1px solid var(--line);background:var(--bg-2);cursor:zoom-in;border-radius:var(--radius);overflow:hidden}
+.gal-btn img{width:100%;aspect-ratio:4/3;object-fit:cover;transition:transform .6s var(--ease)}
+.gal-btn:hover img{transform:scale(1.04)}
+.gallery figcaption{padding:12px 2px 0;font-size:.9375rem;color:var(--muted);line-height:1.4}
+.gallery-note{margin-top:32px;color:var(--muted)}
+.gallery-note a{color:var(--navy);font-weight:600}
+dialog.lightbox{border:0;padding:0;background:transparent;max-width:min(96vw,1200px);width:100%}
+dialog.lightbox::backdrop{background:rgba(15,22,31,.92)}
+.lb-inner{background:var(--white);border-radius:var(--radius);overflow:hidden}
+.lb-inner img{width:100%;max-height:78vh;object-fit:contain;background:var(--navy-3)}
+.lb-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 18px;flex-wrap:wrap}
+.lb-cap{font-weight:600}
+.lb-controls{display:flex;gap:8px}
+.lb-controls button{background:var(--bg-2);border:1px solid var(--line-2);border-radius:var(--radius);padding:8px 14px;cursor:pointer;font-family:var(--font-display);font-weight:600;font-size:.875rem}
+.lb-controls button:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* Contact */
+.contact-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:start}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:18px 20px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field.full{grid-column:1/-1}
+.field label{font-family:var(--font-display);font-weight:600;font-size:.9rem;color:var(--navy)}
+.field label small{font-weight:400;color:var(--muted)}
+.field input,.field select,.field textarea{width:100%;padding:12px 14px;border:1px solid var(--line-2);border-radius:var(--radius);background:var(--white);font:inherit;color:var(--text);transition:border-color .2s var(--ease),box-shadow .2s var(--ease)}
+.field input:focus,.field select:focus,.field textarea:focus{outline:0;border-color:var(--navy);box-shadow:0 0 0 3px rgba(232,100,27,.25)}
+.field textarea{min-height:140px;resize:vertical}
+.form-foot{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px;margin-top:4px}
+.form-privacy{font-size:.875rem;color:var(--muted);max-width:32em}
+.form-status{grid-column:1/-1;font-size:.9375rem;color:var(--navy);background:var(--bg-2);border-left:4px solid var(--orange);padding:12px 16px}
+.form-status[hidden]{display:none}
+.contact-info{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:32px}
+.contact-info h3{margin-bottom:18px}
+.contact-block{margin-bottom:22px}
+.contact-block:last-child{margin-bottom:0}
+.contact-label{font-family:var(--font-display);font-weight:600;font-size:.8125rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.contact-block address{font-style:normal;line-height:1.55}
+.contact-block a{color:var(--navy);font-weight:600;text-decoration:none;font-variant-numeric:tabular-nums}
+.contact-block a:hover{color:var(--orange);text-decoration:underline}
+.contact-block .btn{margin-top:8px}
+.hours{display:grid;grid-template-columns:auto 1fr;gap:4px 18px}
+.hours dt{color:var(--muted)}
+.hours dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums}
+.regions{display:flex;flex-wrap:wrap;gap:8px}
+.regions li{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:4px 10px;font-size:.9rem}
+
+/* Footer */
+.site-footer{background:var(--navy);color:var(--on-navy-muted);padding-block:56px 28px}
+.footer-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:40px;padding-bottom:36px;border-bottom:1px solid rgba(255,255,255,.14)}
+.footer-brand img{height:52px;width:auto;margin-bottom:18px}
+.footer-brand p{max-width:30em;font-size:.9375rem}
+.footer-col h3{color:#fff;font-size:.9rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;margin-bottom:14px}
+.footer-col ul li{margin-bottom:8px}
+.footer-col a{color:var(--on-navy);text-decoration:none}
+.footer-col a:hover{color:var(--orange)}
+.footer-col address{font-style:normal;line-height:1.6;color:var(--on-navy)}
+.footer-bottom{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;padding-top:22px;font-size:.875rem}
+
+/* Reveal on scroll (only when JS confirms motion is allowed) */
+.js-anim .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.js-anim .reveal.is-visible{opacity:1;transform:none}
+@media print{.js-anim .reveal{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .card-media img,.gal-btn img,.btn,.site-nav a,.nav-toggle span{transition:none}
+  .card:hover .card-media img,.gal-btn:hover img{transform:none}
+}
+
+/* Responsive */
+@media (max-width:1024px){
+  .cards{grid-template-columns:repeat(3,1fr);gap:18px}
+  .gallery{grid-template-columns:repeat(3,1fr)}
+  .hero-grid,.about-grid,.contact-grid{gap:40px}
+}
+@media (max-width:900px){
+  :root{--header-h:66px}
+  .brand img{height:40px}
+  .site-nav{position:absolute;left:0;right:0;top:100%;background:var(--white);border-bottom:1px solid var(--line);display:none;box-shadow:0 18px 30px -18px rgba(27,36,48,.4)}
+  .nav-open .site-nav{display:block}
+  .site-nav ul{flex-direction:column;align-items:stretch;gap:0;padding:8px 20px 12px}
+  .site-nav a{padding:14px 4px;border-bottom:1px solid var(--line);font-size:1.0625rem}
+  .site-nav li:last-child a{border-bottom:0}
+  .nav-toggle{display:block}
+  .header-phone{display:none}
+  .hero{padding-block:40px 48px}
+  .hero-grid{grid-template-columns:1fr}
+  .hero-media{margin-top:8px}
+  .hero-media img{aspect-ratio:3/2}
+  .trust ul{grid-template-columns:1fr 1fr}
+  .trust li{padding:20px 20px 20px 0;padding-left:20px;border-left:0;border-top:1px solid rgba(255,255,255,.14)}
+  .trust li:nth-child(-n+2){border-top:0}
+  .trust li:nth-child(odd){padding-left:0}
+  .section{padding-block:60px}
+  .cards{grid-template-columns:1fr 1fr}
+  .about-grid,.contact-grid{grid-template-columns:1fr}
+  .gallery{grid-template-columns:1fr 1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:600px){
+  .cards{grid-template-columns:1fr}
+  .gallery{grid-template-columns:1fr 1fr;gap:14px}
+  .gallery figcaption{font-size:.875rem}
+  .trust ul{grid-template-columns:1fr}
+  .trust li{padding:16px 0;border-top:1px solid rgba(255,255,255,.14)}
+  .trust li:nth-child(-n+2){border-top:1px solid rgba(255,255,255,.14)}
+  .trust li:first-child{border-top:0}
+  .form{grid-template-columns:1fr}
+  .why{padding:28px 22px 30px}
+  .footer-grid{grid-template-columns:1fr;gap:28px}
+  .about-facts{grid-template-columns:1fr}
+  .contact-info{padding:24px 20px}
+  .hero-actions .btn{flex:1 1 auto}
+  .hero-media::before,.hero-media::after{width:32%;height:30%}
+}
+@media (max-width:420px){
+  .gallery{grid-template-columns:1fr}
+  .btn-sm.header-cta{padding:9px 12px;font-size:.875rem}
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Ga naar de inhoud</a>
+
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a class="brand" href="#top" aria-label="Dogus BV, naar boven">
+      <img src="images/logo-dogus-bv.png" alt="Dogus BV, ramen, deuren en rolluiken" width="800" height="233">
+    </a>
+    <nav class="site-nav" id="site-nav" aria-label="Hoofdmenu">
+      <ul>
+        <li><a href="#diensten">Diensten</a></li>
+        <li><a href="#realisaties">Realisaties</a></li>
+        <li><a href="#over-ons">Over ons</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="header-phone" href="tel:+3230000000">+32 3 000 00 00</a>
+      <a class="btn btn-primary btn-sm header-cta" href="#contact">Gratis offerte</a>
+      <button class="nav-toggle" type="button" aria-label="Menu openen" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container hero-grid">
+      <div class="hero-text">
+        <p class="eyebrow">Schrijnwerk in PVC en aluminium · Hoboken, Antwerpen</p>
+        <h1 id="hero-title">Ramen, deuren en rolluiken in Antwerpen</h1>
+        <p class="lead">Dogus BV levert en plaatst PVC- en aluminiumramen, voordeuren, schuiframen en rolluiken. Voor renovatie en nieuwbouw, met profielen van aluplast en Aluprof. Vanuit Hoboken werken wij in heel de regio Antwerpen.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#contact">Gratis offerte</a>
+          <a class="btn btn-outline" href="tel:+3230000000">Bel ons</a>
+        </div>
+        <p class="hero-note">U kunt bij ons terecht in het Nederlands, Turks en Engels.</p>
+      </div>
+      <div class="hero-media">
+        <img src="images/hero-aluminium-ramen-rijwoning-antwerpen.webp" alt="Rijwoning in Antwerpen met nieuwe antracietgrijze aluminium ramen in een bakstenen gevel" width="1600" height="1062" fetchpriority="high" decoding="async">
+      </div>
+    </div>
+  </section>
+
+  <section class="trust" aria-label="Waarom klanten voor Dogus BV kiezen">
+    <div class="container">
+      <ul>
+        <li>
+          <p class="t-title">Gratis opmeting</p>
+          <p class="t-text">Wij komen langs, meten alles op en maken een offerte op maat. Zonder kosten.</p>
+        </li>
+        <li>
+          <p class="t-title">aluplast en Aluprof</p>
+          <p class="t-text">PVC-profielen van aluplast, aluminiumprofielen van Aluprof. Merken die hun kwaliteit bewezen hebben.</p>
+        </li>
+        <li>
+          <p class="t-title">Eigen plaatsingsteam</p>
+          <p class="t-text">Geen onderaannemers. Wie bij u komt opmeten, plaatst ook.</p>
+        </li>
+        <li>
+          <p class="t-title">Ook herstellingen</p>
+          <p class="t-text">Afstelling, glasbreuk, een rolluiklint of motor: wij komen ook voor kleine werken.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="diensten" aria-labelledby="diensten-title">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">Diensten</p>
+        <h2 id="diensten-title">Ramen en deuren in Antwerpen, rolluiken inbegrepen</h2>
+        <p>Drie vakgebieden, één aanspreekpunt. Van opmeting tot plaatsing en afwerking doen wij alles zelf.</p>
+      </div>
+      <div class="cards">
+        <article class="card reveal">
+          <div class="card-media">
+            <img src="images/dienst-pvc-ramen-antwerpen.webp" alt="Nieuw wit PVC-raam in een bakstenen gevel met zichtbare afwerking van de raamaansluiting" width="1000" height="747" loading="lazy" decoding="async">
+          </div>
+          <div class="card-body">
+            <h3>PVC en aluminium ramen</h3>
+            <p>Nieuwe ramen voor renovatie of nieuwbouw, op maat gemaakt en geplaatst door ons eigen team. PVC-ramen met aluplast-profielen, aluminiumramen met Aluprof-profielen.</p>
+            <ul class="feature-list">
+              <li>Draaikipramen, vaste ramen en schuiframen</li>
+              <li>Dubbel of driedubbel glas, ook geluidswerend</li>
+              <li>Wit, antraciet, houtlook of een RAL-kleur naar keuze</li>
+            </ul>
+            <a class="card-link" href="#contact">Offerte aanvragen voor ramen</a>
+          </div>
+        </article>
+        <article class="card reveal">
+          <div class="card-media">
+            <img src="images/dienst-aluminium-voordeur.webp" alt="Moderne zwarte aluminium voordeur met zijlicht in een bakstenen inkom" width="1000" height="747" loading="lazy" decoding="async">
+          </div>
+          <div class="card-body">
+            <h3>Voordeuren en schuiframen</h3>
+            <p>Een voordeur in aluminium of PVC, met of zonder zijlicht, in de stijl van uw gevel. Schuiframen en hefschuiframen voor een open zicht op uw tuin of terras.</p>
+            <ul class="feature-list">
+              <li>Meerpuntssluiting en veiligheidsglas</li>
+              <li>Schuiframen tot grote breedtes, ook in aluminium</li>
+              <li>Ook achterdeuren en terrasdeuren</li>
+            </ul>
+            <a class="card-link" href="#contact">Offerte aanvragen voor deuren</a>
+          </div>
+        </article>
+        <article class="card reveal">
+          <div class="card-media">
+            <img src="images/dienst-rolluiken.webp" alt="Wit aluminium rolluik half neergelaten boven een raam in een bakstenen gevel" width="1000" height="747" loading="lazy" decoding="async">
+          </div>
+          <div class="card-body">
+            <h3>Rolluiken en zonwering</h3>
+            <p>Rolluiken plaatsen in Antwerpen doen wij bij nieuwe én bestaande ramen: opbouw of inbouw, manueel of elektrisch. Ook screens tegen de zon.</p>
+            <ul class="feature-list">
+              <li>Aluminium rolluiken, manueel of met motor</li>
+              <li>Bediening met schakelaar, afstandsbediening of app</li>
+              <li>Herstelling van bestaande rolluiken: lint, motor of lamellen</li>
+            </ul>
+            <a class="card-link" href="#contact">Offerte aanvragen voor rolluiken</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="over-ons" aria-labelledby="over-title">
+    <div class="container about-grid">
+      <div class="about-text reveal">
+        <p class="eyebrow">Over ons</p>
+        <h2 id="over-title">Over Dogus BV</h2>
+        <p>Dogus BV is een schrijnwerkbedrijf uit Hoboken, gespecialiseerd in ramen, deuren en rolluiken in PVC en aluminium. Wij werken voor particulieren, aannemers en handelszaken, bij renovatie en bij nieuwbouw.</p>
+        <p>Wij verkopen niet alleen, wij plaatsen ook zelf. Zo weet u wie er bij u thuis komt en wie u belt als er later iets is. Onze profielen komen van aluplast (PVC) en Aluprof (aluminium), twee merken die al jaren hun kwaliteit bewijzen.</p>
+        <p>U vindt ons aan de Louisalei in Hoboken, op enkele minuten van het centrum van Antwerpen. Wij spreken Nederlands, Turks en Engels.</p>
+        <dl class="about-facts">
+          <div><dt>Profielen</dt><dd>aluplast (PVC) en Aluprof (aluminium)</dd></div>
+          <div><dt>Werkgebied</dt><dd>Antwerpen en omgeving</dd></div>
+          <div><dt>Talen</dt><dd>Nederlands, Turks, Engels</dd></div>
+          <div><dt>Voor wie</dt><dd>Particulieren, aannemers en handelszaken</dd></div>
+        </dl>
+      </div>
+      <div class="why reveal" aria-labelledby="why-title">
+        <h2 id="why-title">Waarom Dogus BV</h2>
+        <ol>
+          <li><div><strong>Gratis opmeting en een duidelijke offerte</strong><span>Wij komen ter plaatse, meten alles op en u krijgt een offerte met vaste prijzen. Geen verrassingen achteraf.</span></div></li>
+          <li><div><strong>Kwaliteitsprofielen van aluplast en Aluprof</strong><span>Bekende merken met goede isolatiewaarden en een lange levensduur. Wij plaatsen ze volgens de voorschriften van de fabrikant.</span></div></li>
+          <li><div><strong>Eigen plaatsers, geen onderaannemers</strong><span>De mensen die opmeten, plaatsen ook. U hebt één aanspreekpunt van de eerste afspraak tot de oplevering.</span></div></li>
+          <li><div><strong>Nette afwerking en dienst na verkoop</strong><span>Wij werken de raamaansluiting binnen en buiten netjes af en voeren het oude schrijnwerk af. Ook nadien blijven wij bereikbaar voor afstelling of herstelling.</span></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="realisaties" aria-labelledby="realisaties-title">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">Realisaties</p>
+        <h2 id="realisaties-title">Realisaties in Antwerpen en omgeving</h2>
+        <p>Zo ziet ons werk eruit: ramen, deuren en rolluiken bij renovatie, nieuwbouw en handelszaken. Klik op een foto om ze groter te bekijken.</p>
+      </div>
+      <div class="gallery" id="gallery">
+        <figure class="reveal">
+          <button class="gal-btn" type="button" aria-label="Foto vergroten: witte PVC-voordeur met zijlicht">
+            <img src="images/realisatie-pvc-voordeur-wit.webp" alt="Nieuwe witte PVC-voordeur met matglas en zijlicht in een bakstenen rijwoning in Antwerpen" width="1200" height="896" loading="lazy" decoding="async">
+          </button>
+          <figcaption>Witte PVC-voordeur met zijlicht, rijwoning</figcaption>
+        </figure>
+        <figure class="reveal">
+          <button class="gal-btn" type="button" aria-label="Foto vergroten: gevelrenovatie met aluminium ramen">
+            <img src="images/realisatie-gevelrenovatie-aluminium-ramen-antraciet.webp" alt="Volledige gevelrenovatie met antracietgrijze aluminium ramen en voordeur aan een rijwoning in Antwerpen" width="1200" height="896" loading="lazy" decoding="async">
+          </button>
+          <figcaption>Gevelrenovatie: aluminium ramen en voordeur in antraciet</figcaption>
+        </figure>
+        <figure class="reveal">
+          <button class="gal-btn" type="button" aria-label="Foto vergroten: elektrisch rolluik">
+            <img src="images/realisatie-elektrisch-rolluik-antraciet.webp" alt="Elektrisch aluminium rolluik in antraciet, geplaatst boven een breed raam aan de achtergevel" width="1200" height="896" loading="lazy" decoding="async">
+          </button>
+          <figcaption>Elektrisch rolluik in antraciet, achtergevel</figcaption>
+        </figure>
+        <figure class="reveal">
+          <button class="gal-btn" type="button" aria-label="Foto vergroten: nieuw PVC-raam van binnenuit">
+            <img src="images/realisatie-pvc-draaikipraam-binnenzicht.webp" alt="Nieuw wit PVC-draaikipraam met vensterbank, gezien vanuit de woonkamer na de plaatsing" width="1200" height="896" loading="lazy" decoding="async">
+          </button>
+          <figcaption>Nieuw PVC-draaikipraam, gezien van binnenuit</figcaption>
+        </figure>
+        <figure class="reveal">
+          <button class="gal-btn" type="button" aria-label="Foto vergroten: aluminium schuifraam">
+            <img src="images/realisatie-aluminium-schuifraam-tuin.webp" alt="Antracietgrijs aluminium schuifraam met smalle profielen, open naar het terras en de tuin" width="1200" height="896" loading="lazy" decoding="async">
+          </button>
+          <figcaption>Aluminium schuifraam naar de tuin</figcaption>
+        </figure>
+        <figure class="reveal">
+          <button class="gal-btn" type="button" aria-label="Foto vergroten: rolluik voor een handelszaak">
+            <img src="images/realisatie-rolluik-handelszaak.webp" alt="Geperforeerd aluminium rolluik voor de vitrine van een handelszaak in Antwerpen" width="1200" height="896" loading="lazy" decoding="async">
+          </button>
+          <figcaption>Rolluik voor een handelszaak</figcaption>
+        </figure>
+        <figure class="reveal">
+          <button class="gal-btn" type="button" aria-label="Foto vergroten: dakkapel met aluminium ramen">
+            <img src="images/realisatie-dakkapel-aluminium-ramen.webp" alt="Gerenoveerde dakkapel in zink met twee nieuwe antracietgrijze aluminium ramen" width="1200" height="896" loading="lazy" decoding="async">
+          </button>
+          <figcaption>Dakkapel met aluminium ramen</figcaption>
+        </figure>
+        <figure class="reveal">
+          <button class="gal-btn" type="button" aria-label="Foto vergroten: nieuwbouw met aluminium ramen">
+            <img src="images/realisatie-nieuwbouw-aluminium-ramen-antraciet.webp" alt="Nieuwbouwwoning met grote antracietgrijze aluminium ramen en bijpassende voordeur, regio Antwerpen" width="1200" height="896" loading="lazy" decoding="async">
+          </button>
+          <figcaption>Nieuwbouw: aluminium ramen en deur in antraciet</figcaption>
+        </figure>
+      </div>
+      <p class="gallery-note reveal">Wilt u weten wat dit voor uw woning kost? <a href="#contact">Vraag een gratis opmeting aan</a>.</p>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="contact" aria-labelledby="contact-title">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">Contact</p>
+        <h2 id="contact-title">Vraag uw gratis offerte aan</h2>
+        <p>Vul het formulier in of bel ons. Wij bellen u terug om een afspraak voor de opmeting vast te leggen.</p>
+      </div>
+      <div class="contact-grid">
+        <form class="form reveal" id="offerte-form" action="mailto:info@dogusbv.be" method="post" enctype="text/plain" data-mailto="on">
+          <div class="field">
+            <label for="f-naam">Naam</label>
+            <input id="f-naam" name="naam" type="text" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label for="f-telefoon">Telefoon</label>
+            <input id="f-telefoon" name="telefoon" type="tel" autocomplete="tel" inputmode="tel" required>
+          </div>
+          <div class="field">
+            <label for="f-email">E-mail <small>(optioneel)</small></label>
+            <input id="f-email" name="email" type="email" autocomplete="email">
+          </div>
+          <div class="field">
+            <label for="f-gemeente">Gemeente</label>
+            <input id="f-gemeente" name="gemeente" type="text" autocomplete="address-level2" placeholder="Bv. Wilrijk">
+          </div>
+          <div class="field full">
+            <label for="f-dienst">Waarover gaat het?</label>
+            <select id="f-dienst" name="dienst" required>
+              <option value="">Maak een keuze</option>
+              <option value="Ramen">Ramen (PVC of aluminium)</option>
+              <option value="Voordeur of schuifraam">Voordeur of schuifraam</option>
+              <option value="Rolluiken of zonwering">Rolluiken of zonwering</option>
+              <option value="Herstelling">Herstelling</option>
+              <option value="Iets anders">Iets anders</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label for="f-bericht">Bericht</label>
+            <textarea id="f-bericht" name="bericht" placeholder="Bv. 6 ramen en een voordeur vervangen, rijwoning in Wilrijk."></textarea>
+          </div>
+          <div class="form-foot">
+            <button class="btn btn-navy" type="submit">Verstuur aanvraag</button>
+            <p class="form-privacy">Wij gebruiken uw gegevens alleen om uw aanvraag te beantwoorden.</p>
+          </div>
+          <p class="form-status" id="form-status" hidden></p>
+        </form>
+        <aside class="contact-info reveal" aria-label="Contactgegevens">
+          <h3>Contactgegevens</h3>
+          <div class="contact-block">
+            <p class="contact-label">Adres</p>
+            <address>Dogus BV<br>Louisalei 76/6<br>2660 Antwerpen (Hoboken)<br>België</address>
+          </div>
+          <div class="contact-block">
+            <p class="contact-label">Telefoon</p>
+            <p><a href="tel:+3230000000">+32 3 000 00 00</a></p>
+          </div>
+          <div class="contact-block">
+            <p class="contact-label">E-mail</p>
+            <p><a href="mailto:info@dogusbv.be">info@dogusbv.be</a></p>
+          </div>
+          <div class="contact-block">
+            <p class="contact-label">WhatsApp</p>
+            <p><a href="https://wa.me/32470000000?text=Dag%20Dogus%20BV%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen." target="_blank" rel="noopener">+32 470 00 00 00</a></p>
+            <a class="btn btn-outline btn-sm" href="https://wa.me/32470000000?text=Dag%20Dogus%20BV%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen." target="_blank" rel="noopener">Stuur een WhatsApp-bericht</a>
+          </div>
+          <div class="contact-block">
+            <p class="contact-label">Openingsuren</p>
+            <dl class="hours">
+              <dt>Ma tot vr</dt><dd>8.00 tot 17.00 u</dd>
+              <dt>Zaterdag</dt><dd>Op afspraak</dd>
+              <dt>Zondag</dt><dd>Gesloten</dd>
+            </dl>
+          </div>
+          <div class="contact-block">
+            <p class="contact-label">Werkgebied</p>
+            <ul class="regions">
+              <li>Antwerpen</li><li>Hoboken</li><li>Wilrijk</li><li>Mortsel</li><li>Edegem</li><li>Schoten</li><li>Deurne</li><li>Berchem</li><li>Merksem</li><li>Kontich</li><li>Hemiksem</li><li>Aartselaar</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="images/logo-dogus-bv-wit.png" alt="Dogus BV" width="800" height="233" loading="lazy">
+        <p>Ramen, deuren en rolluiken in PVC en aluminium. Verkoop en plaatsing, voor renovatie en nieuwbouw in Antwerpen en omgeving.</p>
+      </div>
+      <div class="footer-col">
+        <h3>Contact</h3>
+        <address>Dogus BV<br>Louisalei 76/6<br>2660 Antwerpen (Hoboken)<br><a href="tel:+3230000000">+32 3 000 00 00</a><br><a href="mailto:info@dogusbv.be">info@dogusbv.be</a></address>
+      </div>
+      <div class="footer-col">
+        <h3>Navigatie</h3>
+        <ul>
+          <li><a href="#diensten">Diensten</a></li>
+          <li><a href="#realisaties">Realisaties</a></li>
+          <li><a href="#over-ons">Over ons</a></li>
+          <li><a href="#contact">Gratis offerte</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© <span id="year">2026</span> Dogus BV · BTW BE 0000.000.000 · RPR Antwerpen</p>
+      <p>Nederlands · Türkçe · English</p>
+    </div>
+  </div>
+</footer>
+
+<dialog class="lightbox" id="lightbox" aria-label="Foto vergroot">
+  <div class="lb-inner">
+    <img id="lb-img" src="" alt="">
+    <div class="lb-bar">
+      <p class="lb-cap" id="lb-cap"></p>
+      <div class="lb-controls">
+        <button type="button" id="lb-prev">Vorige</button>
+        <button type="button" id="lb-next">Volgende</button>
+        <button type="button" id="lb-close">Sluiten</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+  'use strict';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Sticky header shadow */
+  var header = document.querySelector('.site-header');
+  function onScroll(){ header.classList.toggle('is-scrolled', window.scrollY > 8); }
+  onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
+
+  /* Mobile menu */
+  var toggle = document.querySelector('.nav-toggle');
+  var nav = document.getElementById('site-nav');
+  function closeMenu(){
+    header.classList.remove('nav-open');
+    toggle.setAttribute('aria-expanded','false');
+    toggle.setAttribute('aria-label','Menu openen');
+  }
+  toggle.addEventListener('click', function(){
+    var open = header.classList.toggle('nav-open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute('aria-label', open ? 'Menu sluiten' : 'Menu openen');
+  });
+  nav.addEventListener('click', function(e){ if (e.target.tagName === 'A') closeMenu(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeMenu(); });
+
+  /* Reveal on scroll (skipped when the visitor prefers reduced motion) */
+  if (!reduce && 'IntersectionObserver' in window) {
+    document.documentElement.classList.add('js-anim');
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (en.isIntersecting) { en.target.classList.add('is-visible'); io.unobserve(en.target); }
+      });
+    }, {rootMargin: '0px 0px -6% 0px', threshold: 0.05});
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  }
+
+  /* Gallery lightbox */
+  var dlg = document.getElementById('lightbox');
+  var figures = Array.prototype.slice.call(document.querySelectorAll('#gallery figure'));
+  var current = 0;
+  function show(i){
+    current = (i + figures.length) % figures.length;
+    var img = figures[current].querySelector('img');
+    var cap = figures[current].querySelector('figcaption');
+    var big = document.getElementById('lb-img');
+    big.src = img.currentSrc || img.src;
+    big.alt = img.alt;
+    document.getElementById('lb-cap').textContent = cap ? cap.textContent : '';
+  }
+  if (dlg && typeof dlg.showModal === 'function') {
+    figures.forEach(function(fig, i){
+      fig.querySelector('.gal-btn').addEventListener('click', function(){ show(i); dlg.showModal(); });
+    });
+    document.getElementById('lb-prev').addEventListener('click', function(){ show(current - 1); });
+    document.getElementById('lb-next').addEventListener('click', function(){ show(current + 1); });
+    document.getElementById('lb-close').addEventListener('click', function(){ dlg.close(); });
+    dlg.addEventListener('click', function(e){ if (e.target === dlg) dlg.close(); });
+    dlg.addEventListener('keydown', function(e){
+      if (e.key === 'ArrowLeft') show(current - 1);
+      if (e.key === 'ArrowRight') show(current + 1);
+    });
+  }
+
+  /* Contact form: builds a mailto message (replace with Formspree later, see the note at the top of this file) */
+  var form = document.getElementById('offerte-form');
+  var status = document.getElementById('form-status');
+  if (form && form.getAttribute('data-mailto') === 'on') {
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+      var v = function(id){ return (document.getElementById(id).value || '').trim(); };
+      var subject = 'Offerteaanvraag via website: ' + v('f-dienst');
+      var body = [
+        'Naam: ' + v('f-naam'),
+        'Telefoon: ' + v('f-telefoon'),
+        'E-mail: ' + (v('f-email') || '-'),
+        'Gemeente: ' + (v('f-gemeente') || '-'),
+        'Onderwerp: ' + v('f-dienst'),
+        '',
+        'Bericht:',
+        v('f-bericht') || '-'
+      ].join('\n');
+      window.location.href = 'mailto:info@dogusbv.be?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+      status.textContent = 'Uw e-mailprogramma opent nu met uw aanvraag. Opent er niets? Bel ons op +32 3 000 00 00 of stuur een WhatsApp-bericht.';
+      status.hidden = false;
+    });
+  }
+
+  /* Year in footer */
+  var y = document.getElementById('year');
+  if (y) y.textContent = String(new Date().getFullYear());
+})();
+</script>
+</body>
+</html>
