@@ -1,6 +1,8 @@
 # Dogus BV website
 
-Tek sayfalık kurumsal site (Belçika Felemenkçesi). Framework yok, build yok.
+Tek sayfalık kurumsal site. Ana dil Belçika Felemenkçesi (HTML'de), Türkçe ve İngilizce çeviriler
+`index.html` içindeki `I18N` sözlüğünde; header'daki NL / TR / EN seçici ile geçiş, `?lang=tr` ve `?lang=en`
+ile paylaşılabilir bağlantı. Framework yok, build yok.
 
 - `index.html` + `images/` → hostinge yüklenecek dosyalar (`dogus-bv-website.zip` aynısını içerir)
 - `dogus-bv-preview.html` → tüm görseller gömülü tek dosyalık önizleme

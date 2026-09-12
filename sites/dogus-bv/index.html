@@ -8,16 +8,20 @@
 
   YER TUTUCULAR (yayından önce bul-ve-değiştir):
     +32 3 000 00 00        -> vaste telefoon (ayrıca tel:+3230000000 bağlantıları)
-    +32 470 00 00 00       -> GSM / WhatsApp (ayrıca wa.me/32470000000 bağlantısı)
+    +32 470 00 00 00       -> GSM / WhatsApp (ayrıca wa.me/32470000000, hem HTML'de hem JS'de)
     info@dogusbv.be        -> e-posta (form mailto dahil)
     BE 0000.000.000        -> BTW-nummer
-    https://www.dogusbv.be -> gerçek domain (canonical, og:url, og:image, JSON-LD)
-    Openingsuren           -> contact bölümündeki saatler
+    https://www.dogusbv.be -> gerçek domain (canonical, hreflang, og:url, og:image, JSON-LD)
+    Openingsuren           -> contact bölümündeki saatler (üç dilde: NL metin HTML'de, TR/EN JS sözlüğünde)
+
+  DİLLER: Felemenkçe (NL) HTML'in içindedir ve arama motorları için ana dildir.
+  Türkçe ve İngilizce çeviriler sayfanın altındaki <script> içindeki I18N sözlüğündedir.
+  Bir metni değiştirirken üç yeri de güncelleyin: HTML (NL), I18N.tr, I18N.en.
+  Seçilen dil hatırlanır (localStorage) ve ?lang=tr / ?lang=en ile paylaşılabilir.
 
   FORM: şimdilik mailto (ziyaretçinin e-posta programı açılır).
   Formspree'ye geçiş: <form> etiketinde action="https://formspree.io/f/XXXXXXXX" method="POST"
-  yapın ve data-mailto="on" özniteliğini kaldırın. Alan adları (name, telefoon, email,
-  gemeente, dienst, bericht) olduğu gibi çalışır.
+  yapın ve data-mailto="on" özniteliğini kaldırın. Alan adları olduğu gibi çalışır.
 
   GÖRSELLER: images/ klasöründeki foto's Higgsfield ile üretilmiş yer tutuculardır.
   Gerçek werf-foto's ile aynı dosya adlarıyla değiştirilebilir.
@@ -25,9 +29,15 @@
 <title>Ramen, Deuren en Rolluiken in Antwerpen | Dogus BV</title>
 <meta name="description" content="Dogus BV levert en plaatst PVC- en aluminiumramen, voordeuren, schuiframen en rolluiken in Antwerpen en omgeving. Eigen plaatsingsteam, profielen van aluplast en Aluprof, gratis opmeting.">
 <link rel="canonical" href="https://www.dogusbv.be/">
+<link rel="alternate" hreflang="nl-BE" href="https://www.dogusbv.be/">
+<link rel="alternate" hreflang="tr" href="https://www.dogusbv.be/?lang=tr">
+<link rel="alternate" hreflang="en" href="https://www.dogusbv.be/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://www.dogusbv.be/">
 <meta name="theme-color" content="#1B2430">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="nl_BE">
+<meta property="og:locale:alternate" content="tr_TR">
+<meta property="og:locale:alternate" content="en_GB">
 <meta property="og:site_name" content="Dogus BV">
 <meta property="og:title" content="Ramen, Deuren en Rolluiken in Antwerpen | Dogus BV">
 <meta property="og:description" content="PVC- en aluminiumramen, voordeuren en rolluiken, geleverd en geplaatst door ons eigen team. Renovatie en nieuwbouw in Antwerpen en omgeving. Gratis opmeting.">
@@ -97,6 +107,9 @@
   --navy-3:#0F161F;
   --orange:#E8641B;
   --orange-2:#C9530F;
+  --wa:#25D366;
+  --wa-2:#1EC15C;
+  --wa-ink:#0B2E1A;
   --bg:#F5F3EE;
   --bg-2:#ECE8E0;
   --white:#FFFFFF;
@@ -129,17 +142,19 @@ button{font:inherit;color:inherit}
 .skip-link{position:absolute;left:-999px;top:8px;background:var(--navy);color:#fff;padding:10px 14px;z-index:1000}
 .skip-link:focus{left:8px}
 :focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+.sprite{position:absolute;width:0;height:0;overflow:hidden}
 
 /* Buttons */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 24px;border-radius:var(--radius);font-family:var(--font-display);font-weight:700;font-size:1rem;letter-spacing:.01em;text-decoration:none;border:2px solid transparent;cursor:pointer;transition:background-color .2s var(--ease),color .2s var(--ease),border-color .2s var(--ease),transform .2s var(--ease)}
+.btn svg{width:20px;height:20px;flex:none}
 .btn-primary{background:var(--orange);color:#fff;border-color:var(--orange)}
 .btn-primary:hover{background:var(--orange-2);border-color:var(--orange-2)}
 .btn-navy{background:var(--navy);color:#fff;border-color:var(--navy)}
 .btn-navy:hover{background:var(--navy-3);border-color:var(--navy-3)}
 .btn-outline{background:transparent;color:var(--navy);border-color:var(--navy)}
 .btn-outline:hover{background:var(--navy);color:#fff}
-.btn-outline-light{background:transparent;color:#fff;border-color:rgba(255,255,255,.6)}
-.btn-outline-light:hover{background:#fff;color:var(--navy);border-color:#fff}
+.btn-whatsapp{background:var(--wa);color:var(--wa-ink);border-color:var(--wa)}
+.btn-whatsapp:hover{background:var(--wa-2);border-color:var(--wa-2)}
 .btn-sm{padding:10px 16px;font-size:.9375rem}
 .btn:active{transform:translateY(1px)}
 
@@ -150,12 +165,17 @@ button{font:inherit;color:inherit}
 .brand{display:inline-flex;align-items:center;text-decoration:none}
 .brand img{height:46px;width:auto}
 .site-nav ul{display:flex;align-items:center;gap:6px}
-.site-nav a{display:block;padding:10px 14px;font-family:var(--font-display);font-weight:600;font-size:.9375rem;color:var(--navy);text-decoration:none;border-bottom:2px solid transparent;transition:border-color .2s var(--ease)}
-.site-nav a:hover{border-bottom-color:var(--orange)}
-.header-actions{display:flex;align-items:center;gap:12px}
+.site-nav .nav-link{display:block;padding:10px 14px;font-family:var(--font-display);font-weight:600;font-size:.9375rem;color:var(--navy);text-decoration:none;border-bottom:2px solid transparent;transition:border-color .2s var(--ease)}
+.site-nav .nav-link:hover{border-bottom-color:var(--orange)}
+.menu-actions{display:none}
+.header-actions{display:flex;align-items:center;gap:14px}
+.lang{display:flex;align-items:center;gap:2px;border:1px solid var(--line);border-radius:var(--radius);padding:2px}
+.lang button{background:none;border:0;padding:7px 9px;border-radius:2px;font-family:var(--font-display);font-weight:600;font-size:.8125rem;letter-spacing:.06em;line-height:1;color:var(--muted);cursor:pointer;transition:background-color .2s var(--ease),color .2s var(--ease)}
+.lang button:hover{color:var(--navy)}
+.lang button[aria-pressed="true"]{background:var(--navy);color:#fff}
 .header-phone{font-family:var(--font-display);font-weight:600;font-size:.9375rem;color:var(--navy);text-decoration:none;font-variant-numeric:tabular-nums;white-space:nowrap}
 .header-phone:hover{color:var(--orange)}
-.nav-toggle{display:none;width:46px;height:46px;border:1px solid var(--line-2);background:var(--white);border-radius:var(--radius);padding:0;cursor:pointer;position:relative}
+.nav-toggle{display:none;width:46px;height:46px;border:1px solid var(--line-2);background:var(--white);border-radius:var(--radius);padding:0;cursor:pointer;position:relative;flex:none}
 .nav-toggle span{position:absolute;left:12px;right:12px;height:2px;background:var(--navy);transition:transform .25s var(--ease),opacity .2s var(--ease)}
 .nav-toggle span:nth-child(1){top:15px}
 .nav-toggle span:nth-child(2){top:22px}
@@ -163,6 +183,11 @@ button{font:inherit;color:inherit}
 .nav-open .nav-toggle span:nth-child(1){transform:translateY(7px) rotate(45deg)}
 .nav-open .nav-toggle span:nth-child(2){opacity:0}
 .nav-open .nav-toggle span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* Floating WhatsApp button */
+.wa-float{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:90;display:inline-flex;align-items:center;gap:10px;padding:12px 20px 12px 16px;border-radius:999px;background:var(--wa);color:var(--wa-ink);font-family:var(--font-display);font-weight:700;font-size:.9375rem;text-decoration:none;box-shadow:0 10px 26px -10px rgba(0,0,0,.55);transition:background-color .2s var(--ease),transform .2s var(--ease)}
+.wa-float:hover{background:var(--wa-2);transform:translateY(-1px)}
+.wa-float svg{width:24px;height:24px;flex:none}
 
 /* Hero */
 .hero{padding-block:56px 64px;background:var(--bg)}
@@ -262,7 +287,8 @@ dialog.lightbox::backdrop{background:rgba(15,22,31,.92)}
 .contact-block address{font-style:normal;line-height:1.55}
 .contact-block a{color:var(--navy);font-weight:600;text-decoration:none;font-variant-numeric:tabular-nums}
 .contact-block a:hover{color:var(--orange);text-decoration:underline}
-.contact-block .btn{margin-top:8px}
+.contact-block .btn{margin-top:10px;color:var(--wa-ink)}
+.contact-block .btn:hover{color:var(--wa-ink);text-decoration:none}
 .hours{display:grid;grid-template-columns:auto 1fr;gap:4px 18px}
 .hours dt{color:var(--muted)}
 .hours dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums}
@@ -284,10 +310,11 @@ dialog.lightbox::backdrop{background:rgba(15,22,31,.92)}
 /* Reveal on scroll (only when JS confirms motion is allowed) */
 .js-anim .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
 .js-anim .reveal.is-visible{opacity:1;transform:none}
-@media print{.js-anim .reveal{opacity:1;transform:none}}
+@media print{.js-anim .reveal{opacity:1;transform:none}.wa-float{display:none}}
 @media (prefers-reduced-motion:reduce){
-  .card-media img,.gal-btn img,.btn,.site-nav a,.nav-toggle span{transition:none}
+  .card-media img,.gal-btn img,.btn,.site-nav .nav-link,.nav-toggle span,.wa-float{transition:none}
   .card:hover .card-media img,.gal-btn:hover img{transform:none}
+  .wa-float:hover{transform:none}
 }
 
 /* Responsive */
@@ -299,11 +326,13 @@ dialog.lightbox::backdrop{background:rgba(15,22,31,.92)}
 @media (max-width:900px){
   :root{--header-h:66px}
   .brand img{height:40px}
+  .header-inner{gap:12px}
   .site-nav{position:absolute;left:0;right:0;top:100%;background:var(--white);border-bottom:1px solid var(--line);display:none;box-shadow:0 18px 30px -18px rgba(27,36,48,.4)}
   .nav-open .site-nav{display:block}
-  .site-nav ul{flex-direction:column;align-items:stretch;gap:0;padding:8px 20px 12px}
-  .site-nav a{padding:14px 4px;border-bottom:1px solid var(--line);font-size:1.0625rem}
-  .site-nav li:last-child a{border-bottom:0}
+  .site-nav ul{flex-direction:column;align-items:stretch;gap:0;padding:8px 20px 16px}
+  .site-nav .nav-link{padding:14px 4px;border-bottom:1px solid var(--line);font-size:1.0625rem}
+  .menu-actions{display:flex;gap:10px;padding-top:16px}
+  .menu-actions .btn{flex:1 1 0}
   .nav-toggle{display:block}
   .header-phone{display:none}
   .hero{padding-block:40px 48px}
@@ -321,6 +350,9 @@ dialog.lightbox::backdrop{background:rgba(15,22,31,.92)}
   .footer-grid{grid-template-columns:1fr 1fr}
 }
 @media (max-width:600px){
+  .header-cta{display:none}
+  .header-actions{gap:10px}
+  .lang button{padding:7px 8px}
   .cards{grid-template-columns:1fr}
   .gallery{grid-template-columns:1fr 1fr;gap:14px}
   .gallery figcaption{font-size:.875rem}
@@ -331,19 +363,23 @@ dialog.lightbox::backdrop{background:rgba(15,22,31,.92)}
   .form{grid-template-columns:1fr}
   .why{padding:28px 22px 30px}
   .footer-grid{grid-template-columns:1fr;gap:28px}
+  .footer-bottom{padding-bottom:72px}
   .about-facts{grid-template-columns:1fr}
   .contact-info{padding:24px 20px}
   .hero-actions .btn{flex:1 1 auto}
   .hero-media::before,.hero-media::after{width:32%;height:30%}
+  .wa-float{right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));padding:11px 16px 11px 13px;font-size:.875rem}
 }
 @media (max-width:420px){
   .gallery{grid-template-columns:1fr}
-  .btn-sm.header-cta{padding:9px 12px;font-size:.875rem}
 }
 </style>
 </head>
 <body>
-<a class="skip-link" href="#main">Ga naar de inhoud</a>
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></symbol>
+</svg>
+<a class="skip-link" href="#main" data-i18n="skip">Ga naar de inhoud</a>
 
 <header class="site-header" id="top">
   <div class="container header-inner">
@@ -352,15 +388,24 @@ dialog.lightbox::backdrop{background:rgba(15,22,31,.92)}
     </a>
     <nav class="site-nav" id="site-nav" aria-label="Hoofdmenu">
       <ul>
-        <li><a href="#diensten">Diensten</a></li>
-        <li><a href="#realisaties">Realisaties</a></li>
-        <li><a href="#over-ons">Over ons</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li><a class="nav-link" href="#diensten" data-i18n="nav.diensten">Diensten</a></li>
+        <li><a class="nav-link" href="#realisaties" data-i18n="nav.realisaties">Realisaties</a></li>
+        <li><a class="nav-link" href="#over-ons" data-i18n="nav.over">Over ons</a></li>
+        <li><a class="nav-link" href="#contact" data-i18n="nav.contact">Contact</a></li>
+        <li class="menu-actions">
+          <a class="btn btn-primary" href="#contact" data-i18n="cta.offerte">Gratis offerte</a>
+          <a class="btn btn-whatsapp" href="https://wa.me/32470000000" target="_blank" rel="noopener" data-wa><svg aria-hidden="true"><use href="#i-wa"/></svg><span data-i18n="cta.whatsapp">WhatsApp</span></a>
+        </li>
       </ul>
     </nav>
     <div class="header-actions">
+      <div class="lang" role="group" aria-label="Taal kiezen" data-i18n-aria="lang.label">
+        <button type="button" data-lang="nl" lang="nl" aria-pressed="true">NL</button>
+        <button type="button" data-lang="tr" lang="tr" aria-pressed="false">TR</button>
+        <button type="button" data-lang="en" lang="en" aria-pressed="false">EN</button>
+      </div>
       <a class="header-phone" href="tel:+3230000000">+32 3 000 00 00</a>
-      <a class="btn btn-primary btn-sm header-cta" href="#contact">Gratis offerte</a>
+      <a class="btn btn-primary btn-sm header-cta" href="#contact" data-i18n="cta.offerte">Gratis offerte</a>
       <button class="nav-toggle" type="button" aria-label="Menu openen" aria-expanded="false" aria-controls="site-nav">
         <span></span><span></span><span></span>
       </button>
@@ -373,17 +418,18 @@ dialog.lightbox::backdrop{background:rgba(15,22,31,.92)}
   <section class="hero" aria-labelledby="hero-title">
     <div class="container hero-grid">
       <div class="hero-text">
-        <p class="eyebrow">Schrijnwerk in PVC en aluminium · Hoboken, Antwerpen</p>
-        <h1 id="hero-title">Ramen, deuren en rolluiken in Antwerpen</h1>
-        <p class="lead">Dogus BV levert en plaatst PVC- en aluminiumramen, voordeuren, schuiframen en rolluiken. Voor renovatie en nieuwbouw, met profielen van aluplast en Aluprof. Vanuit Hoboken werken wij in heel de regio Antwerpen.</p>
+        <p class="eyebrow" data-i18n="hero.eyebrow">Schrijnwerk in PVC en aluminium · Hoboken, Antwerpen</p>
+        <h1 id="hero-title" data-i18n="hero.title">Ramen, deuren en rolluiken in Antwerpen</h1>
+        <p class="lead" data-i18n="hero.lead">Dogus BV levert en plaatst PVC- en aluminiumramen, voordeuren, schuiframen en rolluiken. Voor renovatie en nieuwbouw, met profielen van aluplast en Aluprof. Vanuit Hoboken werken wij in heel de regio Antwerpen.</p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#contact">Gratis offerte</a>
-          <a class="btn btn-outline" href="tel:+3230000000">Bel ons</a>
+          <a class="btn btn-primary" href="#contact" data-i18n="cta.offerte">Gratis offerte</a>
+          <a class="btn btn-whatsapp" href="https://wa.me/32470000000" target="_blank" rel="noopener" data-wa><svg aria-hidden="true"><use href="#i-wa"/></svg><span data-i18n="cta.whatsapp">WhatsApp</span></a>
+          <a class="btn btn-outline" href="tel:+3230000000" data-i18n="cta.bel">Bel ons</a>
         </div>
-        <p class="hero-note">U kunt bij ons terecht in het Nederlands, Turks en Engels.</p>
+        <p class="hero-note" data-i18n="hero.note">U kunt bij ons terecht in het Nederlands, Turks en Engels.</p>
       </div>
       <div class="hero-media">
-        <img src="images/hero-aluminium-ramen-rijwoning-antwerpen.webp" alt="Rijwoning in Antwerpen met nieuwe antracietgrijze aluminium ramen in een bakstenen gevel" width="1600" height="1062" fetchpriority="high" decoding="async">
+        <img src="images/hero-aluminium-ramen-rijwoning-antwerpen.webp" alt="Rijwoning in Antwerpen met nieuwe antracietgrijze aluminium ramen in een bakstenen gevel" data-i18n-alt="hero.alt" width="1600" height="1062" fetchpriority="high" decoding="async">
       </div>
     </div>
   </section>
@@ -392,20 +438,20 @@ dialog.lightbox::backdrop{background:rgba(15,22,31,.92)}
     <div class="container">
       <ul>
         <li>
-          <p class="t-title">Gratis opmeting</p>
-          <p class="t-text">Wij komen langs, meten alles op en maken een offerte op maat. Zonder kosten.</p>
+          <p class="t-title" data-i18n="trust.1.t">Gratis opmeting</p>
+          <p class="t-text" data-i18n="trust.1.d">Wij komen langs, meten alles op en maken een offerte op maat. Zonder kosten.</p>
         </li>
         <li>
-          <p class="t-title">aluplast en Aluprof</p>
-          <p class="t-text">PVC-profielen van aluplast, aluminiumprofielen van Aluprof. Merken die hun kwaliteit bewezen hebben.</p>
+          <p class="t-title" data-i18n="trust.2.t">aluplast en Aluprof</p>
+          <p class="t-text" data-i18n="trust.2.d">PVC-profielen van aluplast, aluminiumprofielen van Aluprof. Merken die hun kwaliteit bewezen hebben.</p>
         </li>
         <li>
-          <p class="t-title">Eigen plaatsingsteam</p>
-          <p class="t-text">Geen onderaannemers. Wie bij u komt opmeten, plaatst ook.</p>
+          <p class="t-title" data-i18n="trust.3.t">Eigen plaatsingsteam</p>
+          <p class="t-text" data-i18n="trust.3.d">Geen onderaannemers. Wie bij u komt opmeten, plaatst ook.</p>
         </li>
         <li>
-          <p class="t-title">Ook herstellingen</p>
-          <p class="t-text">Afstelling, glasbreuk, een rolluiklint of motor: wij komen ook voor kleine werken.</p>
+          <p class="t-title" data-i18n="trust.4.t">Ook herstellingen</p>
+          <p class="t-text" data-i18n="trust.4.d">Afstelling, glasbreuk, een rolluiklint of motor: wij komen ook voor kleine werken.</p>
         </li>
       </ul>
     </div>
@@ -414,54 +460,54 @@ dialog.lightbox::backdrop{background:rgba(15,22,31,.92)}
   <section class="section" id="diensten" aria-labelledby="diensten-title">
     <div class="container">
       <div class="section-head reveal">
-        <p class="eyebrow">Diensten</p>
-        <h2 id="diensten-title">Ramen en deuren in Antwerpen, rolluiken inbegrepen</h2>
-        <p>Drie vakgebieden, één aanspreekpunt. Van opmeting tot plaatsing en afwerking doen wij alles zelf.</p>
+        <p class="eyebrow" data-i18n="sv.eyebrow">Diensten</p>
+        <h2 id="diensten-title" data-i18n="sv.title">Ramen en deuren in Antwerpen, rolluiken inbegrepen</h2>
+        <p data-i18n="sv.intro">Drie vakgebieden, één aanspreekpunt. Van opmeting tot plaatsing en afwerking doen wij alles zelf.</p>
       </div>
       <div class="cards">
         <article class="card reveal">
           <div class="card-media">
-            <img src="images/dienst-pvc-ramen-antwerpen.webp" alt="Nieuw wit PVC-raam in een bakstenen gevel met zichtbare afwerking van de raamaansluiting" width="1000" height="747" loading="lazy" decoding="async">
+            <img src="images/dienst-pvc-ramen-antwerpen.webp" alt="Nieuw wit PVC-raam in een bakstenen gevel met zichtbare afwerking van de raamaansluiting" data-i18n-alt="sv.1.alt" width="1000" height="747" loading="lazy" decoding="async">
           </div>
           <div class="card-body">
-            <h3>PVC en aluminium ramen</h3>
-            <p>Nieuwe ramen voor renovatie of nieuwbouw, op maat gemaakt en geplaatst door ons eigen team. PVC-ramen met aluplast-profielen, aluminiumramen met Aluprof-profielen.</p>
+            <h3 data-i18n="sv.1.h">PVC en aluminium ramen</h3>
+            <p data-i18n="sv.1.p">Nieuwe ramen voor renovatie of nieuwbouw, op maat gemaakt en geplaatst door ons eigen team. PVC-ramen met aluplast-profielen, aluminiumramen met Aluprof-profielen.</p>
             <ul class="feature-list">
-              <li>Draaikipramen, vaste ramen en schuiframen</li>
-              <li>Dubbel of driedubbel glas, ook geluidswerend</li>
-              <li>Wit, antraciet, houtlook of een RAL-kleur naar keuze</li>
+              <li data-i18n="sv.1.l1">Draaikipramen, vaste ramen en schuiframen</li>
+              <li data-i18n="sv.1.l2">Dubbel of driedubbel glas, ook geluidswerend</li>
+              <li data-i18n="sv.1.l3">Wit, antraciet, houtlook of een RAL-kleur naar keuze</li>
             </ul>
-            <a class="card-link" href="#contact">Offerte aanvragen voor ramen</a>
+            <a class="card-link" href="#contact" data-i18n="sv.1.link">Offerte aanvragen voor ramen</a>
           </div>
         </article>
         <article class="card reveal">
           <div class="card-media">
-            <img src="images/dienst-aluminium-voordeur.webp" alt="Moderne zwarte aluminium voordeur met zijlicht in een bakstenen inkom" width="1000" height="747" loading="lazy" decoding="async">
+            <img src="images/dienst-aluminium-voordeur.webp" alt="Moderne zwarte aluminium voordeur met zijlicht in een bakstenen inkom" data-i18n-alt="sv.2.alt" width="1000" height="747" loading="lazy" decoding="async">
           </div>
           <div class="card-body">
-            <h3>Voordeuren en schuiframen</h3>
-            <p>Een voordeur in aluminium of PVC, met of zonder zijlicht, in de stijl van uw gevel. Schuiframen en hefschuiframen voor een open zicht op uw tuin of terras.</p>
+            <h3 data-i18n="sv.2.h">Voordeuren en schuiframen</h3>
+            <p data-i18n="sv.2.p">Een voordeur in aluminium of PVC, met of zonder zijlicht, in de stijl van uw gevel. Schuiframen en hefschuiframen voor een open zicht op uw tuin of terras.</p>
             <ul class="feature-list">
-              <li>Meerpuntssluiting en veiligheidsglas</li>
-              <li>Schuiframen tot grote breedtes, ook in aluminium</li>
-              <li>Ook achterdeuren en terrasdeuren</li>
+              <li data-i18n="sv.2.l1">Meerpuntssluiting en veiligheidsglas</li>
+              <li data-i18n="sv.2.l2">Schuiframen tot grote breedtes, ook in aluminium</li>
+              <li data-i18n="sv.2.l3">Ook achterdeuren en terrasdeuren</li>
             </ul>
-            <a class="card-link" href="#contact">Offerte aanvragen voor deuren</a>
+            <a class="card-link" href="#contact" data-i18n="sv.2.link">Offerte aanvragen voor deuren</a>
           </div>
         </article>
         <article class="card reveal">
           <div class="card-media">
-            <img src="images/dienst-rolluiken.webp" alt="Wit aluminium rolluik half neergelaten boven een raam in een bakstenen gevel" width="1000" height="747" loading="lazy" decoding="async">
+            <img src="images/dienst-rolluiken.webp" alt="Wit aluminium rolluik half neergelaten boven een raam in een bakstenen gevel" data-i18n-alt="sv.3.alt" width="1000" height="747" loading="lazy" decoding="async">
           </div>
           <div class="card-body">
-            <h3>Rolluiken en zonwering</h3>
-            <p>Rolluiken plaatsen in Antwerpen doen wij bij nieuwe én bestaande ramen: opbouw of inbouw, manueel of elektrisch. Ook screens tegen de zon.</p>
+            <h3 data-i18n="sv.3.h">Rolluiken en zonwering</h3>
+            <p data-i18n="sv.3.p">Rolluiken plaatsen in Antwerpen doen wij bij nieuwe én bestaande ramen: opbouw of inbouw, manueel of elektrisch. Ook screens tegen de zon.</p>
             <ul class="feature-list">
-              <li>Aluminium rolluiken, manueel of met motor</li>
-              <li>Bediening met schakelaar, afstandsbediening of app</li>
-              <li>Herstelling van bestaande rolluiken: lint, motor of lamellen</li>
+              <li data-i18n="sv.3.l1">Aluminium rolluiken, manueel of met motor</li>
+              <li data-i18n="sv.3.l2">Bediening met schakelaar, afstandsbediening of app</li>
+              <li data-i18n="sv.3.l3">Herstelling van bestaande rolluiken: lint, motor of lamellen</li>
             </ul>
-            <a class="card-link" href="#contact">Offerte aanvragen voor rolluiken</a>
+            <a class="card-link" href="#contact" data-i18n="sv.3.link">Offerte aanvragen voor rolluiken</a>
           </div>
         </article>
       </div>
@@ -471,25 +517,25 @@ dialog.lightbox::backdrop{background:rgba(15,22,31,.92)}
   <section class="section section-alt" id="over-ons" aria-labelledby="over-title">
     <div class="container about-grid">
       <div class="about-text reveal">
-        <p class="eyebrow">Over ons</p>
-        <h2 id="over-title">Over Dogus BV</h2>
-        <p>Dogus BV is een schrijnwerkbedrijf uit Hoboken, gespecialiseerd in ramen, deuren en rolluiken in PVC en aluminium. Wij werken voor particulieren, aannemers en handelszaken, bij renovatie en bij nieuwbouw.</p>
-        <p>Wij verkopen niet alleen, wij plaatsen ook zelf. Zo weet u wie er bij u thuis komt en wie u belt als er later iets is. Onze profielen komen van aluplast (PVC) en Aluprof (aluminium), twee merken die al jaren hun kwaliteit bewijzen.</p>
-        <p>U vindt ons aan de Louisalei in Hoboken, op enkele minuten van het centrum van Antwerpen. Wij spreken Nederlands, Turks en Engels.</p>
+        <p class="eyebrow" data-i18n="ab.eyebrow">Over ons</p>
+        <h2 id="over-title" data-i18n="ab.title">Over Dogus BV</h2>
+        <p data-i18n="ab.p1">Dogus BV is een schrijnwerkbedrijf uit Hoboken, gespecialiseerd in ramen, deuren en rolluiken in PVC en aluminium. Wij werken voor particulieren, aannemers en handelszaken, bij renovatie en bij nieuwbouw.</p>
+        <p data-i18n="ab.p2">Wij verkopen niet alleen, wij plaatsen ook zelf. Zo weet u wie er bij u thuis komt en wie u belt als er later iets is. Onze profielen komen van aluplast (PVC) en Aluprof (aluminium), twee merken die al jaren hun kwaliteit bewijzen.</p>
+        <p data-i18n="ab.p3">U vindt ons aan de Louisalei in Hoboken, op enkele minuten van het centrum van Antwerpen. Wij spreken Nederlands, Turks en Engels.</p>
         <dl class="about-facts">
-          <div><dt>Profielen</dt><dd>aluplast (PVC) en Aluprof (aluminium)</dd></div>
-          <div><dt>Werkgebied</dt><dd>Antwerpen en omgeving</dd></div>
-          <div><dt>Talen</dt><dd>Nederlands, Turks, Engels</dd></div>
-          <div><dt>Voor wie</dt><dd>Particulieren, aannemers en handelszaken</dd></div>
+          <div><dt data-i18n="ab.f1t">Profielen</dt><dd data-i18n="ab.f1d">aluplast (PVC) en Aluprof (aluminium)</dd></div>
+          <div><dt data-i18n="ab.f2t">Werkgebied</dt><dd data-i18n="ab.f2d">Antwerpen en omgeving</dd></div>
+          <div><dt data-i18n="ab.f3t">Talen</dt><dd data-i18n="ab.f3d">Nederlands, Turks, Engels</dd></div>
+          <div><dt data-i18n="ab.f4t">Voor wie</dt><dd data-i18n="ab.f4d">Particulieren, aannemers en handelszaken</dd></div>
         </dl>
       </div>
       <div class="why reveal" aria-labelledby="why-title">
-        <h2 id="why-title">Waarom Dogus BV</h2>
+        <h2 id="why-title" data-i18n="why.title">Waarom Dogus BV</h2>
         <ol>
-          <li><div><strong>Gratis opmeting en een duidelijke offerte</strong><span>Wij komen ter plaatse, meten alles op en u krijgt een offerte met vaste prijzen. Geen verrassingen achteraf.</span></div></li>
-          <li><div><strong>Kwaliteitsprofielen van aluplast en Aluprof</strong><span>Bekende merken met goede isolatiewaarden en een lange levensduur. Wij plaatsen ze volgens de voorschriften van de fabrikant.</span></div></li>
-          <li><div><strong>Eigen plaatsers, geen onderaannemers</strong><span>De mensen die opmeten, plaatsen ook. U hebt één aanspreekpunt van de eerste afspraak tot de oplevering.</span></div></li>
-          <li><div><strong>Nette afwerking en dienst na verkoop</strong><span>Wij werken de raamaansluiting binnen en buiten netjes af en voeren het oude schrijnwerk af. Ook nadien blijven wij bereikbaar voor afstelling of herstelling.</span></div></li>
+          <li><div><strong data-i18n="why.1.t">Gratis opmeting en een duidelijke offerte</strong><span data-i18n="why.1.d">Wij komen ter plaatse, meten alles op en u krijgt een offerte met vaste prijzen. Geen verrassingen achteraf.</span></div></li>
+          <li><div><strong data-i18n="why.2.t">Kwaliteitsprofielen van aluplast en Aluprof</strong><span data-i18n="why.2.d">Bekende merken met goede isolatiewaarden en een lange levensduur. Wij plaatsen ze volgens de voorschriften van de fabrikant.</span></div></li>
+          <li><div><strong data-i18n="why.3.t">Eigen plaatsers, geen onderaannemers</strong><span data-i18n="why.3.d">De mensen die opmeten, plaatsen ook. U hebt één aanspreekpunt van de eerste afspraak tot de oplevering.</span></div></li>
+          <li><div><strong data-i18n="why.4.t">Nette afwerking en dienst na verkoop</strong><span data-i18n="why.4.d">Wij werken de raamaansluiting binnen en buiten netjes af en voeren het oude schrijnwerk af. Ook nadien blijven wij bereikbaar voor afstelling of herstelling.</span></div></li>
         </ol>
       </div>
     </div>
@@ -498,139 +544,139 @@ dialog.lightbox::backdrop{background:rgba(15,22,31,.92)}
   <section class="section" id="realisaties" aria-labelledby="realisaties-title">
     <div class="container">
       <div class="section-head reveal">
-        <p class="eyebrow">Realisaties</p>
-        <h2 id="realisaties-title">Realisaties in Antwerpen en omgeving</h2>
-        <p>Zo ziet ons werk eruit: ramen, deuren en rolluiken bij renovatie, nieuwbouw en handelszaken. Klik op een foto om ze groter te bekijken.</p>
+        <p class="eyebrow" data-i18n="gal.eyebrow">Realisaties</p>
+        <h2 id="realisaties-title" data-i18n="gal.title">Realisaties in Antwerpen en omgeving</h2>
+        <p data-i18n="gal.intro">Zo ziet ons werk eruit: ramen, deuren en rolluiken bij renovatie, nieuwbouw en handelszaken. Klik op een foto om ze groter te bekijken.</p>
       </div>
       <div class="gallery" id="gallery">
         <figure class="reveal">
-          <button class="gal-btn" type="button" aria-label="Foto vergroten: witte PVC-voordeur met zijlicht">
-            <img src="images/realisatie-pvc-voordeur-wit.webp" alt="Nieuwe witte PVC-voordeur met matglas en zijlicht in een bakstenen rijwoning in Antwerpen" width="1200" height="896" loading="lazy" decoding="async">
+          <button class="gal-btn" type="button" aria-label="Foto vergroten: witte PVC-voordeur met zijlicht" data-i18n-aria="gal.1.aria">
+            <img src="images/realisatie-pvc-voordeur-wit.webp" alt="Nieuwe witte PVC-voordeur met matglas en zijlicht in een bakstenen rijwoning in Antwerpen" data-i18n-alt="gal.1.alt" width="1200" height="896" loading="lazy" decoding="async">
           </button>
-          <figcaption>Witte PVC-voordeur met zijlicht, rijwoning</figcaption>
+          <figcaption data-i18n="gal.1.cap">Witte PVC-voordeur met zijlicht, rijwoning</figcaption>
         </figure>
         <figure class="reveal">
-          <button class="gal-btn" type="button" aria-label="Foto vergroten: gevelrenovatie met aluminium ramen">
-            <img src="images/realisatie-gevelrenovatie-aluminium-ramen-antraciet.webp" alt="Volledige gevelrenovatie met antracietgrijze aluminium ramen en voordeur aan een rijwoning in Antwerpen" width="1200" height="896" loading="lazy" decoding="async">
+          <button class="gal-btn" type="button" aria-label="Foto vergroten: gevelrenovatie met aluminium ramen" data-i18n-aria="gal.2.aria">
+            <img src="images/realisatie-gevelrenovatie-aluminium-ramen-antraciet.webp" alt="Volledige gevelrenovatie met antracietgrijze aluminium ramen en voordeur aan een rijwoning in Antwerpen" data-i18n-alt="gal.2.alt" width="1200" height="896" loading="lazy" decoding="async">
           </button>
-          <figcaption>Gevelrenovatie: aluminium ramen en voordeur in antraciet</figcaption>
+          <figcaption data-i18n="gal.2.cap">Gevelrenovatie: aluminium ramen en voordeur in antraciet</figcaption>
         </figure>
         <figure class="reveal">
-          <button class="gal-btn" type="button" aria-label="Foto vergroten: elektrisch rolluik">
-            <img src="images/realisatie-elektrisch-rolluik-antraciet.webp" alt="Elektrisch aluminium rolluik in antraciet, geplaatst boven een breed raam aan de achtergevel" width="1200" height="896" loading="lazy" decoding="async">
+          <button class="gal-btn" type="button" aria-label="Foto vergroten: elektrisch rolluik" data-i18n-aria="gal.3.aria">
+            <img src="images/realisatie-elektrisch-rolluik-antraciet.webp" alt="Elektrisch aluminium rolluik in antraciet, geplaatst boven een breed raam aan de achtergevel" data-i18n-alt="gal.3.alt" width="1200" height="896" loading="lazy" decoding="async">
           </button>
-          <figcaption>Elektrisch rolluik in antraciet, achtergevel</figcaption>
+          <figcaption data-i18n="gal.3.cap">Elektrisch rolluik in antraciet, achtergevel</figcaption>
         </figure>
         <figure class="reveal">
-          <button class="gal-btn" type="button" aria-label="Foto vergroten: nieuw PVC-raam van binnenuit">
-            <img src="images/realisatie-pvc-draaikipraam-binnenzicht.webp" alt="Nieuw wit PVC-draaikipraam met vensterbank, gezien vanuit de woonkamer na de plaatsing" width="1200" height="896" loading="lazy" decoding="async">
+          <button class="gal-btn" type="button" aria-label="Foto vergroten: nieuw PVC-raam van binnenuit" data-i18n-aria="gal.4.aria">
+            <img src="images/realisatie-pvc-draaikipraam-binnenzicht.webp" alt="Nieuw wit PVC-draaikipraam met vensterbank, gezien vanuit de woonkamer na de plaatsing" data-i18n-alt="gal.4.alt" width="1200" height="896" loading="lazy" decoding="async">
           </button>
-          <figcaption>Nieuw PVC-draaikipraam, gezien van binnenuit</figcaption>
+          <figcaption data-i18n="gal.4.cap">Nieuw PVC-draaikipraam, gezien van binnenuit</figcaption>
         </figure>
         <figure class="reveal">
-          <button class="gal-btn" type="button" aria-label="Foto vergroten: aluminium schuifraam">
-            <img src="images/realisatie-aluminium-schuifraam-tuin.webp" alt="Antracietgrijs aluminium schuifraam met smalle profielen, open naar het terras en de tuin" width="1200" height="896" loading="lazy" decoding="async">
+          <button class="gal-btn" type="button" aria-label="Foto vergroten: aluminium schuifraam" data-i18n-aria="gal.5.aria">
+            <img src="images/realisatie-aluminium-schuifraam-tuin.webp" alt="Antracietgrijs aluminium schuifraam met smalle profielen, open naar het terras en de tuin" data-i18n-alt="gal.5.alt" width="1200" height="896" loading="lazy" decoding="async">
           </button>
-          <figcaption>Aluminium schuifraam naar de tuin</figcaption>
+          <figcaption data-i18n="gal.5.cap">Aluminium schuifraam naar de tuin</figcaption>
         </figure>
         <figure class="reveal">
-          <button class="gal-btn" type="button" aria-label="Foto vergroten: rolluik voor een handelszaak">
-            <img src="images/realisatie-rolluik-handelszaak.webp" alt="Geperforeerd aluminium rolluik voor de vitrine van een handelszaak in Antwerpen" width="1200" height="896" loading="lazy" decoding="async">
+          <button class="gal-btn" type="button" aria-label="Foto vergroten: rolluik voor een handelszaak" data-i18n-aria="gal.6.aria">
+            <img src="images/realisatie-rolluik-handelszaak.webp" alt="Geperforeerd aluminium rolluik voor de vitrine van een handelszaak in Antwerpen" data-i18n-alt="gal.6.alt" width="1200" height="896" loading="lazy" decoding="async">
           </button>
-          <figcaption>Rolluik voor een handelszaak</figcaption>
+          <figcaption data-i18n="gal.6.cap">Rolluik voor een handelszaak</figcaption>
         </figure>
         <figure class="reveal">
-          <button class="gal-btn" type="button" aria-label="Foto vergroten: dakkapel met aluminium ramen">
-            <img src="images/realisatie-dakkapel-aluminium-ramen.webp" alt="Gerenoveerde dakkapel in zink met twee nieuwe antracietgrijze aluminium ramen" width="1200" height="896" loading="lazy" decoding="async">
+          <button class="gal-btn" type="button" aria-label="Foto vergroten: dakkapel met aluminium ramen" data-i18n-aria="gal.7.aria">
+            <img src="images/realisatie-dakkapel-aluminium-ramen.webp" alt="Gerenoveerde dakkapel in zink met twee nieuwe antracietgrijze aluminium ramen" data-i18n-alt="gal.7.alt" width="1200" height="896" loading="lazy" decoding="async">
           </button>
-          <figcaption>Dakkapel met aluminium ramen</figcaption>
+          <figcaption data-i18n="gal.7.cap">Dakkapel met aluminium ramen</figcaption>
         </figure>
         <figure class="reveal">
-          <button class="gal-btn" type="button" aria-label="Foto vergroten: nieuwbouw met aluminium ramen">
-            <img src="images/realisatie-nieuwbouw-aluminium-ramen-antraciet.webp" alt="Nieuwbouwwoning met grote antracietgrijze aluminium ramen en bijpassende voordeur, regio Antwerpen" width="1200" height="896" loading="lazy" decoding="async">
+          <button class="gal-btn" type="button" aria-label="Foto vergroten: nieuwbouw met aluminium ramen" data-i18n-aria="gal.8.aria">
+            <img src="images/realisatie-nieuwbouw-aluminium-ramen-antraciet.webp" alt="Nieuwbouwwoning met grote antracietgrijze aluminium ramen en bijpassende voordeur, regio Antwerpen" data-i18n-alt="gal.8.alt" width="1200" height="896" loading="lazy" decoding="async">
           </button>
-          <figcaption>Nieuwbouw: aluminium ramen en deur in antraciet</figcaption>
+          <figcaption data-i18n="gal.8.cap">Nieuwbouw: aluminium ramen en deur in antraciet</figcaption>
         </figure>
       </div>
-      <p class="gallery-note reveal">Wilt u weten wat dit voor uw woning kost? <a href="#contact">Vraag een gratis opmeting aan</a>.</p>
+      <p class="gallery-note reveal" data-i18n-html="gal.note">Wilt u weten wat dit voor uw woning kost? <a href="#contact">Vraag een gratis opmeting aan</a>.</p>
     </div>
   </section>
 
   <section class="section section-alt" id="contact" aria-labelledby="contact-title">
     <div class="container">
       <div class="section-head reveal">
-        <p class="eyebrow">Contact</p>
-        <h2 id="contact-title">Vraag uw gratis offerte aan</h2>
-        <p>Vul het formulier in of bel ons. Wij bellen u terug om een afspraak voor de opmeting vast te leggen.</p>
+        <p class="eyebrow" data-i18n="ct.eyebrow">Contact</p>
+        <h2 id="contact-title" data-i18n="ct.title">Vraag uw gratis offerte aan</h2>
+        <p data-i18n="ct.intro">Vul het formulier in, bel ons of stuur een WhatsApp-bericht. Wij bellen u terug om een afspraak voor de opmeting vast te leggen.</p>
       </div>
       <div class="contact-grid">
         <form class="form reveal" id="offerte-form" action="mailto:info@dogusbv.be" method="post" enctype="text/plain" data-mailto="on">
           <div class="field">
-            <label for="f-naam">Naam</label>
+            <label for="f-naam" data-i18n="ct.naam">Naam</label>
             <input id="f-naam" name="naam" type="text" autocomplete="name" required>
           </div>
           <div class="field">
-            <label for="f-telefoon">Telefoon</label>
+            <label for="f-telefoon" data-i18n="ct.tel">Telefoon</label>
             <input id="f-telefoon" name="telefoon" type="tel" autocomplete="tel" inputmode="tel" required>
           </div>
           <div class="field">
-            <label for="f-email">E-mail <small>(optioneel)</small></label>
+            <label for="f-email" data-i18n-html="ct.email">E-mail <small>(optioneel)</small></label>
             <input id="f-email" name="email" type="email" autocomplete="email">
           </div>
           <div class="field">
-            <label for="f-gemeente">Gemeente</label>
-            <input id="f-gemeente" name="gemeente" type="text" autocomplete="address-level2" placeholder="Bv. Wilrijk">
+            <label for="f-gemeente" data-i18n="ct.gemeente">Gemeente</label>
+            <input id="f-gemeente" name="gemeente" type="text" autocomplete="address-level2" placeholder="Bv. Wilrijk" data-i18n-ph="ct.gemeente.ph">
           </div>
           <div class="field full">
-            <label for="f-dienst">Waarover gaat het?</label>
+            <label for="f-dienst" data-i18n="ct.dienst">Waarover gaat het?</label>
             <select id="f-dienst" name="dienst" required>
-              <option value="">Maak een keuze</option>
-              <option value="Ramen">Ramen (PVC of aluminium)</option>
-              <option value="Voordeur of schuifraam">Voordeur of schuifraam</option>
-              <option value="Rolluiken of zonwering">Rolluiken of zonwering</option>
-              <option value="Herstelling">Herstelling</option>
-              <option value="Iets anders">Iets anders</option>
+              <option value="" data-i18n="ct.opt0">Maak een keuze</option>
+              <option value="Ramen" data-i18n="ct.opt1">Ramen (PVC of aluminium)</option>
+              <option value="Voordeur of schuifraam" data-i18n="ct.opt2">Voordeur of schuifraam</option>
+              <option value="Rolluiken of zonwering" data-i18n="ct.opt3">Rolluiken of zonwering</option>
+              <option value="Herstelling" data-i18n="ct.opt4">Herstelling</option>
+              <option value="Iets anders" data-i18n="ct.opt5">Iets anders</option>
             </select>
           </div>
           <div class="field full">
-            <label for="f-bericht">Bericht</label>
-            <textarea id="f-bericht" name="bericht" placeholder="Bv. 6 ramen en een voordeur vervangen, rijwoning in Wilrijk."></textarea>
+            <label for="f-bericht" data-i18n="ct.bericht">Bericht</label>
+            <textarea id="f-bericht" name="bericht" placeholder="Bv. 6 ramen en een voordeur vervangen, rijwoning in Wilrijk." data-i18n-ph="ct.bericht.ph"></textarea>
           </div>
           <div class="form-foot">
-            <button class="btn btn-navy" type="submit">Verstuur aanvraag</button>
-            <p class="form-privacy">Wij gebruiken uw gegevens alleen om uw aanvraag te beantwoorden.</p>
+            <button class="btn btn-navy" type="submit" data-i18n="ct.submit">Verstuur aanvraag</button>
+            <p class="form-privacy" data-i18n="ct.privacy">Wij gebruiken uw gegevens alleen om uw aanvraag te beantwoorden.</p>
           </div>
           <p class="form-status" id="form-status" hidden></p>
         </form>
-        <aside class="contact-info reveal" aria-label="Contactgegevens">
-          <h3>Contactgegevens</h3>
+        <aside class="contact-info reveal" aria-label="Contactgegevens" data-i18n-aria="ci.title">
+          <h3 data-i18n="ci.title">Contactgegevens</h3>
           <div class="contact-block">
-            <p class="contact-label">Adres</p>
-            <address>Dogus BV<br>Louisalei 76/6<br>2660 Antwerpen (Hoboken)<br>België</address>
+            <p class="contact-label" data-i18n="ci.adres">Adres</p>
+            <address>Dogus BV<br>Louisalei 76/6<br>2660 Antwerpen (Hoboken)<br><span data-i18n="ci.country">België</span></address>
           </div>
           <div class="contact-block">
-            <p class="contact-label">Telefoon</p>
+            <p class="contact-label" data-i18n="ci.tel">Telefoon</p>
             <p><a href="tel:+3230000000">+32 3 000 00 00</a></p>
           </div>
           <div class="contact-block">
-            <p class="contact-label">E-mail</p>
+            <p class="contact-label" data-i18n="ci.email">E-mail</p>
             <p><a href="mailto:info@dogusbv.be">info@dogusbv.be</a></p>
           </div>
           <div class="contact-block">
             <p class="contact-label">WhatsApp</p>
-            <p><a href="https://wa.me/32470000000?text=Dag%20Dogus%20BV%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen." target="_blank" rel="noopener">+32 470 00 00 00</a></p>
-            <a class="btn btn-outline btn-sm" href="https://wa.me/32470000000?text=Dag%20Dogus%20BV%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen." target="_blank" rel="noopener">Stuur een WhatsApp-bericht</a>
+            <p><a href="https://wa.me/32470000000" target="_blank" rel="noopener" data-wa>+32 470 00 00 00</a></p>
+            <a class="btn btn-whatsapp btn-sm" href="https://wa.me/32470000000" target="_blank" rel="noopener" data-wa><svg aria-hidden="true"><use href="#i-wa"/></svg><span data-i18n="ci.wabtn">Stuur een WhatsApp-bericht</span></a>
           </div>
           <div class="contact-block">
-            <p class="contact-label">Openingsuren</p>
+            <p class="contact-label" data-i18n="ci.uren">Openingsuren</p>
             <dl class="hours">
-              <dt>Ma tot vr</dt><dd>8.00 tot 17.00 u</dd>
-              <dt>Zaterdag</dt><dd>Op afspraak</dd>
-              <dt>Zondag</dt><dd>Gesloten</dd>
+              <dt data-i18n="ci.h1">Ma tot vr</dt><dd data-i18n="ci.h1v">8.00 tot 17.00 u</dd>
+              <dt data-i18n="ci.h2">Zaterdag</dt><dd data-i18n="ci.h2v">Op afspraak</dd>
+              <dt data-i18n="ci.h3">Zondag</dt><dd data-i18n="ci.h3v">Gesloten</dd>
             </dl>
           </div>
           <div class="contact-block">
-            <p class="contact-label">Werkgebied</p>
+            <p class="contact-label" data-i18n="ci.gebied">Werkgebied</p>
             <ul class="regions">
               <li>Antwerpen</li><li>Hoboken</li><li>Wilrijk</li><li>Mortsel</li><li>Edegem</li><li>Schoten</li><li>Deurne</li><li>Berchem</li><li>Merksem</li><li>Kontich</li><li>Hemiksem</li><li>Aartselaar</li>
             </ul>
@@ -647,38 +693,42 @@ dialog.lightbox::backdrop{background:rgba(15,22,31,.92)}
     <div class="footer-grid">
       <div class="footer-brand">
         <img src="images/logo-dogus-bv-wit.png" alt="Dogus BV" width="800" height="233" loading="lazy">
-        <p>Ramen, deuren en rolluiken in PVC en aluminium. Verkoop en plaatsing, voor renovatie en nieuwbouw in Antwerpen en omgeving.</p>
+        <p data-i18n="ft.p">Ramen, deuren en rolluiken in PVC en aluminium. Verkoop en plaatsing, voor renovatie en nieuwbouw in Antwerpen en omgeving.</p>
       </div>
       <div class="footer-col">
-        <h3>Contact</h3>
-        <address>Dogus BV<br>Louisalei 76/6<br>2660 Antwerpen (Hoboken)<br><a href="tel:+3230000000">+32 3 000 00 00</a><br><a href="mailto:info@dogusbv.be">info@dogusbv.be</a></address>
+        <h3 data-i18n="nav.contact">Contact</h3>
+        <address>Dogus BV<br>Louisalei 76/6<br>2660 Antwerpen (Hoboken)<br><a href="tel:+3230000000">+32 3 000 00 00</a><br><a href="https://wa.me/32470000000" target="_blank" rel="noopener" data-wa>WhatsApp: +32 470 00 00 00</a><br><a href="mailto:info@dogusbv.be">info@dogusbv.be</a></address>
       </div>
       <div class="footer-col">
-        <h3>Navigatie</h3>
+        <h3 data-i18n="ft.nav">Navigatie</h3>
         <ul>
-          <li><a href="#diensten">Diensten</a></li>
-          <li><a href="#realisaties">Realisaties</a></li>
-          <li><a href="#over-ons">Over ons</a></li>
-          <li><a href="#contact">Gratis offerte</a></li>
+          <li><a href="#diensten" data-i18n="nav.diensten">Diensten</a></li>
+          <li><a href="#realisaties" data-i18n="nav.realisaties">Realisaties</a></li>
+          <li><a href="#over-ons" data-i18n="nav.over">Over ons</a></li>
+          <li><a href="#contact" data-i18n="cta.offerte">Gratis offerte</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© <span id="year">2026</span> Dogus BV · BTW BE 0000.000.000 · RPR Antwerpen</p>
+      <p data-i18n-html="ft.bottom">© <span id="year">2026</span> Dogus BV · BTW BE 0000.000.000 · RPR Antwerpen</p>
       <p>Nederlands · Türkçe · English</p>
     </div>
   </div>
 </footer>
 
-<dialog class="lightbox" id="lightbox" aria-label="Foto vergroot">
+<a class="wa-float" href="https://wa.me/32470000000" target="_blank" rel="noopener" aria-label="Stuur ons een WhatsApp-bericht" data-i18n-aria="wa.aria" data-wa>
+  <svg aria-hidden="true"><use href="#i-wa"/></svg><span data-i18n="cta.whatsapp">WhatsApp</span>
+</a>
+
+<dialog class="lightbox" id="lightbox" aria-label="Foto vergroot" data-i18n-aria="lb.aria">
   <div class="lb-inner">
     <img id="lb-img" src="" alt="">
     <div class="lb-bar">
       <p class="lb-cap" id="lb-cap"></p>
       <div class="lb-controls">
-        <button type="button" id="lb-prev">Vorige</button>
-        <button type="button" id="lb-next">Volgende</button>
-        <button type="button" id="lb-close">Sluiten</button>
+        <button type="button" id="lb-prev" data-i18n="lb.prev">Vorige</button>
+        <button type="button" id="lb-next" data-i18n="lb.next">Volgende</button>
+        <button type="button" id="lb-close" data-i18n="lb.close">Sluiten</button>
       </div>
     </div>
   </div>
@@ -688,26 +738,234 @@ dialog.lightbox::backdrop{background:rgba(15,22,31,.92)}
 (function(){
   'use strict';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var header = document.querySelector('.site-header');
+  var toggle = document.querySelector('.nav-toggle');
+  var nav = document.getElementById('site-nav');
+  var WA_NUMBER = '32470000000'; /* YER TUTUCU: WhatsApp numarası, ülke kodu ile, + ve boşluk olmadan */
+
+  /* ---------- Vertalingen / Çeviriler / Translations ---------- */
+  var I18N = {
+    tr: {
+      "meta.title": "Antwerpen'de Pencere, Kapı ve Panjur | Dogus BV",
+      "skip": "İçeriğe geç",
+      "nav.diensten": "Hizmetler", "nav.realisaties": "Projeler", "nav.over": "Hakkımızda", "nav.contact": "İletişim",
+      "cta.offerte": "Ücretsiz teklif", "cta.bel": "Bizi arayın", "cta.whatsapp": "WhatsApp",
+      "lang.label": "Dil seçin", "menu.open": "Menüyü aç", "menu.close": "Menüyü kapat",
+      "hero.eyebrow": "PVC ve alüminyum doğrama · Hoboken, Antwerpen",
+      "hero.title": "Antwerpen'de pencere, kapı ve panjur",
+      "hero.lead": "Dogus BV, PVC ve alüminyum pencere, dış kapı, sürme kapı ve panjur satışı ve montajı yapar. Renovasyon ve yeni yapı için, aluplast ve Aluprof profilleriyle. Hoboken'den tüm Antwerpen bölgesine hizmet veriyoruz.",
+      "hero.note": "Türkçe, Felemenkçe ve İngilizce hizmet veriyoruz.",
+      "hero.alt": "Antwerpen'de tuğla cepheli sıra ev, yeni antrasit gri alüminyum pencerelerle",
+      "trust.1.t": "Ücretsiz ölçüm", "trust.1.d": "Evinize geliyor, ölçü alıyor ve size özel bir teklif hazırlıyoruz. Ücretsiz.",
+      "trust.2.t": "aluplast ve Aluprof", "trust.2.d": "PVC'de aluplast, alüminyumda Aluprof profilleri. Kalitesini kanıtlamış markalar.",
+      "trust.3.t": "Kendi montaj ekibimiz", "trust.3.d": "Taşeron yok. Ölçüye gelen ekip montajı da yapar.",
+      "trust.4.t": "Tamir de yapıyoruz", "trust.4.d": "Ayar, cam kırılması, panjur kayışı veya motoru: küçük işler için de geliyoruz.",
+      "sv.eyebrow": "Hizmetler",
+      "sv.title": "Antwerpen'de pencere ve kapı, panjur dahil",
+      "sv.intro": "Üç uzmanlık alanı, tek muhatap. Ölçümden montaja ve son işçiliğe kadar her şeyi kendimiz yapıyoruz.",
+      "sv.1.alt": "Tuğla cephede yeni beyaz PVC pencere, montaj detayı görünür",
+      "sv.1.h": "PVC ve alüminyum pencere",
+      "sv.1.p": "Renovasyon veya yeni yapı için ölçüye göre üretilen ve kendi ekibimizce monte edilen pencereler. PVC pencerelerde aluplast, alüminyum pencerelerde Aluprof profilleri.",
+      "sv.1.l1": "Çift açılım, sabit ve sürme pencereler", "sv.1.l2": "Çift veya üçlü cam, ses yalıtımlı seçenek", "sv.1.l3": "Beyaz, antrasit, ahşap görünümlü veya istediğiniz RAL rengi",
+      "sv.1.link": "Pencere için teklif isteyin",
+      "sv.2.alt": "Tuğla girişte yan camlı modern siyah alüminyum dış kapı",
+      "sv.2.h": "Dış kapılar ve sürme kapılar",
+      "sv.2.p": "Cephenize uygun, yan camlı veya camsız alüminyum ya da PVC dış kapı. Bahçe ve terasa açık görüş için sürme ve kaldır-sür kapılar.",
+      "sv.2.l1": "Çok noktalı kilit ve güvenlik camı", "sv.2.l2": "Geniş açıklıklar için sürme kapılar, alüminyum dahil", "sv.2.l3": "Arka kapılar ve teras kapıları da",
+      "sv.2.link": "Kapı için teklif isteyin",
+      "sv.3.alt": "Tuğla cephede pencere üstünde yarı kapalı beyaz alüminyum panjur",
+      "sv.3.h": "Panjur ve güneş koruma",
+      "sv.3.p": "Antwerpen'de yeni ve mevcut pencerelere panjur montajı yapıyoruz: dıştan veya gömme, manuel veya motorlu. Güneşe karşı screen perdeler de.",
+      "sv.3.l1": "Alüminyum panjur, manuel veya motorlu", "sv.3.l2": "Anahtar, kumanda veya uygulama ile kontrol", "sv.3.l3": "Mevcut panjur tamiri: kayış, motor veya lamel",
+      "sv.3.link": "Panjur için teklif isteyin",
+      "ab.eyebrow": "Hakkımızda", "ab.title": "Dogus BV hakkında",
+      "ab.p1": "Dogus BV, PVC ve alüminyum pencere, kapı ve panjur konusunda uzmanlaşmış, Hoboken merkezli bir doğrama firmasıdır. Renovasyon ve yeni yapıda bireysel müşteriler, müteahhitler ve işyerleri için çalışıyoruz.",
+      "ab.p2": "Sadece satmıyoruz, montajı da kendimiz yapıyoruz. Böylece evinize kimin geleceğini ve sonradan bir sorun olursa kimi arayacağınızı bilirsiniz. Profillerimiz aluplast (PVC) ve Aluprof (alüminyum) markalarından; ikisi de kalitesini yıllardır kanıtlamış markalar.",
+      "ab.p3": "Antwerpen merkezine birkaç dakika mesafede, Hoboken'de Louisalei üzerindeyiz. Türkçe, Felemenkçe ve İngilizce konuşuyoruz.",
+      "ab.f1t": "Profiller", "ab.f1d": "aluplast (PVC) ve Aluprof (alüminyum)",
+      "ab.f2t": "Hizmet bölgesi", "ab.f2d": "Antwerpen ve çevresi",
+      "ab.f3t": "Diller", "ab.f3d": "Türkçe, Felemenkçe, İngilizce",
+      "ab.f4t": "Kimler için", "ab.f4d": "Bireysel müşteriler, müteahhitler ve işyerleri",
+      "why.title": "Neden Dogus BV",
+      "why.1.t": "Ücretsiz ölçüm ve net teklif", "why.1.d": "Yerinde ölçü alıyoruz, sabit fiyatlı bir teklif alıyorsunuz. Sonradan sürpriz yok.",
+      "why.2.t": "aluplast ve Aluprof kalite profilleri", "why.2.d": "İyi yalıtım değerlerine sahip, uzun ömürlü, bilinen markalar. Üreticinin talimatlarına göre monte ediyoruz.",
+      "why.3.t": "Kendi montajcılarımız, taşeron yok", "why.3.d": "Ölçüye gelen kişi montajı da yapar. İlk randevudan teslime kadar tek muhatabınız olur.",
+      "why.4.t": "Temiz işçilik ve satış sonrası hizmet", "why.4.d": "Pencere birleşimlerini içeriden ve dışarıdan temiz bitiriyor, eski doğramayı götürüyoruz. Sonrasında da ayar ve tamir için ulaşılabilir kalıyoruz.",
+      "gal.eyebrow": "Projeler", "gal.title": "Antwerpen ve çevresinde yaptığımız işler",
+      "gal.intro": "İşlerimizden örnekler: renovasyon, yeni yapı ve işyerlerinde pencere, kapı ve panjur. Büyütmek için fotoğrafa tıklayın.",
+      "gal.1.aria": "Fotoğrafı büyüt: yan camlı beyaz PVC dış kapı", "gal.1.alt": "Antwerpen'de tuğla sıra evde buzlu camlı ve yan camlı yeni beyaz PVC dış kapı", "gal.1.cap": "Yan camlı beyaz PVC dış kapı, sıra ev",
+      "gal.2.aria": "Fotoğrafı büyüt: alüminyum pencereli cephe renovasyonu", "gal.2.alt": "Antwerpen'de sıra evde antrasit gri alüminyum pencere ve dış kapı ile komple cephe renovasyonu", "gal.2.cap": "Cephe renovasyonu: antrasit alüminyum pencere ve kapı",
+      "gal.3.aria": "Fotoğrafı büyüt: motorlu panjur", "gal.3.alt": "Arka cephede geniş pencere üstüne monte edilmiş antrasit motorlu alüminyum panjur", "gal.3.cap": "Antrasit motorlu panjur, arka cephe",
+      "gal.4.aria": "Fotoğrafı büyüt: içeriden yeni PVC pencere", "gal.4.alt": "Montaj sonrası oturma odasından görünen denizlikli yeni beyaz PVC çift açılım pencere", "gal.4.cap": "İçeriden görünüm: yeni PVC çift açılım pencere",
+      "gal.5.aria": "Fotoğrafı büyüt: alüminyum sürme kapı", "gal.5.alt": "Terasa ve bahçeye açılan ince profilli antrasit gri alüminyum sürme kapı", "gal.5.cap": "Bahçeye açılan alüminyum sürme kapı",
+      "gal.6.aria": "Fotoğrafı büyüt: işyeri panjuru", "gal.6.alt": "Antwerpen'de bir işyeri vitrini için delikli alüminyum panjur", "gal.6.cap": "İşyeri için panjur",
+      "gal.7.aria": "Fotoğrafı büyüt: alüminyum pencereli çatı çıkması", "gal.7.alt": "İki yeni antrasit gri alüminyum pencereli, çinko kaplı yenilenmiş çatı çıkması", "gal.7.cap": "Alüminyum pencereli çatı çıkması",
+      "gal.8.aria": "Fotoğrafı büyüt: alüminyum pencereli yeni yapı", "gal.8.alt": "Antwerpen bölgesinde büyük antrasit gri alüminyum pencereli ve uyumlu dış kapılı yeni yapı ev", "gal.8.cap": "Yeni yapı: antrasit alüminyum pencere ve kapı",
+      "gal.note": "Bunun sizin eviniz için maliyetini merak mı ediyorsunuz? <a href=\"#contact\">Ücretsiz ölçüm isteyin</a>.",
+      "ct.eyebrow": "İletişim", "ct.title": "Ücretsiz teklif isteyin",
+      "ct.intro": "Formu doldurun, bizi arayın veya WhatsApp'tan yazın. Ölçüm randevusu için sizi geri arıyoruz.",
+      "ct.naam": "Ad Soyad", "ct.tel": "Telefon", "ct.email": "E-posta <small>(isteğe bağlı)</small>", "ct.gemeente": "Belediye", "ct.gemeente.ph": "Örn. Wilrijk",
+      "ct.dienst": "Konu nedir?", "ct.opt0": "Seçiniz", "ct.opt1": "Pencere (PVC veya alüminyum)", "ct.opt2": "Dış kapı veya sürme kapı", "ct.opt3": "Panjur veya güneş koruma", "ct.opt4": "Tamir", "ct.opt5": "Başka bir şey",
+      "ct.bericht": "Mesaj", "ct.bericht.ph": "Örn. Wilrijk'te sıra evde 6 pencere ve dış kapı değişimi.",
+      "ct.submit": "Talebi gönder", "ct.privacy": "Bilgilerinizi yalnızca talebinize yanıt vermek için kullanıyoruz.",
+      "ct.status": "E-posta programınız talebinizle birlikte açılıyor. Açılmadı mı? +32 3 000 00 00 numarasını arayın veya WhatsApp'tan yazın.",
+      "ci.title": "İletişim bilgileri", "ci.adres": "Adres", "ci.tel": "Telefon", "ci.email": "E-posta", "ci.country": "Belçika",
+      "ci.wabtn": "WhatsApp'tan yazın", "ci.uren": "Çalışma saatleri", "ci.h1": "Pzt - Cum", "ci.h1v": "8.00 - 17.00", "ci.h2": "Cumartesi", "ci.h2v": "Randevu ile", "ci.h3": "Pazar", "ci.h3v": "Kapalı",
+      "ci.gebied": "Hizmet bölgesi",
+      "ft.p": "PVC ve alüminyum pencere, kapı ve panjur. Antwerpen ve çevresinde renovasyon ve yeni yapı için satış ve montaj.",
+      "ft.nav": "Menü",
+      "ft.bottom": "© <span id=\"year\">2026</span> Dogus BV · BTW BE 0000.000.000 · RPR Antwerpen",
+      "lb.prev": "Önceki", "lb.next": "Sonraki", "lb.close": "Kapat", "lb.aria": "Büyütülmüş fotoğraf",
+      "wa.aria": "Bize WhatsApp'tan yazın", "wa.msg": "Merhaba Dogus BV, teklif almak istiyorum."
+    },
+    en: {
+      "meta.title": "Windows, Doors and Roller Shutters in Antwerp | Dogus BV",
+      "skip": "Skip to content",
+      "nav.diensten": "Services", "nav.realisaties": "Our work", "nav.over": "About us", "nav.contact": "Contact",
+      "cta.offerte": "Free quote", "cta.bel": "Call us", "cta.whatsapp": "WhatsApp",
+      "lang.label": "Choose language", "menu.open": "Open menu", "menu.close": "Close menu",
+      "hero.eyebrow": "PVC and aluminium joinery · Hoboken, Antwerp",
+      "hero.title": "Windows, doors and roller shutters in Antwerp",
+      "hero.lead": "Dogus BV supplies and installs PVC and aluminium windows, front doors, sliding doors and roller shutters. For renovations and new builds, with aluplast and Aluprof profiles. From Hoboken we work across the whole Antwerp region.",
+      "hero.note": "We speak Dutch, Turkish and English.",
+      "hero.alt": "Terraced house in Antwerp with new anthracite grey aluminium windows in a brick facade",
+      "trust.1.t": "Free measurement", "trust.1.d": "We come to your home, measure everything and prepare a tailored quote. No charge.",
+      "trust.2.t": "aluplast and Aluprof", "trust.2.d": "PVC profiles by aluplast, aluminium profiles by Aluprof. Brands with a proven track record.",
+      "trust.3.t": "Our own installation team", "trust.3.d": "No subcontractors. The people who measure also install.",
+      "trust.4.t": "Repairs too", "trust.4.d": "Adjustments, broken glass, a shutter strap or motor: we also come for small jobs.",
+      "sv.eyebrow": "Services",
+      "sv.title": "Windows and doors in Antwerp, shutters included",
+      "sv.intro": "Three trades, one point of contact. From measurement to installation and finishing, we do everything ourselves.",
+      "sv.1.alt": "New white PVC window in a brick facade with the installation detail visible",
+      "sv.1.h": "PVC and aluminium windows",
+      "sv.1.p": "New windows for renovations or new builds, made to measure and installed by our own team. PVC windows with aluplast profiles, aluminium windows with Aluprof profiles.",
+      "sv.1.l1": "Tilt-and-turn, fixed and sliding windows", "sv.1.l2": "Double or triple glazing, acoustic glass available", "sv.1.l3": "White, anthracite, wood look or any RAL colour",
+      "sv.1.link": "Request a quote for windows",
+      "sv.2.alt": "Modern black aluminium front door with a side light in a brick entrance",
+      "sv.2.h": "Front doors and sliding doors",
+      "sv.2.p": "A front door in aluminium or PVC, with or without a side light, matching your facade. Sliding and lift-and-slide doors for an open view of your garden or terrace.",
+      "sv.2.l1": "Multi-point locking and safety glass", "sv.2.l2": "Sliding doors up to large widths, also in aluminium", "sv.2.l3": "Back doors and patio doors too",
+      "sv.2.link": "Request a quote for doors",
+      "sv.3.alt": "White aluminium roller shutter half lowered above a window in a brick facade",
+      "sv.3.h": "Roller shutters and sun protection",
+      "sv.3.p": "We install roller shutters in Antwerp on new and existing windows: surface-mounted or built-in, manual or electric. Screens against the sun too.",
+      "sv.3.l1": "Aluminium roller shutters, manual or motorised", "sv.3.l2": "Control by switch, remote or app", "sv.3.l3": "Repair of existing shutters: strap, motor or slats",
+      "sv.3.link": "Request a quote for shutters",
+      "ab.eyebrow": "About us", "ab.title": "About Dogus BV",
+      "ab.p1": "Dogus BV is a joinery company from Hoboken, specialised in PVC and aluminium windows, doors and roller shutters. We work for private customers, contractors and businesses, on renovations and new builds.",
+      "ab.p2": "We do not just sell, we install ourselves. So you know who comes to your home and who to call if something comes up later. Our profiles come from aluplast (PVC) and Aluprof (aluminium), two brands that have proven their quality for years.",
+      "ab.p3": "You will find us on the Louisalei in Hoboken, a few minutes from the centre of Antwerp. We speak Dutch, Turkish and English.",
+      "ab.f1t": "Profiles", "ab.f1d": "aluplast (PVC) and Aluprof (aluminium)",
+      "ab.f2t": "Service area", "ab.f2d": "Antwerp and surroundings",
+      "ab.f3t": "Languages", "ab.f3d": "Dutch, Turkish, English",
+      "ab.f4t": "For whom", "ab.f4d": "Private customers, contractors and businesses",
+      "why.title": "Why Dogus BV",
+      "why.1.t": "Free measurement and a clear quote", "why.1.d": "We come on site, measure everything and you receive a quote with fixed prices. No surprises afterwards.",
+      "why.2.t": "Quality profiles by aluplast and Aluprof", "why.2.d": "Well-known brands with good insulation values and a long service life. We install them according to the manufacturer's instructions.",
+      "why.3.t": "Our own installers, no subcontractors", "why.3.d": "The people who measure also install. You have one point of contact from the first appointment to handover.",
+      "why.4.t": "Neat finishing and after-sales service", "why.4.d": "We finish the window joints neatly inside and out and take away the old joinery. Afterwards we remain available for adjustments or repairs.",
+      "gal.eyebrow": "Our work", "gal.title": "Our work in Antwerp and surroundings",
+      "gal.intro": "This is what our work looks like: windows, doors and roller shutters on renovations, new builds and business premises. Click a photo to enlarge it.",
+      "gal.1.aria": "Enlarge photo: white PVC front door with side light", "gal.1.alt": "New white PVC front door with obscured glass and a side light in a brick terraced house in Antwerp", "gal.1.cap": "White PVC front door with side light, terraced house",
+      "gal.2.aria": "Enlarge photo: facade renovation with aluminium windows", "gal.2.alt": "Complete facade renovation with anthracite grey aluminium windows and front door on a terraced house in Antwerp", "gal.2.cap": "Facade renovation: aluminium windows and front door in anthracite",
+      "gal.3.aria": "Enlarge photo: electric roller shutter", "gal.3.alt": "Electric aluminium roller shutter in anthracite, installed above a wide window on the rear facade", "gal.3.cap": "Electric roller shutter in anthracite, rear facade",
+      "gal.4.aria": "Enlarge photo: new PVC window from inside", "gal.4.alt": "New white PVC tilt-and-turn window with a window sill, seen from the living room after installation", "gal.4.cap": "New PVC tilt-and-turn window, seen from inside",
+      "gal.5.aria": "Enlarge photo: aluminium sliding door", "gal.5.alt": "Anthracite grey aluminium sliding door with slim profiles, open to the terrace and garden", "gal.5.cap": "Aluminium sliding door to the garden",
+      "gal.6.aria": "Enlarge photo: roller shutter for a shop", "gal.6.alt": "Perforated aluminium roller shutter for a shop front in Antwerp", "gal.6.cap": "Roller shutter for a shop",
+      "gal.7.aria": "Enlarge photo: dormer with aluminium windows", "gal.7.alt": "Renovated zinc-clad dormer with two new anthracite grey aluminium windows", "gal.7.cap": "Dormer with aluminium windows",
+      "gal.8.aria": "Enlarge photo: new build with aluminium windows", "gal.8.alt": "Newly built house with large anthracite grey aluminium windows and a matching front door, Antwerp region", "gal.8.cap": "New build: aluminium windows and door in anthracite",
+      "gal.note": "Want to know what this would cost for your home? <a href=\"#contact\">Request a free measurement</a>.",
+      "ct.eyebrow": "Contact", "ct.title": "Request your free quote",
+      "ct.intro": "Fill in the form, call us or send a WhatsApp message. We will call you back to arrange the measurement appointment.",
+      "ct.naam": "Name", "ct.tel": "Phone", "ct.email": "E-mail <small>(optional)</small>", "ct.gemeente": "Municipality", "ct.gemeente.ph": "E.g. Wilrijk",
+      "ct.dienst": "What is it about?", "ct.opt0": "Make a choice", "ct.opt1": "Windows (PVC or aluminium)", "ct.opt2": "Front door or sliding door", "ct.opt3": "Roller shutters or sun protection", "ct.opt4": "Repair", "ct.opt5": "Something else",
+      "ct.bericht": "Message", "ct.bericht.ph": "E.g. replace 6 windows and a front door, terraced house in Wilrijk.",
+      "ct.submit": "Send request", "ct.privacy": "We only use your details to answer your request.",
+      "ct.status": "Your e-mail program is opening with your request. Nothing happening? Call us on +32 3 000 00 00 or send a WhatsApp message.",
+      "ci.title": "Contact details", "ci.adres": "Address", "ci.tel": "Phone", "ci.email": "E-mail", "ci.country": "Belgium",
+      "ci.wabtn": "Send a WhatsApp message", "ci.uren": "Opening hours", "ci.h1": "Mon to Fri", "ci.h1v": "8.00 to 17.00", "ci.h2": "Saturday", "ci.h2v": "By appointment", "ci.h3": "Sunday", "ci.h3v": "Closed",
+      "ci.gebied": "Service area",
+      "ft.p": "PVC and aluminium windows, doors and roller shutters. Sales and installation for renovations and new builds in Antwerp and surroundings.",
+      "ft.nav": "Navigation",
+      "ft.bottom": "© <span id=\"year\">2026</span> Dogus BV · VAT BE 0000.000.000 · RPR Antwerp",
+      "lb.prev": "Previous", "lb.next": "Next", "lb.close": "Close", "lb.aria": "Enlarged photo",
+      "wa.aria": "Send us a WhatsApp message", "wa.msg": "Hello Dogus BV, I would like to request a quote."
+    }
+  };
+  var NL = {
+    "menu.open": "Menu openen", "menu.close": "Menu sluiten",
+    "ct.status": "Uw e-mailprogramma opent nu met uw aanvraag. Opent er niets? Bel ons op +32 3 000 00 00 of stuur een WhatsApp-bericht.",
+    "wa.msg": "Dag Dogus BV, ik wil graag een offerte aanvragen.",
+    "meta.title": document.title
+  };
+  var HTML_LANG = {nl: 'nl-BE', tr: 'tr', en: 'en'};
+  var lang = 'nl';
+  var bound = [];
+  function collect(attr, kind){
+    document.querySelectorAll('[' + attr + ']').forEach(function(el){
+      var key = el.getAttribute(attr);
+      var current = kind === 'text' ? el.textContent : kind === 'html' ? el.innerHTML : kind === 'alt' ? el.alt : kind === 'ph' ? el.placeholder : el.getAttribute('aria-label');
+      if (!(key in NL)) NL[key] = current;
+      bound.push({el: el, key: key, kind: kind});
+    });
+  }
+  collect('data-i18n', 'text'); collect('data-i18n-html', 'html'); collect('data-i18n-alt', 'alt'); collect('data-i18n-ph', 'ph'); collect('data-i18n-aria', 'aria');
+  function t(key){
+    var d = I18N[lang];
+    if (d && Object.prototype.hasOwnProperty.call(d, key)) return d[key];
+    return Object.prototype.hasOwnProperty.call(NL, key) ? NL[key] : '';
+  }
+  function setLang(next, updateUrl){
+    lang = (next === 'tr' || next === 'en') ? next : 'nl';
+    document.documentElement.lang = HTML_LANG[lang];
+    bound.forEach(function(b){
+      var v = t(b.key);
+      if (b.kind === 'text') b.el.textContent = v;
+      else if (b.kind === 'html') b.el.innerHTML = v;
+      else if (b.kind === 'alt') b.el.alt = v;
+      else if (b.kind === 'ph') b.el.placeholder = v;
+      else b.el.setAttribute('aria-label', v);
+    });
+    document.title = t('meta.title');
+    document.querySelectorAll('[data-wa]').forEach(function(a){ a.href = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(t('wa.msg')); });
+    document.querySelectorAll('.lang button').forEach(function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-lang') === lang ? 'true' : 'false'); });
+    toggle.setAttribute('aria-label', header.classList.contains('nav-open') ? t('menu.close') : t('menu.open'));
+    var y = document.getElementById('year'); if (y) y.textContent = String(new Date().getFullYear());
+    var canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) canonical.href = 'https://www.dogusbv.be/' + (lang === 'nl' ? '' : '?lang=' + lang);
+    try { localStorage.setItem('dogusbv-lang', lang); } catch (e) {}
+    if (updateUrl && window.history && history.replaceState) {
+      try {
+        var u = new URL(window.location.href);
+        if (lang === 'nl') u.searchParams.delete('lang'); else u.searchParams.set('lang', lang);
+        history.replaceState(null, '', u.toString());
+      } catch (e) {}
+    }
+  }
+  var initial = null;
+  try { initial = new URLSearchParams(window.location.search).get('lang'); } catch (e) {}
+  if (!initial) { try { initial = localStorage.getItem('dogusbv-lang'); } catch (e) {} }
+  setLang(initial || 'nl', false);
+  document.querySelectorAll('.lang button').forEach(function(b){
+    b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang'), true); });
+  });
 
   /* Sticky header shadow */
-  var header = document.querySelector('.site-header');
   function onScroll(){ header.classList.toggle('is-scrolled', window.scrollY > 8); }
   onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
 
   /* Mobile menu */
-  var toggle = document.querySelector('.nav-toggle');
-  var nav = document.getElementById('site-nav');
   function closeMenu(){
     header.classList.remove('nav-open');
-    toggle.setAttribute('aria-expanded','false');
-    toggle.setAttribute('aria-label','Menu openen');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', t('menu.open'));
   }
   toggle.addEventListener('click', function(){
     var open = header.classList.toggle('nav-open');
     toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-    toggle.setAttribute('aria-label', open ? 'Menu sluiten' : 'Menu openen');
+    toggle.setAttribute('aria-label', open ? t('menu.close') : t('menu.open'));
   });
-  nav.addEventListener('click', function(e){ if (e.target.tagName === 'A') closeMenu(); });
+  nav.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('a')) closeMenu(); });
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeMenu(); });
 
   /* Reveal on scroll (skipped when the visitor prefers reduced motion) */
@@ -763,19 +1021,16 @@ dialog.lightbox::backdrop{background:rgba(15,22,31,.92)}
         'E-mail: ' + (v('f-email') || '-'),
         'Gemeente: ' + (v('f-gemeente') || '-'),
         'Onderwerp: ' + v('f-dienst'),
+        'Taal / Dil / Language: ' + lang.toUpperCase(),
         '',
         'Bericht:',
         v('f-bericht') || '-'
       ].join('\n');
       window.location.href = 'mailto:info@dogusbv.be?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-      status.textContent = 'Uw e-mailprogramma opent nu met uw aanvraag. Opent er niets? Bel ons op +32 3 000 00 00 of stuur een WhatsApp-bericht.';
+      status.textContent = t('ct.status');
       status.hidden = false;
     });
   }
-
-  /* Year in footer */
-  var y = document.getElementById('year');
-  if (y) y.textContent = String(new Date().getFullYear());
 })();
 </script>
 </body>
