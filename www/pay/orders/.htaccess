@@ -1,0 +1,5 @@
+# Siparis kayitlari web'den ERISILEMEZ (sartname §8.5 ve §14-G)
+Require all denied
+<IfModule !mod_authz_core.c>
+  Deny from all
+</IfModule>

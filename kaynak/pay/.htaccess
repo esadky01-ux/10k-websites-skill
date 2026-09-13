@@ -1,0 +1,7 @@
+# pay/ katmani korumasi: yapilandirma ve uretilen dosyalar web'den okunamaz
+<FilesMatch "^(config\.php|dil\.php|isletme\.php|ortak\.php|mailer\.php)$">
+  Require all denied
+  <IfModule !mod_authz_core.c>
+    Deny from all
+  </IfModule>
+</FilesMatch>

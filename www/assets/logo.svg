@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 200" role="img" aria-label="Europa Taxi — Your Ride, Our Priority">
+  <rect width="640" height="200" fill="#0A0A0C"/>
+  <!-- taksi on yuzu + dama -->
+  <g transform="translate(28,42)">
+    <rect x="0" y="52" width="15" height="15" fill="#FFC107"/><rect x="15" y="67" width="15" height="15" fill="#FFC107"/>
+    <rect x="127" y="52" width="15" height="15" fill="#FFC107"/><rect x="112" y="67" width="15" height="15" fill="#FFC107"/>
+    <path d="M37 50 L45 20 Q47 12 55 12 L87 12 Q95 12 97 20 L105 50 Q112 54 112 63 L112 95 Q112 101 106 101 L98 101 Q92 101 92 95 L92 88 L50 88 L50 95 Q50 101 44 101 L36 101 Q30 101 30 95 L30 63 Q30 54 37 50 Z" stroke="#FFC107" stroke-width="6" fill="none" stroke-linejoin="round"/>
+    <rect x="47" y="18" width="48" height="20" rx="4" fill="#FFC107"/>
+    <text x="71" y="33.5" text-anchor="middle" font-family="Archivo, Arial, sans-serif" font-size="15" font-weight="900" fill="#0A0A0C">TAXI</text>
+    <path d="M42 62 Q50 58 58 62.5 L58 70 Q50 72 42 70 Z" fill="#FFC107"/>
+    <path d="M100 62 Q92 58 84 62.5 L84 70 Q92 72 100 70 Z" fill="#FFC107"/>
+    <rect x="59" y="77" width="24" height="5" rx="2.5" fill="#FFC107"/>
+  </g>
+  <!-- ayirici cizgi -->
+  <rect x="196" y="30" width="2" height="140" fill="#E5A93C" opacity=".85"/>
+  <!-- yazi -->
+  <text x="228" y="102" font-family="Archivo, Arial, sans-serif" font-size="62" font-weight="900" letter-spacing="1">
+    <tspan fill="#FFFFFF">EUROPA</tspan><tspan fill="#FFC107">TAXI</tspan>
+  </text>
+  <text x="230" y="140" font-family="Archivo, Arial, sans-serif" font-size="19" font-weight="700" letter-spacing="7" fill="#FFFFFF">YOUR RIDE, OUR PRIORITY</text>
+  <rect x="228" y="156" width="384" height="2" fill="#E5A93C" opacity=".7"/>
+</svg>
