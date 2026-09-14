@@ -45,7 +45,7 @@ export default async function RegionsIndex({ params }: { params: Params }) {
                     <p className="flex items-center gap-2 font-bold text-ink-900"><MapPin className="h-4 w-4 text-brand-500" />{r.name}</p>
                     <p className="mt-1 text-sm text-ink-500">{r.postcodes.slice(0, 3).join(", ")} · {r.distanceKm} {t.km}</p>
                   </div>
-                  <p className="mt-3 flex items-center gap-2 text-xs font-semibold text-ink-700"><Truck className="h-3.5 w-3.5 text-brand-500" />{r.deliveryDays.map((d) => t.dayNames[d as keyof typeof t.dayNames] ?? d).join(", ")}<ArrowRight className="ml-auto h-4 w-4 text-ink-300 transition group-hover:text-brand-500" /></p>
+                  <p className="mt-3 flex items-center gap-2 text-xs font-semibold text-ink-700"><Truck className="h-3.5 w-3.5 text-brand-500" />{r.deliveryDays.map((d) => t.dayNames[d as keyof typeof t.dayNames] ?? d).join(", ")}<ArrowRight className="ms-auto h-4 w-4 text-ink-300 transition group-hover:text-brand-500" /></p>
                 </Link>
               </li>
             ))}

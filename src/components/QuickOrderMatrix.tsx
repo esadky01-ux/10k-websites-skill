@@ -13,6 +13,7 @@ import { formatEur } from "@/lib/format";
 import ProductThumb from "@/components/ProductThumb";
 import QtyCounter from "@/components/QtyCounter";
 import Link from "next/link";
+import { categoryDescription, categoryName, categoryShortName } from "@/data/categories.i18n";
 
 const normalize = (s: string) =>
   s.toLocaleLowerCase("tr-TR").replace(/ı/g, "i").replace(/ş/g, "s").replace(/ğ/g, "g").replace(/ü/g, "u").replace(/ö/g, "o").replace(/ç/g, "c").replace(/é|è|ë/g, "e");
@@ -103,15 +104,15 @@ export default function QuickOrderMatrix() {
             </button>
             {categories.map((c) => (
               <button key={c.slug} type="button" role="tab" aria-selected={active === c.slug} onClick={() => selectCategory(c.slug)} className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition ${active === c.slug ? "bg-brand-500 text-white" : "bg-white text-ink-700 ring-1 ring-cream-200 hover:ring-ink-300"}`}>
-                {c.shortName[lang]}
+                {categoryShortName(c, lang)}
               </button>
             ))}
           </div>
           <div className="relative lg:w-80">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-300" />
-            <input ref={searchRef} type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={tt.search} aria-label={tt.searchAria} className="w-full rounded-full border border-cream-200 bg-white py-2.5 pl-9 pr-9 text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20" />
+            <Search className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-300" />
+            <input ref={searchRef} type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={tt.search} aria-label={tt.searchAria} className="w-full rounded-full border border-cream-200 bg-white py-2.5 ps-9 pe-9 text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20" />
             {query && (
-              <button type="button" onClick={() => { setQuery(""); searchRef.current?.focus(); }} aria-label={tt.clearSearch} className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 text-ink-500 hover:bg-cream-100">
+              <button type="button" onClick={() => { setQuery(""); searchRef.current?.focus(); }} aria-label={tt.clearSearch} className="absolute end-2 top-1/2 -translate-y-1/2 rounded-full p-1 text-ink-500 hover:bg-cream-100">
                 <X className="h-4 w-4" />
               </button>
             )}
@@ -121,8 +122,8 @@ export default function QuickOrderMatrix() {
 
       <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="font-display text-2xl font-bold text-ink-900">{activeCat ? activeCat.name[lang] : tt.allTitle}</h2>
-          <p className="mt-1 text-sm text-ink-500">{activeCat?.description[lang] ?? tt.allText}</p>
+          <h2 className="font-display text-2xl font-bold text-ink-900">{activeCat ? categoryName(activeCat, lang) : tt.allTitle}</h2>
+          <p className="mt-1 text-sm text-ink-500">{activeCat ? categoryDescription(activeCat, lang) : tt.allText}</p>
         </div>
         <p className="text-sm text-ink-500"><span className="font-semibold text-ink-900">{filtered.length}</span> {tt.listed}</p>
       </div>
@@ -137,8 +138,8 @@ export default function QuickOrderMatrix() {
           {/* Mobil: kart görünümü */}
           <div className="mt-6 space-y-6 md:hidden" data-testid="mobile-cards">
             {grouped.map(({ cat, items }) => (
-              <section key={cat.slug} aria-label={cat.name[lang]}>
-                {!active && <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-brand-500">{cat.name[lang]}</h3>}
+              <section key={cat.slug} aria-label={categoryName(cat, lang)}>
+                {!active && <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-brand-500">{categoryName(cat, lang)}</h3>}
                 <div className="space-y-3">
                   {items.map((p) => {
                     const inCart = !!lineFor(p.id);
@@ -151,7 +152,7 @@ export default function QuickOrderMatrix() {
                             <p className="text-xs text-ink-500">{p.brand}{p.sku !== "—" && <> · <span className="font-mono">{p.sku}</span></>}</p>
                             <p className="mt-1 text-sm font-semibold text-ink-800">{formatPackaging(p)} <span className="font-normal text-ink-500">· {tt.caseIs} {p.unitsPerCase} {unitLabel(p, lang)}</span></p>
                           </div>
-                          <div className="shrink-0 text-right text-sm"><PriceCell p={p} /></div>
+                          <div className="shrink-0 text-end text-sm"><PriceCell p={p} /></div>
                         </div>
                         <div className="mt-3 flex items-end justify-between gap-3 border-t border-cream-200 pt-3">
                           <Counters p={p} compact />
@@ -167,7 +168,7 @@ export default function QuickOrderMatrix() {
           {/* Masaüstü: tablo */}
           <div className="mt-6 hidden overflow-hidden rounded-2xl border border-cream-200 bg-white shadow-sm md:block">
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[760px] text-left text-sm">
+              <table className="w-full min-w-[760px] text-start text-sm">
                 <thead className="bg-cream-100 text-[11px] font-bold uppercase tracking-wider text-ink-500">
                   <tr>
                     <th className="px-4 py-3">{tt.colProduct}</th>
@@ -180,7 +181,7 @@ export default function QuickOrderMatrix() {
                 {grouped.map(({ cat, items }) => (
                   <tbody key={cat.slug} className="divide-y divide-cream-200">
                     {!active && (
-                      <tr className="bg-cream-50"><td colSpan={5} className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-brand-500">{cat.name[lang]}</td></tr>
+                      <tr className="bg-cream-50"><td colSpan={5} className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-brand-500">{categoryName(cat, lang)}</td></tr>
                     )}
                     {items.map((p) => {
                       const line = lineFor(p.id);

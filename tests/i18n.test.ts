@@ -1,8 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { localePath, folderForSlug } from "../src/i18n/config";
+import { contentLocale, folderForSlug, localeNames, locales, localePath, routeSlugs } from "../src/i18n/config";
 import { nl } from "../src/i18n/nl";
 import { tr } from "../src/i18n/tr";
+import { fr } from "../src/i18n/fr";
+import { en } from "../src/i18n/en";
 import { altPathFor } from "../src/components/LangSwitch";
 import { buildWhatsAppMessage } from "../src/lib/whatsapp";
 import { regions } from "../src/data/regions";
@@ -14,8 +16,36 @@ function keys(o: unknown, prefix = ""): string[] {
   return Object.entries(o).flatMap(([k, v]) => keys(v, prefix ? `${prefix}.${k}` : k));
 }
 
-test("Turkish dictionary has exactly the Dutch keys", () => {
-  assert.deepEqual(keys(tr).sort(), keys(nl).sort());
+test("every dictionary has exactly the Dutch keys", () => {
+  const base = keys(nl).sort();
+  for (const [name, d] of Object.entries({ tr, fr, en })) {
+    assert.deepEqual(keys(d).sort(), base, `${name} dictionary keys`);
+  }
+});
+
+test("every interface language is fully declared and has a dictionary", () => {
+  assert.deepEqual([...locales], ["nl", "fr", "en", "tr"]);
+  for (const l of locales) {
+    assert.ok(localeNames[l], `${l} name`);
+    assert.ok(["nl", "tr"].includes(contentLocale[l]), `${l} content locale`);
+    for (const key of Object.keys(routeSlugs) as (keyof typeof routeSlugs)[]) {
+      assert.match(routeSlugs[key][l], /^[a-z0-9-]+$/, `${l} ${key} slug`);
+    }
+  }
+});
+
+test("the site interface is Latin-script only; Kurdish and Arabic live in the voice assistant", async () => {
+  const nonLatin = /[\u0600-\u06FF\u0400-\u04FF]/;
+  for (const [name, d] of Object.entries({ nl, tr, fr, en })) {
+    for (const path of keys(d)) {
+      const value = path.split(".").reduce<unknown>((o, k) => (o as Record<string, unknown>)?.[k], d);
+      if (typeof value === "string") assert.ok(!nonLatin.test(value), `${name}.${path} has non-Latin script`);
+    }
+  }
+  const { liveInstructions } = await import("../src/server/voice/live");
+  const prompt = liveInstructions("nl");
+  assert.match(prompt, /Kürtçe/, "live assistant still speaks Kurdish");
+  assert.match(prompt, /Arapça/, "live assistant still speaks Arabic");
 });
 
 test("localePath builds Dutch root and Turkish prefixed URLs", () => {
@@ -28,13 +58,28 @@ test("localePath builds Dutch root and Turkish prefixed URLs", () => {
   assert.equal(folderForSlug("tr", "hesap"), "account");
 });
 
-test("altPathFor switches languages and keeps route", () => {
-  assert.equal(altPathFor("/bestellen", "nl"), "/tr/siparis");
-  assert.equal(altPathFor("/tr/siparis", "tr"), "/bestellen");
-  assert.equal(altPathFor("/regio/leuven", "nl"), "/tr/bolgeler/leuven");
-  assert.equal(altPathFor("/tr", "tr"), "/");
-  assert.equal(altPathFor("/", "nl"), "/tr");
-  assert.equal(altPathFor("/blog/some-post", "nl"), "/tr/blog");
+test("altPathFor switches between any two languages and keeps the route", () => {
+  assert.equal(altPathFor("/bestellen", "nl", "tr"), "/tr/siparis");
+  assert.equal(altPathFor("/bestellen", "nl", "fr"), "/fr/commander");
+  assert.equal(altPathFor("/fr/commander", "fr", "en"), "/en/order");
+  assert.equal(altPathFor("/tr/siparis", "tr", "nl"), "/bestellen");
+  assert.equal(altPathFor("/regio/leuven", "nl", "tr"), "/tr/bolgeler/leuven");
+  assert.equal(altPathFor("/en/regions/leuven", "en", "fr"), "/fr/zones/leuven");
+  assert.equal(altPathFor("/tr", "tr", "nl"), "/");
+  assert.equal(altPathFor("/", "nl", "fr"), "/fr");
+  assert.equal(altPathFor("/blog/some-post", "nl", "tr"), "/tr/blog");
+  assert.equal(altPathFor("/en/login", "en", "en"), "/en/login");
+});
+
+test("localePath and folderForSlug round-trip for every language and route", () => {
+  for (const l of locales) {
+    for (const key of Object.keys(routeSlugs) as (keyof typeof routeSlugs)[]) {
+      assert.equal(folderForSlug(l, routeSlugs[key][l]), routeSlugs[key].nl, `${l}/${key}`);
+    }
+  }
+  assert.equal(localePath("fr", "order"), "/fr/commander");
+  assert.equal(localePath("tr", "regions", "leuven"), "/tr/bolgeler/leuven");
+  assert.equal(localePath("en", "account"), "/en/account");
 });
 
 test("WhatsApp receipt is localized", () => {
@@ -44,6 +89,14 @@ test("WhatsApp receipt is localized", () => {
   const trMsg = buildWhatsAppMessage({ lines: [{ productId: "fd-drk-023", cases: 2, units: 0 }], delivery: "adres", lang: "tr", prices: { "fd-drk-023": 8.49 } });
   assert.match(trMsg, /Sipariş Fişi/);
   assert.match(trMsg, /Tahmini/);
+});
+
+test("WhatsApp receipt stays in a language the warehouse reads", () => {
+  // Fiş depoya gider: Fransızca/İngilizce/Arapça arayüzden verilen sipariş de Hollandaca düşer
+  for (const lang of ["fr", "en"] as const) {
+    const msg = buildWhatsAppMessage({ lines: [{ productId: "fd-drk-023", cases: 1, units: 0 }], delivery: "depo", lang });
+    assert.match(msg, /Bestelbon/, `${lang} receipt is Dutch`);
+  }
 });
 
 test("regions data is complete and unique", () => {

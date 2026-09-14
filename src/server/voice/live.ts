@@ -13,6 +13,7 @@
  */
 import { openaiKey, safeDetail, UpstreamError } from "./openai";
 import { kurdishGuideText } from "@/data/voice-vocab";
+import { localeNames, type Locale } from "@/i18n/config";
 
 const LIVE_URL = "https://api.openai.com/v1/live/sessions";
 export const LIVE_MODEL = () => process.env.VOICE_LIVE_MODEL ?? "gpt-live-1";
@@ -22,12 +23,28 @@ export function liveConfigured(): boolean {
   return !!openaiKey() && process.env.VOICE_LIVE_DISABLED !== "1";
 }
 
-/** Konuşma katmanı talimatı: kısa, nazik, aynı dilde; ürün işleri arka uca devredilir. */
-export function liveInstructions(lang: "tr" | "nl"): string {
-  const tr = `Sen "Maximus Food Dijital Plasiyeri"sin: Belçika'daki restoran, dönerci, pizzacı, fritür, süpermarket ve fırınlara toptan gıda satan Maximus Food & Horeca'nın (Aarschot) profesyonel, hızlı ve nazik satış temsilcisisin.
+/**
+ * Arayüz dilinde ilk cümle. Model müşteri hangi dile geçerse ona geçer; bu yalnızca açılış dilidir.
+ */
+const GREETING: Record<Locale, string> = {
+  tr: "Selamünaleyküm, Maximus Dijital Plasiyer, buyurun ne yazalım?",
+  nl: "Dag, Maximus Digitale Vertegenwoordiger, wat mag ik noteren?",
+  fr: "Bonjour, ici le représentant digital de Maximus. Qu'est-ce que je note pour vous ?",
+  en: "Hello, this is the Maximus digital sales rep. What can I note down for you?",
+};
+
+/** Konuşma katmanı talimatı: kısa, nazik, müşterinin dilinde; ürün işleri arka uca devredilir. */
+export function liveInstructions(lang: Locale): string {
+  return `Sen "Maximus Food Dijital Plasiyeri"sin: Belçika'daki restoran, dönerci, pizzacı, fritür, süpermarket ve fırınlara toptan gıda satan Maximus Food & Horeca'nın (Aarschot) profesyonel, hızlı ve nazik satış temsilcisisin.
 Kişilik: sıcak ama işine hâkim; esnafla yıllardır çalışan bir plasiyer gibi. Cümleler kısa ve net; bu bir telefon görüşmesi gibi akar.
-Dil: müşteri hangi dilde konuşuyorsa (Türkçe veya Felemenkçe/Flamanca; Kürtçe gelirse Türkçe yanıtla) anında o dile geç ve o dilde kal. İlk cümleyi müşterinin diliyle kur; dil belli olana kadar Türkçe konuş.
-Karşılama: "Selamünaleyküm, Maximus Dijital Plasiyer, buyurun ne yazalım?" (Felemenkçe müşteriye: "Dag, Maximus Digitale Vertegenwoordiger, wat mag ik noteren?").
+
+Dil kuralları:
+- Sitenin açık olduğu dil: ${localeNames[lang]} (${lang}). İlk cümleyi bu dille kur: "${GREETING[lang]}"
+- Müşteri hangi dilde konuşursa anında o dile geç ve o dilde kal. Konuşabildiğin diller: Felemenkçe, Fransızca, İngilizce, Türkçe, Kürtçe (Kurmancî) ve Arapça.
+- Kürtçe ve Arapça sitenin arayüz dilleri değildir ama müşteriler bu dillerde konuşur: Kürtçe duyduğunda Kürtçe, Arapça duyduğunda Arapça cevap ver; ürün adını katalogdaki gibi (Hollandaca/Türkçe) söyle.
+- Müşteri dil değiştirirse tartışma, sen de değiştir. Diller arası karışık konuşma: baskın dili seç.
+- Ürün adlarını katalogdaki gibi (Felemenkçe veya Türkçe) söyle, çevirmeye çalışma; marka adları olduğu gibi kalır.
+
 Araya girme: müşteri konuşmaya başlarsa hemen sus, kaldığın yeri tekrar etme, yeni söylediğine cevap ver.
 Onaylama: sepete eklenen her ürünü tek cümleyle onayla ("Ekledim, 5 koli Tabasco. Başka?").
 
@@ -39,8 +56,6 @@ Delegasyon politikası:
 - Birden fazla boyut varsa en fazla üç seçenek söyleyip tek soru sor ("10, 15 yoksa 20 kilo mu?").
 
 ${kurdishGuideText()}`;
-  if (lang === "nl") return tr.replace('dil belli olana kadar Türkçe konuş', "dil belli olana kadar Felemenkçe konuş");
-  return tr;
 }
 
 /** Arka uç (araç çağıran) model talimatı. */
@@ -89,7 +104,7 @@ export function normalizeSdp(sdp: string): string {
 }
 
 /** Tarayıcının SDP teklifiyle Live oturumu açar; SDP cevabını döndürür. */
-export async function createLiveSession(sdp: string, lang: "tr" | "nl"): Promise<LiveSession> {
+export async function createLiveSession(sdp: string, lang: Locale): Promise<LiveSession> {
   const body = {
     session: {
       model: LIVE_MODEL(),

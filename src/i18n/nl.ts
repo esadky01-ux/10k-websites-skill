@@ -15,7 +15,7 @@ export const nl = {
     ],
   },
   nav: { home: "Home", products: "Producten", regions: "Leveringsgebied", blog: "Blog", contact: "Contact", account: "Mijn account", login: "Inloggen", register: "Registreren", logout: "Uitloggen" },
-  header: { call: "Bel", cart: "Winkelmandje", langSwitch: "Türkçe", langSwitchAria: "Schakel naar Turks", menu: "Menu" },
+  header: { call: "Bel", cart: "Winkelmandje", langSwitch: "Taal", langSwitchAria: "Taal wijzigen", menu: "Menu" },
   hero: {
     badge: "Quality Food. Trusted Partner.",
     title1: "Uw betrouwbare groothandel",
@@ -362,7 +362,7 @@ export const nl = {
     goCart: "Naar het mandje",
   },
   errorPage: { title: "Er ging iets mis", text: "De pagina kon niet geladen worden. Probeer het opnieuw; als het blijft gebeuren, bel ons gerust.", retry: "Opnieuw proberen" },
-  common: { hours: "ma – vr 08:00 – 17:00 · za 09:00 – 13:00", pcs: "stuks", case: "colli", increase: "verhogen", decrease: "verlagen", enlarge: "vergroten", close: "sluiten" },
+  common: { hours: "ma – vr 08:00 – 17:00 · za 09:00 – 13:00", pcs: "stuks", case: "colli", increase: "verhogen", decrease: "verlagen", enlarge: "vergroten", close: "sluiten", contentLangNotice: "Deze tekst is beschikbaar in het {lang}." },
 };
 
 export type Dictionary = typeof nl;

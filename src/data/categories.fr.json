@@ -1,0 +1,52 @@
+{
+  "soslar": {
+    "name": "Sauces",
+    "shortName": "Sauces",
+    "description": "Sauces Pauwels en seau et en bouteille (Andalouse, Samurai, Cocktail, Curry, Mayo Chef), Bicky, sambal, Tabasco et bolognaise halal. Indispensables pour la friterie et le comptoir döner."
+  },
+  "et-urunleri": {
+    "name": "Viande & Döner",
+    "shortName": "Viande",
+    "description": "Broches de döner Maximus, Dost, Düzgün, Polat et Efendi ; poulet, bœuf et dinde ; boulettes halal, salami et pepperoni. Chaîne du froid garantie."
+  },
+  "dondurulmus": {
+    "name": "Surgelés",
+    "shortName": "Surgelés",
+    "description": "Frites Lutosa et Sela, snacks Van Reusel, Mekkafood et Dunya, croquettes, fruits de mer et desserts."
+  },
+  "konserve": {
+    "name": "Conserves & Tursu",
+    "shortName": "Conserves",
+    "description": "Tomates pelées, sauce pizza, jalapeños, piments grecs, artichauts, thon, anchois, câpres et tursu. Les conserves de base pour la pizza et le döner."
+  },
+  "peynir-sut": {
+    "name": "Fromage & Produits laitiers",
+    "shortName": "Fromage",
+    "description": "Mozzarella râpée et en bloc, gouda, gorgonzola, feta Gazi, parmesan et crème. L'assortiment complet pour les pizzerias."
+  },
+  "ekmek-hamur": {
+    "name": "Pain & Pâte",
+    "shortName": "Pain",
+    "description": "Pide à döner Fırat, pain gobit, fonds de lahmacun, wraps durum et tortillas, pâtons à pizza Foster et Piazzola."
+  },
+  "kuru-gida": {
+    "name": "Épicerie sèche & Épices",
+    "shortName": "Épicerie sèche",
+    "description": "Farine Caputo et Primo, pâtes Barilla, légumineuses et riz Hane et Nawras, épices, huiles de friture et d'olive, thé et sucre."
+  },
+  "icecekler": {
+    "name": "Boissons",
+    "shortName": "Boissons",
+    "description": "Coca-Cola, Pepsi, Fanta, Lipton, Looza, Capri-Sun, Uludağ, Kızılay, Çamlıca, ayran, şalgam, boissons énergisantes, eau, bière et vins Kavaklıdere."
+  },
+  "ambalaj": {
+    "name": "Emballages",
+    "shortName": "Emballages",
+    "description": "Boîtes à pizza, barquettes à frites et à fricadelles, boxes döner, menu et hamburger, plats en aluminium, sacs de transport, papier d'emballage, couverts et serviettes."
+  },
+  "hijyen": {
+    "name": "Hygiène & Cuisine",
+    "shortName": "Hygiène",
+    "description": "Gants en nitrile, savon pour les mains, nettoyants vitres et grill, désinfectant, papier toilette, sacs-poubelle et matériel de cuisine comme les couteaux à döner."
+  }
+}

@@ -1,3 +1,4 @@
+import { contentLocale, type Locale } from "@/i18n/config";
 export type Product = {
   id: string;
   /** Katalog ürün numarası (Odoo dahili referans). Numarası olmayan ürünlerde "—". */
@@ -609,9 +610,13 @@ export function formatPackaging(p: Product): string {
   return p.unitsPerCase === 1 ? `1 x ${p.unitSize}` : `${p.unitsPerCase} x ${p.unitSize}`;
 }
 
-/** Dile göre ürün adı: nl → katalog adı, tr → Türkçe ad. */
-export function productName(p: Product, lang: "nl" | "tr"): string {
-  return lang === "nl" ? p.nameNlShort : p.name;
+/**
+ * Dile göre ürün adı: nl → katalog adı, tr → Türkçe ad.
+ * Katalogda yalnızca bu iki dil vardır; diğer arayüz dilleri contentLocale ile bunlardan birine düşer
+ * (Fransızca/İngilizce/Arapça arayüzde faturadaki Hollandaca ad, Kürtçe arayüzde Türkçe ad).
+ */
+export function productName(p: Product, lang: Locale): string {
+  return contentLocale[lang] === "nl" ? p.nameNlShort : p.name;
 }
 
 /** Birim etiketi çevirisi (unitLabel Türkçe saklanır). */
@@ -619,8 +624,8 @@ const unitLabelNl: Record<string, string> = {
   Adet: "stuks", Paket: "pak", Şişe: "fles", Kutu: "blik", Kova: "emmer", Şiş: "spies", Teneke: "blik", Kavanoz: "pot",
   Rulo: "rol", Bidon: "bidon", Tüp: "tube", Çuval: "zak", "Bag-in-Box": "bag-in-box",
 };
-export function unitLabel(p: Product, lang: "nl" | "tr"): string {
-  return lang === "nl" ? unitLabelNl[p.unitLabel] ?? p.unitLabel.toLowerCase() : p.unitLabel;
+export function unitLabel(p: Product, lang: Locale): string {
+  return contentLocale[lang] === "nl" ? unitLabelNl[p.unitLabel] ?? p.unitLabel.toLowerCase() : p.unitLabel;
 }
 
 export function getProduct(id: string): Product | undefined {

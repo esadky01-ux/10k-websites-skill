@@ -55,7 +55,7 @@ export default function MobileMenu({ items, menuLabel, closeLabel }: { items: Na
               role="dialog"
               aria-modal="true"
               aria-label={menuLabel}
-              className="animate-drawer-in absolute inset-y-0 right-0 flex w-[min(88vw,360px)] flex-col bg-white shadow-2xl"
+              className="animate-drawer-in absolute inset-y-0 end-0 flex w-[min(88vw,360px)] flex-col bg-white shadow-2xl"
             >
               <div className="flex items-center justify-between border-b border-cream-200 px-4 py-3">
                 <Logo />

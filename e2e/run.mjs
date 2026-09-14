@@ -436,6 +436,65 @@ await check("live voice: without server config the push-to-talk tab is the defau
   assert(rs.status() === 503, `realtime-session without key → 503, got ${rs.status()}`);
   await cctx.close();
 });
+await check("interface languages: Dutch, French, English and Turkish pages, menu and route slugs", async () => {
+  const lctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const lp = await lctx.newPage();
+  const pageErrors = [];
+  lp.on("pageerror", (e) => pageErrors.push(String(e)));
+  // Her dilin ana sayfası ve sipariş sayfası kendi URL parçasıyla açılır
+  for (const [path, htmlLang, marker] of [
+    ["/", "nl-BE", "Uw betrouwbare groothandel"],
+    ["/fr", "fr-BE", "grossiste"],
+    ["/en", "en", "wholesale"],
+    ["/tr", "tr", "toptan"],
+  ]) {
+    const res = await lp.goto(`${BASE}${path}`, { waitUntil: "domcontentloaded" });
+    assert(res.status() === 200, `${path} → ${res.status()}`);
+    assert((await lp.getAttribute("html", "lang")) === htmlLang, `${path} html lang`);
+    const body = (await lp.textContent("body")).toLowerCase();
+    assert(body.includes(marker.toLowerCase()), `${path} shows ${marker}`);
+    assert((await lp.getAttribute("html", "dir")) === null, `${path} has no dir attribute`);
+  }
+  for (const [path, status] of [["/fr/commander", 200], ["/en/order", 200], ["/tr/siparis", 200], ["/fr/zones", 200], ["/en/regions", 200], ["/fr/connexion", 200], ["/ar", 404], ["/ku", 404]]) {
+    const res = await lp.goto(`${BASE}${path}`, { waitUntil: "domcontentloaded" });
+    assert(res.status() === status, `${path} → ${res.status()}, expected ${status}`);
+  }
+  // Dil menüsü dört dili ve doğru karşılık yollarını gösterir
+  await lp.goto(`${BASE}/fr/commander`, { waitUntil: "networkidle" });
+  await lp.click("[data-testid=lang-switch]");
+  await lp.waitForSelector("[data-testid=lang-menu]");
+  const hrefs = await lp.$$eval("[data-testid=lang-menu] a", (as) => as.map((a) => a.getAttribute("href")));
+  assert(hrefs.length === 4, `language menu has ${hrefs.length} entries`);
+  assert(hrefs.join(",") === "/bestellen,/fr/commander,/en/order,/tr/siparis", `menu hrefs: ${hrefs.join(",")}`);
+  await lp.click("[data-testid=lang-option-tr]");
+  await lp.waitForURL("**/tr/siparis");
+  assert(pageErrors.length === 0, `uncaught: ${pageErrors.join(" | ")}`);
+  await lp.screenshot({ path: `${OUT}/lang-fr-order.png` });
+  await lctx.close();
+});
+await check("long-form pages fall back to a written language and stay out of the index", async () => {
+  const cctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const cp = await cctx.newPage();
+  // Fransızca bölge sayfası: metin Hollandaca, uyarı görünür, canonical Hollandacaya bakar, noindex
+  await cp.goto(`${BASE}/fr/zones/leuven`, { waitUntil: "domcontentloaded" });
+  await cp.waitForSelector("[data-testid=content-lang-notice]");
+  assert(/Nederlands/.test(await cp.textContent("[data-testid=content-lang-notice]")), "notice names the written language");
+  assert((await cp.getAttribute('link[rel=canonical]', "href")).endsWith("/regio/leuven"), "canonical points at the Dutch page");
+  assert(/noindex/.test(await cp.getAttribute('meta[name=robots]', "content")), "fallback region page is noindex");
+  // Hollandaca bölge sayfası dizine girer ve uyarı göstermez
+  await cp.goto(`${BASE}/regio/leuven`, { waitUntil: "domcontentloaded" });
+  assert((await cp.locator("[data-testid=content-lang-notice]").count()) === 0, "written page has no notice");
+  assert(/index/.test(await cp.getAttribute('meta[name=robots]', "content")), "Dutch region page is indexed");
+  // Site haritası: arayüz sayfaları dört dilde, uzun içerik yalnızca nl/tr
+  const xml = await (await ctx.request.get(`${BASE}/sitemap.xml`)).text();
+  for (const u of ["/fr/commander", "/en/order", "/tr/siparis", "/fr/zones", "/regio/leuven", "/tr/bolgeler/leuven"]) {
+    assert(xml.includes(`maximusfood.be${u}<`) || xml.includes(`maximusfood.be${u}?`), `sitemap has ${u}`);
+  }
+  for (const u of ["/fr/zones/leuven", "/en/regions/leuven", "/fr/blog", "/en/blog"]) {
+    assert(!xml.includes(`maximusfood.be${u}<`), `sitemap must not list ${u}`);
+  }
+  await cctx.close();
+});
 await check("voice order API: config, validation and secret-free errors", async () => {
   const cfg = await (await ctx.request.get(`${BASE}/api/voice-agent`)).json();
   assert(cfg.configured === false && cfg.live === false && typeof cfg.maxSeconds === "number", "config shape");

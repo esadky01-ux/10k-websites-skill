@@ -4,8 +4,9 @@ import { ArrowUpRight } from "lucide-react";
 import { categories } from "@/data/categories";
 import { products } from "@/data/products";
 import { getDictionary, localePath, type Locale } from "@/i18n";
+import { categoryDescription, categoryName } from "@/data/categories.i18n";
 
-export const categoryParam: Record<Locale, string> = { nl: "categorie", tr: "kategori" };
+export const categoryParam: Record<Locale, string> = { nl: "categorie", fr: "categorie", en: "category", tr: "kategori" };
 
 export function categoryHref(lang: Locale, slug: string) {
   return localePath(lang, "order", undefined, `${categoryParam[lang]}=${slug}`);
@@ -31,15 +32,15 @@ export default function CategoryGrid({ lang }: { lang: Locale }) {
           const count = products.filter((p) => p.category === cat.slug).length;
           return (
             <Link key={cat.slug} href={categoryHref(lang, cat.slug)} className="group relative isolate flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-2xl bg-ink-800 shadow-md shadow-ink-900/10 ring-1 ring-ink-900/5 transition hover:-translate-y-1 hover:shadow-xl">
-              <Image src={cat.image} alt={cat.name[lang]} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw" priority={i < 5} className="object-cover transition duration-700 group-hover:scale-105" />
+              <Image src={cat.image} alt={categoryName(cat, lang)} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw" priority={i < 5} className="object-cover transition duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-ink-900/95 via-ink-900/40 to-transparent" />
               <div className="relative p-5 text-white sm:p-6">
                 <div className="flex items-center justify-between">
                   <span className="rounded-full bg-white/15 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider backdrop-blur">{count} {t.products}</span>
                   <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-ink-900 transition group-hover:bg-brand-500 group-hover:text-white"><ArrowUpRight className="h-4.5 w-4.5" /></span>
                 </div>
-                <h3 className="mt-3 font-display text-lg font-bold lg:text-xl">{cat.name[lang]}</h3>
-                <p className="mt-1.5 line-clamp-2 text-xs text-cream-100/85 sm:text-sm">{cat.description[lang]}</p>
+                <h3 className="mt-3 font-display text-lg font-bold lg:text-xl">{categoryName(cat, lang)}</h3>
+                <p className="mt-1.5 line-clamp-2 text-xs text-cream-100/85 sm:text-sm">{categoryDescription(cat, lang)}</p>
               </div>
             </Link>
           );

@@ -4,8 +4,8 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, CalendarDays, Clock, MessageCircle } from "lucide-react";
 import { getPostBySlug, getPosts, translatedPost } from "@/data/blog";
 import { site } from "@/lib/site";
-import { getDictionary, isLocale, localePath, locales, type Locale } from "@/i18n";
-import { jsonLd } from "@/lib/seo";
+import { contentLocale, fill, getDictionary, htmlLang, isLocale, localeNames, localePath, locales, type Locale } from "@/i18n";
+import { jsonLd, robotsFor } from "@/lib/seo";
 import { formatDate } from "@/lib/format";
 
 type Params = Promise<{ lang: string; slug: string }>;
@@ -19,16 +19,20 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const lang: Locale = isLocale(raw) ? raw : "nl";
   const post = getPostBySlug(lang, slug);
   if (!post) return { title: "404" };
+  const cl = contentLocale[lang];
   const other = translatedPost(lang, slug);
-  const self = localePath(lang, "blog", post.slug);
-  const languages: Record<string, string> = { [lang === "nl" ? "nl-BE" : "tr"]: self };
-  if (other) languages[other.lang === "nl" ? "nl-BE" : "tr"] = localePath(other.lang, "blog", other.post.slug);
-  languages["x-default"] = lang === "nl" ? self : other ? localePath("nl", "blog", other.post.slug) : self;
+  // Yazı yalnızca Hollandaca ve Türkçe yazılıdır: diğer dillerde aynı metin gösterilir ama
+  // canonical yazının kendi diline bakar ve sayfa dizine girmez.
+  const canonical = localePath(cl, "blog", post.slug);
+  const languages: Record<string, string> = { [htmlLang[cl]]: canonical };
+  if (other) languages[htmlLang[other.lang]] = localePath(other.lang, "blog", other.post.slug);
+  languages["x-default"] = cl === "nl" ? canonical : other ? localePath("nl", "blog", other.post.slug) : canonical;
   return {
     title: post.metaTitle ?? post.title,
     description: post.metaDescription,
     keywords: post.keywords,
-    alternates: { canonical: self, languages },
+    robots: robotsFor(lang, "content"),
+    alternates: { canonical, languages },
     openGraph: { type: "article", title: post.title, description: post.metaDescription, publishedTime: post.date, modifiedTime: post.updated ?? post.date, images: [{ url: post.image, alt: post.title }] },
   };
 }
@@ -51,14 +55,17 @@ export default async function BlogPostPage({ params }: { params: Params }) {
     image: `${site.url}${post.image}`,
     datePublished: post.date,
     dateModified: post.updated ?? post.date,
-    inLanguage: lang === "nl" ? "nl-BE" : "tr",
+    inLanguage: htmlLang[contentLocale[lang]],
     author: { "@type": "Organization", name: site.name, "@id": `${site.url}/#organization` },
     publisher: { "@type": "Organization", name: site.name, "@id": `${site.url}/#organization` },
     mainEntityOfPage: `${site.url}${localePath(lang, "blog", post.slug)}`,
   };
 
+  const cl = contentLocale[lang];
+  const translated = cl !== lang;
+
   return (
-    <article>
+    <article lang={htmlLang[cl]}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(articleLd) }} />
       <header className="relative isolate overflow-hidden bg-ink-900 text-white">
         <div className="absolute inset-0 bg-cover bg-center opacity-40" style={{ backgroundImage: `url(${post.image})` }} aria-hidden />
@@ -76,7 +83,14 @@ export default async function BlogPostPage({ params }: { params: Params }) {
         </div>
       </header>
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1fr_320px]">
-        <div className="prose-blog max-w-3xl" dangerouslySetInnerHTML={{ __html: post.content }} />
+        <div className="max-w-3xl">
+          {translated && (
+            <p className="mb-5 rounded-xl border border-cream-200 bg-cream-100 px-4 py-3 text-sm text-ink-700" lang={htmlLang[lang]} data-testid="content-lang-notice">
+              {fill(t.common.contentLangNotice, { lang: localeNames[cl] })}
+            </p>
+          )}
+          <div className="prose-blog" dangerouslySetInnerHTML={{ __html: post.content }} />
+        </div>
         <aside className="space-y-5 lg:sticky lg:top-28 lg:self-start">
           <div className="rounded-2xl bg-ink-900 p-6 text-white">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold-500">{t.blog.sidebarEyebrow}</p>

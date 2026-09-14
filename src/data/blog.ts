@@ -1,11 +1,12 @@
-import type { Locale } from "@/i18n/config";
+import { contentLocale, type Locale } from "@/i18n/config";
 import { posts, type Post } from "./posts";
 import { postsNl } from "./posts.nl";
 
 export type { Post };
 
+/** Yazılar yalnızca Hollandaca ve Türkçe yazılır; diğer arayüz dilleri contentLocale ile bunlardan birine düşer. */
 export function getPosts(lang: Locale): Post[] {
-  return lang === "nl" ? postsNl : posts;
+  return contentLocale[lang] === "nl" ? postsNl : posts;
 }
 
 export function getPostBySlug(lang: Locale, slug: string): Post | undefined {
@@ -16,7 +17,7 @@ export function getPostBySlug(lang: Locale, slug: string): Post | undefined {
 export function translatedPost(lang: Locale, slug: string): { lang: Locale; post: Post } | undefined {
   const idx = getPosts(lang).findIndex((p) => p.slug === slug);
   if (idx < 0) return undefined;
-  const other: Locale = lang === "nl" ? "tr" : "nl";
+  const other: Locale = contentLocale[lang] === "nl" ? "tr" : "nl";
   const post = getPosts(other)[idx];
   return post ? { lang: other, post } : undefined;
 }

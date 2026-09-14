@@ -12,8 +12,14 @@ import { getProduct, formatPackaging, productName, type Product } from "@/data/p
 import { parseOrderText, searchProducts, normalize, type Match } from "@/server/whatsapp/matcher";
 import { extractOrderItems, transcribeAudio, type ExtractedItem } from "./openai";
 import { translateKurdish } from "@/data/voice-vocab";
+import { isLocale, type Locale } from "@/i18n/config";
 
-export type VoiceLang = "tr" | "nl" | "ku";
+/**
+ * Sesli siparişte kullanılan dil: arayüz dilleri + yalnızca konuşulan diller (Kürtçe, Arapça).
+ * Kürtçe ve Arapça sitenin arayüz dili değildir ama müşteri o dilde konuşabilir; transkripsiyon,
+ * eşleştirme ve özet cümlesi bu dilleri tanır (bkz. src/data/voice-vocab.ts).
+ */
+export type VoiceLang = Locale | "ku" | "ar";
 export type AddedLine = { id: string; isim: string; koli: number; adet: number; adetMetni: string; ambalaj: string; birimFiyat: number | null };
 export type Candidate = { id: string; isim: string; ambalaj: string; etiket: string; birimFiyat: number | null };
 /** Birden fazla varyant bulunan kalem: arayüz "Hangisi olsun?" chip'leriyle sorar. */
@@ -29,7 +35,14 @@ export type OrderAudioResult = {
   yedek: boolean;
 };
 
-const UNIT_WORD: Record<VoiceLang, { koli: string; adet: string }> = { tr: { koli: "koli", adet: "adet" }, nl: { koli: "colli", adet: "stuks" }, ku: { koli: "qutî", adet: "heb" } };
+const UNIT_WORD: Record<VoiceLang, { koli: string; adet: string }> = {
+  tr: { koli: "koli", adet: "adet" },
+  nl: { koli: "colli", adet: "stuks" },
+  ku: { koli: "qutî", adet: "heb" },
+  fr: { koli: "colis", adet: "pièces" },
+  en: { koli: "cases", adet: "units" },
+  ar: { koli: "صندوق", adet: "حبة" },
+};
 
 /** Aynı ürün farklı boyutlarda mı? (aynı ad, aynı boyut ve koli formatı → gerçekten aynı kalem) */
 function sameItem(a: Match, b: Match): boolean {
@@ -49,20 +62,24 @@ export function matchItem(item: ExtractedItem): { product?: Product; alternative
   return { alternatives };
 }
 
-export function detectLang(text: string, hint?: string): VoiceLang {
-  if (hint === "tr" || hint === "nl" || hint === "ku") return hint;
+export function detectLang(text: string, hint?: string, fallback: VoiceLang = "tr"): VoiceLang {
+  if (hint === "ku" || hint === "ar") return hint;
+  if (isLocale(hint)) return hint;
+  if (/[\u0600-\u06FF]/.test(text)) return "ar";
   const t = text.toLowerCase();
   if (/\b(ez|dixwazim|spas|bira|silav|çend|qutî|rojbaş)\b/.test(t)) return "ku";
   if (/\b(graag|dozen|doos|stuks|alstublieft|bedankt|twee|drie|vier|vijf|kaas|frieten|bestellen)\b/.test(t)) return "nl";
-  return "tr";
+  if (/\b(caisse|caisses|colis|bidon|merci|bonjour|livraison|commande|deux|trois|quatre|cinq|s'il vous plaît)\b/.test(t)) return "fr";
+  if (/\b(cases|boxes|please|thanks|delivery|order|need|want)\b/.test(t)) return "en";
+  return fallback;
 }
 
 /** Metinden kalemleri çıkarır: önce GPT-4o-mini, olmazsa kural tabanlı. */
-export async function itemsFromTranscript(transcript: string, useLlm: boolean): Promise<{ items: ExtractedItem[]; lang: VoiceLang; yedek: boolean }> {
+export async function itemsFromTranscript(transcript: string, useLlm: boolean, hint?: VoiceLang): Promise<{ items: ExtractedItem[]; lang: VoiceLang; yedek: boolean }> {
   if (useLlm) {
     try {
       const ex = await extractOrderItems(transcript);
-      return { items: ex.items, lang: detectLang(transcript, ex.language), yedek: false };
+      return { items: ex.items, lang: detectLang(transcript, ex.language, hint), yedek: false };
     } catch (err) {
       console.warn("[voice-order] LLM çıkarımı başarısız, kural tabanlı yedek:", (err as Error)?.message);
     }
@@ -70,7 +87,7 @@ export async function itemsFromTranscript(transcript: string, useLlm: boolean): 
   // Kural tabanlı yedek: Kürtçe sayı/birim/ürün kelimeleri önce katalog diline çevrilir
   const cleaned = translateKurdish(transcript).replace(/\b(bana|lütfen|yaz|ekle|ekleyiver|koy|gönder|istiyorum|zet|erbij|erop|graag|alstublieft|bide|min re|ji bo min|kerem bike)\b/gi, " ").replace(/\s+/g, " ").trim();
   const items = parseOrderText(cleaned).map((l) => ({ query: l.query, quantity: l.quantity, unit: l.unit }));
-  return { items, lang: detectLang(transcript), yedek: true };
+  return { items, lang: detectLang(transcript, undefined, hint), yedek: true };
 }
 
 /** Kalemleri eşleştirir, fiyat verilmişse tutar hesaplar. Belirsiz kalemler "secenekler" olarak döner. */
@@ -140,9 +157,10 @@ function qtyText(koli: number, adet: number, u: { koli: string; adet: string }):
 
 /** Uçtan uca: ses → sonuç. `prices` yalnızca onaylı müşteri için verilir. */
 export async function processOrderAudio(audio: Blob, filename: string, langHint: VoiceLang | undefined, prices: Record<string, number> | null, useLlm = true): Promise<OrderAudioResult> {
-  const transcript = await transcribeAudio(audio, filename, langHint && langHint !== "ku" ? langHint : undefined);
+  // Whisper'a konuşulan dilin ISO kodu verilir; desteklemediği bir kod gelirse (ör. ku) 400 döner ve dilsiz tekrar denenir.
+  const transcript = await transcribeAudio(audio, filename, langHint);
   if (!transcript) return { transkript: "", dil: langHint ?? "tr", eklenenler: [], secenekler: [], bulunamayanlar: [], toplamTutar: null, yedek: false };
-  const { items, lang, yedek } = await itemsFromTranscript(transcript, useLlm);
+  const { items, lang, yedek } = await itemsFromTranscript(transcript, useLlm, langHint);
   return buildResult(transcript, items, langHint ?? lang, prices, yedek);
 }
 

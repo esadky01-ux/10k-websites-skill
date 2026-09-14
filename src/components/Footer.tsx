@@ -6,6 +6,7 @@ import { regions } from "@/data/regions";
 import { site, mapsUrl } from "@/lib/site";
 import { fill, getDictionary, localePath, type Locale } from "@/i18n";
 import { categoryHref } from "@/components/CategoryGrid";
+import { categoryName } from "@/data/categories.i18n";
 
 export default function Footer({ lang }: { lang: Locale }) {
   const t = getDictionary(lang);
@@ -26,7 +27,7 @@ export default function Footer({ lang }: { lang: Locale }) {
           <h3 className="text-sm font-bold uppercase tracking-wider text-ink-900">{t.footer.groups}</h3>
           <ul className="mt-4 space-y-2 text-sm">
             {categories.map((c) => (
-              <li key={c.slug}><Link href={categoryHref(lang, c.slug)} className="text-ink-500 hover:text-brand-500">{c.name[lang]}</Link></li>
+              <li key={c.slug}><Link href={categoryHref(lang, c.slug)} className="text-ink-500 hover:text-brand-500">{categoryName(c, lang)}</Link></li>
             ))}
             <li><Link href={localePath(lang, "blog")} className="text-ink-500 hover:text-brand-500">{t.footer.blog}</Link></li>
           </ul>
