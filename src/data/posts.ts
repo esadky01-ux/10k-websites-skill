@@ -25,7 +25,7 @@ export const posts: Post[] = [
     category: "Ürün Rehberi",
     date: "2026-08-18",
     readingTime: 7,
-    image: "/media/categories/soslar.jpg",
+    image: "/media/categories/sauzen.jpg",
     keywords: ["fritür sosları toptan", "samurai sos", "andalouse sos", "Belçika mayonez", "curry ketçap", "horeca sos tedarik"],
     content: `
 <p>Belçika'da bir fritürün başarısı, patatesin çıtırlığı kadar sos tezgâhının çeşitliliğine bağlıdır. Ortalama bir Flaman fritürü menüsünde 15 ile 25 arasında farklı sos bulundurur ve bu sosların büyük bölümü bir avuç klasik lezzetten oluşur. Bu rehberde <strong>en çok satan Belçika soslarını</strong>, doğru ambalaj formatını seçmenin yollarını ve toptan alımda maliyet kontrolünü ele alıyoruz.</p>
@@ -76,7 +76,7 @@ export const posts: Post[] = [
 </ul>
 
 <h2>MAXIMUS ile toptan sos tedariki</h2>
-<p>Aarschot depomuzda Pauwels markasının Cocktail, Andalouse, Look, Samurai ve Mayo Chef kova soslarını, Pauwels fritür mayonezi ve Amerikan sosunu, sambal çeşitlerini ve helal bolonez sosunu stokluyoruz. <a href="/siparis?kategori=soslar">Hızlı sipariş tablosundan</a> koli bazında sipariş verin, aynı gün WhatsApp ile onay alın. Depodan teslim alan işletmeler tüm sos siparişlerinde <strong>yüzde 15 indirimden</strong> yararlanır.</p>
+<p>Aarschot depomuzda Pauwels markasının Cocktail, Andalouse, Look, Samurai ve Mayo Chef kova soslarını, Pauwels fritür mayonezi ve Amerikan sosunu, sambal çeşitlerini ve helal bolonez sosunu stokluyoruz. <a href="/siparis?kategori=sauzen">Hızlı sipariş tablosundan</a> koli bazında sipariş verin, aynı gün WhatsApp ile onay alın. Depodan teslim alan işletmeler tüm sos siparişlerinde <strong>yüzde 15 indirimden</strong> yararlanır.</p>
 `,
   },
   {
@@ -90,7 +90,7 @@ export const posts: Post[] = [
     category: "Tedarik Rehberi",
     date: "2026-08-25",
     readingTime: 9,
-    image: "/media/categories/et-urunleri.jpg",
+    image: "/media/categories/vlees-doner.jpg",
     keywords: ["döner tedarik Belçika", "restoran toptancı", "toptan gıda tedarik", "döner şiş toptan", "horeca tedarikçi seçimi", "Aarschot toptan gıda"],
     content: `
 <p>Belçika'da 3.000'den fazla döner büfesi, pita evi ve Türk mutfağı restoranı faaliyet gösteriyor. Bu işletmelerin kâr marjı, menü fiyatından çok <strong>tedarik zincirinin verimliliğine</strong> bağlıdır. Beş farklı tedarikçiden alışveriş yapan bir işletme, her hafta saatlerini sipariş takibine harcarken, tek çatı altında toplanmış bir tedarik planıyla hem zaman hem de para kazanabilirsiniz.</p>

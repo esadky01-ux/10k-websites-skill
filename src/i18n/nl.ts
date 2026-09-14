@@ -20,7 +20,7 @@ export const nl = {
     badge: "Quality Food. Trusted Partner.",
     title1: "Uw betrouwbare groothandel",
     title2: "voor döner, pizza en frituur",
-    text: "Sinds {year} ondersteunen wij horecaprofessionals in België en Nederland met sauzen, vlees, diepvries, conserven, kaas, brood, verpakking, dranken en hygiëneproducten. Alles onder één dak, geleverd vanuit Aarschot.",
+    text: "Sinds {year} ondersteunen wij horecaprofessionals in België en Nederland met sauzen, vlees, diepvries, conserven, kaas, brood, verpakkingen, dranken en hygiëneproducten. Alles onder één dak, geleverd vanuit Aarschot.",
     cta: "Snel bestellen",
     ctaSecondary: "Bekijk productgroepen",
     usp1: "-15% bij afhaling in Aarschot",

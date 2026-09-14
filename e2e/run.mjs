@@ -128,7 +128,7 @@ await check("register via form lands on account page", async () => {
 await check("pending account sees no prices, prices API returns 403", async () => {
   const r = await ctx.request.get(`${BASE}/api/prices`);
   assert(r.status() === 403, `status ${r.status()}`);
-  await page.goto(`${BASE}/bestellen?categorie=icecekler`, { waitUntil: "networkidle" });
+  await page.goto(`${BASE}/bestellen?categorie=dranken`, { waitUntil: "networkidle" });
   await page.waitForSelector("table");
   await page.waitForSelector("table >> text=Na goedkeuring");
   assert(!/€ \d/.test(await page.locator("table").innerText()), "no prices for pending account");
@@ -149,7 +149,7 @@ await check("admin logs in at /beheer and approves the customer", async () => {
   await page.reload({ waitUntil: "networkidle" });
 });
 await check("logged-in order page shows prices and estimate in cart", async () => {
-  await page.goto(`${BASE}/bestellen?categorie=icecekler`, { waitUntil: "networkidle" });
+  await page.goto(`${BASE}/bestellen?categorie=dranken`, { waitUntil: "networkidle" });
   await page.waitForSelector("table");
   await page.waitForFunction(() => /€/.test(document.body.innerText), null, { timeout: 15000 });
   assert(!(await page.locator("text=Log in voor prijzen").count()), "login prompt should be gone");
@@ -215,7 +215,7 @@ await check("logout then login with wrong password shows error, right password w
 
 // ── Türkçe akış ve mobil kart görünümü ─────────────────────────────
 await check("Turkish order page + Turkish WhatsApp receipt", async () => {
-  await page.goto(`${BASE}/tr/siparis?kategori=soslar`, { waitUntil: "networkidle" });
+  await page.goto(`${BASE}/tr/siparis?kategori=sauzen`, { waitUntil: "networkidle" });
   await page.waitForSelector("table");
   await page.locator('table button[aria-label="Koli artır"]').nth(0).click();
   await page.locator('button[aria-label="Sepetim"]').first().click();
@@ -226,7 +226,7 @@ await check("Turkish order page + Turkish WhatsApp receipt", async () => {
 const mobile = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
 const mp = await mobile.newPage();
 await check("mobile order page uses card view, table hidden", async () => {
-  await mp.goto(`${BASE}/bestellen?categorie=soslar`, { waitUntil: "networkidle" });
+  await mp.goto(`${BASE}/bestellen?categorie=sauzen`, { waitUntil: "networkidle" });
   await mp.waitForSelector('[data-testid="mobile-cards"]');
   assert(await mp.locator('[data-testid="mobile-cards"]').isVisible(), "cards visible");
   assert(!(await mp.locator("table").isVisible().catch(() => false)), "table hidden on mobile");
@@ -517,6 +517,34 @@ await check("long-form pages fall back to a written language and stay out of the
     assert(!xml.includes(`maximusfood.be${u}<`), `sitemap must not list ${u}`);
   }
   await cctx.close();
+});
+await check("category slugs: Dutch links, filtering works and old Turkish links redirect", async () => {
+  const sctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const sp = await sctx.newPage();
+  // Ana sayfadaki kategori kartı yeni slug'a gider ve filtre çalışır
+  await sp.goto(`${BASE}/`, { waitUntil: "networkidle" });
+  const hrefs = await sp.$$eval('a[href*="categorie="]', (as) => as.map((a) => a.getAttribute("href")));
+  assert(hrefs.length > 0, "home links to categories");
+  assert(hrefs.every((h) => /categorie=(sauzen|vlees-doner|diepvries|conserven|kaas-zuivel|brood-deeg|droge-voeding|dranken|ambalaj|hijyen)$/.test(h)), `category hrefs: ${hrefs.join(",")}`);
+  await sp.goto(`${BASE}/bestellen?categorie=sauzen`, { waitUntil: "networkidle" });
+  await sp.waitForSelector("[data-testid=product-row], table");
+  const heading = await sp.textContent("h2");
+  assert(/Sauzen/i.test(heading), `filtered heading: ${heading}`);
+  // Kategori görseli yeni adıyla sunuluyor
+  const img = await ctx.request.get(`${BASE}/media/categories/sauzen.jpg`);
+  assert(img.status() === 200, `category image → ${img.status()}`);
+  // Eski Türkçe slug'lar 308 ile yeni slug'a taşınıyor (dizindeki ve blogdaki bağlantılar kırılmasın)
+  for (const [oldSlug, newSlug, param, path] of [
+    ["soslar", "sauzen", "categorie", "/bestellen"],
+    ["icecekler", "dranken", "categorie", "/bestellen"],
+    ["soslar", "sauzen", "kategori", "/tr/siparis"],
+    ["et-urunleri", "vlees-doner", "category", "/en/order"],
+  ]) {
+    const res = await ctx.request.get(`${BASE}${path}?${param}=${oldSlug}`, { maxRedirects: 0 });
+    assert(res.status() === 308, `${path}?${param}=${oldSlug} → ${res.status()}`);
+    assert(res.headers().location.includes(`${param}=${newSlug}`), `redirect target ${res.headers().location}`);
+  }
+  await sctx.close();
 });
 await check("voice order API: config, validation and secret-free errors", async () => {
   const cfg = await (await ctx.request.get(`${BASE}/api/voice-agent`)).json();

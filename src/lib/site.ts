@@ -7,8 +7,9 @@ export const site = {
     street: "Nieuwlandlaan 111, Unit 3-4",
     postal: "3200",
     city: "Aarschot",
-    country: "Belçika",
-    full: "Nieuwlandlaan 111, Unit 3-4, 3200 Aarschot, Belçika",
+    // Posta adresi yerel dilde yazılır; site dili ne olursa olsun Felemenkçe kalır.
+    country: "België",
+    full: "Nieuwlandlaan 111, Unit 3-4, 3200 Aarschot, België",
   },
   phone: "+32 467 07 71 64",
   phoneDisplay: "+32 467 07 71 64",

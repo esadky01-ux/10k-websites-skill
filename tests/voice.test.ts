@@ -120,7 +120,7 @@ test("matcher keeps variants within the product family and uses size hints", asy
   assert.equal(ayran.product!.unitSize, "25 cl");
   const doner = matchItem({ query: "tavuk döner", quantity: 1, unit: "koli" });
   assert.equal(doner.product, undefined);
-  assert.ok(doner.alternatives.length >= 3 && doner.alternatives.every((p) => p.category === "et-urunleri"), "only döner variants offered");
+  assert.ok(doner.alternatives.length >= 3 && doner.alternatives.every((p) => p.category === "vlees-doner"), "only döner variants offered");
   const onluk = matchItem({ query: "onluk tavuk döner", quantity: 1, unit: "koli" });
   const onlukSizes = onluk.product ? [onluk.product.unitSize] : onluk.alternatives.map((p) => p.unitSize);
   assert.ok(onlukSizes.length > 0 && onlukSizes.every((u) => u === "10 kg"), `onluk → only 10 kg variants (${onlukSizes.join(",")})`);
