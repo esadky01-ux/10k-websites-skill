@@ -7,6 +7,7 @@
 import { NextResponse } from "next/server";
 import { safeDetail, UpstreamError } from "@/server/voice/openai";
 import { createLiveSession, liveConfigured } from "@/server/voice/live";
+import { defaultLocale, isLocale } from "@/i18n/config";
 
 export const runtime = "nodejs";
 
@@ -21,7 +22,7 @@ export async function POST(req: Request) {
   // SDP'yi kırpma: son satırın CRLF'si ayrıştırıcı için zorunlu (normalizeSdp tamamlar).
   const sdp = typeof body.sdp === "string" ? body.sdp : "";
   if (!/^v=0\r?\n/.test(sdp)) return NextResponse.json({ error: "sdp alanı (WebRTC teklifi) gerekli" }, { status: 400 });
-  const lang = body.lang === "nl" ? "nl" : "tr";
+  const lang = typeof body.lang === "string" && isLocale(body.lang) ? body.lang : defaultLocale;
   try {
     const session = await createLiveSession(sdp, lang);
     return NextResponse.json(session, { status: 201 });

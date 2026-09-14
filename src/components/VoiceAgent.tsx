@@ -6,6 +6,7 @@ import { useCart } from "@/components/CartProvider";
 import { useI18n } from "@/i18n/I18nProvider";
 import { describeError, logClientError } from "@/components/VoiceAgentBoundary";
 import { formatEur } from "@/lib/format";
+import { htmlLang, type Locale } from "@/i18n/config";
 
 /**
  * Hızlı Sesli Sipariş (WhatsApp mantığı, bas-konuş):
@@ -19,7 +20,7 @@ type Status = "idle" | "recording" | "processing" | "done" | "error";
 type Added = { id: string; isim: string; koli: number; adet: number; adetMetni: string; ambalaj: string; birimFiyat: number | null };
 type Candidate = { id: string; isim: string; ambalaj: string; etiket: string; birimFiyat: number | null };
 type Choice = { sorgu: string; koli: number; adet: number; adetMetni: string; adaylar: Candidate[] };
-type Result = { transkript: string; dil: "tr" | "nl" | "ku"; eklenenler: Added[]; secenekler: Choice[]; bulunamayanlar: string[]; toplamTutar: number | null; yedek: boolean };
+type Result = { transkript: string; dil: Locale | "ku" | "ar"; eklenenler: Added[]; secenekler: Choice[]; bulunamayanlar: string[]; toplamTutar: number | null; yedek: boolean };
 type Config = { configured: boolean; tts: boolean; maxSeconds: number };
 
 const MAX_SECONDS = 30;
@@ -265,7 +266,7 @@ export default function VoiceAgent({ embedded = false, onClose }: { embedded?: b
       if ("speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined") {
         window.speechSynthesis.cancel();
         const u = new SpeechSynthesisUtterance(text);
-        u.lang = result.dil === "nl" ? "nl-BE" : "tr-TR";
+        u.lang = result.dil === "ku" ? "tr-TR" : result.dil === "ar" ? "ar" : htmlLang[result.dil] ?? "nl-BE";
         window.speechSynthesis.speak(u);
       } else setNotice(tv.noAudio);
     } catch (err) {
@@ -323,7 +324,7 @@ export default function VoiceAgent({ embedded = false, onClose }: { embedded?: b
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="notranslate fixed bottom-5 right-5 z-[45] flex h-14 w-14 items-center justify-center rounded-full bg-brand-500 text-white shadow-xl shadow-brand-900/30 transition hover:scale-105 hover:bg-brand-600 sm:h-16 sm:w-16"
+          className="notranslate fixed bottom-5 end-5 z-[45] flex h-14 w-14 items-center justify-center rounded-full bg-brand-500 text-white shadow-xl shadow-brand-900/30 transition hover:scale-105 hover:bg-brand-600 sm:h-16 sm:w-16"
           translate="no"
           aria-label={tv.open}
           title={tv.name}
@@ -336,7 +337,7 @@ export default function VoiceAgent({ embedded = false, onClose }: { embedded?: b
 
       {open && (
         <section
-          className={embedded ? "notranslate w-full" : "notranslate fixed bottom-4 right-4 z-[45] w-[min(92vw,380px)] overflow-hidden rounded-3xl border border-cream-200 bg-white shadow-2xl"}
+          className={embedded ? "notranslate w-full" : "notranslate fixed bottom-4 end-4 z-[45] w-[min(92vw,380px)] overflow-hidden rounded-3xl border border-cream-200 bg-white shadow-2xl"}
           translate="no"
           role={embedded ? undefined : "dialog"}
           aria-label={tv.name}

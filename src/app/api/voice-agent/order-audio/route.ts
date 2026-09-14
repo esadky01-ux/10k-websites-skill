@@ -7,6 +7,7 @@ import { NextResponse } from "next/server";
 import { currentCustomer } from "@/server/auth";
 import { getPricesForCustomer } from "@/server/prices";
 import { openaiConfigured, safeDetail, UpstreamError } from "@/server/voice/openai";
+import { isLocale } from "@/i18n/config";
 import { processOrderAudio, type VoiceLang } from "@/server/voice/order";
 
 export const runtime = "nodejs";
@@ -25,7 +26,7 @@ export async function POST(req: Request) {
   if (!(audio instanceof Blob) || audio.size === 0) return NextResponse.json({ error: "audio alanı gerekli" }, { status: 400 });
   if (audio.size > MAX_BYTES) return NextResponse.json({ error: "kayıt çok büyük" }, { status: 413 });
   const langRaw = String(form.get("lang") ?? "");
-  const lang: VoiceLang | undefined = langRaw === "tr" || langRaw === "nl" || langRaw === "ku" ? langRaw : undefined;
+  const lang: VoiceLang | undefined = isLocale(langRaw) ? langRaw : undefined;
   const ext = audio.type.includes("mp4") ? "mp4" : audio.type.includes("ogg") ? "ogg" : audio.type.includes("wav") ? "wav" : "webm";
   const customer = await currentCustomer();
   const prices = customer && customer.status === "approved" ? getPricesForCustomer() : null;

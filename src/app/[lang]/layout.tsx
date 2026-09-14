@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     openGraph: {
       type: "website",
       locale: ogLocale[lang],
-      alternateLocale: lang === "nl" ? ["tr_TR"] : ["nl_BE"],
+      alternateLocale: locales.filter((l) => l !== lang).map((l) => ogLocale[l]),
       siteName: site.name,
       title: t.siteTitle,
       description: t.ogDescription,

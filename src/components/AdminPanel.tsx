@@ -101,7 +101,7 @@ export default function AdminPanel() {
       <p className="rounded-2xl border border-dashed border-cream-200 bg-white p-6 text-sm text-ink-500">{ta.none}</p>
     ) : (
       <div className="overflow-x-auto rounded-2xl border border-cream-200 bg-white">
-        <table className="w-full min-w-[820px] text-left text-sm">
+        <table className="w-full min-w-[820px] text-start text-sm">
           <thead className="bg-cream-100 text-[11px] font-bold uppercase tracking-wider text-ink-500">
             <tr><th className="px-4 py-3">{ta.columns.company}</th><th className="px-4 py-3">{ta.columns.contact}</th><th className="px-4 py-3">{ta.columns.phone}</th><th className="px-4 py-3">{ta.columns.email}</th><th className="px-4 py-3">{ta.registered}</th><th className="px-4 py-3">{ta.columns.status}</th><th className="px-4 py-3">{ta.columns.actions}</th></tr>
           </thead>
@@ -145,7 +145,7 @@ export default function AdminPanel() {
           <p className="mt-3 rounded-2xl border border-dashed border-cream-200 bg-white p-6 text-sm text-ink-500">{ta.noOrders}</p>
         ) : (
           <div className="mt-3 overflow-x-auto rounded-2xl border border-cream-200 bg-white">
-            <table className="w-full min-w-[720px] text-left text-sm">
+            <table className="w-full min-w-[720px] text-start text-sm">
               <thead className="bg-cream-100 text-[11px] font-bold uppercase tracking-wider text-ink-500">
                 <tr><th className="px-4 py-3">{ta.columns.date}</th><th className="px-4 py-3">{ta.columns.company}</th><th className="px-4 py-3">{ta.columns.lines}</th><th className="px-4 py-3">{ta.columns.delivery}</th><th className="px-4 py-3">{ta.columns.estimate}</th><th className="px-4 py-3">{ta.columns.actions}</th></tr>
               </thead>

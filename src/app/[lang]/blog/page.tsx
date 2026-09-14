@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight, CalendarDays, Clock } from "lucide-react";
 import { getPosts } from "@/data/blog";
 import { getDictionary, isLocale, localePath, type Locale } from "@/i18n";
-import { alternatesFor } from "@/lib/seo";
+import { alternatesFor, robotsFor } from "@/lib/seo";
 import { formatDate } from "@/lib/format";
 
 type Params = Promise<{ lang: string }>;
@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { lang: raw } = await params;
   const lang: Locale = isLocale(raw) ? raw : "nl";
   const t = getDictionary(lang).blog;
-  return { title: t.metaTitle, description: t.metaDescription, alternates: alternatesFor(lang, "blog") };
+  return { title: t.metaTitle, description: t.metaDescription, alternates: alternatesFor(lang, "blog", undefined, undefined, "content"), robots: robotsFor(lang, "content") };
 }
 
 export default async function BlogPage({ params }: { params: Params }) {

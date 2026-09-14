@@ -34,6 +34,9 @@ getUserMedia → RTCPeerConnection
 - **Neden `/v1/live/sessions`?** `gpt-live-1` Realtime uç noktalarında (`/v1/realtime/sessions`, `client_secrets`) çalışmaz;
   Live API'de oturum, sunucunun SDP teklifini ilettiği tek HTTP isteğiyle açılır ve API anahtarı tarayıcıya hiç inmez
   (geçici anahtar/`client_secret` gerekmez). Kanalda ayrıca `session.start` gönderilmez.
+- **Diller:** plasiyer Hollandaca, Fransızca, İngilizce, Türkçe, Kürtçe (Kurmancî) ve Arapça konuşur.
+  İlk cümle sitenin açık olduğu arayüz dilindedir; müşteri hangi dile geçerse plasiyer de geçer.
+  Kürtçe ve Arapça site arayüzünde yoktur (bkz. docs/i18n.md), yalnızca burada konuşulur.
 - **Kişilik ve dil:** `liveInstructions(lang)` — "Maximus Food Dijital Plasiyeri", Türkçe/Felemenkçe otomatik eşleme,
   kısa cümleler, Kürtçe kelime rehberi (`KURDISH_GUIDE`), adres/saat/-%15 depodan teslim bilgisi, fiyat söylememe.
   Araç çağıran arka uç modelin kuralları `BACKEND_INSTRUCTIONS` içindedir (önce ara, belirsizse en fazla üç boyut sor).

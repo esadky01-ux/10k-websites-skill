@@ -1,10 +1,10 @@
-import type { Locale } from "@/i18n/config";
+import type { ContentLocale } from "@/i18n/config";
 
 export type Category = {
   slug: string;
-  name: Record<Locale, string>;
-  shortName: Record<Locale, string>;
-  description: Record<Locale, string>;
+  name: Record<ContentLocale, string>;
+  shortName: Record<ContentLocale, string>;
+  description: Record<ContentLocale, string>;
   image: string;
 };
 

@@ -7,8 +7,9 @@ import { regions, getRegion } from "@/data/regions";
 import { categories } from "@/data/categories";
 import { categoryHref } from "@/components/CategoryGrid";
 import { site } from "@/lib/site";
-import { fill, getDictionary, isLocale, localePath, locales, type Locale } from "@/i18n";
-import { alternatesFor, jsonLd } from "@/lib/seo";
+import { contentLocale, fill, getDictionary, htmlLang, isLocale, localeNames, localePath, locales, type Locale } from "@/i18n";
+import { alternatesFor, jsonLd, robotsFor } from "@/lib/seo";
+import { categoryName } from "@/data/categories.i18n";
 
 type Params = Promise<{ lang: string; slug: string }>;
 
@@ -21,11 +22,12 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const lang: Locale = isLocale(raw) ? raw : "nl";
   const region = getRegion(slug);
   if (!region) return { title: "404" };
-  const c = region[lang];
+  const c = region[contentLocale[lang]];
   return {
     title: { absolute: c.metaTitle },
     description: c.metaDescription,
-    alternates: alternatesFor(lang, "regions", region.slug),
+    alternates: alternatesFor(lang, "regions", region.slug, undefined, "content"),
+    robots: robotsFor(lang, "content"),
     openGraph: { title: c.metaTitle, description: c.metaDescription, type: "website", images: [{ url: "/media/hero/hero-warehouse.jpg" }] },
     other: {
       "geo.region": `BE-${region.province === "Brussel" ? "BRU" : "VLG"}`,
@@ -41,8 +43,8 @@ export default async function RegionPage({ params }: { params: Params }) {
   const lang: Locale = isLocale(raw) ? raw : "nl";
   const region = getRegion(slug);
   if (!region) notFound();
-  const t = getDictionary(lang).regions;
-  const c = region[lang];
+  const t = { ...getDictionary(lang).regions, contentLangNotice: getDictionary(lang).common.contentLangNotice };
+  const c = region[contentLocale[lang]];
   const days = region.deliveryDays.map((d) => t.dayNames[d as keyof typeof t.dayNames] ?? d);
   const pageUrl = `${site.url}${localePath(lang, "regions", region.slug)}`;
   const others = regions.filter((r) => r.slug !== region.slug).sort((a, b) => Math.abs(a.distanceKm - region.distanceKm) - Math.abs(b.distanceKm - region.distanceKm)).slice(0, 8);
@@ -54,7 +56,7 @@ export default async function RegionPage({ params }: { params: Params }) {
         "@type": "Service",
         "@id": `${pageUrl}#service`,
         name: c.h1,
-        serviceType: lang === "nl" ? "Horeca groothandel en levering" : "Toptan Horeca tedariki ve teslimat",
+        serviceType: contentLocale[lang] === "nl" ? "Horeca groothandel en levering" : "Toptan Horeca tedariki ve teslimat",
         description: c.metaDescription,
         provider: { "@id": `${site.url}/#organization` },
         areaServed: { "@type": "City", name: region.name, address: { "@type": "PostalAddress", addressLocality: region.name, postalCode: region.postcodes[0], addressRegion: region.province, addressCountry: "BE" }, geo: { "@type": "GeoCoordinates", latitude: region.lat, longitude: region.lng } },
@@ -112,9 +114,14 @@ export default async function RegionPage({ params }: { params: Params }) {
 
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1fr_340px]">
         <div>
-          <div className="prose-blog max-w-3xl" dangerouslySetInnerHTML={{ __html: c.intro }} />
+          {contentLocale[lang] !== lang && (
+            <p className="mb-4 max-w-3xl rounded-xl border border-cream-200 bg-cream-100 px-4 py-3 text-sm text-ink-700" data-testid="content-lang-notice">
+              {fill(t.contentLangNotice, { lang: localeNames[contentLocale[lang]] })}
+            </p>
+          )}
+          <div className="prose-blog max-w-3xl" lang={htmlLang[contentLocale[lang]]} dangerouslySetInnerHTML={{ __html: c.intro }} />
           <h2 className="mt-10 font-display text-2xl font-bold text-ink-900">{fill(t.localProfileTitle, { city: region.name })}</h2>
-          <div className="prose-blog mt-3 max-w-3xl" dangerouslySetInnerHTML={{ __html: c.localProfile }} />
+          <div className="prose-blog mt-3 max-w-3xl" lang={htmlLang[contentLocale[lang]]} dangerouslySetInnerHTML={{ __html: c.localProfile }} />
 
           <h2 className="mt-10 font-display text-2xl font-bold text-ink-900">{fill(t.categoriesTitle, { city: region.name })}</h2>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -122,8 +129,8 @@ export default async function RegionPage({ params }: { params: Params }) {
               <li key={cat.slug}>
                 <Link href={categoryHref(lang, cat.slug)} className="flex items-center gap-3 rounded-xl border border-cream-200 bg-white p-3 transition hover:border-brand-500/50 hover:shadow-sm">
                   <Image src={cat.image} alt="" width={64} height={48} className="h-12 w-16 rounded-lg object-cover" />
-                  <span className="text-sm font-semibold text-ink-900">{cat.name[lang]}</span>
-                  <ArrowRight className="ml-auto h-4 w-4 text-ink-300" />
+                  <span className="text-sm font-semibold text-ink-900">{categoryName(cat, lang)}</span>
+                  <ArrowRight className="ms-auto h-4 w-4 text-ink-300" />
                 </Link>
               </li>
             ))}

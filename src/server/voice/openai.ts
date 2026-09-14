@@ -62,14 +62,14 @@ export async function transcribeAudio(audio: Blob, filename: string, lang?: stri
 }
 
 export type ExtractedItem = { query: string; quantity: number; unit: "koli" | "adet" };
-export type Extraction = { items: ExtractedItem[]; language: "tr" | "nl" | "ku" | "other" };
+export type Extraction = { items: ExtractedItem[]; language: "tr" | "nl" | "fr" | "en" | "ku" | "ar" | "other" };
 
-export const EXTRACT_SYSTEM = `Sen bir toptan gıda sipariş ayrıştırıcısısın. Müşterinin konuşma metninden (Türkçe, Felemenkçe/Flamanca, Kürtçe veya karışık) sipariş kalemlerini çıkar.
+export const EXTRACT_SYSTEM = `Sen bir toptan gıda sipariş ayrıştırıcısısın. Müşterinin konuşma metninden (Türkçe, Felemenkçe/Flamanca, Fransızca, İngilizce, Kürtçe, Arapça veya karışık) sipariş kalemlerini çıkar.
 Kurallar:
-- Her kalem için ürün adını olduğu gibi (marka, boyut, örn. "kip döner 20 kg", "pauwels samurai 3 liter", "tabasco 350ml") "query" alanına yaz; miktarı "quantity" olarak sayıya çevir (bir=1, iki/twee=2, üç/drie=3, ...). Miktar söylenmediyse 1.
-- Birim: koli/kutu/doos/dozen/colli/qutî → "koli"; adet/tane/paket/pak/stuk/stuks/şişe/fles/kova → "adet". Belirtilmediyse "koli".
+- Her kalem için ürün adını olduğu gibi (marka, boyut, örn. "kip döner 20 kg", "pauwels samurai 3 liter", "tabasco 350ml") "query" alanına yaz; miktarı "quantity" olarak sayıya çevir (bir=1, iki/twee/deux/two=2, üç/drie/trois/three=3, ...; Arapça اثنان=2, ثلاثة=3). Miktar söylenmediyse 1.
+- Birim: koli/kutu/doos/dozen/colli/colis/caisse/case/box/qutî/صندوق → "koli"; adet/tane/paket/pak/stuk/stuks/pièce/piece/unit/şişe/fles/kova/حبة → "adet". Belirtilmediyse "koli".
 - Selamlaşma, sohbet ve sipariş dışı sözleri atla. Ürün uydurma; yalnızca söylenenleri çıkar.
-- "language": metnin baskın dili (tr, nl, ku, other).
+- "language": metnin baskın dili (tr, nl, fr, en, ku, ar, other).
 - Kürtçe terimler: "query" alanına ASLA Kürtçe kelime yazma; aşağıdaki kılavuzla katalog karşılığına çevir. Kılavuzda olmayan Kürtçe kelimeyi en yakın Türkçe ürün adıyla yaz.
 ${kurdishGuideText()}
 - Yöresel/esnaf sözlüğü: ${Object.entries(VOICE_VOCAB).filter(([k]) => /^[a-z0-9' ]+$/i.test(k)).map(([k, v]) => `${k}=${v[0]}`).join(", ")}.
@@ -82,7 +82,7 @@ const EXTRACT_SCHEMA = {
     type: "object",
     additionalProperties: false,
     properties: {
-      language: { type: "string", enum: ["tr", "nl", "ku", "other"] },
+      language: { type: "string", enum: ["tr", "nl", "fr", "en", "ku", "ar", "other"] },
       items: {
         type: "array",
         items: {
@@ -121,7 +121,8 @@ export async function extractOrderItems(transcript: string): Promise<Extraction>
     .filter((i): i is ExtractedItem => !!i && typeof i.query === "string" && i.query.trim().length > 0)
     .map((i) => ({ query: i.query.trim().slice(0, 120), quantity: Math.max(1, Math.min(999, Math.floor(Number(i.quantity) || 1))), unit: i.unit === "adet" ? ("adet" as const) : ("koli" as const) }))
     .slice(0, 30);
-  const language = parsed.language === "nl" || parsed.language === "ku" || parsed.language === "tr" ? parsed.language : "other";
+  const known: Extraction["language"][] = ["tr", "nl", "fr", "en", "ku", "ar"];
+  const language = known.includes(parsed.language as Extraction["language"]) ? (parsed.language as Extraction["language"]) : "other";
   return { items, language };
 }
 

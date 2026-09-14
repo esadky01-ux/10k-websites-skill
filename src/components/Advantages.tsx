@@ -20,7 +20,7 @@ export default function Advantages({ lang }: { lang: Locale }) {
             const Icon = icons[i];
             return (
               <div key={it.title} className="relative rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur transition hover:border-gold-500/50">
-                {"badge" in it && it.badge && <span className="absolute right-5 top-5 rounded-full bg-brand-500 px-3 py-1 text-sm font-black text-white shadow">{it.badge}</span>}
+                {"badge" in it && it.badge && <span className="absolute end-5 top-5 rounded-full bg-brand-500 px-3 py-1 text-sm font-black text-white shadow">{it.badge}</span>}
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-500 text-white"><Icon className="h-6 w-6" /></div>
                 <h3 className="mt-5 text-xl font-bold">{it.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-cream-100/80">{it.text}</p>

@@ -110,7 +110,7 @@ export default function VoicePlasiyerModal() {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="notranslate fixed bottom-5 right-5 z-[45] flex h-14 w-14 items-center justify-center rounded-full bg-brand-500 text-white shadow-xl shadow-brand-900/30 transition hover:scale-105 hover:bg-brand-600 sm:h-16 sm:w-16"
+          className="notranslate fixed bottom-5 end-5 z-[45] flex h-14 w-14 items-center justify-center rounded-full bg-brand-500 text-white shadow-xl shadow-brand-900/30 transition hover:scale-105 hover:bg-brand-600 sm:h-16 sm:w-16"
           translate="no"
           aria-label={tl.open}
           title={tl.name}
@@ -123,7 +123,7 @@ export default function VoicePlasiyerModal() {
 
       {open && (
         <section
-          className="notranslate fixed bottom-4 right-4 z-[45] w-[min(92vw,400px)] overflow-hidden rounded-3xl border border-cream-200 bg-white shadow-2xl"
+          className="notranslate fixed bottom-4 end-4 z-[45] w-[min(92vw,400px)] overflow-hidden rounded-3xl border border-cream-200 bg-white shadow-2xl"
           translate="no"
           role="dialog"
           aria-label={tl.name}

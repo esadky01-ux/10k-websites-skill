@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { searchProducts } from "@/server/whatsapp/matcher";
 import { formatPackaging, getProduct, productName } from "@/data/products";
 import type { CartLine } from "@/lib/cart";
+import type { Locale } from "@/i18n/config";
 
 /**
  * GPT-Live (gpt-live-1) canlı sesli asistan kancası — WebRTC.
@@ -45,7 +46,7 @@ type LiveEvent = {
 };
 
 export type UseLiveVoiceOptions = {
-  lang: "tr" | "nl";
+  lang: Locale;
   cart: LiveCartApi;
   /** Boşta kalma sonrası oturumu kapat (saniye). Maliyet dakika başına ücretlendirilir. */
   idleSeconds?: number;
@@ -67,7 +68,7 @@ function safe(fn: () => void, label: string) {
 }
 
 /** Araç çağrılarını tarayıcıda yürütür: katalog araması, sepet işlemleri. */
-export function runTool(name: string, rawArgs: string, cart: LiveCartApi, lang: "tr" | "nl"): { output: string; summary: string } {
+export function runTool(name: string, rawArgs: string, cart: LiveCartApi, lang: Locale): { output: string; summary: string } {
   let args: Record<string, unknown> = {};
   try {
     args = rawArgs ? (JSON.parse(rawArgs) as Record<string, unknown>) : {};
@@ -138,7 +139,7 @@ export function useLiveVoice({ lang, cart, idleSeconds = IDLE_DEFAULT, maxSecond
   const idleTimerRef = useRef<number | null>(null);
   const maxTimerRef = useRef<number | null>(null);
   const cartRef = useRef(cart);
-  const langRef = useRef(lang);
+  const langRef = useRef<Locale>(lang);
   const onErrorRef = useRef(onError);
 
   useEffect(() => {

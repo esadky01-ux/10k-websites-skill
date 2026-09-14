@@ -1,0 +1,52 @@
+{
+  "soslar": {
+    "name": "Sauces",
+    "shortName": "Sauces",
+    "description": "Pauwels bucket and bottle sauces (Andalouse, Samurai, Cocktail, Curry, Mayo Chef), Bicky, sambal, Tabasco and halal bolognese. Essential for chip shops (frituur) and döner counters."
+  },
+  "et-urunleri": {
+    "name": "Meat & Döner",
+    "shortName": "Meat",
+    "description": "Döner spits from Maximus, Dost, Düzgün, Polat and Efendi; chicken, beef and turkey; halal meatballs, salami and pepperoni. Cold chain guaranteed."
+  },
+  "dondurulmus": {
+    "name": "Frozen",
+    "shortName": "Frozen",
+    "description": "Lutosa and Sela chips, snacks from Van Reusel, Mekkafood and Dunya, croquettes, seafood and desserts."
+  },
+  "konserve": {
+    "name": "Canned & Pickles",
+    "shortName": "Canned",
+    "description": "Peeled tomatoes, pizza sauce, jalapeños, Greek peppers, artichoke, tuna, anchovies, capers and pickles. The basic canned goods for pizza and döner."
+  },
+  "peynir-sut": {
+    "name": "Cheese & Dairy",
+    "shortName": "Cheese",
+    "description": "Grated and block mozzarella, gouda, gorgonzola, Gazi feta, parmesan and cream. The complete range for pizzerias."
+  },
+  "ekmek-hamur": {
+    "name": "Bread & Dough",
+    "shortName": "Bread",
+    "description": "Fırat döner pide, gobit bread, lahmacun bases, durum wraps and tortillas, pizza dough balls from Foster and Piazzola."
+  },
+  "kuru-gida": {
+    "name": "Dry Goods & Spices",
+    "shortName": "Dry goods",
+    "description": "Flour from Caputo and Primo, Barilla pasta, pulses and rice from Hane and Nawras, spices, frying oil and olive oil, tea and sugar."
+  },
+  "icecekler": {
+    "name": "Drinks",
+    "shortName": "Drinks",
+    "description": "Coca-Cola, Pepsi, Fanta, Lipton, Looza, Capri-Sun, Uludağ, Kızılay, Çamlıca, ayran, şalgam, energy drinks, water, beer and Kavaklıdere wines."
+  },
+  "ambalaj": {
+    "name": "Packaging",
+    "shortName": "Packaging",
+    "description": "Pizza boxes, chip and frikandel trays, döner, menu and burger boxes, aluminium trays, carrier bags, wrapping paper, cutlery and napkins."
+  },
+  "hijyen": {
+    "name": "Hygiene & Kitchen",
+    "shortName": "Hygiene",
+    "description": "Nitrile gloves, hand soap, glass and grill cleaner, disinfectant, toilet paper, bin bags and kitchen equipment such as döner knives."
+  }
+}

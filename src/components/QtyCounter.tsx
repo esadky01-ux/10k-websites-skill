@@ -25,7 +25,7 @@ export default function QtyCounter({ value, onChange, label, compact = false }: 
           aria-label={`${label} ${t.common.decrease}`}
           onClick={() => onChange(Math.max(0, value - 1))}
           disabled={value === 0}
-          className={`${size} flex items-center justify-center rounded-l-lg text-ink-700 transition hover:bg-cream-100 disabled:opacity-30`}
+          className={`${size} flex items-center justify-center rounded-s-lg text-ink-700 transition hover:bg-cream-100 disabled:opacity-30`}
         >
           <Minus className="h-4 w-4" />
         </button>
@@ -46,7 +46,7 @@ export default function QtyCounter({ value, onChange, label, compact = false }: 
           type="button"
           aria-label={`${label} ${t.common.increase}`}
           onClick={() => onChange(value + 1)}
-          className={`${size} flex items-center justify-center rounded-r-lg text-ink-700 transition hover:bg-cream-100`}
+          className={`${size} flex items-center justify-center rounded-e-lg text-ink-700 transition hover:bg-cream-100`}
         >
           <Plus className="h-4 w-4" />
         </button>

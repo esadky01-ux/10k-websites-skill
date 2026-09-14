@@ -98,7 +98,7 @@ export default function CartDrawer() {
   return (
     <>
       <div aria-hidden onClick={close} className={`fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-[2px] transition-opacity duration-300 ${isOpen ? "opacity-100" : "pointer-events-none opacity-0"}`} />
-      <aside role="dialog" aria-modal="true" aria-label={tc.title} translate="no" className={`notranslate fixed inset-y-0 right-0 z-50 flex w-full max-w-lg flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}>
+      <aside role="dialog" aria-modal="true" aria-label={tc.title} translate="no" className={`notranslate fixed inset-y-0 end-0 z-50 flex w-full max-w-lg flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}>
         <div className="flex items-center justify-between border-b border-cream-200 px-5 py-4">
           <div className="flex items-center gap-2">
             <ShoppingCart className="h-5 w-5 text-brand-500" />
@@ -131,7 +131,7 @@ export default function CartDrawer() {
                       <div className="mt-2 flex items-end gap-3">
                         <QtyCounter compact label={t.order.caseLabel} value={line.cases} onChange={(v) => cart.setQuantity(p.id, v, line.units)} />
                         <QtyCounter compact label={unitLabel(p, lang)} value={line.units} onChange={(v) => cart.setQuantity(p.id, line.cases, v)} />
-                        <button type="button" onClick={() => cart.remove(p.id)} aria-label={`${productName(p, lang)} ${tc.remove}`} className="mb-5 ml-auto rounded-full p-2 text-ink-300 hover:bg-brand-50 hover:text-brand-500"><Trash2 className="h-4 w-4" /></button>
+                        <button type="button" onClick={() => cart.remove(p.id)} aria-label={`${productName(p, lang)} ${tc.remove}`} className="mb-5 ms-auto rounded-full p-2 text-ink-300 hover:bg-brand-50 hover:text-brand-500"><Trash2 className="h-4 w-4" /></button>
                       </div>
                     </div>
                   </div>
@@ -149,12 +149,12 @@ export default function CartDrawer() {
                 {deliveryOptions.map((opt) => {
                   const active = cart.delivery === opt.value;
                   return (
-                    <label key={opt.value} className={`relative flex cursor-pointer flex-col gap-1 rounded-xl border p-3 text-left transition ${active ? "border-brand-500 bg-white ring-2 ring-brand-500/20" : "border-cream-200 bg-white hover:border-ink-300"}`}>
+                    <label key={opt.value} className={`relative flex cursor-pointer flex-col gap-1 rounded-xl border p-3 text-start transition ${active ? "border-brand-500 bg-white ring-2 ring-brand-500/20" : "border-cream-200 bg-white hover:border-ink-300"}`}>
                       <input type="radio" name="delivery" value={opt.value} checked={active} onChange={() => cart.setDelivery(opt.value)} className="sr-only" />
                       <opt.Icon className={`h-5 w-5 ${active ? "text-brand-500" : "text-ink-500"}`} />
                       <span className="text-sm font-semibold text-ink-900">{opt.label}</span>
                       <span className="text-[11px] leading-snug text-ink-500">{opt.sub}</span>
-                      {opt.value === "depo" && <span className="absolute right-2 top-2 rounded-full bg-gold-500 px-1.5 py-0.5 text-[10px] font-black text-ink-900">-15%</span>}
+                      {opt.value === "depo" && <span className="absolute end-2 top-2 rounded-full bg-gold-500 px-1.5 py-0.5 text-[10px] font-black text-ink-900">-15%</span>}
                     </label>
                   );
                 })}

@@ -39,7 +39,7 @@ export default function ProductThumb({ id, category, name, size = "md" }: { id: 
       {open && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-ink-900/70 p-4 backdrop-blur-sm" onClick={() => setOpen(false)} role="dialog" aria-modal="true" aria-label={name}>
           <div className="relative max-h-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <button type="button" onClick={() => setOpen(false)} className="absolute right-3 top-3 rounded-full bg-white/90 p-2 text-ink-700 shadow hover:bg-white" aria-label={t.common.close}>
+            <button type="button" onClick={() => setOpen(false)} className="absolute end-3 top-3 rounded-full bg-white/90 p-2 text-ink-700 shadow hover:bg-white" aria-label={t.common.close}>
               <X className="h-5 w-5" />
             </button>
             {/* eslint-disable-next-line @next/next/no-img-element */}

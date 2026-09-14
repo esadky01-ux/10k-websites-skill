@@ -1,8 +1,9 @@
 import { getProduct, formatPackaging, productName, unitLabel } from "@/data/products";
 import { getCategory } from "@/data/categories";
+import { categoryName } from "@/data/categories.i18n";
 import { site } from "@/lib/site";
 import type { CartLine, DeliveryType } from "@/lib/cart";
-import type { Locale } from "@/i18n/config";
+import { contentLocale, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n";
 import { formatEur } from "@/lib/format";
 
@@ -18,9 +19,12 @@ type Input = {
 
 /** Sepeti düzenli bir toptancı fişi biçiminde WhatsApp mesajına çevirir. */
 export function buildWhatsAppMessage({ lines, delivery, company, note, lang, prices, customerName }: Input) {
-  const t = getDictionary(lang).whatsapp;
+  // Fiş müşteriden Maximus'a gider ve depoda okunur: her zaman depo dilinde (Hollandaca veya Türkçe)
+  // yazılır, arayüz Fransızca/İngilizce/Arapça olsa bile.
+  const dl = contentLocale[lang];
+  const t = getDictionary(dl).whatsapp;
   const now = new Date();
-  const locale = lang === "nl" ? "nl-BE" : "tr-TR";
+  const locale = dl === "nl" ? "nl-BE" : "tr-TR";
   const date = now.toLocaleDateString(locale, { day: "2-digit", month: "2-digit", year: "numeric" });
   const time = now.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
 
@@ -38,12 +42,12 @@ export function buildWhatsAppMessage({ lines, delivery, company, note, lang, pri
 
   for (const [catSlug, catLines] of grouped) {
     const cat = getCategory(catSlug);
-    rows.push(`▪ *${cat?.name[lang] ?? catSlug}*`);
+    rows.push(`▪ *${cat ? categoryName(cat, dl) : catSlug}*`);
     for (const line of catLines) {
       const p = getProduct(line.productId)!;
       const parts: string[] = [];
       if (line.cases > 0) parts.push(`${line.cases} ${t.caseShort}`);
-      if (line.units > 0) parts.push(`${line.units} ${unitLabel(p, lang)}`);
+      if (line.units > 0) parts.push(`${line.units} ${unitLabel(p, dl)}`);
       totalCases += line.cases;
       totalUnits += line.units;
       const price = prices?.[p.id];
@@ -52,10 +56,10 @@ export function buildWhatsAppMessage({ lines, delivery, company, note, lang, pri
         priced = true;
         const lineTotal = line.cases * price + (line.units * price) / Math.max(1, p.unitsPerCase);
         estimate += lineTotal;
-        priceStr = ` · ${formatEur(lineTotal, lang)}`;
+        priceStr = ` · ${formatEur(lineTotal, dl)}`;
       }
       const catalog = lang === "tr" && p.nameNl !== p.name ? `\n   ${p.nameNl}` : "";
-      rows.push(`${idx}. ${productName(p, lang)} — ${p.brand}${catalog}\n   ${formatPackaging(p)}${p.sku !== "—" ? " · SKU " + p.sku : ""}\n   ➜ ${parts.join(" + ")}${priceStr}`);
+      rows.push(`${idx}. ${productName(p, dl)} — ${p.brand}${catalog}\n   ${formatPackaging(p)}${p.sku !== "—" ? " · SKU " + p.sku : ""}\n   ➜ ${parts.join(" + ")}${priceStr}`);
       idx++;
     }
     rows.push("");
@@ -78,7 +82,7 @@ export function buildWhatsAppMessage({ lines, delivery, company, note, lang, pri
     ...rows,
     "━━━━━━━━━━━━━━━━━━",
     `📦 ${t.total}: ${totals.join(" + ")} · ${idx - 1} ${t.lines}`,
-    priced ? `💶 ${t.estimate}: ${formatEur(finalEstimate, lang)}` : null,
+    priced ? `💶 ${t.estimate}: ${formatEur(finalEstimate, dl)}` : null,
     delivery === "depo" ? `💰 ${t.discountNote}` : null,
     note ? `📝 ${t.note}: ${note}` : null,
     "",

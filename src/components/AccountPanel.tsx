@@ -94,7 +94,7 @@ export default function AccountPanel() {
           </div>
         )}
         {orders[0] && (
-          <button type="button" onClick={() => reorder(orders[0].lines)} className="flex w-full items-center justify-between gap-4 rounded-2xl bg-ink-900 p-5 text-left text-white transition hover:bg-ink-800" data-testid="reorder-last">
+          <button type="button" onClick={() => reorder(orders[0].lines)} className="flex w-full items-center justify-between gap-4 rounded-2xl bg-ink-900 p-5 text-start text-white transition hover:bg-ink-800" data-testid="reorder-last">
             <span>
               <span className="flex items-center gap-2 text-lg font-bold"><RotateCcw className="h-5 w-5 text-gold-500" /> {ta.lastOrder}</span>
               <span className="mt-1 block text-sm text-cream-100/80">{formatDate(orders[0].createdAt, lang)} · {orders[0].lines.length} {ta.lines} · {linesSummary(orders[0].lines)}</span>

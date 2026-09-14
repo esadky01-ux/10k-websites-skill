@@ -10,7 +10,7 @@ export const tr: Dictionary = {
     keywords: ["toptan gıda Aarschot", "horeca tedarikçisi Belçika", "döner tedarik Belçika", "pizza malzemeleri toptan", "Pauwels sos toptan", "B2B gıda toptancısı"],
   },
   nav: { home: "Ana Sayfa", products: "Ürünler", regions: "Teslimat Bölgeleri", blog: "Blog", contact: "İletişim", account: "Hesabım", login: "Giriş Yap", register: "Kayıt Ol", logout: "Çıkış" },
-  header: { call: "Ara", cart: "Sepetim", langSwitch: "Nederlands", langSwitchAria: "Hollandacaya geç", menu: "Menü" },
+  header: { call: "Ara", cart: "Sepetim", langSwitch: "Dil", langSwitchAria: "Dili değiştir", menu: "Menü" },
   hero: {
     badge: "Quality Food. Trusted Partner.",
     title1: "Horeca işletmeniz için",
@@ -357,5 +357,5 @@ export const tr: Dictionary = {
     goCart: "Sepete git",
   },
   errorPage: { title: "Bir sorun oluştu", text: "Sayfa yüklenemedi. Tekrar deneyin; sorun sürerse bizi arayabilirsiniz.", retry: "Tekrar dene" },
-  common: { hours: "Pzt – Cum 08:00 – 17:00 · Cmt 09:00 – 13:00", pcs: "adet", case: "koli", increase: "artır", decrease: "azalt", enlarge: "büyüt", close: "kapat" },
+  common: { hours: "Pzt – Cum 08:00 – 17:00 · Cmt 09:00 – 13:00", pcs: "adet", case: "koli", increase: "artır", decrease: "azalt", enlarge: "büyüt", close: "kapat", contentLangNotice: "Bu sayfanın ayrıntılı metni {lang} dilindedir." },
 };
