@@ -471,6 +471,29 @@ await check("interface languages: Dutch, French, English and Turkish pages, menu
   assert(pageErrors.length === 0, `uncaught: ${pageErrors.join(" | ")}`);
   await lp.screenshot({ path: `${OUT}/lang-fr-order.png` });
   await lctx.close();
+
+  // Mobil: hamburger menüde dört dil de açılır liste olmadan, ekranda görünür
+  const mctx = await browser.newContext({ viewport: { width: 412, height: 870 }, locale: "tr-TR", userAgent: "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Mobile Safari/537.36" });
+  const mp = await mctx.newPage();
+  await mp.goto(`${BASE}/tr`, { waitUntil: "networkidle" });
+  await mp.click("[data-testid=menu-open]");
+  await mp.waitForSelector("[data-testid=lang-inline]");
+  await mp.waitForTimeout(600);
+  const expected = { nl: "/", fr: "/fr", en: "/en", tr: "/tr" };
+  for (const [l, href] of Object.entries(expected)) {
+    const chip = mp.locator(`[data-testid=lang-option-${l}]`);
+    assert(await chip.isVisible(), `${l} chip visible in the drawer`);
+    assert((await chip.getAttribute("href")) === href, `${l} chip href`);
+    const box = await chip.boundingBox();
+    assert(box && box.y + box.height <= 870, `${l} chip fits on screen (bottom ${box && Math.round(box.y + box.height)})`);
+  }
+  // Üst çubuktaki açılır liste mobilde gizlidir (display:none); çekmecede görünür bir açılır düğme olmamalı
+  assert((await mp.locator("[data-testid=lang-switch]:visible").count()) === 0, "no visible dropdown button on mobile");
+  assert((await mp.locator('[data-testid=lang-option-tr][aria-current="true"]').count()) === 1, "current language marked");
+  await mp.screenshot({ path: `${OUT}/lang-mobile-menu.png` });
+  await mp.click("[data-testid=lang-option-fr]");
+  await mp.waitForURL("**/fr");
+  await mctx.close();
 });
 await check("long-form pages fall back to a written language and stay out of the index", async () => {
   const cctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });

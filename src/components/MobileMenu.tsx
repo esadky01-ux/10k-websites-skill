@@ -78,6 +78,7 @@ export default function MobileMenu({ items, menuLabel, closeLabel }: { items: Na
                   <UserRound className="h-5 w-5 text-brand-500" />
                   {customer ? `${t.nav.account} · ${customer.company}` : t.nav.login}
                 </Link>
+                <LangSwitch variant="inline" className="mt-4 border-t border-cream-200 px-2 pt-4" />
               </nav>
 
               <div className="space-y-3 border-t border-cream-200 bg-cream-50 px-4 py-4 text-sm text-ink-700">
@@ -97,7 +98,6 @@ export default function MobileMenu({ items, menuLabel, closeLabel }: { items: Na
                   <Clock className="mt-0.5 h-4 w-4 shrink-0 text-brand-500" />
                   {t.common.hours}
                 </p>
-                <LangSwitch className="inline-flex rounded-full border border-cream-200 bg-white px-3 py-1.5 font-semibold text-ink-800" />
               </div>
             </aside>
           </div>,

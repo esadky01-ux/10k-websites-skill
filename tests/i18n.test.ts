@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { contentLocale, folderForSlug, localeNames, locales, localePath, routeSlugs } from "../src/i18n/config";
+import { contentLocale, folderForSlug, localeFlag, localeNames, localeShort, locales, localePath, routeSlugs } from "../src/i18n/config";
 import { nl } from "../src/i18n/nl";
 import { tr } from "../src/i18n/tr";
 import { fr } from "../src/i18n/fr";
@@ -27,6 +27,8 @@ test("every interface language is fully declared and has a dictionary", () => {
   assert.deepEqual([...locales], ["nl", "fr", "en", "tr"]);
   for (const l of locales) {
     assert.ok(localeNames[l], `${l} name`);
+    assert.ok(localeShort[l], `${l} short code`);
+    assert.match(localeFlag[l], /^[\u{1F1E6}-\u{1F1FF}]{2}$/u, `${l} flag is a regional-indicator pair`);
     assert.ok(["nl", "tr"].includes(contentLocale[l]), `${l} content locale`);
     for (const key of Object.keys(routeSlugs) as (keyof typeof routeSlugs)[]) {
       assert.match(routeSlugs[key][l], /^[a-z0-9-]+$/, `${l} ${key} slug`);

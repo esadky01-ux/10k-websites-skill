@@ -41,6 +41,12 @@ export const contentLocale: Record<Locale, ContentLocale> = { nl: "nl", fr: "nl"
 /** Dil değiştiricide gösterilen kendi dilindeki adlar. */
 export const localeNames: Record<Locale, string> = { nl: "Nederlands", fr: "Français", en: "English", tr: "Türkçe" };
 export const localeShort: Record<Locale, string> = { nl: "NL", fr: "FR", en: "EN", tr: "TR" };
+/**
+ * Dil seçicideki bayrak. Dil ile ülke aynı şey değildir; burada dilin en çok tanınan bayrağı kullanılır
+ * (Belçika'da hem Felemenkçe hem Fransızca resmîdir, bu yüzden Belçika bayrağı ikisini de anlatmaz).
+ * Emoji bayrağı olmayan sistemlerde (Windows) yanındaki dil adı ve kısa kod okunur kalır.
+ */
+export const localeFlag: Record<Locale, string> = { nl: "🇳🇱", fr: "🇫🇷", en: "🇬🇧", tr: "🇹🇷" };
 
 /** Uygulama rotaları: klasör adları Hollandaca, URL parçaları dile göre. */
 export const routeSlugs = {

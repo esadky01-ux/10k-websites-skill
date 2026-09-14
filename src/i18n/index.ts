@@ -18,6 +18,7 @@ export {
   intlLocale,
   localeNames,
   localeShort,
+  localeFlag,
   contentLocales,
   contentLocale,
   isContentLocale,
