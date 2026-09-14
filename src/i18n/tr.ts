@@ -169,6 +169,8 @@ export const tr: Dictionary = {
     postcode: "Posta kodu",
     city: "Şehir",
     country: "Ülke",
+    countryBE: "Belçika",
+    countryNL: "Hollanda",
     businessType: "İşletme türü",
     businessTypes: ["Döner / kebap", "Pizzacı", "Fritür / snackbar", "Restoran", "Catering", "Diğer"],
     submitLogin: "Giriş Yap",

@@ -546,6 +546,32 @@ await check("category slugs: Dutch links, filtering works and old Turkish links 
   }
   await sctx.close();
 });
+await check("the site always opens in Dutch; only the visitor's own click changes the language", async () => {
+  // Tarayıcı dili ne olursa olsun kök adres Felemenkçe açılır ve başka bir dile yönlendirilmez
+  for (const header of ["tr-TR,tr;q=0.9", "fr-BE,fr;q=0.9", "en-GB,en;q=0.9", "ar-SA,ar;q=0.9", "nl-BE,nl;q=0.9"]) {
+    for (const path of ["/", "/bestellen"]) {
+      const res = await ctx.request.get(`${BASE}${path}`, { headers: { "Accept-Language": header }, maxRedirects: 0 });
+      assert(res.status() === 200, `${path} with ${header} → ${res.status()} (no language redirect allowed)`);
+      const html = await res.text();
+      assert(/<html lang="nl-BE"/.test(html), `${path} with ${header} is not Dutch`);
+    }
+  }
+  // Kullanıcı kendisi seçerse dil değişir, ama bu seçim hatırlanıp kökü ele geçirmez
+  const pctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: "tr-TR" });
+  const pp = await pctx.newPage();
+  await pp.goto(`${BASE}/`, { waitUntil: "networkidle" });
+  assert((await pp.getAttribute("html", "lang")) === "nl-BE", "first visit is Dutch");
+  await pp.click("[data-testid=lang-switch]");
+  await pp.click("[data-testid=lang-option-tr]");
+  await pp.waitForURL("**/tr");
+  assert((await pp.getAttribute("html", "lang")) === "tr", "switching to Turkish works");
+  await pp.goto(`${BASE}/`, { waitUntil: "networkidle" });
+  assert((await pp.getAttribute("html", "lang")) === "nl-BE", "the root stays Dutch after a language switch");
+  const stored = await pp.evaluate(() => ({ ls: Object.keys(localStorage).filter((k) => /lang|locale/i.test(k)), cookie: document.cookie }));
+  assert(stored.ls.length === 0, `no language key in localStorage: ${stored.ls.join(",")}`);
+  assert(!/lang|locale|NEXT_LOCALE/i.test(stored.cookie), `no language cookie: ${stored.cookie}`);
+  await pctx.close();
+});
 await check("voice order API: config, validation and secret-free errors", async () => {
   const cfg = await (await ctx.request.get(`${BASE}/api/voice-agent`)).json();
   assert(cfg.configured === false && cfg.live === false && typeof cfg.maxSeconds === "number", "config shape");
