@@ -55,7 +55,7 @@ test("localePath builds Dutch root and Turkish prefixed URLs", () => {
   assert.equal(localePath("nl", "order"), "/bestellen");
   assert.equal(localePath("tr", "order"), "/tr/siparis");
   assert.equal(localePath("tr", "regions", "leuven"), "/tr/bolgeler/leuven");
-  assert.equal(localePath("nl", "order", undefined, "categorie=soslar"), "/bestellen?categorie=soslar");
+  assert.equal(localePath("nl", "order", undefined, "categorie=sauzen"), "/bestellen?categorie=sauzen");
   assert.equal(folderForSlug("tr", "siparis"), "bestellen");
   assert.equal(folderForSlug("tr", "hesap"), "account");
 });
@@ -82,6 +82,25 @@ test("localePath and folderForSlug round-trip for every language and route", () 
   assert.equal(localePath("fr", "order"), "/fr/commander");
   assert.equal(localePath("tr", "regions", "leuven"), "/tr/bolgeler/leuven");
   assert.equal(localePath("en", "account"), "/en/account");
+});
+
+test("category slugs are Dutch and every product points at a real category", async () => {
+  const { categories } = await import("../src/data/categories");
+  const { products } = await import("../src/data/products");
+  const slugs = new Set(categories.map((c) => c.slug));
+  const turkish = ["soslar", "et-urunleri", "dondurulmus", "konserve", "peynir-sut", "ekmek-hamur", "kuru-gida", "icecekler"];
+  for (const t of turkish) assert.ok(!slugs.has(t), `${t} is renamed`);
+  for (const s of ["sauzen", "vlees-doner", "diepvries", "conserven", "kaas-zuivel", "brood-deeg", "droge-voeding", "dranken"]) {
+    assert.ok(slugs.has(s), `${s} exists`);
+  }
+  for (const c of categories) {
+    assert.match(c.slug, /^[a-z0-9-]+$/, `${c.slug} shape`);
+    assert.equal(c.image, `/media/categories/${c.slug}.jpg`, `${c.slug} image path follows the slug`);
+    assert.ok(!/tursu/i.test(c.name.nl + c.description.nl), `${c.slug} Dutch text has no Turkish word`);
+  }
+  const used = new Set(products.map((p) => p.category));
+  for (const u of used) assert.ok(slugs.has(u), `product category ${u} exists`);
+  assert.equal(used.size, slugs.size, "every category has products");
 });
 
 test("WhatsApp receipt is localized", () => {

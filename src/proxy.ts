@@ -8,8 +8,25 @@ import { defaultLocale, folderForSlug, isLocale, locales } from "@/i18n/config";
  *  - /tr/siparis  → /tr/bestellen (Türkçe URL parçası Hollandaca klasöre eşlenir)
  *  - /nl/...      → 308 → /... (tek kanonik URL)
  *  - /siparis     → 308 → /tr/siparis (eski bağlantılar)
+ *
+ * Ayrıca kategori filtresindeki eski Türkçe slug'lar yeni Felemenkçe slug'lara 308 ile taşınır:
+ *  - /bestellen?categorie=soslar → /bestellen?categorie=sauzen
+ * Böylece dizindeki, bloglardaki ve müşteride kayıtlı eski bağlantılar çalışmaya devam eder.
  */
 const LEGACY_TR: Record<string, string> = { siparis: "/tr/siparis" };
+
+/** Eski kategori slug'ı → yeni slug (2026-09 Felemenkçeleştirme). */
+const LEGACY_CATEGORY: Record<string, string> = {
+  soslar: "sauzen",
+  "et-urunleri": "vlees-doner",
+  dondurulmus: "diepvries",
+  konserve: "conserven",
+  "peynir-sut": "kaas-zuivel",
+  "ekmek-hamur": "brood-deeg",
+  "kuru-gida": "droge-voeding",
+  icecekler: "dranken",
+};
+const CATEGORY_PARAMS = ["categorie", "kategori", "category"];
 
 export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -23,6 +40,17 @@ export default function proxy(request: NextRequest) {
     /\.[a-zA-Z0-9]+$/.test(pathname)
   ) {
     return NextResponse.next();
+  }
+
+  // Eski kategori slug'ıyla gelen bağlantıları yeni slug'a taşı (dil ve rota fark etmez)
+  for (const key of CATEGORY_PARAMS) {
+    const value = request.nextUrl.searchParams.get(key);
+    const next = value ? LEGACY_CATEGORY[value] : undefined;
+    if (next) {
+      const url = request.nextUrl.clone();
+      url.searchParams.set(key, next);
+      return NextResponse.redirect(url, 308);
+    }
   }
 
   const segments = pathname.split("/").filter(Boolean);

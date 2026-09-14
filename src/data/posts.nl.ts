@@ -12,7 +12,7 @@ export const postsNl: Post[] = [
     category: "Productgids",
     date: "2026-08-18",
     readingTime: 7,
-    image: "/media/categories/soslar.jpg",
+    image: "/media/categories/sauzen.jpg",
     keywords: ["frituursauzen groothandel", "samurai saus", "andalouse saus", "Belgische frietsaus", "curryketchup", "horeca sauzen leverancier"],
     content: `
 <p>Het succes van een frituur in België hangt evenveel af van de variatie aan de sauzentoog als van de krokantheid van de frieten. Een gemiddelde Vlaamse frituur biedt 15 tot 25 verschillende sauzen aan, en het grootste deel daarvan bestaat uit een handvol klassiekers. In deze gids bespreken we de <strong>bestverkochte Belgische frituursauzen</strong>, hoe u de juiste verpakking kiest en hoe u de kosten bij groothandelsaankoop onder controle houdt.</p>
@@ -63,7 +63,7 @@ export const postsNl: Post[] = [
 </ul>
 
 <h2>Sauzen in groothandel bij MAXIMUS</h2>
-<p>In ons magazijn in Aarschot hebben we de emmersauzen Cocktail, Andalouse, Look, Samurai en Mayo Chef van Pauwels op voorraad, net als Pauwels frituurmayonaise en Amerikaanse saus, verschillende sambals en halal bolognaisesaus. Bestel per doos via de <a href="/bestellen?categorie=soslar">snelbesteltabel</a> en ontvang dezelfde dag uw bevestiging via WhatsApp. Horecazaken die hun bestelling zelf afhalen in het magazijn, krijgen <strong>15 procent korting</strong> op alle sauzen.</p>
+<p>In ons magazijn in Aarschot hebben we de emmersauzen Cocktail, Andalouse, Look, Samurai en Mayo Chef van Pauwels op voorraad, net als Pauwels frituurmayonaise en Amerikaanse saus, verschillende sambals en halal bolognaisesaus. Bestel per doos via de <a href="/bestellen?categorie=sauzen">snelbesteltabel</a> en ontvang dezelfde dag uw bevestiging via WhatsApp. Horecazaken die hun bestelling zelf afhalen in het magazijn, krijgen <strong>15 procent korting</strong> op alle sauzen.</p>
 `,
   },
   {
@@ -77,7 +77,7 @@ export const postsNl: Post[] = [
     category: "Inkoopgids",
     date: "2026-08-25",
     readingTime: 9,
-    image: "/media/categories/et-urunleri.jpg",
+    image: "/media/categories/vlees-doner.jpg",
     keywords: ["döner groothandel België", "groothandel restaurant", "horeca groothandel Aarschot", "dönerspies groothandel", "horecaleverancier kiezen", "voedingsgroothandel Aarschot"],
     content: `
 <p>In België zijn meer dan 3.000 dönerzaken, pitazaken en Turkse restaurants actief. De winstmarge van die zaken hangt minder af van de menuprijzen dan van de <strong>efficiëntie van hun bevoorrading</strong>. Wie bij vijf verschillende leveranciers inkoopt, verliest elke week uren aan het opvolgen van bestellingen. Met een inkoopplan onder één dak wint u tijd én geld.</p>

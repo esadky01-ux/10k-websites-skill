@@ -1,15 +1,15 @@
 import { Beef, Snowflake, Package, CupSoda, Wheat, Droplets, Archive, SprayCan, Milk, Croissant, type LucideIcon } from "lucide-react";
 
 const map: Record<string, { Icon: LucideIcon; cls: string }> = {
-  soslar: { Icon: Droplets, cls: "bg-amber-100 text-amber-700" },
-  "et-urunleri": { Icon: Beef, cls: "bg-red-100 text-red-700" },
-  dondurulmus: { Icon: Snowflake, cls: "bg-sky-100 text-sky-700" },
-  konserve: { Icon: Archive, cls: "bg-lime-100 text-lime-800" },
-  "peynir-sut": { Icon: Milk, cls: "bg-orange-100 text-orange-700" },
-  "ekmek-hamur": { Icon: Croissant, cls: "bg-amber-100 text-amber-800" },
+  sauzen: { Icon: Droplets, cls: "bg-amber-100 text-amber-700" },
+  "vlees-doner": { Icon: Beef, cls: "bg-red-100 text-red-700" },
+  diepvries: { Icon: Snowflake, cls: "bg-sky-100 text-sky-700" },
+  conserven: { Icon: Archive, cls: "bg-lime-100 text-lime-800" },
+  "kaas-zuivel": { Icon: Milk, cls: "bg-orange-100 text-orange-700" },
+  "brood-deeg": { Icon: Croissant, cls: "bg-amber-100 text-amber-800" },
   ambalaj: { Icon: Package, cls: "bg-stone-200 text-stone-700" },
-  icecekler: { Icon: CupSoda, cls: "bg-blue-100 text-blue-700" },
-  "kuru-gida": { Icon: Wheat, cls: "bg-yellow-100 text-yellow-800" },
+  dranken: { Icon: CupSoda, cls: "bg-blue-100 text-blue-700" },
+  "droge-voeding": { Icon: Wheat, cls: "bg-yellow-100 text-yellow-800" },
   hijyen: { Icon: SprayCan, cls: "bg-teal-100 text-teal-700" },
 };
 
