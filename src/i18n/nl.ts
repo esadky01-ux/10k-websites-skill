@@ -174,6 +174,8 @@ export const nl = {
     postcode: "Postcode",
     city: "Gemeente",
     country: "Land",
+    countryBE: "België",
+    countryNL: "Nederland",
     businessType: "Type zaak",
     businessTypes: ["Dönerzaak / kebab", "Pizzeria", "Frituur / snackbar", "Restaurant", "Traiteur / catering", "Andere"],
     submitLogin: "Inloggen",

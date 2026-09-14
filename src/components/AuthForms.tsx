@@ -94,8 +94,8 @@ export function RegisterForm() {
         </Field>
         <Field label={t.auth.country}>
           <select name="country" className={input} defaultValue="BE">
-            <option value="BE">{lang === "nl" ? "België" : "Belçika"}</option>
-            <option value="NL">{lang === "nl" ? "Nederland" : "Hollanda"}</option>
+            <option value="BE">{t.auth.countryBE}</option>
+            <option value="NL">{t.auth.countryNL}</option>
           </select>
         </Field>
         <div className="sm:col-span-2"><Field label={t.auth.street}><input name="street" autoComplete="street-address" className={input} /></Field></div>

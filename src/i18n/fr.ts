@@ -176,6 +176,8 @@ export const fr: Dictionary = {
     postcode: "Code postal",
     city: "Commune",
     country: "Pays",
+    countryBE: "Belgique",
+    countryNL: "Pays-Bas",
     businessType: "Type d'établissement",
     businessTypes: ["Döner / kebab", "Pizzeria", "Friterie / snack", "Restaurant", "Traiteur / catering", "Autre"],
     submitLogin: "Connexion",
