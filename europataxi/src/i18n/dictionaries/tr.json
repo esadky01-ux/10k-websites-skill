@@ -1,0 +1,660 @@
+{
+  "meta": {
+    "siteName": "Europataxi",
+    "tagline": "Your Ride, Our Priority",
+    "ogLocale": "tr_TR",
+    "home": {
+      "title": "Europataxi | Belçika, Hollanda, Fransa ve Almanya'da Özel Transfer",
+      "description": "Havalimanı ve şehirlerarası özel transfer. Sabit fiyat, kapıdan kapıya hizmet, lisanslı sürücüler ve 7/24 destek. Fiyatınızı saniyeler içinde hesaplayın."
+    },
+    "services": {
+      "title": "Hizmetlerimiz | Europataxi",
+      "description": "Havalimanı transferi, şehirlerarası ve uluslararası transfer, kurumsal ve grup transferleri. Dört ülkede sabit fiyatlı özel ulaşım."
+    },
+    "airports": {
+      "title": "Havalimanı Transferleri | Europataxi",
+      "description": "Brüksel, Schiphol, Charles de Gaulle, Düsseldorf ve daha fazlası. İsim tabelasıyla karşılama, uçuş takibi ve 60 dakika ücretsiz bekleme."
+    },
+    "regions": {
+      "title": "Hizmet Bölgeleri | Europataxi",
+      "description": "Belçika, Hollanda, Fransa ve Almanya'da hizmet verdiğimiz şehirler ve havalimanları."
+    },
+    "contact": {
+      "title": "İletişim | Europataxi",
+      "description": "Rezervasyon, kurumsal iş birliği veya sorularınız için bize ulaşın. 7/24 telefon ve e-posta desteği."
+    },
+    "booking": {
+      "title": "Rezervasyon | Europataxi",
+      "description": "Aracınızı seçin, bilgilerinizi girin ve transferinizi sabit fiyatla tamamlayın."
+    },
+    "privacy": {
+      "title": "KVKK ve Gizlilik Politikası | Europataxi",
+      "description": "Europataxi'nin kişisel verileri nasıl işlediği, sakladığı ve koruduğu hakkında bilgiler."
+    },
+    "terms": {
+      "title": "Kullanım Koşulları | Europataxi",
+      "description": "Europataxi rezervasyon, iptal ve hizmet koşulları."
+    },
+    "notFound": {
+      "title": "Sayfa bulunamadı | Europataxi",
+      "description": "Aradığınız sayfa taşınmış ya da hiç var olmamış olabilir."
+    }
+  },
+  "common": {
+    "skipToContent": "İçeriğe geç",
+    "bookNow": "Hemen Rezervasyon Yap",
+    "calculatePrice": "Fiyat Hesapla",
+    "edit": "Düzenle",
+    "back": "Geri",
+    "close": "Kapat",
+    "loading": "Yükleniyor",
+    "phoneLabel": "Telefon",
+    "emailLabel": "E-posta",
+    "callUs": "Bizi arayın",
+    "km": "km",
+    "hoursShort": "sa",
+    "minutesShort": "dk",
+    "approximately": "yaklaşık",
+    "passengersCount": "{count} yolcu",
+    "luggageCount": "{count} bagaj",
+    "startingFrom": "Başlangıç fiyatı",
+    "optional": "opsiyonel",
+    "required": "zorunlu",
+    "learnMore": "Daha fazla bilgi",
+    "allCountries": "Belçika, Hollanda, Fransa ve Almanya"
+  },
+  "countries": {
+    "BE": "Belçika",
+    "NL": "Hollanda",
+    "FR": "Fransa",
+    "DE": "Almanya"
+  },
+  "locationTypes": {
+    "city": "Şehir",
+    "airport": "Havalimanı"
+  },
+  "locations": {
+    "brussels": "Brüksel",
+    "antwerp": "Anvers",
+    "ghent": "Gent",
+    "bruges": "Brugge",
+    "liege": "Liège",
+    "leuven": "Leuven",
+    "charleroi": "Charleroi",
+    "bru-airport": "Brüksel Havalimanı (BRU)",
+    "crl-airport": "Charleroi Havalimanı (CRL)",
+    "amsterdam": "Amsterdam",
+    "rotterdam": "Rotterdam",
+    "the-hague": "Lahey",
+    "utrecht": "Utrecht",
+    "eindhoven": "Eindhoven",
+    "maastricht": "Maastricht",
+    "ams-airport": "Amsterdam Schiphol (AMS)",
+    "ein-airport": "Eindhoven Havalimanı (EIN)",
+    "paris": "Paris",
+    "lille": "Lille",
+    "reims": "Reims",
+    "strasbourg": "Strazburg",
+    "metz": "Metz",
+    "cdg-airport": "Paris Charles de Gaulle (CDG)",
+    "ory-airport": "Paris Orly (ORY)",
+    "lil-airport": "Lille Havalimanı (LIL)",
+    "cologne": "Köln",
+    "dusseldorf": "Düsseldorf",
+    "aachen": "Aachen",
+    "frankfurt": "Frankfurt",
+    "dortmund": "Dortmund",
+    "dus-airport": "Düsseldorf Havalimanı (DUS)",
+    "cgn-airport": "Köln/Bonn Havalimanı (CGN)",
+    "fra-airport": "Frankfurt Havalimanı (FRA)"
+  },
+  "nav": {
+    "ariaMain": "Ana menü",
+    "ariaMobile": "Mobil menü",
+    "home": "Ana Sayfa",
+    "services": "Hizmetler",
+    "airports": "Havalimanı Transferleri",
+    "regions": "Bölgeler",
+    "contact": "İletişim",
+    "booking": "Rezervasyon",
+    "openMenu": "Menüyü aç",
+    "closeMenu": "Menüyü kapat",
+    "logoAria": "Europataxi, ana sayfa"
+  },
+  "languageSwitcher": {
+    "label": "Dil seçimi",
+    "current": "Seçili dil"
+  },
+  "hero": {
+    "eyebrow": "Belçika merkezli özel transfer",
+    "title": "Belçika, Fransa, Almanya ve Hollanda'da güvenilir transfer partneriniz",
+    "subtitle": "Havalimanından şehir merkezine ya da bir ülkeden diğerine; sabit fiyatla, kapıdan kapıya.",
+    "trust": [
+      {
+        "value": "4",
+        "label": "ülkede hizmet"
+      },
+      {
+        "value": "33",
+        "label": "şehir ve havalimanı"
+      },
+      {
+        "value": "%100",
+        "label": "sabit fiyat garantisi"
+      },
+      {
+        "value": "7/24",
+        "label": "destek hattı"
+      }
+    ],
+    "trustAria": "Güven göstergeleri"
+  },
+  "widget": {
+    "title": "Transferinizi planlayın",
+    "subtitle": "Fiyatınızı saniyeler içinde görün, kredi kartı gerekmez.",
+    "from": "Kalkış yeri",
+    "to": "Varış yeri",
+    "searchPlaceholder": "Şehir veya havalimanı yazın",
+    "noResults": "Sonuç bulunamadı",
+    "listboxLabel": "Konumlar",
+    "clearSelection": "Seçimi temizle",
+    "swap": "Kalkış ve varış yerini değiştir",
+    "date": "Tarih",
+    "time": "Saat",
+    "passengers": "Yolcu sayısı",
+    "luggage": "Bagaj sayısı",
+    "decrease": "{label} azalt",
+    "increase": "{label} artır",
+    "addReturn": "Dönüş transferi ekle",
+    "returnHint": "Dönüşlü rezervasyonlarda toplam fiyata %5 indirim uygulanır.",
+    "returnDate": "Dönüş tarihi",
+    "returnTime": "Dönüş saati",
+    "submit": "Fiyat Hesapla",
+    "formErrorSummary": "Devam etmek için işaretli alanları düzeltin.",
+    "prefilled": "Rota bilgileriniz yüklendi; dilerseniz düzenleyin."
+  },
+  "validation": {
+    "fromRequired": "Kalkış yeri seçin",
+    "toRequired": "Varış yeri seçin",
+    "unknownLocation": "Listeden bir konum seçin",
+    "sameLocation": "Varış yeri kalkış yeriyle aynı olamaz",
+    "dateRequired": "Tarih seçin",
+    "invalidDate": "Geçerli bir tarih girin",
+    "pastDate": "Tarih bugünden önce olamaz",
+    "timeRequired": "Saat seçin",
+    "invalidTime": "Saati 15 dakikalık aralıklarla seçin",
+    "returnBeforeOutbound": "Dönüş, gidiş tarih ve saatinden sonra olmalı",
+    "passengersRange": "Yolcu sayısı 1 ile 16 arasında olmalı",
+    "luggageRange": "Bagaj sayısı 0 ile 20 arasında olmalı",
+    "vehicleRequired": "Bir araç seçin",
+    "vehicleCapacity": "Seçilen araç bu yolcu ve bagaj sayısına uygun değil",
+    "firstNameRequired": "Adınızı girin",
+    "lastNameRequired": "Soyadınızı girin",
+    "nameRequired": "Adınızı ve soyadınızı girin",
+    "nameTooLong": "En fazla 60 karakter girebilirsiniz",
+    "emailInvalid": "Geçerli bir e-posta adresi girin",
+    "phoneInvalid": "Telefonu ülke koduyla girin, örneğin +32470000000",
+    "flightNumberInvalid": "Uçuş numarasını TK1937 biçiminde girin",
+    "noteTooLong": "Not en fazla 500 karakter olabilir",
+    "consentRequired": "Devam etmek için KVKK metnini onaylayın",
+    "subjectRequired": "Bir konu seçin",
+    "messageTooShort": "Mesajınız en az 10 karakter olmalı",
+    "messageTooLong": "Mesajınız en fazla 2000 karakter olabilir",
+    "invalidLocale": "Geçersiz dil",
+    "invalidJson": "İstek gövdesi geçerli JSON değil"
+  },
+  "features": {
+    "eyebrow": "Neden Europataxi",
+    "title": "Yolculuğunuz boyunca tek muhatabınız biziz",
+    "items": [
+      {
+        "title": "Sabit ve şeffaf fiyat",
+        "description": "Rezervasyonda gördüğünüz fiyatı ödersiniz; trafik veya bekleme için sürpriz ücret yok."
+      },
+      {
+        "title": "Ücretsiz iptal",
+        "description": "Transferden 24 saat öncesine kadar ücretsiz iptal."
+      },
+      {
+        "title": "7/24 müşteri desteği",
+        "description": "Türkçe, İngilizce ve Fransızca destek her saat yanınızda."
+      },
+      {
+        "title": "Lisanslı sürücüler",
+        "description": "Belçika ve Avrupa genelinde lisanslı, deneyimli profesyonel sürücüler."
+      }
+    ]
+  },
+  "fleet": {
+    "eyebrow": "Araç Filosu",
+    "title": "Her yolculuğa uygun bir araç",
+    "description": "Tüm araçlarımız düzenli bakımlı, temiz ve tam sigortalıdır. Kapasiteyi aşan araçlar rezervasyon adımında otomatik olarak devre dışı kalır.",
+    "capacity": "{min}–{max} yolcu",
+    "luggage": "{count} bagaj",
+    "modelLabel": "Örnek model",
+    "featuresLabel": "Öne çıkanlar",
+    "select": "Bu aracı seç",
+    "selected": "Seçildi",
+    "unavailable": "Bu rota için uygun değil",
+    "maxPassengers": "Bu araç en fazla {max} yolcu alır",
+    "maxLuggage": "Bu araç en fazla {max} bagaj alır",
+    "multiplierLabel": "Km başı çarpan",
+    "vehicles": {
+      "sedan": {
+        "name": "Berline (Sedan)",
+        "model": "Mercedes E-Serisi veya benzeri",
+        "description": "Üç kişiye kadar konforlu ve ekonomik seçim; havalimanı ve şehirlerarası yolculuklar için idealdir."
+      },
+      "van": {
+        "name": "Van (Minibüs)",
+        "model": "Mercedes V-Serisi veya benzeri",
+        "description": "Aileler, ekipler ve bol bagajlı gruplar için sekiz kişiye kadar geniş iç hacim."
+      },
+      "business": {
+        "name": "Business Class",
+        "model": "Mercedes S-Serisi veya benzeri",
+        "description": "Üst düzey konfor ve sessizlik; iş toplantıları, özel misafirler ve uzun yolculuklar için."
+      }
+    },
+    "featureLabels": {
+      "wifi": "Wi-Fi",
+      "water": "İkram su",
+      "childSeat": "Çocuk koltuğu talep edilebilir",
+      "extraLuggage": "Geniş bagaj alanı",
+      "premiumComfort": "Premium deri döşeme"
+    }
+  },
+  "howItWorks": {
+    "eyebrow": "Nasıl Çalışır",
+    "title": "Dört adımda kapınızda",
+    "steps": [
+      {
+        "title": "Rotanızı ve tarihinizi girin",
+        "description": "Kalkış ve varış yerini, tarihi, saati ve yolcu sayısını seçin."
+      },
+      {
+        "title": "Aracınızı seçin ve fiyatı görün",
+        "description": "Sabit fiyat anında hesaplanır; gizli ücret yoktur."
+      },
+      {
+        "title": "Bilgilerinizi girip rezervasyonu tamamlayın",
+        "description": "Ad, telefon ve varsa uçuş numaranızı bırakın, onay saniyeler içinde gelir."
+      },
+      {
+        "title": "Sürücünüz sizi karşılasın",
+        "description": "Planlanan saatte kapınızda ya da havalimanında isim tabelasıyla."
+      }
+    ]
+  },
+  "popularRoutes": {
+    "eyebrow": "Popüler Rotalar",
+    "title": "En çok tercih edilen güzergâhlar",
+    "description": "Karta tıklayın; rota widget'a yüklensin, tarih ve saatinizi ekleyip fiyatı görün.",
+    "startingFrom": "Başlangıç fiyatı",
+    "perVehicle": "sedan, tek yön",
+    "select": "{from} – {to} rotasını seç",
+    "distance": "yaklaşık {km} km",
+    "duration": "yaklaşık {duration}"
+  },
+  "regions": {
+    "eyebrow": "Ülkeler ve Bölgeler",
+    "title": "Dört ülke, tek standart",
+    "description": "Belçika'dan yola çıkan ekibimiz Benelüks, Kuzey Fransa ve Batı Almanya'nın tamamında aynı sabit fiyat ve aynı hizmet kalitesiyle çalışır.",
+    "citiesLabel": "Başlıca şehirler",
+    "airportsLabel": "Havalimanları",
+    "items": {
+      "BE": {
+        "title": "Belçika",
+        "description": "Merkezimiz Brüksel'de. Brüksel ve Charleroi havalimanlarından Flandre ve Valonya'nın her noktasına, günün her saati."
+      },
+      "NL": {
+        "title": "Hollanda",
+        "description": "Schiphol ve Eindhoven havalimanları, Randstad şehirleri ve Limburg. Belçika sınırından Amsterdam'a tek araçla, aktarmasız."
+      },
+      "FR": {
+        "title": "Fransa",
+        "description": "Paris havalimanları, Lille ve Kuzey Fransa. Brüksel–Paris hattında sabit fiyatla, tren saatine bağlı kalmadan."
+      },
+      "DE": {
+        "title": "Almanya",
+        "description": "Düsseldorf, Köln/Bonn ve Frankfurt havalimanları ile Ren bölgesi. Aachen ve Maastricht arası kısa sınır geçişleri dahil."
+      }
+    }
+  },
+  "airportTransfers": {
+    "eyebrow": "Havalimanı Transferleri",
+    "title": "Uçağınız insin, sürücünüz hazır olsun",
+    "description": "Havalimanı transferlerinde her ayrıntı düşünüldü: uçuşunuzu izleriz, gecikmede plan bizim tarafımızdan güncellenir ve bekleme için ek ücret ödemezsiniz.",
+    "items": [
+      {
+        "title": "İsim tabelasıyla karşılama",
+        "description": "Sürücünüz gelen yolcu salonunda üzerinde adınız yazılı tabelayla sizi bekler."
+      },
+      {
+        "title": "Uçuş takibi",
+        "description": "Uçuş numaranızı girin; gerçek iniş saatine göre havalimanında oluruz."
+      },
+      {
+        "title": "60 dakika ücretsiz bekleme",
+        "description": "İnişten sonra bir saat boyunca bekleme ücretsizdir. Pasaport kuyruğu ya da bagaj gecikmesi sorun değil."
+      }
+    ],
+    "cta": "Havalimanı transferi planla"
+  },
+  "faq": {
+    "eyebrow": "Sık Sorulan Sorular",
+    "title": "Aklınıza takılanlar",
+    "items": [
+      {
+        "question": "Fiyata neler dahil?",
+        "answer": "Gösterilen fiyat toplam tutardır: araç, sürücü, yakıt, otoyol ücretleri, sınır geçişi ve vergiler dahildir. Trafik, bekleme veya bagaj için ek ücret alınmaz."
+      },
+      {
+        "question": "İptal koşulları nelerdir?",
+        "answer": "Transfer saatinden 24 saat öncesine kadar ücretsiz iptal edebilirsiniz. Son 24 saat içindeki iptallerde ücretin tamamı tahsil edilir. İptal için rezervasyon numaranızla e-posta ya da telefonla bize ulaşmanız yeterlidir."
+      },
+      {
+        "question": "Uçuşum gecikirse ne olur?",
+        "answer": "Uçuş numaranızı girdiyseniz uçuşunuzu takip ederiz; sürücünüz gerçek iniş saatine göre havalimanında olur. İnişten sonra 60 dakika bekleme ücretsizdir, ek ücret ödemezsiniz."
+      },
+      {
+        "question": "Çocuk koltuğu talep edebilir miyim?",
+        "answer": "Evet. Rezervasyon sırasında sürücüye not alanına çocuğun yaşını yazmanız yeterli; bebek, çocuk veya yükseltici koltuğunu ücretsiz sağlarız."
+      },
+      {
+        "question": "Hangi ödeme yöntemlerini kabul ediyorsunuz?",
+        "answer": "Rezervasyon onayından sonra kredi kartı, banka havalesi ya da araçta nakit olarak ödeyebilirsiniz. Kurumsal müşteriler için aylık faturalama mümkündür."
+      },
+      {
+        "question": "Sınır geçişlerinde ne yapmam gerekir?",
+        "answer": "Belçika, Hollanda, Fransa ve Almanya Schengen alanındadır; düzenli sınır kontrolü yoktur, yine de yanınızda geçerli kimlik veya pasaport bulundurun. Ülke değiştiren rotalarda 10 € sınır ötesi ücreti fiyata baştan dahil edilir."
+      },
+      {
+        "question": "Sürücüm beni nerede karşılayacak?",
+        "answer": "Havalimanlarında gelen yolcu salonunda isim tabelasıyla, adreslerde ise kapınızın önünde. Sürücünüzün adı ve telefonu transferden önce size iletilir."
+      },
+      {
+        "question": "Büyük gruplar için araç ayarlayabilir misiniz?",
+        "answer": "Minibüsümüz sekiz kişiye kadar uygundur. Daha kalabalık gruplar için birden fazla aracı aynı saate koordine ederiz; bunun için bizi aramanız yeterli."
+      }
+    ]
+  },
+  "ctaBand": {
+    "title": "Yolculuğunuzu şimdi planlayın",
+    "description": "Fiyatınızı görmek bir dakika sürer, ödeme bilgisi istemeyiz.",
+    "button": "Fiyat Hesapla"
+  },
+  "footer": {
+    "tagline": "Your Ride, Our Priority",
+    "about": "Belçika, Hollanda, Fransa ve Almanya arasında sabit fiyatlı, kapıdan kapıya özel transfer.",
+    "quickLinks": "Hızlı bağlantılar",
+    "countries": "Hizmet verilen ülkeler",
+    "contact": "İletişim",
+    "hours": "7/24 rezervasyon ve destek",
+    "language": "Dil",
+    "social": "Sosyal medya",
+    "copyright": "© 2026 Europataxi. Tüm hakları saklıdır.",
+    "privacy": "KVKK / Gizlilik Politikası",
+    "terms": "Kullanım Koşulları"
+  },
+  "booking": {
+    "eyebrow": "Rezervasyon",
+    "title": "Rezervasyonunuzu tamamlayın",
+    "route": {
+      "title": "Rota özeti",
+      "from": "Kalkış",
+      "to": "Varış",
+      "date": "Tarih",
+      "time": "Saat",
+      "passengers": "Yolcu",
+      "luggage": "Bagaj",
+      "return": "Dönüş",
+      "oneWay": "Tek yön",
+      "edit": "Düzenle",
+      "editAria": "Rota bilgilerini düzenle"
+    },
+    "steps": {
+      "vehicle": "Aracınızı seçin",
+      "passenger": "Yolcu bilgileri"
+    },
+    "vehicleGroupLabel": "Araç seçimi",
+    "noVehicle": {
+      "title": "Bu grup için otomatik araç bulunamadı",
+      "description": "Sekiz kişiden kalabalık gruplar için birden fazla aracı aynı saate koordine ediyoruz. Bizi arayın, dakikalar içinde ayarlayalım."
+    },
+    "summary": {
+      "title": "Rezervasyon özeti",
+      "distance": "Tahmini mesafe",
+      "duration": "Tahmini süre",
+      "vehicle": "Araç",
+      "vehicleNotSelected": "Henüz seçilmedi",
+      "outbound": "Gidiş",
+      "inbound": "Dönüş",
+      "baseFare": "Yol ücreti",
+      "crossBorder": "Sınır ötesi ek ücret",
+      "night": "Gece ücreti (%15)",
+      "subtotal": "Ara toplam",
+      "returnDiscount": "Dönüş indirimi (%5)",
+      "total": "Toplam fiyat",
+      "selectVehicleHint": "Toplamı görmek için bir araç seçin.",
+      "fixedPriceNote": "Bu fiyat sabittir; trafik veya bekleme için ek ücret alınmaz.",
+      "perTrip": "Tüm vergiler ve otoyol ücretleri dahil"
+    },
+    "form": {
+      "firstName": "Ad",
+      "lastName": "Soyad",
+      "email": "E-posta",
+      "phone": "Telefon",
+      "phoneHint": "Ülke koduyla, örneğin +32 470 00 00 00",
+      "flightNumber": "Uçuş numarası",
+      "flightNumberHint": "Havalimanı transferlerinde uçuşunuzu takip ederiz, örneğin TK1937",
+      "note": "Sürücüye not",
+      "notePlaceholder": "Çocuk koltuğu, buluşma noktası, özel istekler",
+      "consent": "Kişisel verilerimin KVKK ve Gizlilik Politikası kapsamında rezervasyon amacıyla işlenmesini kabul ediyorum.",
+      "consentLink": "Gizlilik Politikası",
+      "submit": "Rezervasyonu Tamamla",
+      "submitting": "Gönderiliyor",
+      "requiredHint": "Yıldızlı alanlar zorunludur."
+    },
+    "invalidParams": {
+      "title": "Rota bilgileri eksik ya da hatalı",
+      "description": "Rezervasyona başlamak için kalkış, varış, tarih ve saat bilgileri gerekir. Ana sayfadaki widget'tan rotanızı yeniden girin.",
+      "button": "Rotayı yeniden gir"
+    },
+    "error": {
+      "title": "Rezervasyon oluşturulamadı",
+      "fields": "Lütfen işaretli alanları düzeltip tekrar deneyin.",
+      "network": "Sunucuya ulaşılamadı. İnternet bağlantınızı kontrol edip tekrar deneyin.",
+      "server": "Beklenmeyen bir hata oluştu. Birkaç saniye sonra tekrar deneyin ya da bizi arayın.",
+      "retry": "Tekrar dene"
+    },
+    "success": {
+      "title": "Rezervasyonunuz alındı",
+      "referenceLabel": "Rezervasyon numaranız",
+      "description": "Onay ve sürücü bilgilerini {email} adresine göndereceğiz. Değişiklik için bu numarayla bize ulaşabilirsiniz.",
+      "summaryTitle": "Rezervasyon özeti",
+      "customer": "Yolcu",
+      "newBooking": "Yeni rezervasyon yap",
+      "home": "Ana sayfaya dön",
+      "print": "Özeti yazdır"
+    }
+  },
+  "contact": {
+    "eyebrow": "İletişim",
+    "title": "Size nasıl yardımcı olabiliriz?",
+    "description": "Rezervasyon, kurumsal iş birliği ya da geri bildirim için formu doldurun; mesajınıza en geç birkaç saat içinde dönüş yaparız. Acil durumlar için 7/24 telefon hattımız açıktır.",
+    "info": {
+      "title": "Doğrudan ulaşın",
+      "phone": "Telefon",
+      "email": "E-posta",
+      "hours": "Çalışma saatleri",
+      "hoursValue": "7/24, yılın her günü",
+      "base": "Merkez",
+      "baseValue": "Brüksel, Belçika",
+      "languages": "Destek dilleri",
+      "languagesValue": "Türkçe, İngilizce, Fransızca"
+    },
+    "form": {
+      "name": "Ad Soyad",
+      "email": "E-posta",
+      "phone": "Telefon",
+      "phoneHint": "Ülke koduyla, örneğin +32 470 00 00 00",
+      "subject": "Konu",
+      "subjectPlaceholder": "Konu seçin",
+      "subjects": {
+        "booking": "Rezervasyon",
+        "corporate": "Kurumsal",
+        "complaint": "Şikayet",
+        "other": "Diğer"
+      },
+      "message": "Mesaj",
+      "messagePlaceholder": "Rotanız, tarihiniz ya da sorunuz",
+      "consent": "Kişisel verilerimin KVKK ve Gizlilik Politikası kapsamında iletişim amacıyla işlenmesini kabul ediyorum.",
+      "submit": "Mesajı Gönder",
+      "submitting": "Gönderiliyor"
+    },
+    "success": {
+      "title": "Mesajınız gönderildi",
+      "description": "Teşekkürler. En kısa sürede {email} adresine yanıt vereceğiz.",
+      "again": "Yeni mesaj gönder"
+    },
+    "error": {
+      "title": "Mesaj gönderilemedi",
+      "fields": "Lütfen işaretli alanları düzeltip tekrar deneyin.",
+      "network": "Sunucuya ulaşılamadı. İnternet bağlantınızı kontrol edip tekrar deneyin.",
+      "server": "Beklenmeyen bir hata oluştu. Birkaç saniye sonra tekrar deneyin ya da bizi arayın."
+    }
+  },
+  "servicesPage": {
+    "eyebrow": "Hizmetlerimiz",
+    "title": "Her ihtiyaca göre özel transfer",
+    "description": "Tek yolcudan sekiz kişilik gruplara, havalimanı karşılamasından ülkeler arası uzun yolculuklara: aynı sabit fiyat mantığı, aynı sürücü kalitesi.",
+    "items": [
+      {
+        "title": "Havalimanı transferi",
+        "description": "Brüksel, Charleroi, Schiphol, Eindhoven, Paris CDG ve Orly, Lille, Düsseldorf, Köln/Bonn ve Frankfurt. İsim tabelasıyla karşılama ve uçuş takibi dahildir."
+      },
+      {
+        "title": "Şehirlerarası transfer",
+        "description": "Brüksel–Anvers, Amsterdam–Rotterdam, Köln–Düsseldorf gibi şehir çiftleri arasında kapıdan kapıya; tren saatine ve aktarmaya bağlı kalmadan."
+      },
+      {
+        "title": "Uluslararası transfer",
+        "description": "Belçika, Hollanda, Fransa ve Almanya arasında tek araçla, sınırda değişim yapmadan. Sınır ötesi ücreti fiyata baştan dahildir."
+      },
+      {
+        "title": "Kurumsal transfer",
+        "description": "Misafir karşılama, yönetici ulaşımı ve düzenli personel servisleri için aylık faturalama ve öncelikli destek hattı."
+      },
+      {
+        "title": "Etkinlik ve grup transferi",
+        "description": "Fuar, düğün, kongre ve turnuvalar için birden fazla aracın aynı saate koordinasyonu; tek muhatap, tek fatura."
+      },
+      {
+        "title": "Gece ve erken saat transferi",
+        "description": "22:00–06:00 arası kalkışlarda da aynı sürücü standardı. Gece ücreti fiyata şeffaf biçimde yansıtılır, sürpriz olmaz."
+      }
+    ],
+    "includedTitle": "Her transfere dahil",
+    "included": [
+      "Sabit, önceden onaylanmış fiyat",
+      "Kapıdan kapıya hizmet",
+      "Lisanslı, deneyimli sürücü",
+      "Tam sigortalı ve bakımlı araç",
+      "Ücretsiz çocuk koltuğu",
+      "24 saat öncesine kadar ücretsiz iptal"
+    ],
+    "cta": "Fiyatınızı hesaplayın"
+  },
+  "airportsPage": {
+    "eyebrow": "Havalimanı Transferleri",
+    "title": "Havalimanı transferinde stres yok",
+    "description": "Dört ülkede on havalimanına ve havalimanından şehirlere sabit fiyatla ulaşım. Uçuşunuzu izleriz; geciken uçuş sizin değil bizim sorunumuzdur.",
+    "airportsTitle": "Hizmet verdiğimiz havalimanları",
+    "airportsDescription": "Bir havalimanı kartına tıklayın; rezervasyon widget'ında kalkış yeri olarak yüklensin.",
+    "selectAirport": "{name} kalkışlı transfer planla",
+    "meetTitle": "Karşılama nasıl işler?",
+    "meet": [
+      {
+        "title": "İnişten önce",
+        "description": "Uçuş numaranızı rezervasyonda paylaşın; sürücünüz gerçek iniş saatine göre yola çıkar."
+      },
+      {
+        "title": "Gelen yolcu salonunda",
+        "description": "Bagajınızı aldıktan sonra çıkışta üzerinde adınız yazılı tabelayı taşıyan sürücünüzü görürsünüz."
+      },
+      {
+        "title": "Yola çıkış",
+        "description": "Bagajlarınız yüklenir, ikram suyunuz hazırdır. Ücret rezervasyonda gördüğünüz tutardır; park ve bekleme dahildir."
+      }
+    ],
+    "cta": "Havalimanı transferi planla"
+  },
+  "regionsPage": {
+    "eyebrow": "Hizmet Bölgeleri",
+    "title": "Hizmet verdiğimiz şehirler ve havalimanları",
+    "description": "Aşağıdaki listelerde yer almayan bir adres mi var? Dört ülkenin tamamında adres bazlı transfer yapıyoruz; iletişim formundan rotanızı yazın, fiyatı size gönderelim.",
+    "cta": "Fiyatınızı hesaplayın",
+    "contactCta": "Listede olmayan rota için yazın"
+  },
+  "legal": {
+    "lastUpdated": "Son güncelleme: 1 Eylül 2026",
+    "privacy": {
+      "title": "KVKK ve Gizlilik Politikası",
+      "intro": "Europataxi olarak kişisel verilerinizi 6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) ve Avrupa Birliği Genel Veri Koruma Tüzüğü (GDPR) kapsamında işliyoruz. Bu metin hangi verileri, hangi amaçla ve ne kadar süreyle sakladığımızı açıklar.",
+      "sections": [
+        {
+          "heading": "Topladığımız veriler",
+          "body": "Rezervasyon ve iletişim formlarında paylaştığınız ad, soyad, e-posta, telefon, uçuş numarası ve sürücüye not alanındaki bilgiler ile rota, tarih ve yolcu sayısı gibi transfer bilgileri."
+        },
+        {
+          "heading": "İşleme amacı",
+          "body": "Transferinizi planlamak, sürücünüzle iletişim kurmak, uçuşunuzu takip etmek, rezervasyon onayı ve fatura göndermek ve talep ettiğiniz bilgileri sağlamak. Verileriniz pazarlama amacıyla üçüncü taraflarla paylaşılmaz."
+        },
+        {
+          "heading": "Saklama süresi",
+          "body": "Rezervasyon kayıtları yasal muhasebe yükümlülükleri nedeniyle 7 yıl, iletişim formu mesajları en fazla 12 ay saklanır ve sonrasında silinir."
+        },
+        {
+          "heading": "Haklarınız",
+          "body": "Verilerinize erişme, düzeltme, silme, işlemeyi kısıtlama ve itiraz etme hakkınız vardır. Taleplerinizi e-posta ile iletebilirsiniz; en geç 30 gün içinde yanıtlarız."
+        },
+        {
+          "heading": "Çerezler",
+          "body": "Site yalnızca dil tercihinizi hatırlamak için teknik olarak zorunlu çerez kullanır; reklam veya izleme çerezi yoktur."
+        }
+      ]
+    },
+    "terms": {
+      "title": "Kullanım Koşulları",
+      "intro": "Bu koşullar Europataxi web sitesi üzerinden yapılan tüm transfer rezervasyonları için geçerlidir. Rezervasyonu tamamlayarak bu koşulları kabul etmiş olursunuz.",
+      "sections": [
+        {
+          "heading": "Rezervasyon ve fiyat",
+          "body": "Rezervasyon sırasında gösterilen fiyat sabittir ve araç, sürücü, yakıt, otoyol ücretleri, sınır geçişi ve vergileri kapsar. Rota, tarih, saat veya yolcu sayısı değişirse fiyat yeniden hesaplanır ve onayınıza sunulur."
+        },
+        {
+          "heading": "İptal ve değişiklik",
+          "body": "Transfer saatinden 24 saat öncesine kadar yapılan iptaller ücretsizdir. Son 24 saat içindeki iptallerde ve yolcunun buluşma noktasına gelmemesi durumunda ücretin tamamı tahsil edilir."
+        },
+        {
+          "heading": "Bekleme süresi",
+          "body": "Havalimanı karşılamalarında uçağın inişinden itibaren 60 dakika, adres karşılamalarında planlanan saatten itibaren 15 dakika bekleme ücretsizdir. Sonrasında her başlayan 30 dakika için ek ücret uygulanır ve önceden bildirilir."
+        },
+        {
+          "heading": "Yolcu sorumlulukları",
+          "body": "Yolcular sınır geçişleri için geçerli kimlik belgelerini yanlarında bulundurmakla yükümlüdür. Araçta sigara içilmez; yolcunun neden olduğu hasar ve temizlik masrafları yolcuya yansıtılır."
+        },
+        {
+          "heading": "Sorumluluk",
+          "body": "Europataxi, mücbir sebepler (hava koşulları, yol kapanması, grev) nedeniyle oluşan gecikmelerden sorumlu tutulamaz; böyle durumlarda sizi en kısa sürede bilgilendirir ve alternatif sunar."
+        }
+      ]
+    }
+  },
+  "notFound": {
+    "title": "Sayfa bulunamadı",
+    "description": "Aradığınız sayfa taşınmış ya da hiç var olmamış olabilir. Ana sayfadan rotanızı yeniden planlayabilirsiniz.",
+    "home": "Ana sayfaya dön"
+  }
+}

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 112" width="440" height="112" role="img" aria-labelledby="t d">
+  <title id="t">Europataxi</title>
+  <desc id="d">Sarı taksi simgesi, EUROPATAXI yazısı ve Your Ride, Our Priority sloganı</desc>
+  <!-- Taksi simgesi: bu SVG'yi değiştirmek logoyu tüm sitede değiştirir (bkz. src/components/layout/Logo.tsx) -->
+  <g transform="translate(4 8)">
+    <rect x="34" y="0" width="28" height="12" rx="3" fill="#FFC20E"/>
+    <rect x="37" y="2" width="5" height="4" fill="#000000"/>
+    <rect x="47" y="2" width="5" height="4" fill="#000000"/>
+    <rect x="42" y="6" width="5" height="4" fill="#000000"/>
+    <rect x="52" y="6" width="5" height="4" fill="#000000"/>
+    <rect x="46" y="12" width="4" height="8" fill="#FFC20E"/>
+    <path d="M10 56 L18 34 Q22 22 36 22 L60 22 Q72 22 78 32 L90 46 Q96 48 96 54 L96 64 Q96 70 90 70 L6 70 Q0 70 0 64 L0 62 Q0 56 10 56 Z" fill="#FFC20E"/>
+    <path d="M40 28 L60 28 Q68 28 72 34 L78 44 L40 44 Z" fill="#000000"/>
+    <path d="M34 28 L34 44 L18 44 Q22 30 34 28 Z" fill="#000000"/>
+    <rect x="48" y="48" width="2" height="18" fill="#000000"/>
+    <rect x="86" y="54" width="8" height="5" rx="1" fill="#FFFFFF"/>
+    <circle cx="24" cy="70" r="10" fill="#000000"/>
+    <circle cx="24" cy="70" r="4" fill="#FFC20E"/>
+    <circle cx="74" cy="70" r="10" fill="#000000"/>
+    <circle cx="74" cy="70" r="4" fill="#FFC20E"/>
+  </g>
+  <text x="118" y="62" font-family="Archivo, 'Arial Black', Arial, Helvetica, sans-serif" font-weight="800" font-size="42" letter-spacing="1" fill="#FFFFFF">EUROPATAXI</text>
+  <text x="120" y="88" font-family="Archivo, Arial, Helvetica, sans-serif" font-weight="600" font-size="12.5" letter-spacing="4.2" fill="#FFC20E">YOUR RIDE, OUR PRIORITY</text>
+</svg>

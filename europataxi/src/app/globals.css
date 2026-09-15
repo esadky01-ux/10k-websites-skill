@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-ink font-sans text-paper antialiased;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  /* Görünür klavye odağı: her etkileşimli öğede sarı halka. */
+  :focus-visible {
+    outline: 3px solid theme("colors.taxi");
+    outline-offset: 2px;
+  }
+
+  /* Tarayıcı varsayılanları (mavi) yerine marka rengi. */
+  input,
+  select,
+  textarea,
+  progress {
+    accent-color: theme("colors.taxi");
+  }
+
+  a {
+    color: inherit;
+  }
+
+  ::selection {
+    background: theme("colors.taxi");
+    color: theme("colors.ink");
+  }
+
+  /* Tarih alanının takvim simgesi koyu zeminde beyaz görünsün. */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Markanın tek vurgu öğesi: sarı-siyah dama şeridi. */
+  .taxi-stripe {
+    background-color: theme("colors.ink");
+    background-image: repeating-conic-gradient(theme("colors.taxi") 0% 25%, theme("colors.ink") 0% 50%);
+    background-size: 24px 24px;
+  }
+
+  /* Uzun metinlerde satır uzunluğu 80 karakteri geçmesin. */
+  .prose-block {
+    max-width: 70ch;
+  }
+}
