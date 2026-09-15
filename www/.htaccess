@@ -1,0 +1,69 @@
+# ============================================================
+# EUROPA TAXI — kok .htaccess (sartname §11)
+# build.py bu dosyayi www/.htaccess olarak kopyalar.
+# Tum bloklar IfModule korumali: eksik modul 500 hatasi uretmez.
+# ============================================================
+
+AddDefaultCharset UTF-8
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+# ---- HTTPS zorunlu
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# ---- www -> ciplak alan adi
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+
+# ---- pay/orders/ web'den ERISILEMEZ (ek kilit; orders/.htaccess da var)
+RewriteRule ^pay/orders(/.*)?$ - [F,L]
+
+# ---- dil oneksiz adresler -> /fr/
+#      Kok (/) HARIC: kok sayfa tarayici diliyle JS yonlendirmesi yapar (sartname §3).
+#      Sunucu tarafinda IP/Accept-Language yonlendirmesi YOKTUR (Googlebot icin sart).
+RewriteCond %{REQUEST_URI} !^/(fr|nl|en|tr)(/|$)
+RewriteCond %{REQUEST_URI} !^/(assets|pay)/
+RewriteCond %{REQUEST_URI} !^/(index\.html)?$
+RewriteCond %{REQUEST_URI} !^/(robots\.txt|sitemap\.xml|favicon\.ico)$
+RewriteRule ^ /fr/ [R=301,L]
+</IfModule>
+
+# ---- config.php ve uretilen PHP verileri web'den okunamaz (ek kilit)
+<FilesMatch "^(config\.php|dil\.php|isletme\.php)$">
+  Require all denied
+  <IfModule !mod_authz_core.c>
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# ---- 404 -> /fr/ ana sayfa icerigi
+ErrorDocument 404 /fr/index.html
+
+# ---- onbellek: resimler 1 yil, CSS/JS 1 hafta, HTML her zaman taze
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType image/jpeg "access plus 1 year"
+ExpiresByType image/png "access plus 1 year"
+ExpiresByType image/webp "access plus 1 year"
+ExpiresByType image/svg+xml "access plus 1 year"
+ExpiresByType image/x-icon "access plus 1 year"
+ExpiresByType text/css "access plus 1 week"
+ExpiresByType application/javascript "access plus 1 week"
+ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+# ---- assets/config.js ASLA uzun onbellege girmez:
+#      musteri anahtari degistirince site aninda yeni degeri okumali
+<IfModule mod_headers.c>
+<Files "config.js">
+  Header set Cache-Control "no-cache, must-revalidate"
+</Files>
+Header always set X-Content-Type-Options "nosniff"
+</IfModule>
+
+# ---- gzip sikistirma
+<IfModule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/html text/css text/plain application/javascript application/json image/svg+xml application/xml
+</IfModule>
