@@ -127,13 +127,15 @@ export function startingPrice(from: string, to: string): number {
   return calculateLeg({ from, to, time: "12:00", vehicle: "sedan" }).total;
 }
 
-/** Para biçimi: Türkçe için `Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'EUR' })`. */
+/**
+ * Para biçimi: Türkçe için `Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'EUR' })`.
+ * Ondalık basamak sayısı bilinçli olarak varsayılan bırakılır (euro için iki basamak);
+ * böylece liste içinde "45,00 €" ile "572,20 €" aynı hizada durur.
+ */
 export function formatPrice(amount: number, locale: Locale = "tr"): string {
   return new Intl.NumberFormat(intlLocale(locale), {
     style: "currency",
     currency: PRICING_CONFIG.currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
   }).format(amount);
 }
 

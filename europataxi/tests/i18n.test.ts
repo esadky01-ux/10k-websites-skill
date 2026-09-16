@@ -7,7 +7,8 @@ import tr from "@/i18n/dictionaries/tr.json";
 import { deepMerge, getDictionary } from "@/i18n/getDictionary";
 import { resolveKey } from "@/i18n/utils";
 
-const EM_DASH = "—";
+/** U+2014 uzun tire; dosyada düz metin olarak geçmesin diye kod noktasından kurulur. */
+const EM_DASH = String.fromCodePoint(0x2014);
 
 /** Sözlük ağacındaki her yaprağı `path` bilgisiyle dolaşır. */
 function forEachLeaf(value: unknown, path: string, visit: (path: string, leaf: unknown) => void): void {
