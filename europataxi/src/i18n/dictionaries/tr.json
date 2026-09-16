@@ -61,7 +61,8 @@
     "optional": "opsiyonel",
     "required": "zorunlu",
     "learnMore": "Daha fazla bilgi",
-    "allCountries": "Belçika, Hollanda, Fransa ve Almanya"
+    "allCountries": "Belçika, Hollanda, Fransa ve Almanya",
+    "opensInNewTab": "yeni sekmede açılır"
   },
   "countries": {
     "BE": "Belçika",
@@ -262,7 +263,8 @@
       "childSeat": "Çocuk koltuğu talep edilebilir",
       "extraLuggage": "Geniş bagaj alanı",
       "premiumComfort": "Premium deri döşeme"
-    }
+    },
+    "selectAria": "{name} aracını seç"
   },
   "howItWorks": {
     "eyebrow": "Nasıl Çalışır",
@@ -319,7 +321,9 @@
         "title": "Almanya",
         "description": "Düsseldorf, Köln/Bonn ve Frankfurt havalimanları ile Ren bölgesi. Aachen ve Maastricht arası kısa sınır geçişleri dahil."
       }
-    }
+    },
+    "viewCountry": "{country} bölgesini incele",
+    "viewAll": "Tüm hizmet bölgeleri"
   },
   "airportTransfers": {
     "eyebrow": "Havalimanı Transferleri",
@@ -395,7 +399,12 @@
     "social": "Sosyal medya",
     "copyright": "© 2026 Europataxi. Tüm hakları saklıdır.",
     "privacy": "KVKK / Gizlilik Politikası",
-    "terms": "Kullanım Koşulları"
+    "terms": "Kullanım Koşulları",
+    "socialLabels": {
+      "instagram": "Instagram",
+      "facebook": "Facebook",
+      "linkedin": "LinkedIn"
+    }
   },
   "booking": {
     "eyebrow": "Rezervasyon",
@@ -511,7 +520,9 @@
       "messagePlaceholder": "Rotanız, tarihiniz ya da sorunuz",
       "consent": "Kişisel verilerimin KVKK ve Gizlilik Politikası kapsamında iletişim amacıyla işlenmesini kabul ediyorum.",
       "submit": "Mesajı Gönder",
-      "submitting": "Gönderiliyor"
+      "submitting": "Gönderiliyor",
+      "consentLink": "Gizlilik Politikası",
+      "requiredHint": "Tüm alanlar zorunludur."
     },
     "success": {
       "title": "Mesajınız gönderildi",
@@ -655,6 +666,12 @@
   "notFound": {
     "title": "Sayfa bulunamadı",
     "description": "Aradığınız sayfa taşınmış ya da hiç var olmamış olabilir. Ana sayfadan rotanızı yeniden planlayabilirsiniz.",
+    "home": "Ana sayfaya dön"
+  },
+  "errorPage": {
+    "title": "Bir şeyler ters gitti",
+    "description": "Sayfa yüklenirken beklenmeyen bir hata oluştu. Tekrar deneyin ya da ana sayfaya dönün.",
+    "retry": "Tekrar dene",
     "home": "Ana sayfaya dön"
   }
 }
