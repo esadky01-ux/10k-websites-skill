@@ -172,7 +172,9 @@
     "returnTime": "Dönüş saati",
     "submit": "Fiyat Hesapla",
     "formErrorSummary": "Devam etmek için işaretli alanları düzeltin.",
-    "prefilled": "Rota bilgileriniz yüklendi; dilerseniz düzenleyin."
+    "prefilled": "Rota bilgileriniz yüklendi; dilerseniz düzenleyin.",
+    "timePlaceholder": "Saat seçin",
+    "returnTimePlaceholder": "Dönüş saati seçin"
   },
   "validation": {
     "fromRequired": "Kalkış yeri seçin",
@@ -184,7 +186,7 @@
     "pastDate": "Tarih bugünden önce olamaz",
     "timeRequired": "Saat seçin",
     "invalidTime": "Saati 15 dakikalık aralıklarla seçin",
-    "returnBeforeOutbound": "Dönüş, gidiş tarih ve saatinden sonra olmalı",
+    "returnBeforeOutbound": "Dönüş, gidiş tarihi ve saatinden sonra olmalı",
     "passengersRange": "Yolcu sayısı 1 ile 16 arasında olmalı",
     "luggageRange": "Bagaj sayısı 0 ile 20 arasında olmalı",
     "vehicleRequired": "Bir araç seçin",
@@ -194,7 +196,7 @@
     "nameRequired": "Adınızı ve soyadınızı girin",
     "nameTooLong": "En fazla 60 karakter girebilirsiniz",
     "emailInvalid": "Geçerli bir e-posta adresi girin",
-    "phoneInvalid": "Telefonu ülke koduyla girin, örneğin +32470000000",
+    "phoneInvalid": "Telefonu ülke koduyla girin, örneğin +32 470 00 00 00",
     "flightNumberInvalid": "Uçuş numarasını TK1937 biçiminde girin",
     "noteTooLong": "Not en fazla 500 karakter olabilir",
     "consentRequired": "Devam etmek için KVKK metnini onaylayın",
@@ -229,14 +231,14 @@
   "fleet": {
     "eyebrow": "Araç Filosu",
     "title": "Her yolculuğa uygun bir araç",
-    "description": "Tüm araçlarımız düzenli bakımlı, temiz ve tam sigortalıdır. Kapasiteyi aşan araçlar rezervasyon adımında otomatik olarak devre dışı kalır.",
+    "description": "Tüm araçlarımız düzenli bakımdan geçer; temiz ve tam sigortalıdır. Yolcu ve bagaj sayınıza uymayan araçlar rezervasyon adımında otomatik olarak devre dışı kalır.",
     "capacity": "{min}–{max} yolcu",
     "luggage": "{count} bagaj",
     "modelLabel": "Örnek model",
     "featuresLabel": "Öne çıkanlar",
     "select": "Bu aracı seç",
     "selected": "Seçildi",
-    "unavailable": "Bu rota için uygun değil",
+    "unavailable": "Bu yolcu ve bagaj sayısına uygun değil",
     "maxPassengers": "Bu araç en fazla {max} yolcu alır",
     "maxLuggage": "Bu araç en fazla {max} bagaj alır",
     "multiplierLabel": "Km başı çarpan",
@@ -259,7 +261,7 @@
     },
     "featureLabels": {
       "wifi": "Wi-Fi",
-      "water": "İkram su",
+      "water": "İkram suyu",
       "childSeat": "Çocuk koltuğu talep edilebilir",
       "extraLuggage": "Geniş bagaj alanı",
       "premiumComfort": "Premium deri döşeme"
@@ -280,7 +282,7 @@
       },
       {
         "title": "Bilgilerinizi girip rezervasyonu tamamlayın",
-        "description": "Ad, telefon ve varsa uçuş numaranızı bırakın, onay saniyeler içinde gelir."
+        "description": "Adınızı, telefonunuzu ve varsa uçuş numaranızı bırakın; onay saniyeler içinde gelir."
       },
       {
         "title": "Sürücünüz sizi karşılasın",
@@ -291,10 +293,10 @@
   "popularRoutes": {
     "eyebrow": "Popüler Rotalar",
     "title": "En çok tercih edilen güzergâhlar",
-    "description": "Karta tıklayın; rota widget'a yüklensin, tarih ve saatinizi ekleyip fiyatı görün.",
+    "description": "Karta tıklayın; rota rezervasyon formuna yüklensin, tarih ve saatinizi ekleyip fiyatı görün.",
     "startingFrom": "Başlangıç fiyatı",
-    "perVehicle": "sedan, tek yön",
-    "select": "{from} – {to} rotasını seç",
+    "perVehicle": "Berline (Sedan), tek yön",
+    "select": "{from} kalkışlı, {to} varışlı rotayı seçin",
     "distance": "yaklaşık {km} km",
     "duration": "yaklaşık {duration}"
   },
@@ -307,7 +309,7 @@
     "items": {
       "BE": {
         "title": "Belçika",
-        "description": "Merkezimiz Brüksel'de. Brüksel ve Charleroi havalimanlarından Flandre ve Valonya'nın her noktasına, günün her saati."
+        "description": "Merkezimiz Brüksel'de. Brüksel ve Charleroi havalimanlarından Flandre ve Valonya'nın her noktasına, günün her saatinde."
       },
       "NL": {
         "title": "Hollanda",
@@ -328,7 +330,7 @@
   "airportTransfers": {
     "eyebrow": "Havalimanı Transferleri",
     "title": "Uçağınız insin, sürücünüz hazır olsun",
-    "description": "Havalimanı transferlerinde her ayrıntı düşünüldü: uçuşunuzu izleriz, gecikmede plan bizim tarafımızdan güncellenir ve bekleme için ek ücret ödemezsiniz.",
+    "description": "Havalimanı transferlerinde her ayrıntı düşünüldü: uçuşunuzu izleriz, gecikme olursa planı biz güncelleriz ve bekleme için ek ücret ödemezsiniz.",
     "items": [
       {
         "title": "İsim tabelasıyla karşılama",
@@ -336,14 +338,14 @@
       },
       {
         "title": "Uçuş takibi",
-        "description": "Uçuş numaranızı girin; gerçek iniş saatine göre havalimanında oluruz."
+        "description": "Uçuş numaranızı girin; gerçek iniş saatine göre havalimanında hazır oluruz."
       },
       {
         "title": "60 dakika ücretsiz bekleme",
         "description": "İnişten sonra bir saat boyunca bekleme ücretsizdir. Pasaport kuyruğu ya da bagaj gecikmesi sorun değil."
       }
     ],
-    "cta": "Havalimanı transferi planla"
+    "cta": "Havalimanı transferlerini görün"
   },
   "faq": {
     "eyebrow": "Sık Sorulan Sorular",
@@ -371,7 +373,7 @@
       },
       {
         "question": "Sınır geçişlerinde ne yapmam gerekir?",
-        "answer": "Belçika, Hollanda, Fransa ve Almanya Schengen alanındadır; düzenli sınır kontrolü yoktur, yine de yanınızda geçerli kimlik veya pasaport bulundurun. Ülke değiştiren rotalarda 10 € sınır ötesi ücreti fiyata baştan dahil edilir."
+        "answer": "Belçika, Hollanda, Fransa ve Almanya Schengen alanındadır; düzenli sınır kontrolü yoktur, yine de yanınızda geçerli kimlik veya pasaport bulundurun. Ülke değiştiren rotalarda €10'luk sınır ötesi ücreti fiyata baştan dahil edilir."
       },
       {
         "question": "Sürücüm beni nerede karşılayacak?",
@@ -379,7 +381,7 @@
       },
       {
         "question": "Büyük gruplar için araç ayarlayabilir misiniz?",
-        "answer": "Minibüsümüz sekiz kişiye kadar uygundur. Daha kalabalık gruplar için birden fazla aracı aynı saate koordine ederiz; bunun için bizi aramanız yeterli."
+        "answer": "Minibüsümüz en fazla sekiz yolcu taşır. Daha kalabalık gruplar için birden fazla aracı aynı saate koordine ederiz; bunun için bizi aramanız yeterli."
       }
     ]
   },
@@ -428,7 +430,7 @@
     },
     "vehicleGroupLabel": "Araç seçimi",
     "noVehicle": {
-      "title": "Bu grup için otomatik araç bulunamadı",
+      "title": "Bu yolcu sayısına uyan tek araç yok",
       "description": "Sekiz kişiden kalabalık gruplar için birden fazla aracı aynı saate koordine ediyoruz. Bizi arayın, dakikalar içinde ayarlayalım."
     },
     "summary": {
@@ -467,7 +469,7 @@
     },
     "invalidParams": {
       "title": "Rota bilgileri eksik ya da hatalı",
-      "description": "Rezervasyona başlamak için kalkış, varış, tarih ve saat bilgileri gerekir. Ana sayfadaki widget'tan rotanızı yeniden girin.",
+      "description": "Rezervasyona başlamak için kalkış, varış, tarih ve saat bilgileri gerekir. Ana sayfadaki rezervasyon formundan rotanızı yeniden girin.",
       "button": "Rotayı yeniden gir"
     },
     "error": {
@@ -539,7 +541,7 @@
   "servicesPage": {
     "eyebrow": "Hizmetlerimiz",
     "title": "Her ihtiyaca göre özel transfer",
-    "description": "Tek yolcudan sekiz kişilik gruplara, havalimanı karşılamasından ülkeler arası uzun yolculuklara: aynı sabit fiyat mantığı, aynı sürücü kalitesi.",
+    "description": "Tek yolcudan sekiz kişilik gruplara, havalimanı karşılamasından ülkeler arası uzun yolculuklara: aynı sabit fiyat, aynı sürücü kalitesi.",
     "items": [
       {
         "title": "Havalimanı transferi",
@@ -575,14 +577,14 @@
       "Ücretsiz çocuk koltuğu",
       "24 saat öncesine kadar ücretsiz iptal"
     ],
-    "cta": "Fiyatınızı hesaplayın"
+    "cta": "Fiyat Hesapla"
   },
   "airportsPage": {
     "eyebrow": "Havalimanı Transferleri",
     "title": "Havalimanı transferinde stres yok",
-    "description": "Dört ülkede on havalimanına ve havalimanından şehirlere sabit fiyatla ulaşım. Uçuşunuzu izleriz; geciken uçuş sizin değil bizim sorunumuzdur.",
+    "description": "Dört ülkedeki on havalimanına gidiş, bu havalimanlarından şehir merkezlerine dönüş; hepsi sabit fiyatla. Uçuşunuzu izleriz; geciken uçuş sizin değil bizim sorunumuzdur.",
     "airportsTitle": "Hizmet verdiğimiz havalimanları",
-    "airportsDescription": "Bir havalimanı kartına tıklayın; rezervasyon widget'ında kalkış yeri olarak yüklensin.",
+    "airportsDescription": "Bir havalimanı kartına tıklayın; kalkış yeri olarak rezervasyon formuna yüklensin.",
     "selectAirport": "{name} kalkışlı transfer planla",
     "meetTitle": "Karşılama nasıl işler?",
     "meet": [
@@ -604,8 +606,8 @@
   "regionsPage": {
     "eyebrow": "Hizmet Bölgeleri",
     "title": "Hizmet verdiğimiz şehirler ve havalimanları",
-    "description": "Aşağıdaki listelerde yer almayan bir adres mi var? Dört ülkenin tamamında adres bazlı transfer yapıyoruz; iletişim formundan rotanızı yazın, fiyatı size gönderelim.",
-    "cta": "Fiyatınızı hesaplayın",
+    "description": "Aşağıdaki listelerde yer almayan bir adres mi var? Dört ülkenin tamamında kapıdan kapıya, adrese kadar transfer yapıyoruz; iletişim formuna rotanızı yazın, fiyatı size gönderelim.",
+    "cta": "Fiyat Hesapla",
     "contactCta": "Listede olmayan rota için yazın"
   },
   "legal": {
@@ -669,7 +671,7 @@
     "home": "Ana sayfaya dön"
   },
   "errorPage": {
-    "title": "Bir şeyler ters gitti",
+    "title": "Bir sorun oluştu",
     "description": "Sayfa yüklenirken beklenmeyen bir hata oluştu. Tekrar deneyin ya da ana sayfaya dönün.",
     "retry": "Tekrar dene",
     "home": "Ana sayfaya dön"

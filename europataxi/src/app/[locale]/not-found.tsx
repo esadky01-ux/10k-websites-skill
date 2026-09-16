@@ -14,6 +14,11 @@ export async function generateMetadata({ params }: { params?: LocaleParams }): P
     title: dict.meta.notFound.title,
     description: dict.meta.notFound.description,
     robots: { index: false, follow: false },
+    // Düzenden miras kalan ana sayfa canonical'ı, hreflang kümesi ve OG etiketleri
+    // burada temizlenir; yoksa 404 kendini ana sayfa olarak işaretler (soft 404).
+    alternates: { canonical: null, languages: {} },
+    // `openGraph` bir bütün olarak ezilir; `url` yazılmadığı için ana sayfanın og:url'i taşınmaz.
+    openGraph: { title: dict.meta.notFound.title, description: dict.meta.notFound.description },
   };
 }
 

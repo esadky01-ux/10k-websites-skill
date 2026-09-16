@@ -43,8 +43,12 @@ function SwitcherLinks({ locale, labels, size = "sm", onNavigate, className = ""
               active ? "bg-taxi text-ink" : "text-muted hover:text-paper"
             }`}
           >
-            {localeConfig[target].short}
-            {active ? <span className="sr-only"> ({labels.current})</span> : null}
+            <span aria-hidden="true">{localeConfig[target].short}</span>
+            {/* Görsel olarak TR/EN/FR yazar; ekran okuyucu dilin tam adını okur. */}
+            <span className="sr-only">
+              {localeConfig[target].name}
+              {active ? ` (${labels.current})` : ""}
+            </span>
           </Link>
         );
       })}

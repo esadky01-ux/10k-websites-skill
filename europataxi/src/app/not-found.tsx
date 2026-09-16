@@ -10,9 +10,17 @@ import { localizedPath } from "@/lib/paths";
 import "./globals.css";
 
 /**
- * Kök 404. Nokta içeren yollar (`/dosya.txt`) middleware eşleşmesinin dışında kaldığı için
- * dil önekli düzene hiç girmez; bu sayfa o istekleri eksiksiz bir HTML belgesiyle karşılar.
- * Dil önekli yolların 404'ü `src/app/[locale]/not-found.tsx` sayfasıdır.
+ * Eşleşmeyen tüm yolların 404 sayfası (`/tr/olmayan-sayfa`, `/en/nope`, `/tr/a/b/c`).
+ * Kök düzen bilerek geçirgen olduğundan `<html>` ve `<body>` burada kurulur.
+ *
+ * Bu sayfa bilinçli olarak yakalayıcı bir rota (`[...rest]/page.tsx`) yerine Next'in
+ * kendi 404 yolunu kullanır: `notFound()` çağrısı belgeyi akışa alır ve header/footer
+ * ilk HTML'de görünmezdi. Metin varsayılan dilden gelir; EN/FR zaten Türkçeye düştüğü
+ * için görünür fark yoktur.
+ *
+ * Tek istisna: uzantı içeren yollar (`/dosya.txt`) middleware eşleşmesinin dışındadır ve
+ * Next'in sade 404 kabuğuna düşer. Durum kodu yine 404'tür; bu adresler sayfa değil
+ * dosya isteğidir.
  */
 export async function generateMetadata(): Promise<Metadata> {
   const dict = await getDictionary(defaultLocale);

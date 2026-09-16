@@ -38,6 +38,8 @@ export function pageMetadata({ locale, page, title, description, siteName, noInd
       locale: localeConfig[locale].intl.replace("-", "_"),
       alternateLocale: locales.filter((l) => l !== locale).map((l) => localeConfig[l].intl.replace("-", "_")),
     },
+    // `openGraph.images` ve `twitter.images` bilerek yazılmaz: Next, aynı segmentteki
+    // `opengraph-image.tsx` dosyasından üretilen görseli her iki etikete de kendisi ekler.
     twitter: { card: "summary_large_image", title, description },
     robots: noIndex ? { index: false, follow: true } : undefined,
   };

@@ -9,7 +9,7 @@ import { getDictionary, type Dictionary } from "@/i18n/getDictionary";
 import { archivo } from "@/lib/fonts";
 import { absoluteUrl, pageMetadata } from "@/lib/metadata";
 import { resolveLocale, type LocaleParams } from "@/lib/page";
-import { site } from "@/lib/site";
+import { site, socialProfileUrls } from "@/lib/site";
 import "../globals.css";
 
 export function generateStaticParams() {
@@ -50,7 +50,7 @@ function organizationJsonLd(locale: Locale, dict: Dictionary) {
     foundingDate: String(site.foundingYear),
     areaServed: countries.map((code) => ({ "@type": "Country", name: dict.countries[code], identifier: code })),
     knowsLanguage: locales.map((l) => localeConfig[l].hrefLang),
-    sameAs: Object.values(site.social),
+    ...(socialProfileUrls().length ? { sameAs: socialProfileUrls() } : {}),
   };
 }
 

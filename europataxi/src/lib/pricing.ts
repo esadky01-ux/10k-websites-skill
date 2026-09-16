@@ -1,6 +1,6 @@
 import { getLocation } from "@/data/locations";
 import { getVehicle } from "@/data/fleet";
-import { intlLocale, type Locale } from "@/i18n/config";
+import { defaultLocale, intlLocale, type Locale } from "@/i18n/config";
 import type { PriceLeg, Quote, VehicleId } from "@/types";
 
 /**
@@ -132,7 +132,7 @@ export function startingPrice(from: string, to: string): number {
  * Ondalık basamak sayısı bilinçli olarak varsayılan bırakılır (euro için iki basamak);
  * böylece liste içinde "45,00 €" ile "572,20 €" aynı hizada durur.
  */
-export function formatPrice(amount: number, locale: Locale = "tr"): string {
+export function formatPrice(amount: number, locale: Locale = defaultLocale): string {
   return new Intl.NumberFormat(intlLocale(locale), {
     style: "currency",
     currency: PRICING_CONFIG.currency,

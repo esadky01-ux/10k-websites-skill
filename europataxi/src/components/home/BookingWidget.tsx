@@ -267,7 +267,7 @@ export function BookingWidget({ locale, dict, locations, today }: BookingWidgetP
               id={fieldId("time")}
               label={dict.widget.time}
               options={TIME_OPTIONS}
-              placeholder={dict.widget.time}
+              placeholder={dict.widget.timePlaceholder}
               value={trip.time}
               onChange={(event) => update("time", event.target.value)}
               error={errorFor("time")}
@@ -322,7 +322,7 @@ export function BookingWidget({ locale, dict, locations, today }: BookingWidgetP
                 id={fieldId("return.time")}
                 label={dict.widget.returnTime}
                 options={TIME_OPTIONS}
-                placeholder={dict.widget.returnTime}
+                placeholder={dict.widget.returnTimePlaceholder}
                 value={trip.return.time}
                 onChange={(event) => updateReturn({ time: event.target.value })}
                 error={errorFor("return.time")}
