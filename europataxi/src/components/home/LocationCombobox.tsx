@@ -258,14 +258,17 @@ export function LocationCombobox({
         {/* mousedown engellenir ki seçeneğe tıklarken alan odağı kaybetmesin. */}
         <div
           onMouseDown={(event) => event.preventDefault()}
-          className={`absolute left-0 right-0 top-full z-20 mt-1 max-h-72 overflow-auto rounded-md border border-line bg-ink shadow-card ${open ? "" : "hidden"}`}
+          className={`absolute left-0 right-0 top-full z-20 mt-1 rounded-md border border-line bg-ink shadow-card ${open ? "" : "hidden"}`}
         >
-          <ul id={listboxId} role="listbox" aria-label={dict.widget.listboxLabel} className="py-1">
+          {/* Kaydırma ARIA bileşeninin kendisindedir; sarmalayıcıda olsaydı klavyeyle erişilemeyen bir kaydırma alanı oluşurdu. */}
+          <ul id={listboxId} role="listbox" aria-label={dict.widget.listboxLabel} tabIndex={-1} className="max-h-72 overflow-auto py-1">
             {open
               ? groups.map((group) => {
                   const groupLabelId = `${id}-group-${group.country}`;
                   return (
-                    <li key={group.country} role="group" aria-labelledby={groupLabelId}>
+                    // `group` rolü <li> için geçerli değildir; iç <ul>'de durur. Başlık grubun
+                    // dışındadır, yoksa ülke adı hem grup adı hem de içerik olarak iki kez okunur.
+                    <li key={group.country} role="presentation">
                       <div
                         id={groupLabelId}
                         role="presentation"
@@ -274,7 +277,7 @@ export function LocationCombobox({
                         <span>{dict.countries[group.country]}</span>
                         <span className="rounded border border-line px-1 tabular-nums">{group.country}</span>
                       </div>
-                      <ul role="presentation">
+                      <ul role="group" aria-labelledby={groupLabelId}>
                         {group.entries.map((entry) => {
                           const index = indexById.get(entry.location.id) ?? -1;
                           const isActive = index === activeIndex;
@@ -293,7 +296,7 @@ export function LocationCombobox({
                               }}
                               className={`flex items-center gap-3 px-3 py-2.5 text-base text-paper ${
                                 entry.disabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"
-                              } ${isActive ? "bg-ink-soft" : ""}`}
+                              } ${isActive ? "bg-ink-soft ring-2 ring-inset ring-taxi" : ""}`}
                             >
                               <Icon aria-hidden="true" className={`h-4 w-4 shrink-0 ${isActive ? "text-taxi" : "text-muted"}`} />
                               <span className="min-w-0 flex-1 break-words">{shortName(entry.name, entry.location.iata)}</span>

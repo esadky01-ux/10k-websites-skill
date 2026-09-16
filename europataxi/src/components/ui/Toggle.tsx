@@ -25,7 +25,7 @@ export function Toggle({ id, label, checked, onChange, hint, className = "" }: T
         <span
           aria-hidden="true"
           className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full border transition-colors motion-reduce:transition-none ${
-            checked ? "border-taxi bg-taxi" : "border-line bg-ink-soft group-hover:border-muted"
+            checked ? "border-taxi bg-taxi" : "border-line-strong bg-ink-soft group-hover:border-muted"
           }`}
         >
           <span

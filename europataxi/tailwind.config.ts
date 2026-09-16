@@ -11,6 +11,12 @@ const palette = {
   ink: "#000000",
   "ink-soft": "#141414",
   line: "#2A2A2A",
+  /**
+   * Etkileşimli öğelerin kenarlığı (alanlar, sayaç, anahtar, ikincil buton).
+   * WCAG 1.4.11 bileşen sınırları için 3:1 ister; `line` siyah zeminde 1,46:1'de kalır,
+   * bu ton hem `ink` hem `ink-soft` üzerinde 3:1'i geçer. Dekoratif ayraçlar `line` kalır.
+   */
+  "line-strong": "#666666",
   taxi: "#FFC20E",
   "taxi-dark": "#E0A800",
   paper: "#FFFFFF",

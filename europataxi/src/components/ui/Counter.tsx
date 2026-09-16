@@ -2,7 +2,7 @@
 
 import { Minus, Plus } from "lucide-react";
 import type { KeyboardEvent } from "react";
-import { FieldShell } from "./FieldShell";
+import { FieldShell, describedBy } from "./FieldShell";
 
 export interface CounterProps {
   id: string;
@@ -37,7 +37,7 @@ export function Counter({ id, label, value, min, max, onChange, decreaseLabel, i
 
   return (
     <FieldShell id={id} label={label} hint={hint} error={error} className={className} labelAs="span" labelId={labelId}>
-      <div className="flex min-h-12 items-stretch overflow-hidden rounded-md border border-line bg-ink focus-within:border-taxi">
+      <div className="flex min-h-12 items-stretch overflow-hidden rounded-md border border-line-strong bg-ink focus-within:border-taxi">
         <button type="button" className={btn} onClick={() => onChange(clamp(value - 1))} disabled={value <= min} aria-label={decreaseLabel}>
           <Minus aria-hidden="true" className="h-5 w-5" />
         </button>
@@ -51,9 +51,9 @@ export function Counter({ id, label, value, min, max, onChange, decreaseLabel, i
           aria-valuemax={max}
           aria-valuetext={String(value)}
           aria-invalid={error ? true : undefined}
-          aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
+          aria-describedby={describedBy(id, hint, error)}
           onKeyDown={onKeyDown}
-          className="flex flex-1 select-none items-center justify-center border-x border-line text-lg font-bold tabular-nums text-paper focus:outline-none focus-visible:bg-ink-soft"
+          className="flex flex-1 select-none items-center justify-center border-x border-line-strong text-lg font-bold tabular-nums text-paper focus-visible:bg-ink-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-taxi"
         >
           {value}
         </div>

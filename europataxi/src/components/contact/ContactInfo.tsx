@@ -51,12 +51,14 @@ export function ContactInfo({ dict, className = "" }: ContactInfoProps) {
       <h2 className="text-lg font-extrabold tracking-tight text-paper">{info.title}</h2>
       <dl className="mt-6 divide-y divide-line border-y border-line">
         {items.map(({ icon: Icon, label, value }) => (
-          <div key={label} className="flex items-start gap-4 py-4">
-            <Icon aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-taxi" />
-            <div className="min-w-0">
-              <dt className="text-sm text-muted">{label}</dt>
-              <dd className="mt-0.5 break-words text-base text-paper">{value}</dd>
-            </div>
+          // <dl> yalnızca tek bir sarmalayıcı <div> kabul eder ve içinde doğrudan <dt>/<dd> ister;
+          // simge bu yüzden <dt>'nin içindedir, ayrı bir kardeş öğe değil.
+          <div key={label} className="py-4">
+            <dt className="flex items-center gap-3 text-sm text-muted">
+              <Icon aria-hidden="true" className="h-5 w-5 shrink-0 text-taxi" />
+              {label}
+            </dt>
+            <dd className="mt-1 break-words pl-8 text-base text-paper">{value}</dd>
           </div>
         ))}
       </dl>

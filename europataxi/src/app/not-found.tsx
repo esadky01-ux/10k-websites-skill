@@ -38,7 +38,7 @@ export default async function RootNotFound() {
       <body className={`${archivo.variable} flex min-h-dvh flex-col`}>
         <SkipLink label={dict.common.skipToContent} />
         <Header locale={defaultLocale} dict={dict} />
-        <main id="main" className="flex-1">
+        <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
           <section className="container flex flex-col items-start gap-8 py-16 md:py-24">
             <SectionHeading as="h1" level="page" eyebrow="404" title={dict.notFound.title} description={dict.notFound.description} />
             <ButtonLink href={localizedPath(defaultLocale)}>{dict.notFound.home}</ButtonLink>

@@ -69,7 +69,8 @@ export default async function LocaleLayout({ children, params }: { children: Rea
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(organizationJsonLd(locale, dict)) }} />
         <SkipLink label={dict.common.skipToContent} />
         <Header locale={locale} dict={dict} />
-        <main id="main" className="flex-1">
+        {/* tabIndex=-1: "İçeriğe geç" bağlantısı odağı gerçekten buraya taşır (Safari/VoiceOver tek başına taşımaz). */}
+        <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
           {children}
         </main>
         <Footer locale={locale} dict={dict} />

@@ -16,7 +16,7 @@ const base =
 
 const variants: Record<ButtonVariant, string> = {
   primary: "bg-taxi text-ink hover:bg-taxi-dark focus-visible:ring-paper",
-  secondary: "border border-line bg-transparent text-paper hover:border-paper hover:bg-ink-soft focus-visible:ring-taxi",
+  secondary: "border border-line-strong bg-transparent text-paper hover:border-paper hover:bg-ink-soft focus-visible:ring-taxi",
   ghost: "bg-transparent text-paper hover:text-taxi focus-visible:ring-taxi",
 };
 

@@ -58,4 +58,4 @@ export function FieldShell({ id, label, required, hint, error, className = "", c
 }
 
 export const controlClasses =
-  "block w-full rounded-md border border-line bg-ink px-3.5 text-base text-paper placeholder:text-muted transition-colors motion-reduce:transition-none hover:border-muted focus:border-taxi focus:outline-none focus:ring-2 focus:ring-taxi/40 disabled:cursor-not-allowed disabled:opacity-50 aria-[invalid=true]:border-taxi";
+  "block w-full rounded-md border border-line-strong bg-ink px-3.5 text-base text-paper placeholder:text-muted transition-colors motion-reduce:transition-none hover:border-muted focus:border-taxi focus:outline-none focus:ring-2 focus:ring-taxi/40 disabled:cursor-not-allowed disabled:opacity-50 aria-[invalid=true]:border-taxi";

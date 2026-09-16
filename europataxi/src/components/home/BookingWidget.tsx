@@ -201,7 +201,7 @@ export function BookingWidget({ locale, dict, locations, today }: BookingWidgetP
   const hasErrors = Object.keys(errors).length > 0;
 
   const swapButtonClass =
-    "inline-flex h-9 w-9 items-center justify-center rounded-full border border-line bg-ink text-paper transition-colors motion-reduce:transition-none hover:border-taxi hover:text-taxi focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi focus-visible:ring-offset-2 focus-visible:ring-offset-ink-soft";
+    "inline-flex h-9 w-9 items-center justify-center rounded-full border border-line-strong bg-ink text-paper transition-colors motion-reduce:transition-none hover:border-taxi hover:text-taxi focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi focus-visible:ring-offset-2 focus-visible:ring-offset-ink-soft";
 
   return (
     <form

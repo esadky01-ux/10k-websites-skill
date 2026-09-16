@@ -80,11 +80,13 @@ export function MobileMenu({ locale, items, bookingHref, phone, nav, common, lan
 
   return (
     <>
+      {/* `aria-controls` yalnızca panel DOM'dayken yazılır: kapalıyken var olmayan bir kimliğe
+          işaret ederdi. İlişkiyi `aria-expanded`, `role="dialog"` ve odağın panele taşınması kuruyor. */}
       <button
         ref={toggleRef}
         type="button"
         aria-expanded={open}
-        aria-controls={PANEL_ID}
+        {...(open ? { "aria-controls": PANEL_ID } : {})}
         aria-label={open ? nav.closeMenu : nav.openMenu}
         onClick={() => (open ? dismiss() : setOpenedAt(pathname))}
         className={`${iconButton} xl:hidden`}
