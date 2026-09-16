@@ -37,7 +37,7 @@ export default async function AirportsPage({ params }: PageProps) {
 
   return (
     <>
-      <section className="bg-ink py-16 md:py-24">
+      <section className="bg-surface py-16 md:py-24">
         <div className="container">
           <SectionHeading
             as="h1"
@@ -51,10 +51,10 @@ export default async function AirportsPage({ params }: PageProps) {
               const Icon = PROMISE_ICONS[index] ?? PlaneLanding;
               return (
                 <li key={item.title} className="min-w-0 border-t border-line pt-6">
-                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-md bg-ink-soft text-taxi">
+                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-md bg-surface-2 text-taxi-ink">
                     <Icon aria-hidden="true" className="h-6 w-6" />
                   </span>
-                  <h2 className="mt-5 break-words text-lg font-bold text-paper">{item.title}</h2>
+                  <h2 className="mt-5 break-words text-lg font-bold text-content">{item.title}</h2>
                   <p className="mt-2 max-w-prose text-base text-muted">{item.description}</p>
                 </li>
               );
@@ -63,7 +63,7 @@ export default async function AirportsPage({ params }: PageProps) {
         </div>
       </section>
 
-      <section aria-labelledby="airports-list-title" className="bg-ink-soft py-16 md:py-24">
+      <section aria-labelledby="airports-list-title" className="bg-surface-2 py-16 md:py-24">
         <div className="container">
           <SectionHeading
             id="airports-list-title"
@@ -96,7 +96,7 @@ export default async function AirportsPage({ params }: PageProps) {
         </div>
       </section>
 
-      <section aria-labelledby="airports-meet-title" className="bg-ink py-16 md:py-24">
+      <section aria-labelledby="airports-meet-title" className="bg-surface py-16 md:py-24">
         <div className="container grid gap-12 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-16">
           <div>
             <SectionHeading id="airports-meet-title" title={dict.airportsPage.meetTitle} />
@@ -113,12 +113,12 @@ export default async function AirportsPage({ params }: PageProps) {
               >
                 <span
                   aria-hidden="true"
-                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-taxi text-base font-extrabold tabular-nums text-ink ring-8 ring-ink"
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-taxi text-base font-extrabold tabular-nums text-on-taxi ring-8 ring-surface"
                 >
                   {index + 1}
                 </span>
                 <div className="min-w-0 pt-2.5">
-                  <h3 className="break-words text-lg font-bold text-paper">{step.title}</h3>
+                  <h3 className="break-words text-lg font-bold text-content">{step.title}</h3>
                   <p className="mt-1.5 max-w-prose text-base text-muted">{step.description}</p>
                 </div>
               </li>

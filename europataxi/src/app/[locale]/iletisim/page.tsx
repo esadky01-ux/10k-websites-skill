@@ -39,7 +39,7 @@ export default async function ContactPage({ params }: PageProps) {
       />
       <div className="mt-12 grid gap-12 lg:mt-16 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-16">
         <ContactInfo dict={dict} />
-        <div className="rounded-lg border border-line bg-ink-soft p-5 sm:p-8">
+        <div className="rounded-lg border border-line bg-surface-2 p-5 sm:p-8">
           <ContactForm
             locale={locale}
             dict={{ contact: dict.contact, validation: dict.validation, common: dict.common }}

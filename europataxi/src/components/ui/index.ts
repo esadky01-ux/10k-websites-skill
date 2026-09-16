@@ -4,6 +4,7 @@ export { Checkbox } from "./Checkbox";
 export { Counter } from "./Counter";
 export { FieldShell, controlClasses, describedBy } from "./FieldShell";
 export { Input } from "./Input";
+export { MediaFrame } from "./MediaFrame";
 export { SectionHeading } from "./SectionHeading";
 export { Select } from "./Select";
 export { TaxiStripe } from "./TaxiStripe";

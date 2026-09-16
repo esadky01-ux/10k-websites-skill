@@ -16,13 +16,13 @@ export function Alert({ tone, title, children, className = "", id }: AlertProps)
   const Icon = icons[tone];
   const toneClass =
     tone === "error"
-      ? "border-taxi bg-ink-soft text-paper"
+      ? "border-taxi-ink bg-surface-2 text-content"
       : tone === "success"
-        ? "border-taxi bg-ink-soft text-paper"
-        : "border-line bg-ink-soft text-paper";
+        ? "border-taxi-ink bg-surface-2 text-content"
+        : "border-line bg-surface-2 text-content";
   return (
     <div id={id} role={tone === "error" ? "alert" : "status"} className={`flex gap-3 rounded-md border px-4 py-3 ${toneClass} ${className}`}>
-      <Icon aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-taxi" />
+      <Icon aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-taxi-ink" />
       <div className="text-sm">
         {title ? <p className="font-bold">{title}</p> : null}
         {children ? <div className={title ? "mt-1 text-muted" : ""}>{children}</div> : null}

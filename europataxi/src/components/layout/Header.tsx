@@ -7,6 +7,7 @@ import { site } from "@/lib/site";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Logo } from "./Logo";
 import { MobileMenu } from "./MobileMenu";
+import { ThemeToggle } from "./ThemeToggle";
 import { NavLinks, type NavItem } from "./NavLinks";
 
 /** Ana menü sayfaları; Header, MobileMenu ve Footer aynı listeyi kullanır. */
@@ -30,7 +31,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const phone = { display: site.phone.display, href: site.phone.href };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-ink/95 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-line bg-surface/95 backdrop-blur">
       <div className="container flex h-16 items-center justify-between gap-4 lg:h-[4.5rem]">
         <Logo locale={locale} ariaLabel={dict.nav.logoAria} />
         <nav aria-label={dict.nav.ariaMain} className="hidden xl:block">
@@ -40,10 +41,11 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           <div className="hidden md:block">
             <LanguageSwitcher locale={locale} labels={dict.languageSwitcher} />
           </div>
+          <ThemeToggle labels={dict.theme} />
           <a
             href={phone.href}
             aria-label={`${dict.common.callUs}: ${phone.display}`}
-            className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 whitespace-nowrap rounded-md px-2 text-sm font-bold text-paper transition-colors motion-reduce:transition-none hover:text-taxi focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 whitespace-nowrap rounded-md px-2 text-sm font-bold text-content transition-colors motion-reduce:transition-none hover:text-taxi-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi-ink"
           >
             <Phone aria-hidden="true" className="h-5 w-5" />
             {/* 1280'de menü, telefon ve CTA birlikte sığmıyor; numara 2xl'den itibaren yazıyla görünür. */}

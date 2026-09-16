@@ -3,7 +3,66 @@
 @tailwind utilities;
 
 @layer base {
+  /**
+   * Tema değişkenleri. Değerler "R G B" kanalları olarak yazılır ki Tailwind'in
+   * saydamlık ekleri (`bg-surface/95`) çalışsın.
+   *
+   * Sıra önemlidir:
+   *  1. `:root` açık temayı tanımlar (varsayılan).
+   *  2. Cihaz koyu tema istiyorsa `prefers-color-scheme` devreye girer.
+   *  3. Ziyaretçi başlıktaki düğmeyle seçim yaptıysa `[data-theme]` hepsini ezer.
+   */
   :root {
+    --c-surface: 255 255 255;
+    --c-surface-2: 244 244 245;
+    --c-content: 20 20 20;
+    --c-muted: 82 82 82;
+    --c-line: 228 228 231;
+    --c-line-strong: 138 138 138;
+    --c-taxi-ink: 122 90 0;
+    --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.06), 0 12px 32px -20px rgb(0 0 0 / 0.25);
+    --shadow-glow: 0 0 0 1px rgb(255 194 14 / 0.55), 0 18px 50px -22px rgb(122 90 0 / 0.45);
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --c-surface: 0 0 0;
+      --c-surface-2: 20 20 20;
+      --c-content: 255 255 255;
+      --c-muted: 163 163 163;
+      --c-line: 42 42 42;
+      --c-line-strong: 102 102 102;
+      --c-taxi-ink: 255 194 14;
+      --shadow-card: 0 1px 0 0 rgb(255 255 255 / 0.04) inset, 0 12px 40px -20px rgb(0 0 0 / 0.9);
+      --shadow-glow: 0 0 0 1px rgb(255 194 14 / 0.35), 0 18px 50px -20px rgb(255 194 14 / 0.35);
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="light"] {
+    --c-surface: 255 255 255;
+    --c-surface-2: 244 244 245;
+    --c-content: 20 20 20;
+    --c-muted: 82 82 82;
+    --c-line: 228 228 231;
+    --c-line-strong: 138 138 138;
+    --c-taxi-ink: 122 90 0;
+    --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.06), 0 12px 32px -20px rgb(0 0 0 / 0.25);
+    --shadow-glow: 0 0 0 1px rgb(255 194 14 / 0.55), 0 18px 50px -22px rgb(122 90 0 / 0.45);
+    color-scheme: light;
+  }
+
+  :root[data-theme="dark"] {
+    --c-surface: 0 0 0;
+    --c-surface-2: 20 20 20;
+    --c-content: 255 255 255;
+    --c-muted: 163 163 163;
+    --c-line: 42 42 42;
+    --c-line-strong: 102 102 102;
+    --c-taxi-ink: 255 194 14;
+    --shadow-card: 0 1px 0 0 rgb(255 255 255 / 0.04) inset, 0 12px 40px -20px rgb(0 0 0 / 0.9);
+    --shadow-glow: 0 0 0 1px rgb(255 194 14 / 0.35), 0 18px 50px -20px rgb(255 194 14 / 0.35);
     color-scheme: dark;
   }
 
@@ -13,14 +72,14 @@
   }
 
   body {
-    @apply bg-ink font-sans text-paper antialiased;
+    @apply bg-surface font-sans text-content antialiased;
     min-height: 100dvh;
     overflow-x: hidden;
   }
 
-  /* Görünür klavye odağı: her etkileşimli öğede sarı halka. */
+  /* Görünür klavye odağı: her etkileşimli öğede temaya uygun vurgu halkası. */
   :focus-visible {
-    outline: 3px solid theme("colors.taxi");
+    outline: 3px solid theme("colors.taxi-ink");
     outline-offset: 2px;
   }
 
@@ -29,7 +88,7 @@
   select,
   textarea,
   progress {
-    accent-color: theme("colors.taxi");
+    accent-color: theme("colors.taxi-ink");
   }
 
   a {
@@ -38,13 +97,22 @@
 
   ::selection {
     background: theme("colors.taxi");
-    color: theme("colors.ink");
+    color: theme("colors.on-taxi");
   }
 
-  /* Tarih alanının takvim simgesi koyu zeminde beyaz görünsün. */
+  /* Koyu temada takvim simgesi beyaz görünsün; açık temada olduğu gibi kalır. */
   input[type="date"]::-webkit-calendar-picker-indicator {
-    filter: invert(1);
     cursor: pointer;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+    }
+  }
+
+  :root[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -63,10 +131,10 @@
 }
 
 @layer components {
-  /* Markanın tek vurgu öğesi: sarı-siyah dama şeridi. */
+  /* Markanın tek vurgu öğesi: sarı-siyah dama şeridi. Her iki temada aynıdır. */
   .taxi-stripe {
-    background-color: theme("colors.ink");
-    background-image: repeating-conic-gradient(theme("colors.taxi") 0% 25%, theme("colors.ink") 0% 50%);
+    background-color: theme("colors.on-taxi");
+    background-image: repeating-conic-gradient(theme("colors.taxi") 0% 25%, theme("colors.on-taxi") 0% 50%);
     background-size: 24px 24px;
   }
 

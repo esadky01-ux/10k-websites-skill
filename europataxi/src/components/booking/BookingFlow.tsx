@@ -68,8 +68,8 @@ function focusFirstError(errors: Record<string, string>, trip: Trip) {
 
 function StepHeading({ id, number, title }: { id: string; number: number; title: string }) {
   return (
-    <h2 id={id} className="flex items-center gap-3 text-xl font-extrabold tracking-tight text-paper">
-      <span aria-hidden="true" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-taxi text-base text-ink">
+    <h2 id={id} className="flex items-center gap-3 text-xl font-extrabold tracking-tight text-content">
+      <span aria-hidden="true" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-taxi text-base text-on-taxi">
         {number}
       </span>
       <span>
@@ -185,7 +185,7 @@ export function BookingFlow({ locale, dict, trip, initialVehicle, today }: Booki
         ) : (
           <p>
             {dict.booking.error.server}{" "}
-            <a href={site.phone.href} className="font-bold text-taxi underline underline-offset-2 hover:text-taxi-dark">
+            <a href={site.phone.href} className="font-bold text-taxi-ink underline underline-offset-2 hover:text-taxi-dark">
               {site.phone.display}
             </a>
           </p>
@@ -202,8 +202,8 @@ export function BookingFlow({ locale, dict, trip, initialVehicle, today }: Booki
           <RouteSummary locale={locale} dict={dict} trip={trip} />
 
           {available.length === 0 ? (
-            <section aria-labelledby="booking-no-vehicle" className="rounded-lg border border-taxi bg-ink-soft p-6 md:p-8">
-              <h2 id="booking-no-vehicle" className="text-xl font-extrabold tracking-tight text-paper">
+            <section aria-labelledby="booking-no-vehicle" className="rounded-lg border border-taxi-ink bg-surface-2 p-6 md:p-8">
+              <h2 id="booking-no-vehicle" className="text-xl font-extrabold tracking-tight text-content">
                 {dict.booking.noVehicle.title}
               </h2>
               <p className="mt-3 max-w-prose text-muted">{dict.booking.noVehicle.description}</p>

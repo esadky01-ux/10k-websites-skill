@@ -13,7 +13,7 @@ interface HowItWorksProps {
  */
 export function HowItWorks({ dict }: HowItWorksProps) {
   return (
-    <section aria-labelledby="how-it-works-title" className="bg-ink py-16 md:py-24">
+    <section aria-labelledby="how-it-works-title" className="bg-surface py-16 md:py-24">
       <div className="container grid gap-12 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-16">
         <SectionHeading id="how-it-works-title" eyebrow={dict.howItWorks.eyebrow} title={dict.howItWorks.title} />
         <ol role="list">
@@ -24,12 +24,12 @@ export function HowItWorks({ dict }: HowItWorksProps) {
             >
               <span
                 aria-hidden="true"
-                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-taxi text-base font-extrabold tabular-nums text-ink ring-8 ring-ink"
+                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-taxi text-base font-extrabold tabular-nums text-on-taxi ring-8 ring-surface"
               >
                 {index + 1}
               </span>
               <div className="min-w-0 pt-2.5">
-                <h3 className="text-lg font-bold text-paper">{step.title}</h3>
+                <h3 className="text-lg font-bold text-content">{step.title}</h3>
                 <p className="mt-1.5 max-w-prose text-base text-muted">{step.description}</p>
               </div>
             </li>

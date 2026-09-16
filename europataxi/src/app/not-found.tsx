@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { SkipLink } from "@/components/layout/SkipLink";
+import { themeInitScript } from "@/components/layout/ThemeToggle";
 import { ButtonLink, SectionHeading } from "@/components/ui";
 import { defaultLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/getDictionary";
@@ -34,8 +35,9 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootNotFound() {
   const dict = await getDictionary(defaultLocale);
   return (
-    <html lang={defaultLocale}>
+    <html lang={defaultLocale} suppressHydrationWarning>
       <body className={`${archivo.variable} flex min-h-dvh flex-col`}>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <SkipLink label={dict.common.skipToContent} />
         <Header locale={defaultLocale} dict={dict} />
         <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">

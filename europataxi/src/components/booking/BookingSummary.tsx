@@ -44,7 +44,7 @@ function PriceLines({ title, lines }: { title?: string; lines: PriceLine[] }) {
         {lines.map((line) => (
           <div key={line.label} className="flex items-baseline justify-between gap-4">
             <dt className="text-muted">{line.label}</dt>
-            <dd className="tabular-nums text-paper">{line.value}</dd>
+            <dd className="tabular-nums text-content">{line.value}</dd>
           </div>
         ))}
       </dl>
@@ -70,8 +70,8 @@ export function BookingSummary({ locale, dict, trip, vehicle, quote, className =
   ];
 
   return (
-    <section aria-labelledby={TITLE_ID} className={`rounded-lg border border-line bg-ink-soft p-5 md:p-6 ${className}`}>
-      <h2 id={TITLE_ID} className="text-lg font-extrabold text-paper">
+    <section aria-labelledby={TITLE_ID} className={`rounded-lg border border-line bg-surface-2 p-5 md:p-6 ${className}`}>
+      <h2 id={TITLE_ID} className="text-lg font-extrabold text-content">
         {summary.title}
       </h2>
 
@@ -79,7 +79,7 @@ export function BookingSummary({ locale, dict, trip, vehicle, quote, className =
         {facts.map((fact) => (
           <div key={fact.label} className="flex items-baseline justify-between gap-4 py-2.5 text-sm">
             <dt className="text-muted">{fact.label}</dt>
-            <dd className="text-right font-medium text-paper">{fact.value}</dd>
+            <dd className="text-right font-medium text-content">{fact.value}</dd>
           </div>
         ))}
       </dl>
@@ -98,8 +98,8 @@ export function BookingSummary({ locale, dict, trip, vehicle, quote, className =
           ) : null}
           <div className="border-t border-line pt-4">
             <dl className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-              <dt className="font-bold text-paper">{summary.total}</dt>
-              <dd className="text-2xl font-extrabold tabular-nums text-taxi">{formatPrice(quote.total, locale)}</dd>
+              <dt className="font-bold text-content">{summary.total}</dt>
+              <dd className="text-2xl font-extrabold tabular-nums text-taxi-ink">{formatPrice(quote.total, locale)}</dd>
             </dl>
             <p className="mt-1 text-sm text-muted">{summary.perTrip}</p>
           </div>

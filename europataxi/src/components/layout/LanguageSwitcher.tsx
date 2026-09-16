@@ -29,7 +29,7 @@ const pillSizes = {
 function SwitcherLinks({ locale, labels, size = "sm", onNavigate, className = "", search }: SwitcherLinksProps) {
   const pathname = usePathname();
   return (
-    <div role="group" aria-label={labels.label} className={`inline-flex items-center gap-0.5 rounded-full border border-line bg-ink-soft p-1 ${className}`}>
+    <div role="group" aria-label={labels.label} className={`inline-flex items-center gap-0.5 rounded-full border border-line bg-surface-2 p-1 ${className}`}>
       {locales.map((target) => {
         const active = target === locale;
         return (
@@ -39,8 +39,8 @@ function SwitcherLinks({ locale, labels, size = "sm", onNavigate, className = ""
             hrefLang={localeConfig[target].hrefLang}
             aria-current={active ? "true" : undefined}
             onClick={onNavigate}
-            className={`inline-flex items-center justify-center rounded-full text-sm font-bold leading-none transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi focus-visible:ring-offset-2 focus-visible:ring-offset-ink-soft ${pillSizes[size]} ${
-              active ? "bg-taxi text-ink" : "text-muted hover:text-paper"
+            className={`inline-flex items-center justify-center rounded-full text-sm font-bold leading-none transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi-ink focus-visible:ring-offset-2 focus-visible:ring-offset-surface-2 ${pillSizes[size]} ${
+              active ? "bg-taxi text-on-taxi" : "text-muted hover:text-content"
             }`}
           >
             <span aria-hidden="true">{localeConfig[target].short}</span>

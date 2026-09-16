@@ -148,7 +148,8 @@
         "label": "destek hattı"
       }
     ],
-    "trustAria": "Güven göstergeleri"
+    "trustAria": "Güven göstergeleri",
+    "imageAlt": "Takım elbiseli şoför, siyah lüks bir aracın açık arka kapısının yanında müşterisini bekliyor"
   },
   "widget": {
     "title": "Transferinizi planlayın",
@@ -266,7 +267,8 @@
       "extraLuggage": "Geniş bagaj alanı",
       "premiumComfort": "Premium deri döşeme"
     },
-    "selectAria": "{name} aracını seç"
+    "selectAria": "{name} aracını seç",
+    "photoAlt": "{name} araç fotoğrafı"
   },
   "howItWorks": {
     "eyebrow": "Nasıl Çalışır",
@@ -325,7 +327,8 @@
       }
     },
     "viewCountry": "{country} bölgesini incele",
-    "viewAll": "Tüm hizmet bölgeleri"
+    "viewAll": "Tüm hizmet bölgeleri",
+    "photoAlt": "{country} şehir manzarası"
   },
   "airportTransfers": {
     "eyebrow": "Havalimanı Transferleri",
@@ -675,5 +678,12 @@
     "description": "Sayfa yüklenirken beklenmeyen bir hata oluştu. Tekrar deneyin ya da ana sayfaya dönün.",
     "retry": "Tekrar dene",
     "home": "Ana sayfaya dön"
+  },
+  "theme": {
+    "label": "Tema",
+    "toLight": "Açık temaya geç",
+    "toDark": "Koyu temaya geç",
+    "light": "Açık tema",
+    "dark": "Koyu tema"
   }
 }

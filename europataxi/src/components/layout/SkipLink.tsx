@@ -8,7 +8,7 @@ export function SkipLink({ label }: SkipLinkProps) {
   return (
     <a
       href="#main"
-      className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:inline-flex focus:min-h-11 focus:items-center focus:rounded-md focus:bg-taxi focus:px-4 focus:text-base focus:font-bold focus:text-ink focus:outline-none focus:ring-4 focus:ring-paper"
+      className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:inline-flex focus:min-h-11 focus:items-center focus:rounded-md focus:bg-taxi focus:px-4 focus:text-base focus:font-bold focus:text-on-taxi focus:outline-none focus:ring-4 focus:ring-content"
     >
       {label}
     </a>

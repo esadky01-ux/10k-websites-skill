@@ -28,7 +28,7 @@ export function FAQ({ dict }: FAQProps) {
   }
 
   return (
-    <section aria-labelledby="faq-title" className="bg-ink py-16 md:py-24">
+    <section aria-labelledby="faq-title" className="bg-surface py-16 md:py-24">
       <div className="container grid gap-12 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-16">
         <SectionHeading id="faq-title" eyebrow={dict.eyebrow} title={dict.title} />
         <div className="divide-y divide-line border-y border-line">
@@ -45,12 +45,12 @@ export function FAQ({ dict }: FAQProps) {
                     aria-expanded={isOpen}
                     aria-controls={panelId}
                     onClick={() => toggle(index)}
-                    className="flex w-full items-center justify-between gap-4 py-5 text-left text-base font-bold text-paper transition-colors hover:text-taxi focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-taxi motion-reduce:transition-none md:text-lg"
+                    className="flex w-full items-center justify-between gap-4 py-5 text-left text-base font-bold text-content transition-colors hover:text-taxi-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-taxi-ink motion-reduce:transition-none md:text-lg"
                   >
                     <span className="break-words">{item.question}</span>
                     <ChevronDown
                       aria-hidden="true"
-                      className={`h-5 w-5 shrink-0 text-taxi transition-transform motion-reduce:transition-none ${isOpen ? "rotate-180" : ""}`}
+                      className={`h-5 w-5 shrink-0 text-taxi-ink transition-transform motion-reduce:transition-none ${isOpen ? "rotate-180" : ""}`}
                     />
                   </button>
                 </h3>

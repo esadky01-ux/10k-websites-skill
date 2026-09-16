@@ -12,12 +12,12 @@ interface StyleOptions {
 }
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-md font-bold leading-none transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-2 focus-visible:ring-offset-ink disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex items-center justify-center gap-2 rounded-md font-bold leading-none transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-2 focus-visible:ring-offset-surface disabled:cursor-not-allowed disabled:opacity-50";
 
 const variants: Record<ButtonVariant, string> = {
-  primary: "bg-taxi text-ink hover:bg-taxi-dark focus-visible:ring-paper",
-  secondary: "border border-line-strong bg-transparent text-paper hover:border-paper hover:bg-ink-soft focus-visible:ring-taxi",
-  ghost: "bg-transparent text-paper hover:text-taxi focus-visible:ring-taxi",
+  primary: "bg-taxi text-on-taxi hover:bg-taxi-dark focus-visible:ring-content",
+  secondary: "border border-line-strong bg-transparent text-content hover:border-content hover:bg-surface-2 focus-visible:ring-taxi-ink",
+  ghost: "bg-transparent text-content hover:text-taxi-ink focus-visible:ring-taxi-ink",
 };
 
 const sizes: Record<ButtonSize, string> = {

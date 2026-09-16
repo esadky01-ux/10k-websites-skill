@@ -52,7 +52,7 @@ export function BookingSuccess({ locale, dict, result }: BookingSuccessProps) {
 
   return (
     <div className="max-w-3xl">
-      <p className="mb-3 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-taxi">
+      <p className="mb-3 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-taxi-ink">
         <span aria-hidden="true" className="inline-block h-px w-6 bg-taxi" />
         {dict.booking.eyebrow}
       </p>
@@ -60,30 +60,30 @@ export function BookingSuccess({ locale, dict, result }: BookingSuccessProps) {
         id={TITLE_ID}
         ref={headingRef}
         tabIndex={-1}
-        className="text-2xl font-extrabold tracking-tight text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi focus-visible:ring-offset-4 focus-visible:ring-offset-ink md:text-3xl"
+        className="text-2xl font-extrabold tracking-tight text-content focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi-ink focus-visible:ring-offset-4 focus-visible:ring-offset-surface md:text-3xl"
       >
         {success.title}
       </h1>
 
-      <div role="status" className="mt-8 overflow-hidden rounded-lg border border-taxi bg-ink-soft">
+      <div role="status" className="mt-8 overflow-hidden rounded-lg border border-taxi-ink bg-surface-2">
         <TaxiStripe />
         <div className="p-6 md:p-8">
           <p className="text-sm font-medium text-muted">{success.referenceLabel}</p>
-          <p className="mt-2 break-words text-2xl font-extrabold tracking-wider text-taxi md:text-3xl">{reference}</p>
+          <p className="mt-2 break-words text-2xl font-extrabold tracking-wider text-taxi-ink md:text-3xl">{reference}</p>
         </div>
       </div>
 
       <p className="mt-6 max-w-prose text-base text-muted md:text-lg">{fill(success.description, { email: customer.email })}</p>
 
       <section aria-labelledby="booking-success-summary" className="mt-10">
-        <h2 id="booking-success-summary" className="text-lg font-extrabold text-paper">
+        <h2 id="booking-success-summary" className="text-lg font-extrabold text-content">
           {success.summaryTitle}
         </h2>
         <dl className="mt-4 divide-y divide-line border-y border-line">
           {rows.map((row) => (
             <div key={row.label} className="grid gap-1 py-3 sm:grid-cols-[minmax(0,12rem)_minmax(0,1fr)] sm:gap-6">
               <dt className="text-sm text-muted">{row.label}</dt>
-              <dd className={`break-words ${row.highlight ? "text-lg font-extrabold text-taxi" : "font-medium text-paper"}`}>{row.value}</dd>
+              <dd className={`break-words ${row.highlight ? "text-lg font-extrabold text-taxi-ink" : "font-medium text-content"}`}>{row.value}</dd>
             </div>
           ))}
         </dl>

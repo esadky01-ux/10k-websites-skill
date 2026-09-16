@@ -17,7 +17,7 @@ interface InfoItem {
 }
 
 const linkClass =
-  "rounded-sm font-bold text-paper underline-offset-4 transition-colors motion-reduce:transition-none hover:text-taxi hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi focus-visible:ring-offset-2 focus-visible:ring-offset-ink";
+  "rounded-sm font-bold text-content underline-offset-4 transition-colors motion-reduce:transition-none hover:text-taxi-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi-ink focus-visible:ring-offset-2 focus-visible:ring-offset-surface";
 
 /** Doğrudan iletişim bilgileri: telefon ve e-posta bağlantıları, çalışma saatleri, merkez, destek dilleri. */
 export function ContactInfo({ dict, className = "" }: ContactInfoProps) {
@@ -48,17 +48,17 @@ export function ContactInfo({ dict, className = "" }: ContactInfoProps) {
 
   return (
     <div className={className}>
-      <h2 className="text-lg font-extrabold tracking-tight text-paper">{info.title}</h2>
+      <h2 className="text-lg font-extrabold tracking-tight text-content">{info.title}</h2>
       <dl className="mt-6 divide-y divide-line border-y border-line">
         {items.map(({ icon: Icon, label, value }) => (
           // <dl> yalnızca tek bir sarmalayıcı <div> kabul eder ve içinde doğrudan <dt>/<dd> ister;
           // simge bu yüzden <dt>'nin içindedir, ayrı bir kardeş öğe değil.
           <div key={label} className="py-4">
             <dt className="flex items-center gap-3 text-sm text-muted">
-              <Icon aria-hidden="true" className="h-5 w-5 shrink-0 text-taxi" />
+              <Icon aria-hidden="true" className="h-5 w-5 shrink-0 text-taxi-ink" />
               {label}
             </dt>
-            <dd className="mt-1 break-words pl-8 text-base text-paper">{value}</dd>
+            <dd className="mt-1 break-words pl-8 text-base text-content">{value}</dd>
           </div>
         ))}
       </dl>

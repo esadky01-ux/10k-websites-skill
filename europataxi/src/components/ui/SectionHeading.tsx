@@ -20,12 +20,12 @@ export function SectionHeading({ eyebrow, title, description, align = "left", as
   return (
     <div className={`max-w-prose ${alignment} ${className}`}>
       {eyebrow ? (
-        <p className="mb-3 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-taxi">
+        <p className="mb-3 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-taxi-ink">
           <span aria-hidden="true" className="inline-block h-px w-6 bg-taxi" />
           {eyebrow}
         </p>
       ) : null}
-      <Heading id={id} className={`${size} break-words font-extrabold tracking-tight text-paper`}>
+      <Heading id={id} className={`${size} break-words font-extrabold tracking-tight text-content`}>
         {title}
       </Heading>
       {description ? <p className="mt-4 text-base text-muted md:text-lg">{description}</p> : null}

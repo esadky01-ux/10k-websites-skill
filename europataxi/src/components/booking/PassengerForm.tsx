@@ -57,7 +57,7 @@ function ConsentLabel({ text, linkText, href, newTabHint }: { text: string; link
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="font-bold text-taxi underline underline-offset-2 hover:text-taxi-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
+      className="font-bold text-taxi-ink underline underline-offset-2 hover:text-taxi-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi-ink focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
     >
       {linkText}
       <span className="sr-only"> ({newTabHint})</span>

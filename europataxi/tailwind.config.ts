@@ -1,26 +1,50 @@
 import type { Config } from "tailwindcss";
 
 /**
- * Europataxi renk paleti. Bileşenlerde ham hex kullanılmaz; yalnızca bu isimler.
- * Tailwind'in varsayılan paleti bilerek KAPATILMIŞTIR: `bg-blue-500` gibi sınıflar
- * derlenmez, böylece siteye mavi ton sızamaz.
+ * Europataxi renk sistemi.
+ *
+ * Renkler doğrudan hex değil, `src/app/globals.css` içinde tanımlı CSS
+ * değişkenlerinden gelir. Böylece aynı sınıf adları (`bg-surface`, `text-content`)
+ * hem açık hem koyu temada doğru değeri alır; tema değiştirmek için tek bir
+ * değişken bloğu yeter, bileşenlere dokunulmaz.
+ *
+ * Değişmeyen iki renk vardır: `taxi` (marka sarısı, dolgular için) ve `on-taxi`
+ * (sarı üstündeki yazı, her zaman siyah). Metin, ikon ve kenarlık vurguları
+ * `taxi-ink` kullanır: açık temada sarı beyaz zeminde okunmadığı için koyu
+ * kehribara döner (beyaz üzerinde 6,4:1).
+ *
+ * Tailwind'in varsayılan paleti bilerek kapalıdır: `bg-blue-500` gibi sınıflar
+ * derlenmez, siteye mavi sızamaz.
  */
+const withOpacity = (variable: string) => `rgb(var(${variable}) / <alpha-value>)`;
+
 const palette = {
   transparent: "transparent",
   current: "currentColor",
-  ink: "#000000",
-  "ink-soft": "#141414",
-  line: "#2A2A2A",
-  /**
-   * Etkileşimli öğelerin kenarlığı (alanlar, sayaç, anahtar, ikincil buton).
-   * WCAG 1.4.11 bileşen sınırları için 3:1 ister; `line` siyah zeminde 1,46:1'de kalır,
-   * bu ton hem `ink` hem `ink-soft` üzerinde 3:1'i geçer. Dekoratif ayraçlar `line` kalır.
-   */
-  "line-strong": "#666666",
+
+  /** Sayfa zemini. */
+  surface: withOpacity("--c-surface"),
+  /** Yükseltilmiş yüzey: kartlar, widget zemini, ikincil bölümler. */
+  "surface-2": withOpacity("--c-surface-2"),
+  /** Ana metin rengi. */
+  content: withOpacity("--c-content"),
+  /** İkincil metin. */
+  muted: withOpacity("--c-muted"),
+  /** Dekoratif ayraç ve kart kenarlığı. */
+  line: withOpacity("--c-line"),
+  /** Etkileşimli öğe kenarlığı (WCAG 1.4.11 için en az 3:1). */
+  "line-strong": withOpacity("--c-line-strong"),
+
+  /** Marka sarısı; dolgularda her iki temada da aynıdır. */
   taxi: "#FFC20E",
+  /** Sarı dolgunun hover durumu. */
   "taxi-dark": "#E0A800",
-  paper: "#FFFFFF",
-  muted: "#A3A3A3",
+  /** Sarı zemin üzerindeki yazı; her zaman siyah (12,98:1). */
+  "on-taxi": "#000000",
+  /** Metin, ikon, kenarlık ve odak halkası vurgusu; temaya göre değişir. */
+  "taxi-ink": withOpacity("--c-taxi-ink"),
+  /** Karartma katmanı (mobil menü arkası); her zaman siyah. */
+  scrim: "#000000",
 };
 
 const config: Config = {
@@ -39,40 +63,21 @@ const config: Config = {
     },
     container: {
       center: true,
-      padding: {
-        DEFAULT: "1rem",
-        md: "1.5rem",
-        lg: "2rem",
-      },
-      screens: {
-        sm: "640px",
-        md: "768px",
-        lg: "1024px",
-        xl: "1280px",
-      },
+      padding: { DEFAULT: "1rem", md: "1.5rem", lg: "2rem" },
+      screens: { sm: "640px", md: "768px", lg: "1024px", xl: "1280px" },
     },
     extend: {
       fontFamily: {
         sans: ["var(--font-archivo)", "system-ui", "Segoe UI", "Arial", "sans-serif"],
       },
-      borderColor: {
-        DEFAULT: palette.line,
-      },
-      ringColor: {
-        DEFAULT: palette.taxi,
-      },
-      ringOffsetColor: {
-        DEFAULT: palette.ink,
-      },
-      outlineColor: {
-        DEFAULT: palette.taxi,
-      },
-      maxWidth: {
-        prose: "70ch",
-      },
+      borderColor: { DEFAULT: withOpacity("--c-line") },
+      ringColor: { DEFAULT: withOpacity("--c-taxi-ink") },
+      ringOffsetColor: { DEFAULT: withOpacity("--c-surface") },
+      outlineColor: { DEFAULT: withOpacity("--c-taxi-ink") },
+      maxWidth: { prose: "70ch" },
       boxShadow: {
-        card: "0 1px 0 0 rgba(255,255,255,0.04) inset, 0 12px 40px -20px rgba(0,0,0,0.9)",
-        glow: "0 0 0 1px rgba(255,194,14,0.35), 0 18px 50px -20px rgba(255,194,14,0.35)",
+        card: "var(--shadow-card)",
+        glow: "var(--shadow-glow)",
       },
       keyframes: {
         "fade-up": {
@@ -80,9 +85,7 @@ const config: Config = {
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
       },
-      animation: {
-        "fade-up": "fade-up 0.5s ease-out both",
-      },
+      animation: { "fade-up": "fade-up 0.5s ease-out both" },
     },
   },
   plugins: [],

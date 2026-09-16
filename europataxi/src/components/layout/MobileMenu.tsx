@@ -24,7 +24,7 @@ const PANEL_ID = "mobile-menu";
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 const iconButton =
-  "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-paper transition-colors motion-reduce:transition-none hover:bg-ink-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi";
+  "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-content transition-colors motion-reduce:transition-none hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi-ink";
 
 /**
  * Hamburger düğmesi ve tam yükseklikte çekmece. Panel `document.body`'ye portal ile basılır;
@@ -96,7 +96,7 @@ export function MobileMenu({ locale, items, bookingHref, phone, nav, common, lan
       {open
         ? createPortal(
             <div className="fixed inset-0 z-50 xl:hidden">
-              <div className="absolute inset-0 bg-ink/70" onClick={dismiss} aria-hidden="true" />
+              <div className="absolute inset-0 bg-scrim/70" onClick={dismiss} aria-hidden="true" />
               <div
                 ref={panelRef}
                 id={PANEL_ID}
@@ -104,7 +104,7 @@ export function MobileMenu({ locale, items, bookingHref, phone, nav, common, lan
                 aria-modal="true"
                 aria-label={nav.ariaMobile}
                 onKeyDown={trapFocus}
-                className="absolute inset-y-0 right-0 flex w-full max-w-sm flex-col border-l border-line bg-ink shadow-card motion-safe:animate-fade-up"
+                className="absolute inset-y-0 right-0 flex w-full max-w-sm flex-col border-l border-line bg-surface shadow-card motion-safe:animate-fade-up"
               >
                 <div className="flex h-16 shrink-0 items-center justify-end border-b border-line px-4">
                   <button ref={closeRef} type="button" aria-label={nav.closeMenu} onClick={dismiss} className={iconButton}>
@@ -119,9 +119,9 @@ export function MobileMenu({ locale, items, bookingHref, phone, nav, common, lan
                   <a
                     href={phone.href}
                     onClick={close}
-                    className="inline-flex min-h-11 items-center gap-3 rounded-md text-base font-bold text-paper transition-colors motion-reduce:transition-none hover:text-taxi focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi"
+                    className="inline-flex min-h-11 items-center gap-3 rounded-md text-base font-bold text-content transition-colors motion-reduce:transition-none hover:text-taxi-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi-ink"
                   >
-                    <Phone aria-hidden="true" className="h-5 w-5 text-taxi" />
+                    <Phone aria-hidden="true" className="h-5 w-5 text-taxi-ink" />
                     <span className="sr-only">{common.callUs}: </span>
                     {phone.display}
                   </a>

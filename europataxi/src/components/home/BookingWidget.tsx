@@ -201,7 +201,7 @@ export function BookingWidget({ locale, dict, locations, today }: BookingWidgetP
   const hasErrors = Object.keys(errors).length > 0;
 
   const swapButtonClass =
-    "inline-flex h-11 w-11 items-center justify-center rounded-full border border-line-strong bg-ink text-paper transition-colors motion-reduce:transition-none hover:border-taxi hover:text-taxi focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi focus-visible:ring-offset-2 focus-visible:ring-offset-ink-soft";
+    "inline-flex h-11 w-11 items-center justify-center rounded-full border border-line-strong bg-surface text-content transition-colors motion-reduce:transition-none hover:border-taxi-ink hover:text-taxi-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi-ink focus-visible:ring-offset-2 focus-visible:ring-offset-surface-2";
 
   return (
     <form
@@ -209,15 +209,15 @@ export function BookingWidget({ locale, dict, locations, today }: BookingWidgetP
       noValidate
       aria-labelledby={titleId}
       onSubmit={onSubmit}
-      className="scroll-mt-24 rounded-lg border border-line bg-ink-soft shadow-card"
+      className="scroll-mt-24 rounded-lg border border-line bg-surface-2 shadow-card"
     >
       <TaxiStripe className="rounded-t-[7px]" />
       <div className="p-5 md:p-6">
-        <h2 id={titleId} className="text-xl font-extrabold tracking-tight text-paper">
+        <h2 id={titleId} className="text-xl font-extrabold tracking-tight text-content">
           {dict.widget.title}
         </h2>
         <p className="mt-1 text-sm text-muted">{dict.widget.subtitle}</p>
-        <p role="status" aria-live="polite" className={prefilled ? "mt-3 text-sm font-medium text-taxi" : "sr-only"}>
+        <p role="status" aria-live="polite" className={prefilled ? "mt-3 text-sm font-medium text-taxi-ink" : "sr-only"}>
           {prefilled ? dict.widget.prefilled : null}
         </p>
 

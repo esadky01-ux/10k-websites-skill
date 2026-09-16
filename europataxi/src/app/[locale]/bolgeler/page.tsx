@@ -35,7 +35,7 @@ export default async function RegionsPage({ params }: PageProps) {
 
   return (
     <>
-      <section className="bg-ink py-16 md:py-24">
+      <section className="bg-surface py-16 md:py-24">
         <div className="container">
           <SectionHeading
             as="h1"
@@ -59,7 +59,7 @@ export default async function RegionsPage({ params }: PageProps) {
             key={code}
             id={code.toLowerCase()}
             aria-labelledby={titleId}
-            className={`scroll-mt-24 py-16 md:py-24 ${index % 2 === 0 ? "bg-ink-soft" : "bg-ink"}`}
+            className={`scroll-mt-24 py-16 md:py-24 ${index % 2 === 0 ? "bg-surface-2" : "bg-surface"}`}
           >
             <div className="container grid gap-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-16">
               <SectionHeading id={titleId} title={item.title} description={item.description} />
@@ -67,7 +67,7 @@ export default async function RegionsPage({ params }: PageProps) {
                 <h3 className={labelClass}>{dict.regions.citiesLabel}</h3>
                 <ul role="list" className="mt-4 flex flex-wrap gap-2">
                   {cities.map((city) => (
-                    <li key={city.id} className="rounded-md border border-line px-3 py-1.5 text-sm text-paper">
+                    <li key={city.id} className="rounded-md border border-line px-3 py-1.5 text-sm text-content">
                       {resolveKey(dict, city.name)}
                     </li>
                   ))}
@@ -82,13 +82,13 @@ export default async function RegionsPage({ params }: PageProps) {
                         <Link
                           href={airportBookingHref(locale, airport.id)}
                           aria-label={fill(dict.airportsPage.selectAirport, { name })}
-                          className="group flex min-h-14 items-center gap-3 py-3 text-base text-paper transition-colors motion-reduce:transition-none hover:text-taxi focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi"
+                          className="group flex min-h-14 items-center gap-3 py-3 text-base text-content transition-colors motion-reduce:transition-none hover:text-taxi-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi-ink"
                         >
-                          <Plane aria-hidden="true" className="h-5 w-5 shrink-0 text-taxi" />
+                          <Plane aria-hidden="true" className="h-5 w-5 shrink-0 text-taxi-ink" />
                           <span className="min-w-0 break-words font-bold">{name}</span>
                           <ArrowRight
                             aria-hidden="true"
-                            className="ml-auto h-5 w-5 shrink-0 text-taxi motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5"
+                            className="ml-auto h-5 w-5 shrink-0 text-taxi-ink motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5"
                           />
                         </Link>
                       </li>
@@ -101,7 +101,7 @@ export default async function RegionsPage({ params }: PageProps) {
         );
       })}
 
-      <section className="bg-ink-soft py-16 md:py-24">
+      <section className="bg-surface-2 py-16 md:py-24">
         <div className="container flex flex-col items-start gap-4 border-t border-line pt-10 sm:flex-row sm:flex-wrap sm:items-center sm:gap-6">
           <ButtonLink href={widgetHref} size="lg">
             {dict.regionsPage.cta}

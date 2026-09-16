@@ -24,20 +24,20 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
           aria-required={required || undefined}
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy(id, undefined, error)}
-          className={`mt-1 h-5 w-5 shrink-0 cursor-pointer rounded border-line bg-ink accent-taxi focus:outline-none focus-visible:ring-2 focus-visible:ring-taxi focus-visible:ring-offset-2 focus-visible:ring-offset-ink ${className}`}
+          className={`mt-1 h-5 w-5 shrink-0 cursor-pointer rounded border-line bg-surface accent-taxi-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-taxi-ink focus-visible:ring-offset-2 focus-visible:ring-offset-surface ${className}`}
           {...props}
         />
-        <label htmlFor={id} className="cursor-pointer text-sm text-paper">
+        <label htmlFor={id} className="cursor-pointer text-sm text-content">
           {label}
           {required ? (
-            <span className="text-taxi" aria-hidden="true">
+            <span className="text-taxi-ink" aria-hidden="true">
               {" "}*
             </span>
           ) : null}
         </label>
       </div>
       {error ? (
-        <p id={`${id}-error`} className="mt-1.5 text-sm font-medium text-taxi" aria-live="polite">
+        <p id={`${id}-error`} className="mt-1.5 text-sm font-medium text-taxi-ink" aria-live="polite">
           {error}
         </p>
       ) : null}

@@ -63,7 +63,7 @@ function ConsentLabel({ text, linkText, href, newTabHint }: { text: string; link
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="rounded-sm font-bold text-taxi underline underline-offset-2 hover:text-taxi-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
+      className="rounded-sm font-bold text-taxi-ink underline underline-offset-2 hover:text-taxi-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi-ink focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
     >
       {linkText}
       <span className="sr-only"> ({newTabHint})</span>
@@ -175,10 +175,10 @@ export function ContactForm({ locale, dict, phoneDisplay, phoneHref, ariaLabelle
         ref={successPanelRef}
         role="status"
         tabIndex={-1}
-        className="scroll-mt-24 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi focus-visible:ring-offset-4 focus-visible:ring-offset-ink-soft"
+        className="scroll-mt-24 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi-ink focus-visible:ring-offset-4 focus-visible:ring-offset-surface-2"
       >
-        <CheckCircle2 aria-hidden="true" className="h-10 w-10 text-taxi" />
-        <h2 className="mt-4 text-xl font-extrabold tracking-tight text-paper">{success.title}</h2>
+        <CheckCircle2 aria-hidden="true" className="h-10 w-10 text-taxi-ink" />
+        <h2 className="mt-4 text-xl font-extrabold tracking-tight text-content">{success.title}</h2>
         <p className="mt-3 max-w-prose break-words text-base text-muted">{fill(success.description, { email: status.email })}</p>
         <Button variant="secondary" className="mt-8" onClick={reset}>
           {success.again}
@@ -281,7 +281,7 @@ export function ContactForm({ locale, dict, phoneDisplay, phoneHref, ariaLabelle
           <a
             href={phoneHref}
             aria-label={`${dict.common.callUs}: ${phoneDisplay}`}
-            className="whitespace-nowrap font-bold text-paper underline underline-offset-2 hover:text-taxi focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi"
+            className="whitespace-nowrap font-bold text-content underline underline-offset-2 hover:text-taxi-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi-ink"
           >
             {phoneDisplay}
           </a>

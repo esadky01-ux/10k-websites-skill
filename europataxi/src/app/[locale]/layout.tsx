@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { SkipLink } from "@/components/layout/SkipLink";
+import { themeInitScript } from "@/components/layout/ThemeToggle";
 import { countries } from "@/data/locations";
 import { localeConfig, locales, type Locale } from "@/i18n/config";
 import { getDictionary, type Dictionary } from "@/i18n/getDictionary";
@@ -64,8 +65,10 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   const dict = await getDictionary(locale);
 
   return (
-    <html lang={locale}>
+    // `suppressHydrationWarning`: aşağıdaki betik boyamadan önce `data-theme` yazar.
+    <html lang={locale} suppressHydrationWarning>
       <body className={`${archivo.variable} flex min-h-dvh flex-col`}>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(organizationJsonLd(locale, dict)) }} />
         <SkipLink label={dict.common.skipToContent} />
         <Header locale={locale} dict={dict} />

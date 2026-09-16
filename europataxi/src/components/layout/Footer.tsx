@@ -15,10 +15,10 @@ type SocialKey = keyof typeof site.social;
 
 const socialKeys = Object.keys(site.social) as SocialKey[];
 
-const headingClass = "text-sm font-bold uppercase tracking-[0.18em] text-paper";
+const headingClass = "text-sm font-bold uppercase tracking-[0.18em] text-content";
 /** Mobilde 44 px dokunma alanı, masaüstünde sıkı satır aralığı. */
 const rowClass = "inline-flex min-h-11 items-center gap-3 text-sm lg:min-h-0 lg:py-1";
-const linkClass = `${rowClass} rounded-sm text-muted transition-colors motion-reduce:transition-none hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi`;
+const linkClass = `${rowClass} rounded-sm text-muted transition-colors motion-reduce:transition-none hover:text-content focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi-ink`;
 
 /** Kullanılan lucide sürümü marka simgeleri içermediği için üç sade sosyal medya glifi burada çizilir. */
 const socialGlyphs: Record<SocialKey, ReactNode> = {
@@ -56,14 +56,14 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const regionsHref = localizedPath(locale, "regions");
 
   return (
-    <footer className="bg-ink">
+    <footer className="bg-surface">
       <TaxiStripe />
       <div className="container py-16 md:py-20">
         <div className="grid gap-12 md:grid-cols-2 xl:grid-cols-4">
           <div className="max-w-prose">
             <Logo locale={locale} ariaLabel={dict.nav.logoAria} variant="footer" />
             {/* Slogan İngilizcedir: lang olmadan Türkçe büyük harf kuralı "RİDE" üretirdi. */}
-            <p lang="en" className="mt-5 text-sm font-bold uppercase tracking-[0.18em] text-taxi">
+            <p lang="en" className="mt-5 text-sm font-bold uppercase tracking-[0.18em] text-taxi-ink">
               {dict.footer.tagline}
             </p>
             <p className="mt-3 text-base text-muted">{dict.footer.about}</p>
@@ -128,7 +128,7 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
                     href={site.social[key]}
                     aria-label={dict.footer.socialLabels[key]}
                     rel="noopener noreferrer"
-                    className="inline-flex h-11 w-11 items-center justify-center rounded-md border border-line text-paper transition-colors motion-reduce:transition-none hover:border-paper hover:bg-ink-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi"
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-md border border-line text-content transition-colors motion-reduce:transition-none hover:border-content hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi-ink"
                   >
                     <SocialGlyph name={key} />
                   </a>

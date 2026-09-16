@@ -37,18 +37,18 @@ export function AirportCard({ locale, airport, name, country, ariaLabel }: Airpo
     <Link
       href={airportBookingHref(locale, airport.id)}
       aria-label={ariaLabel}
-      className="group flex h-full min-w-0 flex-col rounded-lg border border-line bg-ink p-5 transition-colors motion-reduce:transition-none hover:border-taxi focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-taxi focus-visible:ring-offset-2 focus-visible:ring-offset-ink-soft"
+      className="group flex h-full min-w-0 flex-col rounded-lg border border-line bg-surface p-5 transition-colors motion-reduce:transition-none hover:border-taxi-ink focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-taxi-ink focus-visible:ring-offset-2 focus-visible:ring-offset-surface-2"
     >
       <span className="flex items-center justify-between gap-3">
         {airport.iata ? (
-          <span className="rounded-md bg-taxi px-2.5 py-1 text-sm font-extrabold tracking-wider text-ink">{airport.iata}</span>
+          <span className="rounded-md bg-taxi px-2.5 py-1 text-sm font-extrabold tracking-wider text-on-taxi">{airport.iata}</span>
         ) : null}
         <ArrowRight
           aria-hidden="true"
-          className="h-5 w-5 shrink-0 text-taxi motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5"
+          className="h-5 w-5 shrink-0 text-taxi-ink motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5"
         />
       </span>
-      <span className="mt-5 block break-words text-lg font-bold text-paper">{stripIata(name, airport.iata)}</span>
+      <span className="mt-5 block break-words text-lg font-bold text-content">{stripIata(name, airport.iata)}</span>
       <span className="mt-1 block text-sm text-muted">{country}</span>
     </Link>
   );

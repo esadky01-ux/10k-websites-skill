@@ -33,11 +33,11 @@ export function Counter({ id, label, value, min, max, onChange, decreaseLabel, i
   }
 
   const btn =
-    "flex h-12 w-12 shrink-0 items-center justify-center text-paper transition-colors motion-reduce:transition-none hover:bg-ink-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-taxi disabled:cursor-not-allowed disabled:opacity-40";
+    "flex h-12 w-12 shrink-0 items-center justify-center text-content transition-colors motion-reduce:transition-none hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-taxi-ink disabled:cursor-not-allowed disabled:opacity-40";
 
   return (
     <FieldShell id={id} label={label} hint={hint} error={error} className={className} labelAs="span" labelId={labelId}>
-      <div className="flex min-h-12 items-stretch overflow-hidden rounded-md border border-line-strong bg-ink focus-within:border-taxi">
+      <div className="flex min-h-12 items-stretch overflow-hidden rounded-md border border-line-strong bg-surface focus-within:border-taxi-ink">
         <button type="button" className={btn} onClick={() => onChange(clamp(value - 1))} disabled={value <= min} aria-label={decreaseLabel}>
           <Minus aria-hidden="true" className="h-5 w-5" />
         </button>
@@ -53,7 +53,7 @@ export function Counter({ id, label, value, min, max, onChange, decreaseLabel, i
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy(id, hint, error)}
           onKeyDown={onKeyDown}
-          className="flex flex-1 select-none items-center justify-center border-x border-line-strong text-lg font-bold tabular-nums text-paper focus-visible:bg-ink-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-taxi"
+          className="flex flex-1 select-none items-center justify-center border-x border-line-strong text-lg font-bold tabular-nums text-content focus-visible:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-taxi-ink"
         >
           {value}
         </div>

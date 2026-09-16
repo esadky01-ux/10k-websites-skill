@@ -1,5 +1,6 @@
-import { SectionHeading } from "@/components/ui";
+import { MediaFrame, SectionHeading } from "@/components/ui";
 import { locations } from "@/data/locations";
+import { mediaSrc } from "@/lib/media";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/getDictionary";
 import { BookingWidget, type BookingWidgetDict } from "./BookingWidget";
@@ -27,7 +28,7 @@ export function Hero({ locale, dict, today }: HeroProps) {
   };
 
   return (
-    <section className="bg-ink py-16 md:py-24" aria-labelledby="hero-title">
+    <section className="bg-surface py-16 md:py-24" aria-labelledby="hero-title">
       <div className="container grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-16">
         <div>
           <SectionHeading
@@ -39,6 +40,15 @@ export function Hero({ locale, dict, today }: HeroProps) {
             description={dict.hero.subtitle}
           />
           <TrustBar trust={dict.hero.trust} label={dict.hero.trustAria} className="mt-10" />
+          {/* Fotoğraf yoksa bölüm olduğu gibi kalır (bkz. src/lib/media.ts). */}
+          <MediaFrame
+            src={mediaSrc("hero")}
+            alt={dict.hero.imageAlt}
+            width={1600}
+            height={900}
+            priority
+            className="mt-10 aspect-[16/9]"
+          />
         </div>
         <div className="lg:order-first">
           <BookingWidget locale={locale} dict={widgetDict} locations={locations} today={today} />

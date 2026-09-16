@@ -24,13 +24,13 @@ export default async function TermsPage({ params }: PageProps) {
   return (
     <section className="container py-16 md:py-24">
       <div className="max-w-prose">
-        <h1 className="text-2xl font-extrabold tracking-tight text-paper md:text-3xl">{page.title}</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-content md:text-3xl">{page.title}</h1>
         <p className="mt-4 text-sm text-muted">{dict.legal.lastUpdated}</p>
         <p className="mt-6 text-base text-muted md:text-lg">{page.intro}</p>
         <div className="mt-12 space-y-10 border-t border-line pt-10">
           {page.sections.map((section) => (
             <div key={section.heading}>
-              <h2 className="break-words text-lg font-bold text-paper">{section.heading}</h2>
+              <h2 className="break-words text-lg font-bold text-content">{section.heading}</h2>
               <p className="mt-3 text-base text-muted">{section.body}</p>
             </div>
           ))}

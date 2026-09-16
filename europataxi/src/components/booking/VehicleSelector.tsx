@@ -41,7 +41,7 @@ function unsuitableReason(vehicle: Vehicle, trip: Trip, fleetDict: Dictionary["f
 }
 
 const labelBase =
-  "flex h-full cursor-pointer flex-col gap-4 rounded-lg border bg-ink-soft p-5 transition-colors motion-reduce:transition-none peer-focus-visible:ring-4 peer-focus-visible:ring-taxi peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-ink peer-disabled:cursor-not-allowed peer-disabled:opacity-60";
+  "flex h-full cursor-pointer flex-col gap-4 rounded-lg border bg-surface-2 p-5 transition-colors motion-reduce:transition-none peer-focus-visible:ring-4 peer-focus-visible:ring-taxi-ink peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-surface peer-disabled:cursor-not-allowed peer-disabled:opacity-60";
 
 /**
  * Araç seçimi: her kart bir radyo düğmesidir. Yolcu/bagaj kapasitesine uymayan
@@ -71,7 +71,7 @@ export function VehicleSelector({ locale, dict, trip, value, onChange, error }: 
             vehicle: vehicle.id,
             returnTime: trip.return?.time ?? null,
           });
-          const stateClass = selected ? "border-taxi shadow-glow" : disabled ? "border-line" : "border-line hover:border-muted";
+          const stateClass = selected ? "border-taxi-ink shadow-glow" : disabled ? "border-line" : "border-line hover:border-muted";
 
           return (
             <div key={vehicle.id} className="relative">
@@ -89,11 +89,11 @@ export function VehicleSelector({ locale, dict, trip, value, onChange, error }: 
               />
               <label htmlFor={inputId} className={`${labelBase} ${stateClass}`}>
                 <span className="flex items-start justify-between gap-3">
-                  <span className={`block w-28 shrink-0 ${selected ? "text-taxi" : "text-muted"}`}>
+                  <span className={`block w-28 shrink-0 ${selected ? "text-taxi-ink" : "text-muted"}`}>
                     <VehicleSilhouette id={vehicle.id} className="h-12 w-full" />
                   </span>
                   {selected ? (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-taxi px-2.5 py-1 text-sm font-bold text-ink">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-taxi px-2.5 py-1 text-sm font-bold text-on-taxi">
                       <Check aria-hidden="true" className="h-4 w-4" />
                       {dict.fleet.selected}
                     </span>
@@ -107,11 +107,11 @@ export function VehicleSelector({ locale, dict, trip, value, onChange, error }: 
                 </span>
 
                 <span className="block">
-                  <span className="block text-lg font-extrabold text-paper">{dict.fleet.vehicles[vehicle.id].name}</span>
+                  <span className="block text-lg font-extrabold text-content">{dict.fleet.vehicles[vehicle.id].name}</span>
                   <span className="mt-0.5 block text-sm text-muted">{dict.fleet.vehicles[vehicle.id].model}</span>
                 </span>
 
-                <span className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-paper">
+                <span className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-content">
                   <span className="inline-flex items-center gap-1.5">
                     <Users aria-hidden="true" className="h-4 w-4 text-muted" />
                     {fill(dict.fleet.capacity, { min: vehicle.passengers.min, max: vehicle.passengers.max })}
@@ -124,13 +124,13 @@ export function VehicleSelector({ locale, dict, trip, value, onChange, error }: 
 
                 <span className="mt-auto block border-t border-line pt-4">
                   <span className="block text-sm text-muted">{dict.booking.summary.total}</span>
-                  <span className={`block text-xl font-extrabold tabular-nums ${selected ? "text-taxi" : "text-paper"}`}>
+                  <span className={`block text-xl font-extrabold tabular-nums ${selected ? "text-taxi-ink" : "text-content"}`}>
                     {formatPrice(quote.total, locale)}
                   </span>
                 </span>
 
                 {reason ? (
-                  <span id={reasonId} className="text-sm font-medium text-taxi">
+                  <span id={reasonId} className="text-sm font-medium text-taxi-ink">
                     {reason}
                   </span>
                 ) : null}
@@ -141,7 +141,7 @@ export function VehicleSelector({ locale, dict, trip, value, onChange, error }: 
       </div>
 
       {error ? (
-        <p id={VEHICLE_ERROR_ID} className="mt-3 text-sm font-medium text-taxi" aria-live="polite">
+        <p id={VEHICLE_ERROR_ID} className="mt-3 text-sm font-medium text-taxi-ink" aria-live="polite">
           {error}
         </p>
       ) : null}

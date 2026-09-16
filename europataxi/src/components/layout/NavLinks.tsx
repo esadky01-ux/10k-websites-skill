@@ -20,15 +20,15 @@ interface NavLinksProps {
 const styles = {
   header: {
     list: "flex items-center gap-1",
-    link: "inline-flex min-h-10 items-center rounded-md px-2.5 text-sm font-medium transition-colors motion-reduce:transition-none hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi",
-    active: "text-paper underline decoration-taxi decoration-2 underline-offset-8",
+    link: "inline-flex min-h-10 items-center rounded-md px-2.5 text-sm font-medium transition-colors motion-reduce:transition-none hover:text-content focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi-ink",
+    active: "text-content underline decoration-taxi decoration-2 underline-offset-8",
     idle: "text-muted",
   },
   mobile: {
     list: "flex flex-col gap-1",
-    link: "flex min-h-12 items-center rounded-md border-l-2 px-4 text-lg font-bold transition-colors motion-reduce:transition-none hover:bg-ink-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-taxi",
-    active: "border-taxi bg-ink-soft text-paper",
-    idle: "border-transparent text-paper",
+    link: "flex min-h-12 items-center rounded-md border-l-2 px-4 text-lg font-bold transition-colors motion-reduce:transition-none hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-taxi-ink",
+    active: "border-taxi-ink bg-surface-2 text-content",
+    idle: "border-transparent text-content",
   },
 } as const;
 

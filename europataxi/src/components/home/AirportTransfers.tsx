@@ -15,7 +15,7 @@ const PROMISE_ICONS = [IdCard, Radar, Hourglass] as const;
 /** Havalimanı transferleri: üç vaat ve havalimanları sayfasına bağlantı. */
 export function AirportTransfers({ locale, dict }: AirportTransfersProps) {
   return (
-    <section aria-labelledby="airport-transfers-title" className="bg-ink py-16 md:py-24">
+    <section aria-labelledby="airport-transfers-title" className="bg-surface py-16 md:py-24">
       <div className="container grid gap-12 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-16">
         <div>
           <SectionHeading
@@ -34,11 +34,11 @@ export function AirportTransfers({ locale, dict }: AirportTransfersProps) {
             const Icon = PROMISE_ICONS[index] ?? PlaneLanding;
             return (
               <li key={item.title} className="flex gap-5 py-6">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-ink-soft text-taxi">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-surface-2 text-taxi-ink">
                   <Icon aria-hidden="true" className="h-6 w-6" />
                 </span>
                 <div className="min-w-0">
-                  <h3 className="text-lg font-bold text-paper">{item.title}</h3>
+                  <h3 className="text-lg font-bold text-content">{item.title}</h3>
                   <p className="mt-1.5 max-w-prose text-base text-muted">{item.description}</p>
                 </div>
               </li>

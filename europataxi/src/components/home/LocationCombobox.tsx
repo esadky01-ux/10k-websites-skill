@@ -249,7 +249,7 @@ export function LocationCombobox({
             type="button"
             onClick={clear}
             aria-label={dict.widget.clearSelection}
-            className="absolute right-1.5 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-muted transition-colors motion-reduce:transition-none hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi"
+            className="absolute right-1.5 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-muted transition-colors motion-reduce:transition-none hover:text-content focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi-ink"
           >
             <X aria-hidden="true" className="h-4 w-4" />
           </button>
@@ -258,7 +258,7 @@ export function LocationCombobox({
         {/* mousedown engellenir ki seçeneğe tıklarken alan odağı kaybetmesin. */}
         <div
           onMouseDown={(event) => event.preventDefault()}
-          className={`absolute left-0 right-0 top-full z-20 mt-1 rounded-md border border-line bg-ink shadow-card ${open ? "" : "hidden"}`}
+          className={`absolute left-0 right-0 top-full z-20 mt-1 rounded-md border border-line bg-surface shadow-card ${open ? "" : "hidden"}`}
         >
           {/* Kaydırma ARIA bileşeninin kendisindedir; sarmalayıcıda olsaydı klavyeyle erişilemeyen bir kaydırma alanı oluşurdu. */}
           <ul id={listboxId} role="listbox" aria-label={dict.widget.listboxLabel} tabIndex={-1} className="max-h-72 overflow-auto py-1">
@@ -294,19 +294,19 @@ export function LocationCombobox({
                               onMouseMove={() => {
                                 if (!entry.disabled && index !== activeIndex) setActiveIndex(index);
                               }}
-                              className={`flex items-center gap-3 px-3 py-2.5 text-base text-paper ${
+                              className={`flex items-center gap-3 px-3 py-2.5 text-base text-content ${
                                 entry.disabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"
-                              } ${isActive ? "bg-ink-soft ring-2 ring-inset ring-taxi" : ""}`}
+                              } ${isActive ? "bg-surface-2 ring-2 ring-inset ring-taxi-ink" : ""}`}
                             >
-                              <Icon aria-hidden="true" className={`h-4 w-4 shrink-0 ${isActive ? "text-taxi" : "text-muted"}`} />
+                              <Icon aria-hidden="true" className={`h-4 w-4 shrink-0 ${isActive ? "text-taxi-ink" : "text-muted"}`} />
                               <span className="min-w-0 flex-1 break-words">{shortName(entry.name, entry.location.iata)}</span>
                               <span className="flex shrink-0 flex-col items-end gap-0.5 text-xs text-muted">
                                 {entry.location.iata ? (
-                                  <span className="rounded border border-line px-1.5 font-bold tabular-nums text-paper">{entry.location.iata}</span>
+                                  <span className="rounded border border-line px-1.5 font-bold tabular-nums text-content">{entry.location.iata}</span>
                                 ) : null}
                                 <span>{dict.locationTypes[entry.location.type]}</span>
                               </span>
-                              {isSelected ? <Check aria-hidden="true" className="h-4 w-4 shrink-0 text-taxi" /> : null}
+                              {isSelected ? <Check aria-hidden="true" className="h-4 w-4 shrink-0 text-taxi-ink" /> : null}
                             </li>
                           );
                         })}
