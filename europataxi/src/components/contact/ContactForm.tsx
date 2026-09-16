@@ -175,7 +175,7 @@ export function ContactForm({ locale, dict, phoneDisplay, phoneHref, ariaLabelle
         ref={successPanelRef}
         role="status"
         tabIndex={-1}
-        className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi focus-visible:ring-offset-4 focus-visible:ring-offset-ink-soft"
+        className="scroll-mt-24 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi focus-visible:ring-offset-4 focus-visible:ring-offset-ink-soft"
       >
         <CheckCircle2 aria-hidden="true" className="h-10 w-10 text-taxi" />
         <h2 className="mt-4 text-xl font-extrabold tracking-tight text-paper">{success.title}</h2>

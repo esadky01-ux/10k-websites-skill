@@ -43,12 +43,13 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           <a
             href={phone.href}
             aria-label={`${dict.common.callUs}: ${phone.display}`}
-            className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-md px-2 text-sm font-bold text-paper transition-colors motion-reduce:transition-none hover:text-taxi focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 whitespace-nowrap rounded-md px-2 text-sm font-bold text-paper transition-colors motion-reduce:transition-none hover:text-taxi focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi"
           >
             <Phone aria-hidden="true" className="h-5 w-5" />
-            <span className="hidden xl:inline">{phone.display}</span>
+            {/* 1280'de menü, telefon ve CTA birlikte sığmıyor; numara 2xl'den itibaren yazıyla görünür. */}
+            <span className="hidden 2xl:inline">{phone.display}</span>
           </a>
-          <ButtonLink href={bookingHref} size="sm" className="hidden sm:inline-flex">
+          <ButtonLink href={bookingHref} size="sm" className="hidden whitespace-nowrap sm:inline-flex">
             {dict.common.bookNow}
           </ButtonLink>
           <MobileMenu

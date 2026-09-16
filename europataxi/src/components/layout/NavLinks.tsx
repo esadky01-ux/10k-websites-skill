@@ -50,7 +50,7 @@ export function NavLinks({ items, variant = "header", onNavigate, className = ""
   const pathname = usePathname();
   const style = styles[variant];
   return (
-    <ul className={`${style.list} ${className}`}>
+    <ul className={`whitespace-nowrap ${style.list} ${className}`}>
       {items.map((item) => {
         const active = isActive(pathname, item.href);
         return (

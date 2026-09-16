@@ -74,7 +74,7 @@ export default async function AirportsPage({ params }: PageProps) {
             {groups.map((group) => (
               <div key={group.code}>
                 <h3 className="text-sm font-bold uppercase tracking-[0.18em] text-muted">{dict.countries[group.code]}</h3>
-                <ul role="list" className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <ul role="list" className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {group.items.map((airport) => {
                     const name = resolveKey(dict, airport.name);
                     return (

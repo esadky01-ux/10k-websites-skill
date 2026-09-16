@@ -62,7 +62,10 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
         <div className="grid gap-12 md:grid-cols-2 xl:grid-cols-4">
           <div className="max-w-prose">
             <Logo locale={locale} ariaLabel={dict.nav.logoAria} variant="footer" />
-            <p className="mt-5 text-sm font-bold uppercase tracking-[0.18em] text-taxi">{dict.footer.tagline}</p>
+            {/* Slogan İngilizcedir: lang olmadan Türkçe büyük harf kuralı "RİDE" üretirdi. */}
+            <p lang="en" className="mt-5 text-sm font-bold uppercase tracking-[0.18em] text-taxi">
+              {dict.footer.tagline}
+            </p>
             <p className="mt-3 text-base text-muted">{dict.footer.about}</p>
           </div>
 

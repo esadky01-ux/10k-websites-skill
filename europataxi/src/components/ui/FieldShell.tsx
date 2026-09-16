@@ -1,3 +1,4 @@
+import { AlertCircle } from "lucide-react";
 import type { ReactNode } from "react";
 
 interface FieldShellProps {
@@ -49,8 +50,11 @@ export function FieldShell({ id, label, required, hint, error, className = "", c
         </p>
       ) : null}
       {error ? (
-        <p id={`${id}-error`} className="mt-1.5 text-sm font-medium text-taxi" aria-live="polite">
-          {error}
+        // Sarı hem CTA hem hata rengi olduğu için mesaj bir uyarı simgesiyle gelir:
+        // renk tek başına "buraya tıkla" ile "burada hata var" ayrımını taşımaz.
+        <p id={`${id}-error`} className="mt-1.5 flex items-start gap-1.5 text-sm font-medium text-taxi" aria-live="polite">
+          <AlertCircle aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
+          <span>{error}</span>
         </p>
       ) : null}
     </div>

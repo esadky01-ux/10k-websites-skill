@@ -18,13 +18,14 @@ export function Fleet({ dict }: FleetProps) {
     <section aria-labelledby="fleet-title" className="bg-ink-soft py-16 md:py-24">
       <div className="container">
         <SectionHeading id="fleet-title" eyebrow={dict.fleet.eyebrow} title={dict.fleet.title} description={dict.fleet.description} />
-        <ul role="list" className="mt-12 grid gap-6 lg:grid-cols-3">
+        <ul role="list" className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {fleet.map((vehicle) => {
             const name = resolveKey(dict, vehicle.name);
             const featuresId = `fleet-${vehicle.id}-features`;
             return (
               <li key={vehicle.id} className="flex flex-col rounded-lg border border-line bg-ink p-6 shadow-card md:p-8">
-                <VehicleSilhouette id={vehicle.id} className="h-20 w-auto text-taxi" />
+                {/* Sarı, sayfadaki tek güçlü vurgu olarak kalsın: siluet nötr, seçili araçta vurgulanır (VehicleSelector). */}
+                <VehicleSilhouette id={vehicle.id} className="h-20 w-auto text-muted" />
                 <h3 className="mt-6 text-lg font-bold text-paper">{name}</h3>
                 <p className="mt-1 text-sm text-muted">
                   {dict.fleet.modelLabel}: {resolveKey(dict, vehicle.model)}

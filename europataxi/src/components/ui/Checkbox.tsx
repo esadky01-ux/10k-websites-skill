@@ -14,7 +14,8 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
 ) {
   return (
     <div className={wrapperClassName}>
-      <div className="flex items-start gap-3">
+      {/* min-h-11: onay kutusu 20 px, dokunma hedefi satırın tamamıdır. */}
+      <div className="flex min-h-11 items-start gap-3 py-1">
         <input
           ref={ref}
           id={id}

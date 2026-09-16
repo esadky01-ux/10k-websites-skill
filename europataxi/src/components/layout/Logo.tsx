@@ -15,7 +15,8 @@ interface LogoProps {
  * sitedeki her yerde değiştirir; oran 440×112 (yaklaşık 4:1) korunursa düzen bozulmaz.
  */
 export function Logo({ locale, ariaLabel, variant = "header", className = "" }: LogoProps) {
-  const height = variant === "header" ? "h-10 md:h-11" : "h-12";
+  // Slogan satırı küçük yükseklikte okunmuyordu; header 44-48 px, footer 56 px kullanır.
+  const height = variant === "header" ? "h-11 md:h-12" : "h-14";
   return (
     <Link
       href={`/${locale}`}

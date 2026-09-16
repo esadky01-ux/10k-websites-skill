@@ -35,7 +35,7 @@ export function CtaBand({ locale, dict }: CtaBandProps) {
           <ArrowRight aria-hidden="true" className="h-5 w-5" />
         </Link>
       </div>
-      <TaxiStripe />
+      
     </section>
   );
 }

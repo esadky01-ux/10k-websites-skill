@@ -58,7 +58,7 @@ export function PopularRoutes({ routes, dict }: PopularRoutesProps) {
                   <span id={metaId} className="mt-4 flex w-full items-end justify-between gap-3 border-t border-line pt-4">
                     <span className="flex flex-col">
                       <span className="text-sm text-muted">{dict.startingFrom}</span>
-                      <span className="text-lg font-extrabold tabular-nums text-taxi">{route.price}</span>
+                      <span className="text-lg font-extrabold tabular-nums text-paper">{route.price}</span>
                       <span className="text-sm text-muted">{dict.perVehicle}</span>
                     </span>
                     <span className="flex flex-col items-end text-right text-sm text-muted">

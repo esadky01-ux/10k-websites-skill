@@ -20,7 +20,7 @@ export function Toggle({ id, label, checked, onChange, hint, className = "" }: T
         aria-checked={checked}
         aria-describedby={hint ? `${id}-hint` : undefined}
         onClick={() => onChange(!checked)}
-        className="group flex w-full items-center gap-3 rounded-md py-1 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
+        className="group flex min-h-11 w-full items-center gap-3 rounded-md py-2.5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-taxi focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
       >
         <span
           aria-hidden="true"
