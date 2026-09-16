@@ -221,13 +221,14 @@ try {
   await check("4. Mobil menü aria-expanded ve ESC", async () => {
     await page.setViewportSize(MOBILE);
     await openHome(page);
-    const toggle = page.locator('button[aria-controls="mobile-menu"]');
+    // Hamburger `aria-controls`'u yalnızca menü açıkken taşır; seçici bu yüzden etikete bakar.
+    const toggle = page.locator("header button[aria-expanded]").first();
     await toggle.waitFor({ state: "visible", timeout: 10_000 });
     assert.equal(await toggle.getAttribute("aria-expanded"), "false", "menü başta açık görünüyor");
 
     await toggle.click();
     await page.waitForFunction(
-      () => document.querySelector('button[aria-controls="mobile-menu"]')?.getAttribute("aria-expanded") === "true",
+      () => document.querySelector("header button[aria-expanded]")?.getAttribute("aria-expanded") === "true",
       null,
       { timeout: 10_000 },
     );
@@ -235,7 +236,7 @@ try {
 
     await page.keyboard.press("Escape");
     await page.waitForFunction(
-      () => document.querySelector('button[aria-controls="mobile-menu"]')?.getAttribute("aria-expanded") === "false",
+      () => document.querySelector("header button[aria-expanded]")?.getAttribute("aria-expanded") === "false",
       null,
       { timeout: 10_000 },
     );

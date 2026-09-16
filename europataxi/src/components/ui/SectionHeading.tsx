@@ -14,7 +14,9 @@ interface SectionHeadingProps {
 export function SectionHeading({ eyebrow, title, description, align = "left", as = "h2", id, className = "", level = "section" }: SectionHeadingProps) {
   const Heading = as;
   const alignment = align === "center" ? "text-center mx-auto" : "";
-  const size = level === "page" ? "text-2xl md:text-3xl" : "text-xl md:text-2xl";
+  // Türkçe uzun kelimeler (ör. "Rezervasyonunuzu") 360 px'de 40 px'lik başlığa sığmıyor;
+  // ölçek küçük ekranda bir kademe düşer, `break-words` de taşmayı son çare olarak keser.
+  const size = level === "page" ? "text-xl sm:text-2xl md:text-3xl" : "text-lg sm:text-xl md:text-2xl";
   return (
     <div className={`max-w-prose ${alignment} ${className}`}>
       {eyebrow ? (
@@ -23,7 +25,7 @@ export function SectionHeading({ eyebrow, title, description, align = "left", as
           {eyebrow}
         </p>
       ) : null}
-      <Heading id={id} className={`${size} font-extrabold tracking-tight text-paper`}>
+      <Heading id={id} className={`${size} break-words font-extrabold tracking-tight text-paper`}>
         {title}
       </Heading>
       {description ? <p className="mt-4 text-base text-muted md:text-lg">{description}</p> : null}
