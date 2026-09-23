@@ -11,30 +11,30 @@ import type { VehicleId } from "@/types";
  * kontrol edilir).
  *
  * Beklenen dosyalar ve önerilen ölçüler:
- *   hero.jpg            1600x900  Şoför ve araç, sıcak ışık
- *   aile-van.jpg        1600x900  Aileyi vana bindiren şoför
- *   karsilama.jpg       1600x900  Havalimanında isim tabelasıyla karşılama
- *   arac-sedan.jpg      1200x675  Stüdyo araç fotoğrafı
- *   arac-van.jpg        1200x675
- *   arac-business.jpg   1200x675
- *   ulke-BE.jpg          800x600  Ülke kartları
- *   ulke-NL.jpg          800x600
- *   ulke-FR.jpg          800x600
- *   ulke-DE.jpg          800x600
+ *   hero.webp           1600x900  Şoför ve araç, sıcak ışık
+ *   aile-van.webp       1600x900  Aileyi vana bindiren şoför
+ *   karsilama.webp      1600x900  Havalimanında isim tabelasıyla karşılama
+ *   arac-sedan.webp     1200x675  Stüdyo araç fotoğrafı
+ *   arac-van.webp       1200x675
+ *   arac-business.webp  1200x675
+ *   ulke-BE.webp         800x600  Ülke kartları
+ *   ulke-NL.webp         800x600
+ *   ulke-FR.webp         800x600
+ *   ulke-DE.webp         800x600
  *
  * Marka kuralı: araç fotoğraflarında üretici amblemi görünmemelidir.
  */
 export const mediaSlots = {
-  hero: "/media/hero.jpg",
-  familyVan: "/media/aile-van.jpg",
-  meetAndGreet: "/media/karsilama.jpg",
-  "vehicle-sedan": "/media/arac-sedan.jpg",
-  "vehicle-van": "/media/arac-van.jpg",
-  "vehicle-business": "/media/arac-business.jpg",
-  "country-BE": "/media/ulke-BE.jpg",
-  "country-NL": "/media/ulke-NL.jpg",
-  "country-FR": "/media/ulke-FR.jpg",
-  "country-DE": "/media/ulke-DE.jpg",
+  hero: "/media/hero.webp",
+  familyVan: "/media/aile-van.webp",
+  meetAndGreet: "/media/karsilama.webp",
+  "vehicle-sedan": "/media/arac-sedan.webp",
+  "vehicle-van": "/media/arac-van.webp",
+  "vehicle-business": "/media/arac-business.webp",
+  "country-BE": "/media/ulke-BE.webp",
+  "country-NL": "/media/ulke-NL.webp",
+  "country-FR": "/media/ulke-FR.webp",
+  "country-DE": "/media/ulke-DE.webp",
 } as const;
 
 export type MediaSlot = keyof typeof mediaSlots;

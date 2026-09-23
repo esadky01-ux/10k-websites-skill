@@ -11,15 +11,15 @@ Dosya eklemek için:
 
 | Dosya | Ölçü | Nerede görünür |
 | --- | --- | --- |
-| `hero.jpg` | 1600x900 | Ana sayfa hero, başlığın altında |
-| `aile-van.jpg` | 1600x900 | Hizmetler sayfası, "Her transfere dahil" |
-| `karsilama.jpg` | 1600x900 | Havalimanı transferleri, karşılama bölümü |
-| `arac-sedan.jpg` | 1200x675 | Filo kartı ve rezervasyon araç seçimi |
-| `arac-van.jpg` | 1200x675 | Aynı |
-| `arac-business.jpg` | 1200x675 | Aynı |
-| `ulke-BE.jpg` | 800x600 | Ülkeler bölümü, Belçika kartı |
-| `ulke-NL.jpg` | 800x600 | Hollanda |
-| `ulke-FR.jpg` | 800x600 | Fransa |
-| `ulke-DE.jpg` | 800x600 | Almanya |
+| `hero.webp` | 1600x900 | Ana sayfa hero, başlığın altında |
+| `aile-van.webp` | 1600x900 | Hizmetler sayfası, "Her transfere dahil" |
+| `karsilama.webp` | 1600x900 | Havalimanı transferleri, karşılama bölümü |
+| `arac-sedan.webp` | 1200x675 | Filo kartı ve rezervasyon araç seçimi |
+| `arac-van.webp` | 1200x675 | Aynı |
+| `arac-business.webp` | 1200x675 | Aynı |
+| `ulke-BE.webp` | 800x600 | Ülkeler bölümü, Belçika kartı |
+| `ulke-NL.webp` | 800x600 | Hollanda |
+| `ulke-FR.webp` | 800x600 | Fransa |
+| `ulke-DE.webp` | 800x600 | Almanya |
 
 Araç fotoğraflarında üretici amblemi görünmemelidir.
