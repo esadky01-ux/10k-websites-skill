@@ -1,10 +1,11 @@
 import { ArrowRight, Plane } from "lucide-react";
 import Link from "next/link";
-import { ButtonLink, SectionHeading } from "@/components/ui";
+import { ButtonLink, MediaFrame, SectionHeading } from "@/components/ui";
 import { countries, locationsByCountry } from "@/data/locations";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/getDictionary";
 import { fill, resolveKey } from "@/i18n/utils";
+import { countryPhoto } from "@/lib/media";
 import { localizedPath } from "@/lib/paths";
 
 interface CountriesProps {
@@ -26,6 +27,13 @@ export function Countries({ locale, dict }: CountriesProps) {
             const airports = places.filter((place) => place.type === "airport");
             return (
               <li key={code} className="flex min-w-0 flex-col bg-surface-2 p-6">
+                <MediaFrame
+                  src={countryPhoto(code)}
+                  alt={fill(dict.regions.photoAlt, { country: item.title })}
+                  width={480}
+                  height={360}
+                  className="mb-5 aspect-[4/3]"
+                />
                 <h3 className="text-lg font-bold text-content">{item.title}</h3>
                 <p className="mt-2 text-base text-muted">{item.description}</p>
 

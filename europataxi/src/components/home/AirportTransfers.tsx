@@ -1,7 +1,8 @@
 import { ArrowRight, Hourglass, IdCard, PlaneLanding, Radar } from "lucide-react";
-import { ButtonLink, SectionHeading } from "@/components/ui";
+import { ButtonLink, MediaFrame, SectionHeading } from "@/components/ui";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/getDictionary";
+import { mediaSrc } from "@/lib/media";
 import { localizedPath } from "@/lib/paths";
 
 interface AirportTransfersProps {
@@ -28,6 +29,13 @@ export function AirportTransfers({ locale, dict }: AirportTransfersProps) {
             {dict.airportTransfers.cta}
             <ArrowRight aria-hidden="true" className="h-5 w-5" />
           </ButtonLink>
+          <MediaFrame
+            src={mediaSrc("meetAndGreet")}
+            alt={dict.airportTransfers.photoAlt}
+            width={720}
+            height={405}
+            className="mt-10 aspect-[16/9]"
+          />
         </div>
         <ul role="list" className="divide-y divide-line border-y border-line">
           {dict.airportTransfers.items.map((item, index) => {

@@ -290,7 +290,8 @@
         "title": "Sürücünüz sizi karşılasın",
         "description": "Planlanan saatte kapınızda ya da havalimanında isim tabelasıyla."
       }
-    ]
+    ],
+    "photoAlt": "Şoförün bagajlarıyla birlikte siyah vana bindirdiği dört kişilik aile"
   },
   "popularRoutes": {
     "eyebrow": "Popüler Rotalar",
@@ -348,7 +349,8 @@
         "description": "İnişten sonra bir saat boyunca bekleme ücretsizdir. Pasaport kuyruğu ya da bagaj gecikmesi sorun değil."
       }
     ],
-    "cta": "Havalimanı transferlerini görün"
+    "cta": "Havalimanı transferlerini görün",
+    "photoAlt": "Havalimanı geliş salonunda isim tabelasıyla bekleyen takım elbiseli sürücü"
   },
   "faq": {
     "eyebrow": "Sık Sorulan Sorular",

@@ -1,4 +1,5 @@
-import { SectionHeading } from "@/components/ui";
+import { MediaFrame, SectionHeading } from "@/components/ui";
+import { mediaSrc } from "@/lib/media";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/getDictionary";
 
@@ -15,7 +16,16 @@ export function HowItWorks({ dict }: HowItWorksProps) {
   return (
     <section aria-labelledby="how-it-works-title" className="bg-surface py-16 md:py-24">
       <div className="container grid gap-12 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-16">
-        <SectionHeading id="how-it-works-title" eyebrow={dict.howItWorks.eyebrow} title={dict.howItWorks.title} />
+        <div>
+          <SectionHeading id="how-it-works-title" eyebrow={dict.howItWorks.eyebrow} title={dict.howItWorks.title} />
+          <MediaFrame
+            src={mediaSrc("familyVan")}
+            alt={dict.howItWorks.photoAlt}
+            width={720}
+            height={405}
+            className="mt-10 aspect-[16/9]"
+          />
+        </div>
         <ol role="list">
           {dict.howItWorks.steps.map((step, index) => (
             <li
