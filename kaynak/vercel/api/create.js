@@ -16,7 +16,7 @@ const {
 } = require('./_lib/guvenlik');
 const { fiyatHesapla } = require('./_lib/fiyat');
 const { googleKm, dahiliMesafe, kmKarar } = require('./_lib/mesafe');
-const { dogrula, yapisalHata, siparisNoUret, metadataOlustur, ALAN_MESAJI, BILINEN_ALANLAR } = require('./_lib/siparis');
+const { dogrula, yapisalHata, idemAnahtari, iptalOnayli, siparisNoUret, metadataOlustur, ALAN_MESAJI, BILINEN_ALANLAR } = require('./_lib/siparis');
 const { mollie } = require('./_lib/mollie');
 const { kayit } = require('./_lib/log');
 
@@ -114,6 +114,12 @@ module.exports = sarmala('create', async function handler(req, res, ctx) {
   }
   const g = dv.deger;
 
+  // ---- iptal kosullari onayi SUNUCUDA zorunlu (istemci JS'i atlatilabilir): iptal=1
+  if (!iptalOnayli(form.ilk('iptal'))) {
+    hataSayfasi(res, dil, 422, tYedekli(dil, 'val_cancel', 'err_pay'));
+    return;
+  }
+
   // ---- km: Google (varsa) + dahili tablo + istemci -> karar (dogrulanamazsa RET)
   const c = cfg();
   const kmGoogle = await googleKm(g.alis, g.varis);
@@ -146,6 +152,7 @@ module.exports = sarmala('create', async function handler(req, res, ctx) {
     src: kmGoogle !== null ? 'g' : 'd',
   });
   const site = c.siteUrl;
+  // Istemci uretimi idem belirteci (16-64 [A-Za-z0-9-]) Idempotency-Key olur; yoksa 'et-<siparis no>'.
   const { kod, veri: odeme } = await mollie('POST', 'payments', {
     amount: { currency: 'EUR', value: f.kaporaStr },
     description: 'Europa Taxi ' + no,
@@ -154,10 +161,13 @@ module.exports = sarmala('create', async function handler(req, res, ctx) {
     locale: MOLLIE_YEREL[dil],
     method: c.methods,
     metadata,
-  }, { idempotency: 'et-' + no });
+  }, { idempotency: idemAnahtari(form.ilk('idem'), no) });
 
   const checkout = checkoutGuvenli(odeme && odeme._links && odeme._links.checkout && odeme._links.checkout.href);
-  if (kod !== 201 || typeof odeme.id !== 'string' || !/^tr_[A-Za-z0-9]+$/.test(odeme.id) || !checkout) {
+  // Idempotency tekrari: ayni idem BASKA siparise ait odemeyi dondurduyse (metadata.n bizim degil) ikinci create hata verir,
+  // ilk odeme devam eder. Bozuk yanit da ayni yoldan hataya duser; cerez/yonlendirme YOK.
+  const donenNo = odeme && odeme.metadata && typeof odeme.metadata === 'object' ? odeme.metadata.n : undefined;
+  if (kod !== 201 || typeof odeme.id !== 'string' || !/^tr_[A-Za-z0-9]+$/.test(odeme.id) || !checkout || donenNo !== no) {
     kayit('hata', 'create: Mollie odeme olusturulamadi (HTTP ' + kod + '). Siparis: ' + no);
     hataSayfasi(res, dil, 502, t(dil, 'err_pay'));
     return;

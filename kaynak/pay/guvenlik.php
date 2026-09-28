@@ -47,7 +47,8 @@ function guvenlik_baslat(string $ad): void
 {
     istek_baglami([
         'ad' => $ad,
-        'rid' => bin2hex(random_bytes(4)),
+        // ilk karakter HARF: tamamen rakamli bir kimlik log temizleyicisinde telefon sanilip maskelenmesin
+        'rid' => substr('abcdef', random_int(0, 5), 1) . substr(bin2hex(random_bytes(4)), 0, 7),
         'dil' => in_array($ad, ['orders', 'test'], true) ? 'tr' : 'fr',
         'no' => '',
     ]);

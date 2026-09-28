@@ -21,7 +21,8 @@ async function mollie(yontem, yol, govde, secenek) {
     basliklar['Content-Type'] = 'application/json';
     ayar.body = JSON.stringify(govde);
   }
-  if (s.idempotency) basliklar['Idempotency-Key'] = s.idempotency;
+  // Idempotency-Key yalniz guvenli bicimdeyse gonderilir (PHP ortak.php mollie() ile ayni: ^[A-Za-z0-9-]{1,80}$)
+  if (s.idempotency && /^[A-Za-z0-9-]{1,80}$/.test(String(s.idempotency))) basliklar['Idempotency-Key'] = String(s.idempotency);
   try {
     const r = await fetch(c.mollieBase + '/' + String(yol).replace(/^\/+/, ''), ayar);
     let veri = {};

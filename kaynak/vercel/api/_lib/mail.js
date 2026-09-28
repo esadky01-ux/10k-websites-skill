@@ -27,6 +27,8 @@ async function epostaGonder(kime, konu, html, duzMetin) {
   }
   const govde = {
     sender: { name: 'Europa Taxi', email: c.mailFrom },
+    // e-posta 'bu e-postayi yanitlayin' der: yanit noreply'a degil sirket adresine gitsin (PHP ile ayni)
+    replyTo: { email: c.companyEmail },
     to: [{ email: kime }],
     subject: konu,
     htmlContent: html,

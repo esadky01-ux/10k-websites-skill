@@ -94,6 +94,7 @@ const ALAN_MESAJI = {
   tarih: 'val_date', saat: 'val_date', donus_tarih: 'val_date', donus_saat: 'val_date',
   ad: 'val_name', eposta: 'val_email', telefon: 'val_phone', km: 'err_km',
   dil: 'err_pay', kaynak: 'err_pay', yolcu: 'err_pay', buyuk: 'err_pay', kucuk: 'err_pay', arac: 'err_pay', web: 'err_pay',
+  iptal: 'val_cancel', idem: 'err_pay',
 };
 const BILINEN_ALANLAR = Object.keys(ALAN_MESAJI);
 
@@ -129,8 +130,9 @@ function dogrula(ham, simdi) {
   const varis = temizMetin(al('varis'));
   if (!alis) return hata('alis');
   if (!varis) return hata('varis');
-  if (uzunluk(alis) > 120) return hata('alis');
-  if (uzunluk(varis) > 120) return hata('varis');
+  // '|' Google Distance Matrix'te origin/destination ayiricisidir: coklu adres enjeksiyonu -> RET
+  if (uzunluk(alis) > 120 || alis.includes('|')) return hata('alis');
+  if (uzunluk(varis) > 120 || varis.includes('|')) return hata('varis');
 
   // ---- tarih / saat
   const bugun = bugunBrussels(simdi);
@@ -194,6 +196,24 @@ function dogrula(ham, simdi) {
       telefon,
     },
   };
+}
+
+/**
+ * Istemci uretimi idempotency belirteci: 16-64 karakter [A-Za-z0-9-]; degilse ''.
+ * Gecerliyse Mollie'ye Idempotency-Key olarak gider (yoksa create.js 'et-<siparis no>' kullanir).
+ */
+function idemAyikla(deger) {
+  return typeof deger === 'string' && /^[A-Za-z0-9-]{16,64}$/.test(deger) ? deger : '';
+}
+
+/** Mollie Idempotency-Key: gecerli istemci belirteci, yoksa 'et-<siparis no>'. */
+function idemAnahtari(idem, siparisNo) {
+  return idemAyikla(idem) || 'et-' + siparisNo;
+}
+
+/** Iptal kosullari onayi: form alani TAM olarak '1' olmali (ilk deger; bosluk/'01'/'on'/'true' kabul edilmez). */
+function iptalOnayli(deger) {
+  return deger === '1';
 }
 
 // ---------------------------------------------------------------- siparis numarasi
@@ -346,7 +366,7 @@ function metadataDanSiparis(odeme) {
 
 module.exports = {
   bugunBrussels, gunNo, temizMetin, epostaGecerli, tamSayiAyikla, sinirla,
-  dogrula, yapisalHata, ALAN_MESAJI, BILINEN_ALANLAR,
+  dogrula, yapisalHata, idemAyikla, idemAnahtari, iptalOnayli, ALAN_MESAJI, BILINEN_ALANLAR,
   siparisNoGecerli, siparisNoUret, SIPARIS_NO_DESENI,
   metadataOlustur, metadataKirp, jsonBayt, METADATA_SINIRI,
   durumEsle, metadataDanSiparis,

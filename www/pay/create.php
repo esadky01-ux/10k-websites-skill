@@ -1,12 +1,15 @@
 <?php
 // ============================================================
 // EUROPA TAXI — odeme olusturma (sartname §8)
-// Akis: form POST -> dogrula -> km'yi Google ile dogrula ->
-// fiyati SUNUCUDA yeniden hesapla -> siparisi kaydet ->
-// Mollie odemesi olustur -> checkout'a 303 yonlendir.
+// Akis: form POST -> Origin/oran siniri/bal-kupu -> dogrula -> km'yi Google + dahili tabloyla dogrula
+// (dogrulanamazsa RET) -> fiyati SUNUCUDA yeniden hesapla -> siparisi kaydet (kaydedilemezse odeme YOK)
+// -> Mollie odemesi -> checkout'a 303 yonlendir.
 // Tarayicidan gelen tutara ASLA guvenilmez; tutar yalnizca km'den uretilir.
+// Davranis kaynak/vercel/api/create.js ile esdegerdir (Node farklari raporda).
 // ============================================================
 declare(strict_types=1);
+
+@ini_set('display_errors', '0');   // dahil edilen dosyalar yuklenirken (ayristirma/yukleme hatasi) bile mutlak yol ekrana basilmasin
 
 // ---- Fiyat sabitleri — template.html icindeki SABIT ile BIREBIR AYNI olmali.
 //      build.py derleme sirasinda esitligi kontrol eder (sartname §4).
@@ -17,6 +20,8 @@ const MIN_KM         = 1;
 const MAX_KM         = 800;
 
 require_once __DIR__ . '/ortak.php';
+require_once __DIR__ . '/girdi.php';
+require_once __DIR__ . '/mesafe.php';
 require_once __DIR__ . '/mailer.php';
 
 /** Toplam / kapora / aracta odenecek. Iki ondalik. */
@@ -35,56 +40,30 @@ function km_gecerli(int $km): bool
 }
 
 /**
- * Istemci km'si ile Google'in km'sini karsilastirir.
- * Fark toleransi asarsa SUNUCUNUN degeri kullanilir (sartname §4.5).
- * Sunucu degeri yoksa istemci degeri kalir.
+ * Checkout adresi guvenli mi? https, ya da yerel Mollie taklidiyle (http://127.0.0.1) AYNI host:port (yalniz test).
+ * Acik yonlendirmeyi ve baslik enjeksiyonunu onler. Doner: adres | null.
  */
-function km_karar(int $istemciKm, ?int $sunucuKm, int $toleransYuzde): int
+function checkout_guvenli(mixed $href): ?string
 {
-    if ($sunucuKm === null || $sunucuKm <= 0) {
-        return $istemciKm;
-    }
-    $fark = abs($sunucuKm - $istemciKm) / $sunucuKm * 100;
-    return $fark > $toleransYuzde ? $sunucuKm : $istemciKm;
-}
-
-/**
- * Google Distance Matrix ile gercek karayolu km'si (sunucu anahtariyla).
- * Anahtar yoksa veya cagri basarisizsa null doner (istemci km'si kullanilir).
- */
-function google_km(string $alis, string $varis): ?int
-{
-    $anahtar = trim((string) cfg()['google_server_key']);
-    if ($anahtar === '') {
+    if (!is_string($href) || preg_match('/[\x00-\x20\x7F]/', $href) === 1) {
         return null;
     }
-    $url = 'https://maps.googleapis.com/maps/api/distancematrix/json'
-        . '?origins=' . rawurlencode($alis)
-        . '&destinations=' . rawurlencode($varis)
-        . '&mode=driving&units=metric&key=' . rawurlencode($anahtar);
-    $ch = curl_init($url);
-    curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 10]);
-    $yanit = curl_exec($ch);
-    curl_close($ch);
-    if ($yanit === false) {
+    $u = parse_url($href);
+    if (!is_array($u) || !isset($u['scheme'], $u['host']) || isset($u['user']) || isset($u['pass'])) {
         return null;
     }
-    $j = json_decode((string) $yanit, true);
-    $oge = $j['rows'][0]['elements'][0] ?? null;
-    if (!is_array($oge) || ($oge['status'] ?? '') !== 'OK') {
-        return null;
+    $sema = strtolower((string) $u['scheme']);
+    if ($sema === 'https') {
+        return $href;
     }
-    $metre = $oge['distance']['value'] ?? null;
-    return is_numeric($metre) ? (int) round($metre / 1000) : null;
-}
-
-/** Benzersiz siparis numarasi: ET-yymmdd-XXXXXX */
-function siparis_no_uret(): string
-{
-    do {
-        $no = 'ET-' . date('ymd') . '-' . strtoupper(substr(bin2hex(random_bytes(4)), 0, 6));
-    } while (is_file(siparis_yolu($no)));
-    return $no;
+    $taban = cfg()['mollie_api_base'];
+    if ($sema === 'http' && strtolower((string) $u['host']) === '127.0.0.1' && $taban !== null) {
+        $t = parse_url($taban);
+        if (is_array($t) && ($t['host'] ?? '') === '127.0.0.1' && ($t['port'] ?? 80) === ($u['port'] ?? 80)) {
+            return $href;
+        }
+    }
+    return null;
 }
 
 // CLI'dan dahil edilirse (birim testleri) yalnizca fonksiyonlar tanimlanir.
@@ -93,128 +72,167 @@ if (PHP_SAPI === 'cli') {
 }
 
 // ================================================================ akis
+guvenlik_baslat('create');
+
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
-    header('Location: /fr/', true, 303);
+    header('Allow: POST');
+    http_response_code(405);
+    header('Content-Type: text/plain; charset=utf-8');
+    echo 'Method Not Allowed';
     exit;
 }
 
-$dil = dil_sec($_POST['dil'] ?? null);
+// ---- icerik turu + govde (<=64 KB, urlencoded)
+$tip = strtolower((string) ($_SERVER['CONTENT_TYPE'] ?? $_SERVER['HTTP_CONTENT_TYPE'] ?? ''));
+if (!str_starts_with($tip, 'application/x-www-form-urlencoded')) {
+    hata_sayfasi('fr', t('fr', 'err_pay'), 415);
+}
+$govde = govde_oku();
+if ($govde === null) {
+    hata_sayfasi('fr', t('fr', 'err_bad_request', [], 'err_pay'), 413, '', ['Connection' => 'close']);
+}
+$form = girdi_form_coz($govde);
+$dil = dil_sec(girdi_ilk($form, 'dil'));
+istek_baglami(['dil' => $dil]);
 
-// ---- 1. girdileri temizle ve dogrula (sartname §8: ad/e-posta/telefon zorunlu)
-$alis    = trim((string) ($_POST['alis'] ?? ''));
-$varis   = trim((string) ($_POST['varis'] ?? ''));
-$tarih   = trim((string) ($_POST['tarih'] ?? ''));
-$saat    = trim((string) ($_POST['saat'] ?? ''));
-$ad      = trim((string) ($_POST['ad'] ?? ''));
-$eposta  = trim((string) ($_POST['eposta'] ?? ''));
-$telefon = trim((string) ($_POST['telefon'] ?? ''));
-
-if ($alis === '' || $varis === '' || mb_strlen($alis) > 300 || mb_strlen($varis) > 300) {
-    hata_sayfasi($dil, t($dil, 'val_route'));
-}
-if ($tarih === '' || $saat === ''
-    || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $tarih) || !preg_match('/^\d{2}:\d{2}$/', $saat)) {
-    hata_sayfasi($dil, t($dil, 'val_date'));
-}
-if (mb_strlen($ad) < 2 || mb_strlen($ad) > 120) {
-    hata_sayfasi($dil, t($dil, 'val_name'));
-}
-if (!filter_var($eposta, FILTER_VALIDATE_EMAIL)) {
-    hata_sayfasi($dil, t($dil, 'val_email'));
-}
-if (strlen(preg_replace('/\D/', '', $telefon)) < 8 || mb_strlen($telefon) > 30) {
-    hata_sayfasi($dil, t($dil, 'val_phone'));
+// ---- Origin / Referer (CSRF katmani)
+if (!kaynak_izinli()) {
+    kayit('uyari: create: Origin/Referer reddedildi');
+    hata_sayfasi($dil, t($dil, 'err_forbidden', [], 'err_pay'), 403);
 }
 
-// ---- 2. km sinirlari: 1-800 disi RET (sartname §8.2)
-$kmIstemci = filter_var($_POST['km'] ?? null, FILTER_VALIDATE_INT);
-if ($kmIstemci === false || $kmIstemci === null || !km_gecerli((int) $kmIstemci)) {
-    hata_sayfasi($dil, t($dil, 'err_km'));
-}
-$kmIstemci = (int) $kmIstemci;
-
-// ---- 3. mesafeyi Google sunucu anahtariyla dogrula (sartname §8.3)
-$kmSunucu = google_km($alis, $varis);
-$km = km_karar($kmIstemci, $kmSunucu, (int) cfg()['distance_tolerance_pct']);
-if (!km_gecerli($km)) {
-    hata_sayfasi($dil, t($dil, 'err_km'));
+// ---- IP tabanli oran siniri (dakikada 5 / saatte 30; dosya tabanli, flock'lu)
+$oran = create_siniri(istemci_ip());
+if (!$oran['izin']) {
+    kayit('uyari: create: oran siniri asildi');
+    hata_sayfasi($dil, t($dil, 'err_rate', [], 'err_pay'), 429, '', ['Retry-After' => (string) $oran['bekleme']]);
 }
 
-// ---- 4. fiyati SUNUCUDA yeniden hesapla (sartname §8.4)
+// ---- bal-kupu (honeypot): dolu ise sessizce "tamam" de, siparis/odeme OLUSTURMA
+$bal = girdi_ilk($form, 'web');
+if ($bal !== null && trim($bal) !== '') {
+    kayit('bilgi: create: honeypot tetiklendi');
+    http_response_code(200);
+    header('Content-Type: text/plain; charset=utf-8');
+    echo 'tamam';
+    exit;
+}
+
+// ---- dizi / tekrar eden alan (alis[]=x, alis=a&alis=b ...): temiz 400
+$yapisal = girdi_yapisal_hata($form);
+if ($yapisal !== null) {
+    hata_sayfasi($dil, t($dil, GIRDI_ALAN_MESAJI[$yapisal], [], 'err_pay'), 400);
+}
+
+// ---- 1. girdileri temizle ve dogrula (Node ile ayni sira; ilk hata gosterilir)
+$ham = [];
+foreach (array_keys(GIRDI_ALAN_MESAJI) as $alan) {
+    $ham[$alan] = girdi_ilk($form, $alan);
+}
+$dv = girdi_dogrula($ham);
+if (!$dv['ok']) {
+    hata_sayfasi($dil, t($dil, $dv['anahtar'], [], 'err_pay'), 422);
+}
+$g = $dv['deger'];
+
+// ---- iptal kosullari onayi SUNUCUDA zorunlu (istemci JS'i atlatilabilir)
+if (girdi_ilk($form, 'iptal') !== '1') {
+    hata_sayfasi($dil, t($dil, 'val_cancel', [], 'err_pay'), 422);
+}
+
+// ---- 2. km karari: Google (varsa) + dahili tablo + istemci -> dogrulanamazsa RET (FAIL-CLOSED)
+$kmGoogle = google_km($g['alis'], $g['varis']);
+$kmDahili = mesafe_dahili($g['alis'], $g['varis']);
+$karar = mesafe_karar($g['km_istemci'], $kmGoogle, $kmDahili, cfg()['distance_tolerance_pct']);
+if ($karar['km'] === null) {
+    // Ulasilamayan / dogrulanamayan mesafe: musteriyi WhatsApp'a yonlendir (fiyat URETME)
+    $waUrl = (string) (isletme()['whatsapp'] ?? '');
+    $wa = $waUrl !== '' ? '<a class="btn btn--wa" href="' . h($waUrl) . '" rel="noopener">' . h(t($dil, 'succ_wa')) . '</a>' : '';
+    kayit('bilgi: create: km dogrulanamadi/reddedildi (' . (string) $karar['sebep'] . ')');
+    hata_sayfasi($dil, t($dil, 'err_km_wa', [], 'err_km'), 422, $wa);
+}
+$km = $karar['km'];
+
+// ---- 3. fiyati SUNUCUDA yeniden hesapla (sartname §8.4)
 [$toplam, $kapora, $kalan] = fiyat_hesapla($km);
 
-// ---- yan alanlar (sinirlanmis)
-$sinirla = static fn ($deger, int $min, int $maks, int $varsayilan): int => max($min, min($maks,
-    (int) (filter_var($deger, FILTER_VALIDATE_INT) ?: $varsayilan)));
-$yolcu = $sinirla($_POST['yolcu'] ?? 1, 1, 7, 1);
-$buyuk = $sinirla($_POST['buyuk'] ?? 0, 0, 6, 0);
-$kucuk = $sinirla($_POST['kucuk'] ?? 0, 0, 4, 0);
-$arac = in_array($_POST['arac'] ?? '', ['eco', 'wagon', 'vip'], true) ? $_POST['arac'] : 'eco';
-$donusTarih = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) ($_POST['donus_tarih'] ?? '')) ? $_POST['donus_tarih'] : '';
-$donusSaat = preg_match('/^\d{2}:\d{2}$/', (string) ($_POST['donus_saat'] ?? '')) ? $_POST['donus_saat'] : '';
-
-// ---- 5. siparisi kaydet (sartname §8.5; klasor .htaccess ile kapali)
+// ---- 4. siparisi kaydet (klasor web kokunun disinda; kaydedilemezse ODEME BASLATILMAZ)
+$no = siparis_no_uret();
+istek_baglami(['no' => $no]);
 $siparis = [
-    'no'          => siparis_no_uret(),
+    'no'          => $no,
     'olusturma'   => date('c'),
     'durum'       => 'beklemede',
     'dil'         => $dil,
-    'alis'        => $alis,
-    'varis'       => $varis,
+    'alis'        => $g['alis'],
+    'varis'       => $g['varis'],
     'km'          => $km,
-    'km_istemci'  => $kmIstemci,
-    'km_sunucu'   => $kmSunucu,
+    'km_istemci'  => $g['km_istemci'],
+    'km_sunucu'   => $kmGoogle,
+    'km_dahili'   => $kmDahili,
+    'km_kaynak'   => $karar['kaynak'],
     'toplam'      => $toplam,
     'kapora'      => $kapora,
     'kalan'       => $kalan,
-    'tarih'       => $tarih,
-    'saat'        => $saat,
-    'donus_tarih' => $donusTarih,
-    'donus_saat'  => $donusSaat,
-    'yolcu'       => $yolcu,
-    'buyuk'       => $buyuk,
-    'kucuk'       => $kucuk,
-    'arac'        => $arac,
-    'ad'          => $ad,
-    'eposta'      => $eposta,
-    'telefon'     => $telefon,
+    'tarih'       => $g['tarih'],
+    'saat'        => $g['saat'],
+    'donus_tarih' => $g['donus_tarih'],
+    'donus_saat'  => $g['donus_saat'],
+    'yolcu'       => $g['yolcu'],
+    'buyuk'       => $g['buyuk'],
+    'kucuk'       => $g['kucuk'],
+    'arac'        => $g['arac'],
+    'ad'          => $g['ad'],
+    'eposta'      => $g['eposta'],
+    'telefon'     => $g['telefon'],
+    'iptal_onay'  => date('c'),
     'mollie_id'   => null,
-    'mollie_durum'=> null,
+    'mollie_durum' => null,
+    'eposta_musteri' => false,
+    'eposta_sirket'  => false,
     'eposta_gonderildi' => false,
 ];
-siparis_kaydet($siparis);
-
-// ---- 6. Mollie odemesi olustur (sartname §8.6)
-if (trim((string) cfg()['mollie_api_key']) === '') {
-    $siparis['durum'] = 'odeme_baslatilamadi';
-    siparis_kaydet($siparis);
-    kayit('Mollie anahtari bos; odeme baslatilamadi. Siparis: ' . $siparis['no']);
-    hata_sayfasi($dil, t($dil, 'err_pay'));
+if (!siparis_kaydet($siparis)) {
+    kayit('hata: create: siparis kaydedilemedi; odeme baslatilmadi ' . $no);
+    hata_sayfasi($dil, t($dil, 'err_pay'), 500);
 }
-$site = rtrim((string) cfg()['site_url'], '/');
+
+// ---- 5. Mollie odemesi (sartname §8.6)
+$c = cfg();
+if ($c['mollie_api_key'] === '') {
+    siparis_guncelle($no, static fn (array $s): array => ['durum' => 'odeme_baslatilamadi'] + $s);
+    kayit('hata: create: Mollie anahtari bos; odeme baslatilamadi ' . $no);
+    hata_sayfasi($dil, t($dil, 'err_pay'), 503);
+}
+$idem = girdi_idem(girdi_ilk($form, 'idem'));
 $mollieYerel = ['fr' => 'fr_BE', 'nl' => 'nl_BE', 'en' => 'en_GB', 'tr' => 'fr_BE'][$dil]; // Mollie Turkce desteklemez
 [$kod, $odeme] = mollie('POST', 'payments', [
     'amount'       => ['currency' => 'EUR', 'value' => number_format($kapora, 2, '.', '')],
-    'description'  => 'Europa Taxi ' . $siparis['no'],
-    'redirectUrl'  => $site . '/pay/success.php?order=' . $siparis['no'],
-    'webhookUrl'   => $site . '/pay/webhook.php',
+    'description'  => 'Europa Taxi ' . $no,
+    'redirectUrl'  => $c['site_url'] . '/pay/success.php?order=' . $no . '&dil=' . $dil,
+    'webhookUrl'   => $c['site_url'] . '/pay/webhook.php',
     'locale'       => $mollieYerel,
-    'method'       => cfg()['methods'],
-    'billingEmail' => $eposta,
-    'metadata'     => ['order_id' => $siparis['no']],
-]);
+    'method'       => $c['methods'],
+    'metadata'     => ['order_id' => $no],
+], ['idempotency' => $idem !== '' ? $idem : 'et-' . $no]);
 
-if ($kod !== 201 || empty($odeme['_links']['checkout']['href'])) {
-    $siparis['durum'] = 'odeme_baslatilamadi';
-    siparis_kaydet($siparis);
-    kayit('Mollie create hatasi (' . $kod . '): ' . json_encode($odeme, JSON_UNESCAPED_UNICODE));
-    hata_sayfasi($dil, t($dil, 'err_pay'));
+$checkout = checkout_guvenli($odeme['_links']['checkout']['href'] ?? null);
+$odemeId = $odeme['id'] ?? null;
+// Idempotency tekrari (ayni idem baska siparise ait odemeyi dondurdu) ya da bozuk yanit -> hata; odeme YOK
+$meta = is_array($odeme['metadata'] ?? null) ? $odeme['metadata'] : [];
+if ($kod !== 201 || !is_string($odemeId) || preg_match('/^tr_[A-Za-z0-9]+\z/', $odemeId) !== 1
+    || $checkout === null || ($meta['order_id'] ?? null) !== $no) {
+    siparis_guncelle($no, static fn (array $s): array => ['durum' => 'odeme_baslatilamadi'] + $s);
+    kayit('hata: create: Mollie odeme olusturulamadi (HTTP ' . $kod . ') ' . $no);
+    hata_sayfasi($dil, t($dil, 'err_pay'), 502);
 }
+siparis_guncelle($no, static function (array $s) use ($odemeId, $odeme): array {
+    $s['mollie_id'] = $odemeId;
+    $s['mollie_durum'] = (string) ($odeme['status'] ?? 'open');
+    return $s;
+});
+kayit('bilgi: create: odeme olusturuldu ' . $no . ' ' . $odemeId);
 
-$siparis['mollie_id'] = $odeme['id'];
-$siparis['mollie_durum'] = $odeme['status'] ?? 'open';
-siparis_kaydet($siparis);
-
-// ---- 7. checkout'a 303 yonlendir (sartname §8.7)
-header('Location: ' . $odeme['_links']['checkout']['href'], true, 303);
+// ---- 6. checkout'a 303 yonlendir (sartname §8.7)
+header('Location: ' . $checkout, true, 303);
 exit;

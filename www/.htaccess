@@ -1,7 +1,13 @@
 # ============================================================
-# EUROPA TAXI — kok .htaccess (sartname §11)
-# build.py bu dosyayi www/.htaccess olarak kopyalar.
-# Tum bloklar IfModule korumali: eksik modul 500 hatasi uretmez.
+# EUROPA TAXI — kok .htaccess (sartname §11 + guvenlik denetimi bulgulari)
+# build.py bu dosyayi www/.htaccess olarak kopyalar ve %%HOST%% yer tutucusunu
+# isletme.json'daki alan adiyla (https:// ve www. olmadan) doldurur.
+#
+# NOT (paylasimli hosting): burada YALNIZCA calisan uretimde zaten kullanilan
+# yonerge siniflari var (Rewrite, Header, Expires, Deflate, AddType, FilesMatch,
+# ErrorDocument). 'Options' gibi AllowOverride'a bagli yonergelerden bilerek
+# kacinildi: izin yoksa sitenin tamami 500 verir. Dizin listelemeyi build.py her
+# klasore koydugu index.html ile kapatir.
 # ============================================================
 
 AddDefaultCharset UTF-8
@@ -9,28 +15,39 @@ AddDefaultCharset UTF-8
 <IfModule mod_rewrite.c>
 RewriteEngine On
 
-# ---- HTTPS zorunlu
+# ---- HTTPS zorunlu. TLS'i onde sonlandiran bir vekilin arkasinda sonsuz
+#      yonlendirme olmasin diye X-Forwarded-Proto da denetlenir; hedef host
+#      istekten DEGIL sabit alan adindan gelir (Host basligi yansitilmaz).
 RewriteCond %{HTTPS} !=on
-RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
+RewriteRule ^ https://%%HOST%%%{REQUEST_URI} [R=301,L]
 
 # ---- www -> ciplak alan adi
-RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
-RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+RewriteCond %{HTTP_HOST} ^www\. [NC]
+RewriteRule ^ https://%%HOST%%%{REQUEST_URI} [R=301,L]
 
-# ---- pay/orders/ web'den ERISILEMEZ (ek kilit; orders/.htaccess da var)
+# ---- gizli dosyalar (.git, .env, .DS_Store ...) erisilemez; .well-known
+#      (security.txt, Let's Encrypt dogrulamasi) HARIC
+RewriteRule (^|/)\.(?!well-known(/|$)) - [F,L]
+
+# ---- pay/orders/ web'den ERISILEMEZ (ek kilit; orders/.htaccess de var)
 RewriteRule ^pay/orders(/.*)?$ - [F,L]
 
-# ---- dil oneksiz adresler -> /fr/
-#      Kok (/) HARIC: kok sayfa tarayici diliyle JS yonlendirmesi yapar (sartname §3).
-#      Sunucu tarafinda IP/Accept-Language yonlendirmesi YOKTUR (Googlebot icin sart).
+# ---- dil oneksiz, UZANTISIZ adresler -> /fr/ (301).
+#      - Kok (/) haric: kok sayfa tarayici diliyle JS yonlendirmesi yapar (sartname §3);
+#        sunucu tarafinda IP/Accept-Language yonlendirmesi YOKTUR (Googlebot icin sart).
+#      - Uzantili istekler (robots.txt, llms.txt, manifest, 404.html ...) yonlendirilmez:
+#        varsa servis edilir, yoksa 404 olur. Boylece wp-login.php, .env gibi tarama
+#        denemeleri /fr/'ye yonlendirilip yumusak-404'e donusmez.
 RewriteCond %{REQUEST_URI} !^/(fr|nl|en|tr)(/|$)
 RewriteCond %{REQUEST_URI} !^/(assets|pay)/
+RewriteCond %{REQUEST_URI} !^/\.well-known/
 RewriteCond %{REQUEST_URI} !^/(index\.html)?$
-RewriteCond %{REQUEST_URI} !^/(robots\.txt|sitemap\.xml|favicon\.ico)$
+RewriteCond %{REQUEST_URI} !\.[A-Za-z0-9]{2,5}$
 RewriteRule ^ /fr/ [R=301,L]
 </IfModule>
 
-# ---- config.php ve uretilen PHP verileri web'den okunamaz (ek kilit)
+# ---- config.php ve uretilen PHP verileri web'den okunamaz (ek kilit; pay/.htaccess beyaz liste)
 <FilesMatch "^(config\.php|dil\.php|isletme\.php)$">
   Require all denied
   <IfModule !mod_authz_core.c>
@@ -38,10 +55,16 @@ RewriteRule ^ /fr/ [R=301,L]
   </IfModule>
 </FilesMatch>
 
-# ---- 404 -> /fr/ ana sayfa icerigi
-ErrorDocument 404 /fr/index.html
+# ---- 404: markali, noindex 404 sayfasi (HTTP durumu 404 kalir)
+ErrorDocument 404 /404.html
 
-# ---- onbellek: resimler 1 yil, CSS/JS 1 hafta, HTML her zaman taze
+# ---- MIME
+<IfModule mod_mime.c>
+AddType application/manifest+json .webmanifest
+</IfModule>
+
+# ---- onbellek: resimler/fontlar 1 yil, HTML her zaman taze
+#      (site.css / app.js icin asagida 'immutable' var: build.py dosya adina ?v=hash ekler)
 <IfModule mod_expires.c>
 ExpiresActive On
 ExpiresByType image/jpeg "access plus 1 year"
@@ -49,21 +72,52 @@ ExpiresByType image/png "access plus 1 year"
 ExpiresByType image/webp "access plus 1 year"
 ExpiresByType image/svg+xml "access plus 1 year"
 ExpiresByType image/x-icon "access plus 1 year"
+ExpiresByType font/woff2 "access plus 1 year"
 ExpiresByType text/css "access plus 1 week"
 ExpiresByType application/javascript "access plus 1 week"
+ExpiresByType text/javascript "access plus 1 week"
 ExpiresByType text/html "access plus 0 seconds"
 </IfModule>
 
-# ---- assets/config.js ASLA uzun onbellege girmez:
-#      musteri anahtari degistirince site aninda yeni degeri okumali
 <IfModule mod_headers.c>
-<Files "config.js">
+# ---- kalici (icerik-hash'li) ve degisken varliklar
+<FilesMatch "^(site\.css|app\.js)$">
+  Header set Cache-Control "public, max-age=31536000, immutable"
+</FilesMatch>
+# musteri anahtari degistirince site aninda yeni degeri okumali
+<FilesMatch "^config\.js$">
   Header set Cache-Control "no-cache, must-revalidate"
-</Files>
-Header always set X-Content-Type-Options "nosniff"
+</FilesMatch>
+
+# ---- guvenlik basliklari — YALNIZ statik dosyalara (PHP yanitlari kendi basliklarini
+#      koyar; ayni basligi iki kez gondermek 'X-Frame-Options: DENY, DENY' gibi
+#      gecersiz degerler uretip korumayi sessizce kapatabilir)
+<FilesMatch "\.(html?|css|js|json|txt|xml|webmanifest|svg|jpe?g|png|webp|woff2?|ico)$">
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</FilesMatch>
+
+# HTML sayfalari: tiklama korsanligi, CSP, izinler.
+# CSP notlari:
+#  - script-src'de 'unsafe-inline' YOK (tum JS /assets/app.js; veri bloklari type=application/json)
+#  - style-src 'unsafe-inline': Google Maps/Places kendi stillerini enjekte eder
+#  - form-action: create.php 303 ile Mollie checkout'a yonlendirir; Chrome form-action'i
+#    yonlendirme hedeflerine de uygular, bu yuzden mollie.com listede olmak ZORUNDA
+#  - img/script/connect: yalniz Google Maps (anahtar girilirse) icin gerekli alanlar
+<FilesMatch "\.html?$">
+  Header always set X-Frame-Options "DENY"
+  Header always set Cross-Origin-Opener-Policy "same-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://maps.googleapis.com https://maps.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://maps.gstatic.com https://maps.googleapis.com; font-src 'self' data:; connect-src 'self' https://maps.googleapis.com; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self' https://www.mollie.com https://*.mollie.com; frame-ancestors 'none'; upgrade-insecure-requests"
+</FilesMatch>
+
+# surum ifsasi
+Header always unset X-Powered-By
+Header always unset Server
 </IfModule>
 
 # ---- gzip sikistirma
 <IfModule mod_deflate.c>
-AddOutputFilterByType DEFLATE text/html text/css text/plain application/javascript application/json image/svg+xml application/xml
+AddOutputFilterByType DEFLATE text/html text/css text/plain application/javascript text/javascript application/json application/manifest+json image/svg+xml application/xml
 </IfModule>

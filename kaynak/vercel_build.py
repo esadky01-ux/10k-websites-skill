@@ -52,6 +52,10 @@ PHP_ANAHTARLARI_YEDEK = [
     "veh_vip_name", "veh_vip_model",
 ]
 
+# Node katmaninin PHP_ANAHTARLARI'na EK olarak ZORUNLU kullandigi anahtarlar (strings.json'da bulunmali).
+# val_cancel: iptal onayi sunucuda zorunlu (create.js, iptal=1 yoksa 422). build.py listesine eklenirse cift yazilmaz.
+EK_ZORUNLU_ANAHTARLAR = ["val_cancel"]
+
 # strings.json'da VARSA dil.json'a eklenen opsiyonel anahtarlar (Node bunlari yedekli kullanir;
 # yoksa err_pay / err_km'ye duser). Bkz. README "gereken yeni strings anahtarlari".
 OPSIYONEL_ANAHTARLAR = ["err_rate", "err_forbidden", "err_bad_request", "err_km_wa"]
@@ -229,12 +233,15 @@ if PHP_ANAHTARLARI is None:
 elif set(PHP_ANAHTARLARI) != set(PHP_ANAHTARLARI_YEDEK):
     print("i build.py PHP_ANAHTARLARI gomulu kopyadan farkli; build.py'deki liste kullaniliyor")
 
-eksik = [k for k in PHP_ANAHTARLARI if k not in strings["fr"]]
+eksik = [k for k in list(PHP_ANAHTARLARI) + EK_ZORUNLU_ANAHTARLAR if k not in strings["fr"]]
 if eksik:
-    hata(f"strings.json'da bulunmayan PHP anahtarlari: {eksik}")
+    hata(f"strings.json'da bulunmayan anahtarlar: {eksik}")
 
 opsiyonel = [k for k in OPSIYONEL_ANAHTARLAR if all(k in strings[d] for d in DILLER)]
-dil_anahtarlari = list(PHP_ANAHTARLARI) + [k for k in opsiyonel if k not in PHP_ANAHTARLARI]
+dil_anahtarlari = list(PHP_ANAHTARLARI)
+for k in EK_ZORUNLU_ANAHTARLAR + opsiyonel:
+    if k not in dil_anahtarlari:
+        dil_anahtarlari.append(k)
 
 dil_json = {
     "diller": {d: {k: statik_doldur(d, strings[d][k]) for k in dil_anahtarlari} for d in DILLER},

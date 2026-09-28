@@ -27,8 +27,13 @@ function temelBasliklar(res) {
   res.setHeader('Referrer-Policy', 'no-referrer');
 }
 
+/**
+ * 8 onaltilik karakterlik istek kimligi. Ilk karakter HARF (a-f) olur: tum rakamli bir kimlik, log temizleyicisinde
+ * telefon numarasi sanilip maskelenirdi (sekiz rakam) ve hata ayiklamayi bozardi.
+ */
 function istekKimligi() {
-  return crypto.randomBytes(4).toString('hex');
+  const hex = crypto.randomBytes(4).toString('hex');
+  return 'abcdef'[parseInt(hex[0], 16) % 6] + hex.slice(1);
 }
 
 /** Hatanin ilk yigin satirindan yalniz "dosya:satir" (yol/mesaj icermez). */
@@ -371,7 +376,7 @@ function oturumVarMi(req, simdi) {
 }
 
 module.exports = {
-  GOVDE_SINIRI, temelBasliklar, sarmala, govdeOku, formCoz, cerezOku, cerezYaz, cerezEkle,
+  GOVDE_SINIRI, temelBasliklar, istekKimligi, sarmala, govdeOku, formCoz, cerezOku, cerezYaz, cerezEkle,
   hmacHex, zamanSabitEsit, odemeCerezDegeri, odemeCerezindenId,
   kaynakIzinli, istemciIp, OranSiniri, createSiniri, KabaKuvvet, yoneticiSiniri,
   yoneticiSifreDogru, oturumCerezSatiri, oturumCerezSil, oturumVarMi, OTURUM_CEREZ,

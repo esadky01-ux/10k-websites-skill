@@ -60,12 +60,21 @@ function dahiliMesafe(girdiA, girdiB) {
 }
 
 /**
+ * Google'a gonderilebilecek adres mi? '|' Google'da coklu origin/destination ayiricisidir (enjeksiyon),
+ * kontrol karakterleri (C0, DEL) istegi bozar; bos adres anlamsizdir. Guvensizse Google'a HIC cagri yapilmaz.
+ */
+function googleAdresiGuvenli(adres) {
+  return typeof adres === 'string' && adres !== '' && !/[\x00-\x1F\x7F|]/.test(adres);
+}
+
+/**
  * Google Distance Matrix ile karayolu km'si (SUNUCU anahtariyla).
  * Anahtar yoksa / cagri basarisizsa / sonuc OK degilse null. Anahtar ve adresler loglanmaz.
  */
 async function googleKm(alis, varis) {
   const c = cfg();
   if (!c.googleKey || !c.googleBase) return null;
+  if (!googleAdresiGuvenli(alis) || !googleAdresiGuvenli(varis)) return null;   // HIC cagri yapma
   const url = c.googleBase + '/maps/api/distancematrix/json'
     + '?origins=' + encodeURIComponent(alis)
     + '&destinations=' + encodeURIComponent(varis)
@@ -111,4 +120,4 @@ function kmKarar(istemci, google, dahili, tol) {
   return kmGecerli(km) ? km : null;
 }
 
-module.exports = { normalize, yerBul, haversineKm, dahiliMesafe, googleKm, kmKarar, YERLER: VERI.yerler };
+module.exports = { normalize, yerBul, haversineKm, dahiliMesafe, googleKm, googleAdresiGuvenli, kmKarar, YERLER: VERI.yerler };

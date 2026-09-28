@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 """
 VERCEL ODEME KATMANI TESTLERI — kaynak/vercel (Node.js serverless) + sahte dis servisler
-Calistirma:  python3 kaynak/build.py && python3 kaynak/testler/test_vercel_api.py
+Calistirma:  python3 kaynak/testler/test_vercel_api.py   (repo'daki www/ KULLANILMAZ: test kendi gecici repo kopyasinda build.py calistirir)
 Gereksinim: node (>=20), php CLI (PHP ile karsilastirma testleri), Python 3.9+. Ag disi; npm/pip YOK.
 Cikis kodu 0 = hepsi gecti.
 
 Ne yapar:
+  0. Repoyu gecici dizine kopyalar ve orada build.py calistirir (gercek www/ ve vercel-out/ DEGISMEZ).
   1. vercel_build.py'yi gecici bir dizine calistirir (vercel-out'a DOKUNMAZ).
   2. kaynak/testler/mock_dis_servisler.py'yi (sahte MOLLIE + BREVO + GOOGLE) baslatir.
   3. kaynak/vercel/dev-server.js ile (yalniz Node http) birkac ortam varyantinda fonksiyonlari calistirir.
@@ -39,7 +40,8 @@ except ImportError:  # pragma: no cover
 
 KOK = Path(__file__).resolve().parent.parent.parent
 KAYNAK = KOK / "kaynak"
-WWW = KOK / "www"
+WWW = None            # gecici repo kopyasindaki www/ (www_uret doldurur); gercek www/ KULLANILMAZ
+GECICI_REPO = None
 TESTLER = KAYNAK / "testler"
 VEKTOR_DOSYASI = TESTLER / "paylasilan-vektorler.json"
 
@@ -294,7 +296,7 @@ def form(**ek):
     f = dict(dil="nl", alis="Korenmarkt 77, Gent", varis="Brussels Airport (Zaventem)", km="56",
              kaynak="dahili", tarih=tarih(10), saat="14:30", donus_tarih="", donus_saat="",
              yolcu="3", buyuk="2", kucuk="1", arac="wagon",
-             ad="Jan Peeters", eposta="jan@voorbeeld.be", telefon="+32 470 11 22 33")
+             ad="Jan Peeters", eposta="jan@voorbeeld.be", telefon="+32 470 11 22 33", iptal="1")
     f.update(ek)
     return f
 
@@ -366,6 +368,23 @@ for (const c of V.yer_bul) {
 for (const c of V.dahili_mesafe) {
   const r = mesafe.dahiliMesafe(c.a, c.b);
   k(r === c.km, 'dahili_mesafe ' + j([c.a, c.b]) + ': beklenen ' + c.km + ' bulunan ' + r);
+}
+
+for (const c of V.iptal || []) {
+  const r = sip.iptalOnayli(c.deger === null ? undefined : c.deger);
+  k(r === c.gecerli, 'iptal ' + j(c.deger) + ': beklenen ' + c.gecerli + ' bulunan ' + r);
+}
+for (const c of V.idem || []) {
+  const r = sip.idemAyikla(c.deger === null ? undefined : c.deger);
+  k(r === c.beklenen, 'idem ' + j(c.deger) + ': beklenen ' + j(c.beklenen) + ' bulunan ' + j(r));
+}
+for (const c of V.idempotency_anahtari || []) {
+  const r = sip.idemAnahtari(c.idem === null ? undefined : c.idem, c.siparis_no);
+  k(r === c.anahtar, 'idempotency_anahtari ' + j([c.idem, c.siparis_no]) + ': beklenen ' + c.anahtar + ' bulunan ' + r);
+}
+for (const c of V.google_cagri || []) {
+  const r = mesafe.googleAdresiGuvenli(c.alis) && mesafe.googleAdresiGuvenli(c.varis);
+  k(r === c.cagri, 'google_cagri ' + j([c.alis, c.varis]) + ': beklenen ' + c.cagri + ' bulunan ' + r);
 }
 
 const simdi = new Date(V.dogrulama_bugun.simdi_utc);
@@ -443,11 +462,19 @@ const kk2 = new g.KabaKuvvet(5, 15 * 60 * 1000);
 for (let i = 0; i < 4; i++) kk2.basarisiz('z', t0 + i);
 kk2.temizle('z');
 cikti.kk_temizleSonra = kk2.basarisiz('z', t0 + 10);
+
+// istek kimligi: 8 onaltilik karakter, HICBIRI tamamen rakamdan olusmaz (log temizleyicisi telefon sanmasin)
+let kimlikBozuk = 0;
+for (let i = 0; i < 50000; i++) {
+  const id = g.istekKimligi();
+  if (!/^[0-9a-f]{8}$/.test(id) || /^[0-9]{8}$/.test(id) || !/[a-f]/.test(id)) kimlikBozuk++;
+}
+cikti.kimlikBozuk = kimlikBozuk;
 console.log(JSON.stringify(cikti));
 """
 
 PHP_FIYAT_TARAMA = r"""
-require '%s/kaynak/pay/create.php';
+require '%s/pay/create.php';
 $o = [];
 for ($km = 1; $km <= 800; $km++) { [$t, $k, $r] = fiyat_hesapla($km); $o[$km] = [number_format($t, 2, '.', ''), number_format($k, 2, '.', ''), number_format($r, 2, '.', '')]; }
 // km_karar karsilastirma esdegerligi: kayan nokta ile tamsayi (tol=12)
@@ -481,7 +508,7 @@ console.log(JSON.stringify(liste.map((s) => ({ html: m.musteriEpostaHtml(s), met
 """
 
 PHP_EPOSTA = r"""
-require '%s/www/pay/mailer.php';
+require '%s/pay/mailer.php';
 $liste = json_decode(file_get_contents('php://stdin'), true);
 $o = [];
 foreach ($liste as $s) { $o[] = ['html' => musteri_eposta_html($s), 'metin' => sirket_eposta_metni($s)]; }
@@ -489,9 +516,62 @@ echo json_encode($o, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 """
 
 
+GOOGLE_JS = r"""
+// Gercek googleKm() ile google_cagri vektorlerini kosar (mock'a giden istekler mock logundan sayilir). stdin = vektor JSON.
+const m = require(process.argv[1] + '/api/_lib/mesafe.js');
+const V = JSON.parse(require('fs').readFileSync(0, 'utf8'));
+(async () => {
+  for (const c of V.google_cagri) await m.googleKm(c.alis, c.varis);
+  console.log('tamam');
+})();
+"""
+
+PHP_YENI_VEKTOR = r"""
+require '%s/pay/create.php';
+$V = json_decode(file_get_contents('php://stdin'), true);
+$o = ['iptal' => [], 'idem' => [], 'anahtar' => []];
+foreach ($V['iptal'] as $c) { $f = $c['deger'] === null ? [] : ['iptal' => [$c['deger']]]; $o['iptal'][] = girdi_ilk($f, 'iptal') === '1'; }
+foreach ($V['idem'] as $c) { $o['idem'][] = girdi_idem($c['deger']); }
+foreach ($V['idempotency_anahtari'] as $c) { $i = girdi_idem($c['idem']); $o['anahtar'][] = $i !== '' ? $i : 'et-' . $c['siparis_no']; }
+echo json_encode($o, JSON_UNESCAPED_UNICODE);
+"""
+
+PHP_GOOGLE = r"""
+require '%s/pay/create.php';
+$V = json_decode(file_get_contents('php://stdin'), true);
+foreach ($V['google_cagri'] as $c) { google_km($c['alis'], $c['varis']); }
+echo 'tamam';
+"""
+
+
 def node_calistir(kod, *argv, girdi=None):
     p = subprocess.run(["node", "-e", kod, "--", *argv], input=girdi, capture_output=True, text=True, timeout=120)
     return p
+
+
+# ================================================================ gecici repo + www
+def www_uret():
+    """Repoyu gecici dizine kopyalar (www/, .git, vercel-out haric) ve ORADA build.py calistirir.
+    Gercek www/ baskalarinin elinde olabilir: test yalniz bu gecici kopyayi kullanir."""
+    global WWW, GECICI_REPO
+    GECICI_REPO = TMP / "repo"
+    GECICI_REPO.mkdir(parents=True)
+    p1 = subprocess.Popen(["tar", "--exclude=.git", "--exclude=./www", "--exclude=./teslim", "--exclude=./vercel-out",
+                           "--exclude=*.whl", "--exclude=__pycache__", "-cf", "-", "."], cwd=str(KOK), stdout=subprocess.PIPE)
+    p2 = subprocess.run(["tar", "-xf", "-"], cwd=str(GECICI_REPO), stdin=p1.stdout)
+    p1.stdout.close()
+    p1.wait()
+    if p1.returncode != 0 or p2.returncode != 0:
+        raise SystemExit("HATA: repo gecici dizine kopyalanamadi")
+    b = subprocess.run([sys.executable, str(GECICI_REPO / "kaynak" / "build.py")], capture_output=True, text=True, cwd=str(GECICI_REPO))
+    if b.returncode != 0:
+        raise SystemExit("HATA: gecici repoda build.py basarisiz:\n" + b.stdout[-600:] + b.stderr[-600:])
+    WWW = GECICI_REPO / "www"
+    # PHP mesafe motoru www/pay/mesafe.json'a ihtiyac duyar (build.py henuz uretmiyorsa pay_veri ile uret)
+    if not (WWW / "pay" / "mesafe.json").is_file():
+        pv = GECICI_REPO / "kaynak" / "pay_veri.py"
+        if pv.is_file():
+            subprocess.run([sys.executable, str(pv), "--mesafe-json", str(WWW / "pay" / "mesafe.json")], capture_output=True, text=True, cwd=str(GECICI_REPO))
 
 
 # ================================================================ SENARYOLAR
@@ -513,7 +593,7 @@ def senaryo_kaynak_ve_derleme():
     kontrol(not pkg.get("dependencies") and not pkg.get("devDependencies"), "package.json bagimlilik icermemeli")
 
     # derle (gecici dizine)
-    p = subprocess.run([sys.executable, str(KAYNAK / "vercel_build.py"), "--out", str(CIKTI)], capture_output=True, text=True)
+    p = subprocess.run([sys.executable, str(KAYNAK / "vercel_build.py"), "--out", str(CIKTI), "--www", str(WWW)], capture_output=True, text=True)
     kontrol(p.returncode == 0, "vercel_build.py basarisiz:\n" + p.stdout + p.stderr)
     print("   " + p.stdout.strip().replace("\n", "\n   "))
     if p.returncode != 0:
@@ -601,17 +681,17 @@ def senaryo_kaynak_ve_derleme():
     p = subprocess.run([sys.executable, str(KAYNAK / "vercel_build.py"), "--out", str(TMP / "cikti_cakisma"), "--www", str(sahte2)], capture_output=True, text=True)
     kontrol(p.returncode != 0 and "cakisir" in p.stdout, "www/api varsa derleme HATA vermeli")
     # ikinci calistirma (cikti adi 'vercel-out') temizler ve yeniden uretir
-    p = subprocess.run([sys.executable, str(KAYNAK / "vercel_build.py"), "--out", str(CIKTI)], capture_output=True, text=True)
+    p = subprocess.run([sys.executable, str(KAYNAK / "vercel_build.py"), "--out", str(CIKTI), "--www", str(WWW)], capture_output=True, text=True)
     kontrol(p.returncode == 0 and (CIKTI / "api" / "create.js").is_file(), "vercel-out ikinci kez derlenebilmeli: " + p.stdout[-200:])
 
     # --test-ucu-yok: api/test.js ciktiya girmez, gerisi tamam
     out3 = TMP / "cikti_testsiz"
-    p = subprocess.run([sys.executable, str(KAYNAK / "vercel_build.py"), "--out", str(out3), "--test-ucu-yok"], capture_output=True, text=True)
+    p = subprocess.run([sys.executable, str(KAYNAK / "vercel_build.py"), "--out", str(out3), "--www", str(WWW), "--test-ucu-yok"], capture_output=True, text=True)
     kontrol(p.returncode == 0 and not (out3 / "api" / "test.js").exists() and (out3 / "api" / "create.js").is_file(),
             "--test-ucu-yok: api/test.js ciktida olmamali, digerleri olmali: " + p.stdout[-200:] + p.stderr[-200:])
 
     # cikti dizini guvenligi: proje kokunu silmeyi reddet
-    p = subprocess.run([sys.executable, str(KAYNAK / "vercel_build.py"), "--out", str(KOK)], capture_output=True, text=True)
+    p = subprocess.run([sys.executable, str(KAYNAK / "vercel_build.py"), "--out", str(KOK), "--www", str(WWW)], capture_output=True, text=True)
     kontrol(p.returncode != 0 and "guvenli degil" in p.stdout, "cikti dizini olarak repo kokune izin verilmemeli")
 
 
@@ -1201,6 +1281,114 @@ def senaryo_dogrulama():
         kontrol(len(json.dumps(meta, separators=(",", ":"), ensure_ascii=False).encode("utf-8")) <= 900, "cok baytli metadata <=900 bayt")
 
 
+# ------------------------------------------------------------------ 6b. iptal / idem / pipe
+def senaryo_iptal_idem_pipe():
+    print("— 6b. iptal onayi (sunucuda zorunlu), idem (Idempotency-Key), '|' enjeksiyonu")
+    mock_sifirla()
+    p = PORT["A"]
+    # ---- iptal=1 zorunlu
+    n0 = len(odemeler())
+    for ad, ek in [("alan yok", None), ("iptal=0", "0"), ("bos", ""), ("on", "on"), ("true", "true"), ("11", "11"), ("01", "01"),
+                   ("bosluklu ' 1'", " 1"), ("sonda bosluk '1 '", "1 ")]:
+        f = form()
+        if ek is None:
+            del f["iptal"]
+        else:
+            f["iptal"] = ek
+        y = istek(p, "POST", "/pay/create.php", f)
+        kontrol(y.kod == 422 and th("nl", "val_cancel") in y.metin and y.baslik("location") is None and y.cerez("et_p") is None,
+                f"iptal {ad}: 422 val_cancel beklenirdi ({y.kod}: {yanit_h1(y)!r})")
+    kontrol(len(odemeler()) == n0, "iptal onayi yokken odeme OLUSMAMALI")
+    for dil in DILLER:
+        y = istek(p, "POST", "/pay/create.php", form(dil=dil, iptal="0"))
+        kontrol(y.kod == 422 and th(dil, "val_cancel") in y.metin and th(dil, "err_t") in y.metin and f'href="/{dil}/#rezervasyon"' in y.metin,
+                f"[{dil}] iptal reddi dilde mesaj + geri baglantisi ({y.kod})")
+    # tekrar eden / dizi iptal alani -> 400 (val_cancel mesaji)
+    for ad, ek in [("tekrar", "&iptal=1"), ("dizi", "&iptal%5B%5D=1"), ("anahtarli dizi", "&iptal%5Bx%5D=1")]:
+        y = istek(p, "POST", "/pay/create.php", ham=urllib.parse.urlencode(form()) + ek)
+        kontrol(y.kod == 400 and th("nl", "val_cancel") in y.metin, f"iptal {ad}: 400 val_cancel ({y.kod})")
+    # siralama: once girdi dogrulamasi, sonra iptal, sonra km karari (Google)
+    y = istek(p, "POST", "/pay/create.php", form(eposta="gecersiz", iptal="0"))
+    kontrol(y.kod == 422 and th("nl", "val_email") in y.metin, "gecersiz e-posta + iptal yok: ilk hata e-posta (dogrulama once)")
+    y = istek(p, "POST", "/pay/create.php", form(alis="Xyz Straat 1", km="30", iptal="0"))
+    kontrol(y.kod == 422 and th("nl", "val_cancel") in y.metin and "wa.me/" not in y.metin, "km dogrulanamiyor + iptal yok: iptal mesaji (km karari iptalden SONRA)")
+    y = istek(p, "POST", "/pay/create.php", form(km="0", iptal="0"))
+    kontrol(y.kod == 422 and th("nl", "err_km") in y.metin, "km gecersiz + iptal yok: km hatasi (dogrulama iptalden once)")
+    mock("POST", "/__test/google/reset", {})
+    yb = istek(PORT["B"], "POST", "/pay/create.php", form(iptal="0"))
+    kontrol(yb.kod == 422 and mock("GET", "/__test/google/log")["istekler"] == [], "iptal reddi Google'i CAGIRMAZ")
+    kontrol(len(odemeler()) == n0, "reddedilen isteklerde odeme yok")
+    s = siparis_olustur("A")
+    kontrol(s is not None, "iptal=1 ile create calisir")
+    # iptal onayi zaman damgasi gerekmez: siparis/success/orders akisi normal
+    mock("POST", f"/__test/paid/{s.id}", {})
+    y = istek(p, "GET", f"/pay/success.php?order={s.no}&dil=nl", cerez=s.cerez_basligi())
+    kontrol(t("nl", "succ_paid_t") in y.metin, "iptal'li siparis: success akisi normal")
+    oturum = istek(p, "POST", "/pay/orders.php", {"pw": ADMIN_SIFRE}).cerez("et_a").split(";")[0]
+    kontrol(s.no in istek(p, "GET", "/pay/orders.php", cerez=oturum).metin, "iptal'li siparis: orders akisi normal")
+
+    # ---- idem: istemci belirteci Idempotency-Key olarak Mollie'ye gider
+    mock_sifirla()
+    gecerli_govde = {"amount": {"currency": "EUR", "value": "1.00"}, "description": "x", "redirectUrl": "https://x.be/a"}
+    idem = "abcd1234-ef56-7890-abcd-1234567890ab"
+    n0 = len(odemeler())
+    a = siparis_olustur("A", idem=idem)
+    n1 = len(odemeler())
+    b = siparis_olustur("A", idem=idem)
+    yb = siparis_olustur.son
+    kontrol(a is not None and n1 == n0 + 1, "idem'li ilk create bir odeme yaratir")
+    kontrol(mollie_ham("POST", "payments", gecerli_govde, baslik={"Idempotency-Key": idem})[1].get("id") == (a.id if a else None),
+            "istemci idem tokeni AYNEN Idempotency-Key olarak Mollie'ye gitti")
+    kontrol(b is None and yb.kod == 502 and th("nl", "err_pay") in yb.metin, f"ayni idem ile ikinci create: baska siparisin odemesi DONMEMELI, temiz hata ({yb.kod})")
+    kontrol(yb.baslik("location") is None and yb.cerez("et_p") is None, "idem tekrarinda yonlendirme ve et_p cerezi OLMAMALI")
+    kontrol(len(odemeler()) == n1, "ayni idem ikinci odeme yaratmadi")
+    kontrol(a is not None and a.yanit.kod == 303 and a.cerez is not None and a.meta["n"] == a.no, "ilk odeme (ve cerezi) bozulmadi")
+    if a is not None:
+        r = mock("POST", f"/__test/paid/{a.id}", {})
+        kontrol(r["webhook"]["kod"] == 200 and len(postalar()) == 2, "idem tekrarindan sonra ILK odeme normal ilerler: webhook + 2 e-posta")
+        y = istek(p, "GET", f"/pay/success.php?order={a.no}&dil=nl", cerez=a.cerez_basligi())
+        kontrol(t("nl", "succ_paid_t") in y.metin, "ilk odemenin success sayfasi paid")
+    # varsayilan anahtar 'et-<siparis no>'
+    s = siparis_olustur("A")
+    kontrol(s is not None and mollie_ham("POST", "payments", gecerli_govde, baslik={"Idempotency-Key": "et-" + s.no})[1].get("id") == s.id,
+            "idem yoksa Idempotency-Key = 'et-<siparis no>'")
+    # gecersiz idem YOK SAYILIR (create yine calisir, anahtar et-<no>)
+    for ad, kotu in [("kisa", "kisa"), ("65 karakter", "a" * 65), ("alt cizgi", "abc_def_ghi_jkl_mno"), ("CRLF", "abcdefghijklmnop\r\nX-Kotu: 1"),
+                     ("bosluk", "abcdefghij klmnopqrst"), ("15 karakter", "a" * 15), ("ASCII disi", "abcdefghijklmn" + chr(0xE9) + "o")]:
+        s = siparis_olustur("A", idem=kotu)
+        kontrol(s is not None and mollie_ham("POST", "payments", gecerli_govde, baslik={"Idempotency-Key": "et-" + s.no})[1].get("id") == s.id,
+                f"gecersiz idem ({ad}) yok sayilir; Idempotency-Key et-<no>")
+    for uz in (16, 64):
+        s = siparis_olustur("A", idem="k" * uz)
+        kontrol(s is not None and mollie_ham("POST", "payments", gecerli_govde, baslik={"Idempotency-Key": "k" * uz})[1].get("id") == s.id, f"{uz} karakterlik idem kabul")
+    # tekrar eden / dizi idem alani -> 400
+    for ad, ek in [("tekrar", "&idem=" + "b" * 20), ("dizi", "&idem%5B%5D=" + "b" * 20)]:
+        y = istek(p, "POST", "/pay/create.php", ham=urllib.parse.urlencode(form(idem="a" * 20)) + ek)
+        kontrol(y.kod == 400 and th("nl", "err_pay") in y.metin, f"idem {ad}: 400 ({y.kod})")
+    # Mollie ayni anahtarla farkli govde/hata dondururse (kod != 201) temiz hata
+    mock("POST", "/__test/mollie_fail/1", {})
+    y = istek(p, "POST", "/pay/create.php", form(idem="z" * 20))
+    kontrol(y.kod == 502 and y.cerez("et_p") is None, "Mollie hatasi: temiz 502, cerez yok")
+
+    # ---- '|' (pipe): reddedilir, Google'a HIC gidilmez
+    mock_sifirla()
+    n0 = len(odemeler())
+    for alan, deger in [("alis", "Gent|Brussels Airport"), ("varis", "Brussels Airport|Antwerpen"), ("alis", "|"), ("varis", "Gent |"),
+                        ("alis", "Gent" + chr(13) + chr(10) + "|Evil"), ("alis", "Gent (|)")]:
+        y = istek(p, "POST", "/pay/create.php", form(**{alan: deger}))
+        kontrol(y.kod == 422 and th("nl", "val_route") in y.metin, f"{alan}={deger!r}: 422 val_route ({y.kod})")
+    mock("POST", "/__test/google/set?meters=56400", {})
+    for alan, deger in [("alis", "Gent|Evil"), ("varis", "Brussels Airport|Antwerpen")]:
+        y = istek(PORT["B"], "POST", "/pay/create.php", form(**{alan: deger}))
+        kontrol(y.kod == 422 and th("nl", "val_route") in y.metin, f"B: {alan} '|' -> 422 ({y.kod})")
+    kontrol(mock("GET", "/__test/google/log")["istekler"] == [], "'|' iceren adres icin Google'a HIC istek gitmemeli")
+    kontrol(len(odemeler()) == n0, "'|' reddi odeme olusturmamali")
+    # normal adres: Google'a GIDER (savunma mesru istegi engellemez)
+    s = istek(PORT["B"], "POST", "/pay/create.php", form())
+    kontrol(s.kod == 303 and len(mock("GET", "/__test/google/log")["istekler"]) == 1, "'|' icermeyen adres Google'a gider")
+    mock("POST", "/__test/google/reset", {})
+
+
 # ------------------------------------------------------------------ 7. koruma
 def senaryo_koruma():
     print("— 7. koruma: Origin, honeypot, metod, oran siniri, govde siniri")
@@ -1270,6 +1458,7 @@ def senaryo_koruma():
         kontrol(o["kk_ilk4"] == [0, 0, 0, 0] and o["kk_5"] > 800 and o["kk_kilitli"] > 0 and o["kk_baskaIp"] == 0 and o["kk_sonra"] == 0,
                 f"KabaKuvvet 5 hata -> 15 dk kilit: {o}")
         kontrol(o["kk_temizleSonra"] == 0, "KabaKuvvet.temizle sayaci sifirlar")
+        kontrol(o["kimlikBozuk"] == 0, f"istek kimligi 8 onaltilik karakter ve asla tamamen rakam degil ({o['kimlikBozuk']}/50000 bozuk)")
 
 
 # ------------------------------------------------------------------ 8. webhook
@@ -1720,7 +1909,7 @@ def senaryo_php_node_esitligi():
         fark = [k for k in php_k if node_k.get(k) != php_k[k]]
         kontrol(not fark, f"[{d}] dil.json ile dil.php degerleri esit olmali (farkli: {fark[:5]})")
         ekstra = set(node_k) - set(php_k)
-        kontrol(ekstra <= {"err_rate", "err_forbidden", "err_bad_request", "err_km_wa"}, f"[{d}] dil.json'da beklenmeyen ek anahtarlar: {sorted(ekstra)}")
+        kontrol(ekstra <= {"val_cancel", "err_rate", "err_forbidden", "err_bad_request", "err_km_wa"}, f"[{d}] dil.json'da beklenmeyen ek anahtarlar: {sorted(ekstra)}")
     p = subprocess.run([php, "-r", f"echo json_encode(require '{isl_php}', JSON_UNESCAPED_UNICODE);"], capture_output=True, text=True)
     kontrol(json.loads(p.stdout) == node_dil["isletme"], "isletme bilgileri dil.json ile isletme.php'de ayni")
     # www/pay/dil.php disinda: build.py'nin PHP_ANAHTARLARI ile dil.json'un PHP anahtarlari ayni
@@ -1729,7 +1918,7 @@ def senaryo_php_node_esitligi():
     # musteri e-postasi: Node vs PHP
     girdi = json.dumps(ORNEK_SIPARISLER, ensure_ascii=False)
     pn = node_calistir(EPOSTA_JS, str(CIKTI), girdi=girdi)
-    pp = subprocess.run([php, "-r", PHP_EPOSTA % KOK], input=girdi, capture_output=True, text=True)
+    pp = subprocess.run([php, "-r", PHP_EPOSTA % WWW], input=girdi, capture_output=True, text=True)
     kontrol(pn.returncode == 0, "Node e-posta uretimi basarisiz: " + pn.stderr[:300])
     kontrol(pp.returncode == 0, "PHP e-posta uretimi basarisiz: " + pp.stderr[:300] + pp.stdout[:200])
     if pn.returncode == 0 and pp.returncode == 0:
@@ -1801,7 +1990,8 @@ def senaryo_vektorler():
     print("— 13. paylasilan-vektorler.json: Node + Python referansi + PHP")
     V = json.loads(VEKTOR_DOSYASI.read_text(encoding="utf-8"))
     kontrol("_aciklama" in V and len(V["_aciklama"]) > 400, "vektor dosyasinda aciklama olmali")
-    for bolum, en_az in [("fiyat", 40), ("km_karar", 25), ("yer_bul", 25), ("dahili_mesafe", 12), ("dogrulama", 40)]:
+    for bolum, en_az in [("fiyat", 40), ("km_karar", 25), ("yer_bul", 25), ("dahili_mesafe", 12), ("dogrulama", 40),
+                         ("iptal", 8), ("idem", 10), ("idempotency_anahtari", 5), ("google_cagri", 10)]:
         kontrol(len(V.get(bolum, [])) >= en_az, f"vektor bolumu '{bolum}' en az {en_az} vaka icermeli ({len(V.get(bolum, []))})")
     yer_dilleri = set()
     for c in V["yer_bul"]:
@@ -1842,7 +2032,7 @@ def senaryo_vektorler():
     # ---- PHP: fiyat_hesapla (mevcut create.php) vektorlerle ve 1..800 taramasiyla
     php = shutil.which("php")
     if php:
-        pf = subprocess.run([php, "-r", PHP_FIYAT_TARAMA % KOK], capture_output=True, text=True)
+        pf = subprocess.run([php, "-r", PHP_FIYAT_TARAMA % WWW], capture_output=True, text=True)
         kontrol(pf.returncode == 0, "PHP fiyat taramasi calismadi: " + pf.stderr[:300])
         if pf.returncode == 0:
             o = json.loads(pf.stdout)
@@ -1857,6 +2047,51 @@ def senaryo_vektorler():
             fark = [k for k in php_fiyat if php_fiyat[k] != node_fiyat[k]]
             kontrol(not fark, f"PHP ve Node fiyati 1..800 km icin AYNI olmali (farkli: {fark[:10]})")
             kontrol(o["esdeger_fark"] == 0, f"PHP kayan nokta ve tamsayi km_karar karsilastirmalari 800x800 taramada AYNI olmali (fark {o['esdeger_fark']})")
+    # ---- iptal / idem / idempotency anahtari / google cagrisi: PHP (girdi.php, create.php, mesafe.php) ile
+    if php:
+        pe = subprocess.run([php, "-r", PHP_YENI_VEKTOR % WWW], input=VEKTOR_DOSYASI.read_text(encoding="utf-8"), capture_output=True, text=True)
+        kontrol(pe.returncode == 0, "PHP iptal/idem vektorleri calismadi: " + pe.stderr[:300] + pe.stdout[:200])
+        if pe.returncode == 0:
+            o = json.loads(pe.stdout)
+            for c, r in zip(V["iptal"], o["iptal"]):
+                kontrol(r == c["gecerli"], f"PHP iptal {c['deger']!r}: beklenen {c['gecerli']}, bulunan {r}")
+            for c, r in zip(V["idem"], o["idem"]):
+                kontrol(r == c["beklenen"], f"PHP idem {c['deger']!r}: beklenen {c['beklenen']!r}, bulunan {r!r}")
+            for c, r in zip(V["idempotency_anahtari"], o["anahtar"]):
+                kontrol(r == c["anahtar"], f"PHP Idempotency-Key {c['idem']!r}: beklenen {c['anahtar']!r}, bulunan {r!r}")
+    # Google cagrisi: gercek googleKm() ve PHP google_km() ayni adresler icin mock'a istek yapar/yapmaz
+    beklenen_istekler = [[c["alis"], c["varis"]] for c in V["google_cagri"] if c["cagri"]]
+    google_env = {"GOOGLE_SERVER_KEY": GOOGLE_ANAHTAR, "GOOGLE_API_BASE": f"http://127.0.0.1:{MOCK}"}
+    mock("POST", "/__test/google/reset", {})
+    pg = subprocess.run(["node", "-e", GOOGLE_JS, "--", str(CIKTI)], input=VEKTOR_DOSYASI.read_text(encoding="utf-8"), capture_output=True, text=True,
+                        env=temiz_ortam(**google_env))
+    kontrol(pg.returncode == 0 and "tamam" in pg.stdout, "Node googleKm vektor betigi calismadi: " + pg.stderr[:300])
+    log = [[i["origins"], i["destinations"]] for i in mock("GET", "/__test/google/log")["istekler"]]
+    kontrol(log == beklenen_istekler, f"Node googleKm: '|'/kontrol karakteri/bos adreste HIC istek gitmemeli. Beklenen {beklenen_istekler}, mock'a giden {log}")
+    if php:
+        mock("POST", "/__test/google/reset", {})
+        siparis_dizini = TMP / "php_siparis"
+        siparis_dizini.mkdir(exist_ok=True)
+        pgp = subprocess.run([php, "-r", PHP_GOOGLE % WWW], input=VEKTOR_DOSYASI.read_text(encoding="utf-8"), capture_output=True, text=True,
+                             env=temiz_ortam(ORDERS_DIR=str(siparis_dizini), **google_env))
+        kontrol(pgp.returncode == 0 and "tamam" in pgp.stdout, "PHP google_km vektor betigi calismadi: " + pgp.stderr[:300] + pgp.stdout[:200])
+        logp = [[i["origins"], i["destinations"]] for i in mock("GET", "/__test/google/log")["istekler"]]
+        kontrol(logp == beklenen_istekler, f"PHP google_km ve Node googleKm ayni adreslerde istek yapmali. Beklenen {beklenen_istekler}, PHP {logp}")
+    mock("POST", "/__test/google/reset", {})
+    # ---- PHP'nin kendi vektor kosucusu (kaynak/testler/vektor_test.php): tum bolumler + yeni '|' / iptal / idem yapisal vakalari
+    kosucu = TESTLER / "vektor_test.php"
+    if php and kosucu.is_file():
+        girdi_json = TMP / "php_vektor_girdi.json"
+        girdi_json.write_text(json.dumps({"vektorler": V}, ensure_ascii=False), encoding="utf-8")
+        pk = subprocess.run([php, str(kosucu), str(WWW / "pay"), str(girdi_json)], capture_output=True, text=True, env=temiz_ortam(ORDERS_DIR=str(TMP / "php_siparis")))
+        try:
+            ok = json.loads(pk.stdout.strip().splitlines()[-1])
+        except Exception:
+            ok = None
+        kontrol(ok is not None and ok["say"] > 300, "PHP vektor kosucusu calismadi: " + pk.stderr[:300] + pk.stdout[:300])
+        if ok:
+            for h in ok["hatalar"][:20]:
+                kontrol(False, "PHP vektor uyusmazligi: " + h)
     # ---- istemci (template.html) formulu Node ile ayni mi (1..800)
     pc = subprocess.run(["node", "-e", ISTEMCI_FIYAT_JS, "--", str(CIKTI)], capture_output=True, text=True)
     kontrol(pc.returncode == 0 and json.loads(pc.stdout) == [], f"istemci Math.round formulu 1..800'de sunucu fiyatiyla AYNI olmali: {pc.stdout[:200]} {pc.stderr[:200]}")
@@ -1921,15 +2156,13 @@ def main():
     kontrol(shutil.which("node") is not None, "node bulunamadi")
     if shutil.which("node") is None:
         return
-    if not (WWW / "index.html").is_file():
-        print("HATA: www/ yok — once `python3 kaynak/build.py` calistirin")
-        sys.exit(2)
     try:
+        www_uret()
         calistir(senaryo_kaynak_ve_derleme)
         DIL_VERISI = json.loads((CIKTI / "api" / "_lib" / "dil.json").read_text(encoding="utf-8"))
         sunuculari_baslat()
         for f in [senaryo_mock_dogrudan, senaryo_mutlu_yol, senaryo_paid, senaryo_success, senaryo_fiyat_tahrifati,
-                  senaryo_google, senaryo_dogrulama, senaryo_koruma, senaryo_webhook, senaryo_orders,
+                  senaryo_google, senaryo_dogrulama, senaryo_iptal_idem_pipe, senaryo_koruma, senaryo_webhook, senaryo_orders,
                   senaryo_test_ucu, senaryo_taban_guvenligi, senaryo_bozuk_istekler,
                   senaryo_php_node_esitligi, senaryo_vektorler, senaryo_log_hijyeni]:
             calistir(f)

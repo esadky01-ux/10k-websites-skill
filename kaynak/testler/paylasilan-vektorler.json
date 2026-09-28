@@ -1,5 +1,5 @@
 {
- "_aciklama": "PHP (kaynak/pay) ve Node (kaynak/vercel) katmanlarinin AYNI mantigi verdigini kilitleyen ortak test vektorleri. Node tarafi kaynak/testler/test_vercel_api.py ile dogrulanir; PHP tarafi bu dosyaya gore sertlestirilecek. Bolumler: (1) fiyat: tamsayi-sent kesin fiyat (beklenenler PHP fiyat_hesapla ile uretilip dogrulandi; toplam=round(10+km*1.99,2), kapora=round(toplam*0.20,2) yarim yukari, kalan=toplam-kapora). (2) km_karar: {istemci, google, dahili, tol} -> beklenen km ya da \"RET\". Politika: istemci 1..800 disiysa RET; google (>0) varsa fark = |google-istemci|/google*100 ve fark > tol ise google, aksi istemci (TAM sinirda istemci); google yoksa ama dahili varsa istemci*100 < dahili*(100-tol) ise dahili, aksi istemci (istemci daha yuksekse kabul); ikisi de yoksa RET; sonuc 1..800 disiysa RET. Tamsayi aritmetigi kullanin (|g-i|*100 > tol*g ; i*100 < d*(100-tol)). (3) yer_bul: serbest metin adres -> yer anahtari ya da null (normalize: kucuk harf, i-noktasiz->i, ss, oe, ae, NFD+Mn sil, [^a-z0-9]+ -> bosluk; tam eslesme, yoksa kelime siniri korunarak EN UZUN takma ad kazanir). (4) dahili_mesafe: iki adres de taniniyorsa KESIN tablo (iki yon) yoksa round(haversine*1.17) (JS Math.round: .5 yukari); tanınmayan / ayni yer -> null. (5) dogrulama: form alanlarinin dogrulama/temizleme kurallari. Her vaka `dogrulama_taban` alanlarina `alan=deger` uygular (`baglam` varsa ONCE onun alanlari uygulanir). `deger` liste ise alan TEKRAR gonderilmis demektir; alan adi `x[]` ise dizi alani. `gecerli:false` ise ilk hata `hata_alani` alaninda ve `mesaj` strings anahtariyla verilir (dogrulama sirasi: guzergah, tarih/saat, ad, e-posta, telefon, km). `temiz` verilmisse dogrulanmis+temizlenmis degerin beklenen degeridir (metin: kontrol karakterleri -> bosluk, gorunmez bicim karakterleri silinir, NFC, bosluk tekillestirme, kirpma; uzunluklar KOD NOKTASI sayisidir; yolcu/buyuk/kucuk sinirlanir, hata vermez). Zaman: Brussels; bu vektorlerde bugun = `dogrulama_bugun`. tarih: bugunden 365 gune kadar; donus tarihi >= gidis ve bugunden en fazla 365 gun ileri; donus tarihi bos ise donus saati yok sayilir. E-posta: <=100, ASCII, yerel kisim <=64, TLD >=2 harf, bosluk/kontrol karakteri/IP-literal yok. Telefon: >=8 rakam ve <=25 karakter. Ad 2-80, adresler 1-120 karakter.",
+ "_aciklama": "PHP (kaynak/pay) ve Node (kaynak/vercel) katmanlarinin AYNI mantigi verdigini kilitleyen ortak test vektorleri. Node tarafi kaynak/testler/test_vercel_api.py ile dogrulanir; PHP tarafi bu dosyaya gore sertlestirilecek. Bolumler: (1) fiyat: tamsayi-sent kesin fiyat (beklenenler PHP fiyat_hesapla ile uretilip dogrulandi; toplam=round(10+km*1.99,2), kapora=round(toplam*0.20,2) yarim yukari, kalan=toplam-kapora). (2) km_karar: {istemci, google, dahili, tol} -> beklenen km ya da \"RET\". Politika: istemci 1..800 disiysa RET; google (>0) varsa fark = |google-istemci|/google*100 ve fark > tol ise google, aksi istemci (TAM sinirda istemci); google yoksa ama dahili varsa istemci*100 < dahili*(100-tol) ise dahili, aksi istemci (istemci daha yuksekse kabul); ikisi de yoksa RET; sonuc 1..800 disiysa RET. Tamsayi aritmetigi kullanin (|g-i|*100 > tol*g ; i*100 < d*(100-tol)). (3) yer_bul: serbest metin adres -> yer anahtari ya da null (normalize: kucuk harf, i-noktasiz->i, ss, oe, ae, NFD+Mn sil, [^a-z0-9]+ -> bosluk; tam eslesme, yoksa kelime siniri korunarak EN UZUN takma ad kazanir). (4) dahili_mesafe: iki adres de taniniyorsa KESIN tablo (iki yon) yoksa round(haversine*1.17) (JS Math.round: .5 yukari); tanınmayan / ayni yer -> null. (5) dogrulama: form alanlarinin dogrulama/temizleme kurallari. Her vaka `dogrulama_taban` alanlarina `alan=deger` uygular (`baglam` varsa ONCE onun alanlari uygulanir). `deger` liste ise alan TEKRAR gonderilmis demektir; alan adi `x[]` ise dizi alani. `gecerli:false` ise ilk hata `hata_alani` alaninda ve `mesaj` strings anahtariyla verilir (dogrulama sirasi: guzergah, tarih/saat, ad, e-posta, telefon, km). `temiz` verilmisse dogrulanmis+temizlenmis degerin beklenen degeridir (metin: kontrol karakterleri -> bosluk, gorunmez bicim karakterleri silinir, NFC, bosluk tekillestirme, kirpma; uzunluklar KOD NOKTASI sayisidir; yolcu/buyuk/kucuk sinirlanir, hata vermez). Zaman: Brussels; bu vektorlerde bugun = `dogrulama_bugun`. tarih: bugunden 365 gune kadar; donus tarihi >= gidis ve bugunden en fazla 365 gun ileri; donus tarihi bos ise donus saati yok sayilir. E-posta: <=100, ASCII, yerel kisim <=64, TLD >=2 harf, bosluk/kontrol karakteri/IP-literal yok. Telefon: >=8 rakam ve <=25 karakter. Ad 2-80, adresler 1-120 karakter ve '|' ICERMEZ (Google Distance Matrix'te origin/destination ayiricisi: coklu adres enjeksiyonu; temizlemeden SONRA denetlenir; alis once, varis sonra). `iptal` ve `idem` alanlari da dizi/tekrar denetimine girer (hata_alani iptal -> val_cancel, idem -> err_pay); degerleri `dogrulama` bolumunde DEGIL asagidaki bolumlerde denetlenir. (6) iptal: create'te `iptal` formu alaninin ILK degeri TAM '1' olmali (aksi 422 val_cancel; dizi/tekrar 400). (7) idem: istemci idempotency belirteci ^[A-Za-z0-9-]{16,64}$ ise ayni, degilse '' (yok sayilir). (8) idempotency_anahtari: Mollie Idempotency-Key = gecerli idem, yoksa 'et-<siparis no>'; Mollie ayni anahtarla BASKA siparisin odemesini dondururse (metadata siparis no uyusmuyor) ikinci create HATA verir (502 err_pay), ilk odeme devam eder. (9) google_cagri: `cagri:false` ise Google'a HIC istek yapilmaz ('|', C0 kontrol karakteri, DEL ya da bos adres varsa; km karari dahili tabloya duser).",
  "fiyat_sabitleri": {
   "acilis": 10.0,
   "km_ucret": 1.99,
@@ -947,6 +947,278 @@
    "not": "bos adres -> null"
   }
  ],
+ "iptal": [
+  {
+   "deger": "1",
+   "gecerli": true,
+   "not": "tek gecerli deger: tam olarak '1'"
+  },
+  {
+   "deger": null,
+   "gecerli": false,
+   "not": "alan hic gonderilmedi"
+  },
+  {
+   "deger": "",
+   "gecerli": false,
+   "not": "bos"
+  },
+  {
+   "deger": "0",
+   "gecerli": false
+  },
+  {
+   "deger": "on",
+   "gecerli": false,
+   "not": "checkbox varsayilan degeri 'on' KABUL EDILMEZ (istemci '1' gondermeli)"
+  },
+  {
+   "deger": "true",
+   "gecerli": false
+  },
+  {
+   "deger": "11",
+   "gecerli": false
+  },
+  {
+   "deger": "01",
+   "gecerli": false
+  },
+  {
+   "deger": " 1",
+   "gecerli": false,
+   "not": "bosluk kirpilmaz"
+  },
+  {
+   "deger": "1 ",
+   "gecerli": false,
+   "not": "bosluk kirpilmaz"
+  },
+  {
+   "deger": "1\n",
+   "gecerli": false,
+   "not": "sonda satir sonu kabul edilmez"
+  },
+  {
+   "deger": "١",
+   "gecerli": false,
+   "not": "Arapca-Hint rakami"
+  }
+ ],
+ "idem": [
+  {
+   "deger": null,
+   "beklenen": "",
+   "not": "alan yok"
+  },
+  {
+   "deger": "",
+   "beklenen": "",
+   "not": "bos"
+  },
+  {
+   "deger": "kisa",
+   "beklenen": "",
+   "not": "16 karakterden kisa"
+  },
+  {
+   "deger": "aaaaaaaaaaaaaaa",
+   "beklenen": "",
+   "not": "15 karakter"
+  },
+  {
+   "deger": "aaaaaaaaaaaaaaaa",
+   "beklenen": "aaaaaaaaaaaaaaaa",
+   "not": "16 karakter (alt sinir)"
+  },
+  {
+   "deger": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "beklenen": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "not": "64 karakter (ust sinir)"
+  },
+  {
+   "deger": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "beklenen": "",
+   "not": "65 karakter"
+  },
+  {
+   "deger": "abc-DEF-0123456789xyz",
+   "beklenen": "abc-DEF-0123456789xyz",
+   "not": "harf, rakam, tire"
+  },
+  {
+   "deger": "abcd1234-ef56-7890-abcd-1234567890ab",
+   "beklenen": "abcd1234-ef56-7890-abcd-1234567890ab",
+   "not": "UUID bicimi"
+  },
+  {
+   "deger": "abc_DEF_0123456789xyz",
+   "beklenen": "",
+   "not": "alt cizgi yasak"
+  },
+  {
+   "deger": "abc\n0123456789abcdef",
+   "beklenen": "",
+   "not": "satir sonu yasak"
+  },
+  {
+   "deger": "abcdefghijklmnop\n",
+   "beklenen": "",
+   "not": "sonda satir sonu yasak"
+  },
+  {
+   "deger": "a b c d e f g h i j k l",
+   "beklenen": "",
+   "not": "bosluk yasak"
+  },
+  {
+   "deger": "abcdefghijklmnéo",
+   "beklenen": "",
+   "not": "ASCII disi karakter yasak"
+  },
+  {
+   "deger": "abcdefghijklmnop\r\nX-Kotu: 1",
+   "beklenen": "",
+   "not": "baslik enjeksiyonu denemesi"
+  }
+ ],
+ "idempotency_anahtari": [
+  {
+   "idem": null,
+   "siparis_no": "ET-260101-ABCDEF",
+   "anahtar": "et-ET-260101-ABCDEF",
+   "not": "idem yok -> 'et-<siparis no>'"
+  },
+  {
+   "idem": "",
+   "siparis_no": "ET-260101-ABCDEF",
+   "anahtar": "et-ET-260101-ABCDEF"
+  },
+  {
+   "idem": "kisa",
+   "siparis_no": "ET-260101-ABCDEF",
+   "anahtar": "et-ET-260101-ABCDEF",
+   "not": "gecersiz idem yok sayilir"
+  },
+  {
+   "idem": "aaaaaaaaaaaaaaaa",
+   "siparis_no": "ET-260101-ABCDEF",
+   "anahtar": "aaaaaaaaaaaaaaaa",
+   "not": "gecerli idem AYNEN Mollie Idempotency-Key olur"
+  },
+  {
+   "idem": "abcd1234-ef56-7890-abcd-1234567890ab",
+   "siparis_no": "ET-260101-ABCDEF",
+   "anahtar": "abcd1234-ef56-7890-abcd-1234567890ab"
+  },
+  {
+   "idem": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "siparis_no": "ET-260101-ABCDEF",
+   "anahtar": "et-ET-260101-ABCDEF",
+   "not": "cok uzun idem yok sayilir"
+  },
+  {
+   "idem": "abc\n0123456789abcdef",
+   "siparis_no": "ET-260101-ABCDEF",
+   "anahtar": "et-ET-260101-ABCDEF",
+   "not": "satir sonlu idem yok sayilir"
+  }
+ ],
+ "google_cagri": [
+  {
+   "alis": "Gent",
+   "varis": "Brussels Airport (Zaventem)",
+   "cagri": true
+  },
+  {
+   "alis": "Rue de la Loi 16, Bruxelles",
+   "varis": "Grote Markt 1, 9000 Gent",
+   "cagri": true
+  },
+  {
+   "alis": "Brüksel Havalimanı",
+   "varis": "Köln/Bonn",
+   "cagri": true,
+   "not": "ASCII disi karakterler serbest"
+  },
+  {
+   "alis": "A & B, 5%",
+   "varis": "C+D=E?",
+   "cagri": true,
+   "not": "URL ozel karakterleri rawurlencode ile gonderilir"
+  },
+  {
+   "alis": "Gent\u0085",
+   "varis": "Brussels",
+   "cagri": true,
+   "not": "C1 kontrol karakteri (U+0085) engellenmez: yalniz C0 + DEL + '|'"
+  },
+  {
+   "alis": "Gent|Evil",
+   "varis": "Brussels",
+   "cagri": false,
+   "not": "alista '|'"
+  },
+  {
+   "alis": "Gent",
+   "varis": "Brussels|Antwerpen",
+   "cagri": false,
+   "not": "varista '|'"
+  },
+  {
+   "alis": "|",
+   "varis": "|",
+   "cagri": false
+  },
+  {
+   "alis": "",
+   "varis": "Brussels",
+   "cagri": false,
+   "not": "bos alis"
+  },
+  {
+   "alis": "Gent",
+   "varis": "",
+   "cagri": false,
+   "not": "bos varis"
+  },
+  {
+   "alis": "Gent\n",
+   "varis": "Brussels",
+   "cagri": false,
+   "not": "satir sonu"
+  },
+  {
+   "alis": "Gent",
+   "varis": "Brus\rsels",
+   "cagri": false,
+   "not": "satir basi"
+  },
+  {
+   "alis": "Gent\u0000",
+   "varis": "Brussels",
+   "cagri": false,
+   "not": "NUL"
+  },
+  {
+   "alis": "Gent",
+   "varis": "Brus\tsels",
+   "cagri": false,
+   "not": "TAB (C0)"
+  },
+  {
+   "alis": "Gent\u007f",
+   "varis": "Brussels",
+   "cagri": false,
+   "not": "DEL"
+  },
+  {
+   "alis": "Gent",
+   "varis": "Brussels\u001f",
+   "cagri": false,
+   "not": "U+001F"
+  }
+ ],
  "dogrulama_bugun": {
   "simdi_utc": "2026-09-27T22:30:00Z",
   "bugun_brussels": "2026-09-28",
@@ -1568,6 +1840,175 @@
    "gecerli": true,
    "sebep": "kontrol karakterleri bosluga cevrilir",
    "temiz": "Rue de la Loi"
+  },
+  {
+   "alan": "alis",
+   "deger": "Gent|Brussels",
+   "gecerli": false,
+   "sebep": "alista '|' (Google coklu origin enjeksiyonu)",
+   "hata_alani": "alis",
+   "mesaj": "val_route"
+  },
+  {
+   "alan": "varis",
+   "deger": "Brussels Airport|Antwerpen",
+   "gecerli": false,
+   "sebep": "varista '|' (coklu destination enjeksiyonu)",
+   "hata_alani": "varis",
+   "mesaj": "val_route"
+  },
+  {
+   "alan": "alis",
+   "deger": "|",
+   "gecerli": false,
+   "sebep": "yalniz '|'",
+   "hata_alani": "alis",
+   "mesaj": "val_route"
+  },
+  {
+   "alan": "varis",
+   "deger": "Gent |",
+   "gecerli": false,
+   "sebep": "sonda '|'",
+   "hata_alani": "varis",
+   "mesaj": "val_route"
+  },
+  {
+   "alan": "alis",
+   "deger": "Gent\r\n|Evil",
+   "gecerli": false,
+   "sebep": "kontrol karakteri bosluga cevrildikten sonra '|' kalir",
+   "hata_alani": "alis",
+   "mesaj": "val_route"
+  },
+  {
+   "alan": "alis",
+   "deger": "Gent | Evil",
+   "gecerli": false,
+   "sebep": "bosluklu '|'",
+   "hata_alani": "alis",
+   "mesaj": "val_route"
+  },
+  {
+   "alan": "varis",
+   "deger": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA|BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+   "gecerli": false,
+   "sebep": "uzunluk sinirinin altinda ama '|' iceriyor",
+   "hata_alani": "varis",
+   "mesaj": "val_route"
+  },
+  {
+   "alan": "varis",
+   "deger": "Brussels Airport",
+   "gecerli": true,
+   "sebep": "'|' icermeyen normal varis"
+  },
+  {
+   "alan": "alis",
+   "deger": "Gent|X",
+   "gecerli": false,
+   "sebep": "alis ve varis ikisi de '|' ise ilk hata alis",
+   "baglam": {
+    "varis": "Y|Z"
+   },
+   "hata_alani": "alis",
+   "mesaj": "val_route"
+  },
+  {
+   "alan": "varis",
+   "deger": "Y|Z",
+   "gecerli": false,
+   "sebep": "alis gecerli, varis '|' -> hata varis",
+   "hata_alani": "varis",
+   "mesaj": "val_route"
+  },
+  {
+   "alan": "alis",
+   "deger": "",
+   "gecerli": false,
+   "sebep": "alis bos ve varis '|' ise ilk hata alis (bos kontrolu once)",
+   "baglam": {
+    "varis": "Y|Z"
+   },
+   "hata_alani": "alis",
+   "mesaj": "val_route"
+  },
+  {
+   "alan": "alis",
+   "deger": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+   "gecerli": false,
+   "sebep": "alis >120 ve varis '|': ilk hata alis",
+   "baglam": {
+    "varis": "Y|Z"
+   },
+   "hata_alani": "alis",
+   "mesaj": "val_route"
+  },
+  {
+   "alan": "alis",
+   "deger": "Gent (|)",
+   "gecerli": false,
+   "sebep": "parantez icinde '|'",
+   "hata_alani": "alis",
+   "mesaj": "val_route"
+  },
+  {
+   "alan": "iptal",
+   "deger": "1",
+   "gecerli": true,
+   "sebep": "tek iptal=1 alani dogrulamayi etkilemez"
+  },
+  {
+   "alan": "iptal",
+   "deger": [
+    "1",
+    "1"
+   ],
+   "gecerli": false,
+   "sebep": "tekrar eden iptal alani",
+   "hata_alani": "iptal",
+   "mesaj": "val_cancel"
+  },
+  {
+   "alan": "iptal[]",
+   "deger": "1",
+   "gecerli": false,
+   "sebep": "dizi iptal alani (iptal[]=1)",
+   "hata_alani": "iptal",
+   "mesaj": "val_cancel"
+  },
+  {
+   "alan": "iptal[x]",
+   "deger": "1",
+   "gecerli": false,
+   "sebep": "anahtarli dizi iptal alani",
+   "hata_alani": "iptal",
+   "mesaj": "val_cancel"
+  },
+  {
+   "alan": "idem",
+   "deger": "abcd1234-ef56-7890-abcd-1234567890ab",
+   "gecerli": true,
+   "sebep": "tek idem alani dogrulamayi etkilemez"
+  },
+  {
+   "alan": "idem",
+   "deger": [
+    "abcd1234-ef56-7890",
+    "abcd1234-ef56-7891"
+   ],
+   "gecerli": false,
+   "sebep": "tekrar eden idem alani",
+   "hata_alani": "idem",
+   "mesaj": "err_pay"
+  },
+  {
+   "alan": "idem[]",
+   "deger": "abcd1234-ef56-7890",
+   "gecerli": false,
+   "sebep": "dizi idem alani",
+   "hata_alani": "idem",
+   "mesaj": "err_pay"
   },
   {
    "alan": "alis",

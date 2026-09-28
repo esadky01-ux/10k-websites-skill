@@ -146,6 +146,16 @@ doğrulandı). Hedef ≤ 900 bayt (Mollie ~1 kB). Aşılırsa önce adresler, so
 kırpılmaz. Webhook başarıyla e-posta gönderince `m:1` "gönderildi" işaretini metadata'ya yazar. Tutarlar her okumada `k`'dan
 sunucuda yeniden hesaplanır.
 
+**Form alanları (sunucu tarafı zorunlulukları).**
+- `iptal`: iptal koşulları onayı **sunucuda zorunlu**; `iptal=1` (tam `1`) yoksa `422` + `val_cancel` metni (dizi/tekrar: `400`). Sıra: girdi
+  doğrulaması, iptal onayı, km kararı (Google). Onayın zaman damgası tutulmaz (Mollie'de yer yok; ödemenin `createdAt` değeri yakın karşılığıdır).
+  Site formu `iptal=1` göndermelidir (istemci onay kutusunu zaten denetler).
+- `idem`: istemci üretimi rastgele belirteç (16–64 karakter `[A-Za-z0-9-]`). Geçerliyse Mollie'ye `Idempotency-Key` olarak gider
+  (yoksa `et-<sipariş no>`). Aynı `idem` başka siparişe ait ödemeyi döndürürse (metadata sipariş no'su uyuşmaz) ikinci `create`
+  **hata verir** (502 + `err_pay`, çerez/yönlendirme yok); ilk ödeme devam eder. Geçersiz belirteç yok sayılır.
+- Adreslerde `|` (pipe) **reddedilir** (Google Distance Matrix'te origin/destination ayırıcısı: çoklu adres enjeksiyonu). `googleKm()` ayrıca
+  savunma olarak `|`, kontrol karakteri (C0/DEL) veya boş adres varsa Google'a **hiç istek yapmaz**.
+
 **E-posta tekrarını önleme (katmanlı, hepsi en-iyi-çaba):**
 1. Ödenen tutar, `k`'dan yeniden hesaplanan kapora ile eşit değilse e-posta **gönderilmez** ve hata loglanır (`TUTAR UYUSMUYOR`).
 2. `amountRefunded` / `amountChargedBack` > 0 ise gönderilmez (iade/geri ödeme webhook'ları).
@@ -190,10 +200,9 @@ gönderilmez; çift iş emri riski çift müşteri e-postasından daha kötüdü
 ## 8. Testler ve yerel çalıştırma
 
 ```bash
-python3 kaynak/build.py
 python3 kaynak/testler/test_vercel_api.py      # çıkış kodu 0 = geçti (ağ dışı; sahte Mollie/Brevo/Google)
 ```
-Test paketi `vercel_build.py`'yi geçici dizine derler, sahte servisleri (`mock_dis_servisler.py`) ve `dev-server.js`'in 5 ortam varyantını
+Test paketi repoyu geçici dizine kopyalayıp orada `build.py` çalıştırır (gerçek `www/` ve `vercel-out/` kullanılmaz/değişmez), `vercel_build.py`'yi geçici dizine derler, sahte servisleri (`mock_dis_servisler.py`) ve `dev-server.js`'in 5 ortam varyantını
 9500–9599 portlarında başlatır (boş bir 7'li aralık otomatik seçilir, `ET_TEST_PORT` ile taban verilebilir; hata ayıklarken `ET_TEST_TMP_KORU=1` geçici dizini/logları saklar).
 
 Elle deneme:
