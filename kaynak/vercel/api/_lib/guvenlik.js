@@ -49,7 +49,7 @@ function genel500(res, ctx) {
   }
   const dil = dilSec(ctx.dil);
   yanitHtml(res, 500, miniSayfa(dil, t(dil, 'err_t'),
-    '<p>' + h(t(dil, 'err_pay')) + '</p><p class="ref">ref: ' + h(ctx.rid) + '</p>'));
+    '<p>' + h(t(dil, 'err_pay')) + '</p><p class="ref">ref: ' + h(ctx.rid) + (ctx.no ? ' · ' + h(ctx.no) : '') + '</p>'));
 }
 
 /**
@@ -59,7 +59,9 @@ function genel500(res, ctx) {
 function sarmala(ad, fn) {
   return async function handler(req, res) {
     temelBasliklar(res);
-    const ctx = { ad, rid: istekKimligi(), dil: 'fr' };
+    const ctx = { ad, rid: istekKimligi(), dil: 'fr', no: '' };
+    // Istemci baglantiyi koparirsa req 'error' yayar; dinleyici yoksa surec cokerdi
+    req.on('error', () => {});
     try {
       await fn(req, res, ctx);
     } catch (e) {
@@ -116,7 +118,6 @@ function govdeOku(req, sinir) {
     });
     req.on('end', () => bitir(coz, Buffer.concat(parcalar)));
     req.on('error', () => bitir(red, istisna(400, true)));
-    req.on('aborted', () => bitir(red, istisna(400, true)));
     req.on('close', () => bitir(red, istisna(400, true)));
   });
 }
@@ -285,6 +286,7 @@ class OranSiniri {
     }
     z.push(an);
     this.kayitlar.set(anahtar, z);
+    while (this.kayitlar.size > this.maksKayit) this.kayitlar.delete(this.kayitlar.keys().next().value);
     return { izin: true, beklemeSn: 0 };
   }
 }

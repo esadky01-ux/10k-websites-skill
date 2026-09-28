@@ -80,6 +80,8 @@ ap = argparse.ArgumentParser(description="Vercel cikti dizinini uretir (build.py
 ap.add_argument("--out", default=str(KOK / "vercel-out"), help="cikti dizini (varsayilan: vercel-out/)")
 ap.add_argument("--www", default=str(KOK / "www"), help="build.py ciktisi (varsayilan: www/)")
 ap.add_argument("--force", action="store_true", help="bos olmayan ve 'vercel-out' adli olmayan cikti dizininin silinmesine izin ver")
+ap.add_argument("--test-ucu-yok", action="store_true",
+                help="kurulum tanilama ucunu (api/test.js) ciktiya ALMA — kurulum bitince canli dagitim icin onerilir")
 ARG = ap.parse_args()
 OUT = Path(ARG.out).resolve()
 WWW = Path(ARG.www).resolve()
@@ -322,6 +324,8 @@ for kok, dizinler, dosyalar in os.walk(VERCEL / "api"):
         # _lib/dil.json ve mesafe.json kaynak agacinda YOKTUR (asagida uretilir); varsa eskimis kopyadir
         if ad in ("dil.json", "mesafe.json"):
             continue
+        if ARG.test_ucu_yok and ad == "test.js" and Path(kok).name == "api":
+            continue
         goreli = Path(kok).relative_to(VERCEL) / ad
         (OUT / goreli).parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(Path(kok) / ad, OUT / goreli)
@@ -349,8 +353,10 @@ if ihlaller:
     hata("cikti dizininde YASAK dosya/dizin bulundu (PHP/.htaccess/pay/orders): " + ", ".join(sorted(ihlaller)))
 
 gerekli = ["index.html", "fr/index.html", "nl/index.html", "en/index.html", "tr/index.html",
-           "api/create.js", "api/webhook.js", "api/success.js", "api/orders.js", "api/test.js",
+           "api/create.js", "api/webhook.js", "api/success.js", "api/orders.js",
            "api/_lib/dil.json", "api/_lib/mesafe.json", "package.json"]
+if not ARG.test_ucu_yok:
+    gerekli.append("api/test.js")
 eksik_dosya = [g for g in gerekli if not (OUT / g).is_file()]
 if eksik_dosya:
     hata(f"cikti eksik: {eksik_dosya}")
@@ -373,3 +379,7 @@ print(f"  dil.json: {len(dil_anahtarlari)} anahtar x {len(DILLER)} dil"
       + (f" (opsiyonel: {opsiyonel})" if opsiyonel else "")
       + f"   mesafe.json: {len(yerler_kompakt)} yer, {len(kesin)} kesin rota")
 print(f"  ciktiya ALINMAYAN (PHP/.htaccess/pay/orders): {len(atlanan)} oge")
+if ARG.test_ucu_yok:
+    print("  kurulum tanilama ucu (api/test.js) ciktiya ALINMADI")
+else:
+    print("! api/test.js DAHIL: kurulum bitince `--test-ucu-yok` ile yeniden derleyip dagitin")

@@ -188,6 +188,17 @@ def ulke_kodu(anahtar):
     return YER_ULKE.get(anahtar, "BE")
 
 
+def iata_kodu(ctx, anahtar):
+    """Havalimani IATA kodu: yer adinda '(XXX)' varsa o (orly -> ORY), yoksa anahtarin buyuk harfi (bru -> BRU)."""
+    for ad in ctx["veri"]["yerler"][anahtar]["ad"].values():
+        m = re.search(r"\(([A-Z]{3})\)", ad)
+        if m:
+            return m.group(1)
+    if len(anahtar) == 3:
+        return anahtar.upper()
+    raise ValueError(f"IATA kodu belirlenemedi: {anahtar}")
+
+
 def ulke_adi(ctx, kod, dil):
     return _s(dil, ctx).get(_ULKE_ADI_ANAHTAR.format(kod.lower())) or _ULKE_ISIMLERI_EN[kod]
 
@@ -300,7 +311,7 @@ def _alan_dugumleri(dil, ctx):
     for anahtar in ALAN_SEHIRLERI:
         liste.append({"@type": "City", "name": yer_adi(ctx, anahtar, dil)})
     for anahtar in ALAN_HAVALIMANLARI:
-        liste.append({"@type": "Airport", "name": yer_adi(ctx, anahtar, dil), "iataCode": anahtar.upper()})
+        liste.append({"@type": "Airport", "name": yer_adi(ctx, anahtar, dil), "iataCode": iata_kodu(ctx, anahtar)})
     return liste
 
 
@@ -550,7 +561,7 @@ def zone_data(dil, ctx, kaynak="brussels"):
              "fiyat_metin": para_tam(dil, toplam), "alis_anahtar": kaynak, "varis_anahtar": anahtar,
              "ulke": kod, "ulke_ad": ulke_adi(ctx, kod, dil)}
         if yerler[anahtar]["havalimani"]:
-            d["iata"] = anahtar.upper()
+            d["iata"] = iata_kodu(ctx, anahtar)
         return d
 
     havalimanlari, sehirler, sinir = [], [], []
@@ -681,7 +692,7 @@ def llms_txt(ctx):
     L.append("- Cross-border rides to Germany, France, Luxembourg and the Netherlands (for example "
              "Amsterdam, Rotterdam, Eindhoven, Maastricht, Paris, Lille, Cologne, Düsseldorf, Aachen, Luxembourg).")
     L.append("- Return trips: a return date and time can be added when booking.")
-    L.append(f'- Booking: the online form on each language page ([{alan}/en/#rezervasyon]({alan}/en/#rezervasyon)) '
+    L.append(f'- Booking: the online form on each language page ([English booking form]({alan}/en/#rezervasyon)) '
              f'or WhatsApp ({isl["whatsapp"]}).')
     L.append("")
     L.append("## Pricing")

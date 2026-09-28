@@ -30,16 +30,20 @@ function hataSayfasi(res, dil, kod, mesaj, ekBtn, ekBasliklar) {
     + '<a class="btn btn--dis" href="/' + h(dil) + '/#rezervasyon">' + h(t(dil, 'err_back')) + '</a></div>'), ekBasliklar);
 }
 
-/** Checkout adresi guvenli mi? https, ya da yerel Mollie taklidiyle ayni host (test). Acik yonlendirmeyi onler. */
+/**
+ * Checkout adresi guvenli mi? https, ya da yerel Mollie taklidiyle ayni host (yalniz test).
+ * Acik yonlendirmeyi ve baslik enjeksiyonunu onler. Doner: normallestirilmis adres | null.
+ */
 function checkoutGuvenli(href) {
   try {
-    const u = new URL(href);
-    if (u.username || u.password) return false;
-    if (u.protocol === 'https:') return true;
+    const u = new URL(String(href));
+    if (u.username || u.password) return null;
+    if (u.protocol === 'https:') return u.href;
     const c = cfg();
-    return u.protocol === 'http:' && u.hostname === '127.0.0.1' && !!c.mollieBase && new URL(c.mollieBase).host === u.host;
+    const yerel = u.protocol === 'http:' && u.hostname === '127.0.0.1' && !!c.mollieBase && new URL(c.mollieBase).host === u.host;
+    return yerel ? u.href : null;
   } catch (_) {
-    return false;
+    return null;
   }
 }
 
@@ -152,8 +156,8 @@ module.exports = sarmala('create', async function handler(req, res, ctx) {
     metadata,
   }, { idempotency: 'et-' + no });
 
-  const checkout = odeme && odeme._links && odeme._links.checkout && odeme._links.checkout.href;
-  if (kod !== 201 || typeof odeme.id !== 'string' || !/^tr_[A-Za-z0-9]+$/.test(odeme.id) || !checkout || !checkoutGuvenli(checkout)) {
+  const checkout = checkoutGuvenli(odeme && odeme._links && odeme._links.checkout && odeme._links.checkout.href);
+  if (kod !== 201 || typeof odeme.id !== 'string' || !/^tr_[A-Za-z0-9]+$/.test(odeme.id) || !checkout) {
     kayit('hata', 'create: Mollie odeme olusturulamadi (HTTP ' + kod + '). Siparis: ' + no);
     hataSayfasi(res, dil, 502, t(dil, 'err_pay'));
     return;
