@@ -1,7 +1,40 @@
-# pay/ katmani korumasi: yapilandirma ve uretilen dosyalar web'den okunamaz
-<FilesMatch "^(config\.php|dil\.php|isletme\.php|ortak\.php|mailer\.php)$">
+# ============================================================
+# pay/ katmani korumasi — BEYAZ LISTE: her sey yasak, yalniz 5 giris betigi web'den erisilebilir.
+# Yapilandirma (config.php, config.php~, config.old, config.txt, *.bak, *.json, *.log, *.tmp), yardimci PHP dosyalari
+# (ortak/guvenlik/depo/girdi/mesafe/mailer/temizle/dil/isletme/unicode_tablo .php), mesafe.json ve orders/ klasoru
+# bu kural sayesinde ERISILEMEZ. Yeni bir dosya eklenirse varsayilan olarak yasaktir.
+# Apache 2.4 (mod_authz_core) ve 2.2 (Order/Deny/Allow) icin ayri IfModule bloklari vardir.
+# ============================================================
+
+# Dizin listeleme: asagidaki "Require all denied" zaten listelemeyi (403) engeller. `Options -Indexes` satiri
+# BILEREK yorumdadir: 'Options' yonergesi AllowOverride Options gerektirir; izin yoksa pay/ altindaki TUM adresler
+# (odeme dahil) 500 verir (kok .htaccess'teki ayni gerekce). Hosting izin veriyorsa yorumu kaldirabilirsiniz:
+# Options -Indexes
+
+# PHP hatalari ekrana basilmasin (yalniz mod_php calisiyorsa gecerlidir; uygulama zaten display_errors'i kapatir)
+<IfModule mod_php.c>
+  php_flag display_errors off
+</IfModule>
+<IfModule mod_php7.c>
+  php_flag display_errors off
+</IfModule>
+
+# ---- 1) varsayilan: HER SEY YASAK
+<IfModule mod_authz_core.c>
   Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Order allow,deny
+  Deny from all
+</IfModule>
+
+# ---- 2) beyaz liste: yalniz bu 5 betik (tam dosya adi; config.php~, test.php.bak, orders.php.old ESLESMEZ)
+<FilesMatch "^(create|webhook|success|orders|test)\.php$">
+  <IfModule mod_authz_core.c>
+    Require all granted
+  </IfModule>
   <IfModule !mod_authz_core.c>
-    Deny from all
+    Order allow,deny
+    Allow from all
   </IfModule>
 </FilesMatch>
