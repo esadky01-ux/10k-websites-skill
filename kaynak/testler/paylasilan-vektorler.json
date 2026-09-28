@@ -1338,15 +1338,15 @@
   },
   {
    "alan": "eposta",
-   "deger": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@x.be",
+   "deger": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.be",
    "gecerli": true,
-   "sebep": "96 karakter (<=100)"
+   "sebep": "toplam 94 karakter (<=100)"
   },
   {
    "alan": "eposta",
-   "deger": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.be",
+   "deger": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.be",
    "gecerli": true,
-   "sebep": "yerel kisim 64 (<=64), toplam 100 (<=100)"
+   "sebep": "yerel kisim 64 (<=64), toplam TAM 100 (<=100)"
   },
   {
    "alan": "eposta",
@@ -1358,7 +1358,7 @@
   },
   {
    "alan": "eposta",
-   "deger": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@x.be",
+   "deger": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.be",
    "gecerli": false,
    "sebep": "toplam 101 > 100",
    "hata_alani": "eposta",
@@ -1492,14 +1492,14 @@
   },
   {
    "alan": "ad",
-   "deger": "Jan​Peeters﻿",
+   "deger": "Jan\u200bPeeters\ufeff",
    "gecerli": true,
    "sebep": "sifir genislikli/BOM karakterler silinir",
    "temiz": "JanPeeters"
   },
   {
    "alan": "ad",
-   "deger": "Jan‮Peeters",
+   "deger": "Jan\u202ePeeters",
    "gecerli": true,
    "sebep": "bidi yonlendirme karakteri silinir",
    "temiz": "JanPeeters"
