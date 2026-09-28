@@ -9,7 +9,7 @@
 // ============================================================
 
 const { cfg } = require('./_lib/config');
-const { para, paraSent, tarihGoster } = require('./_lib/dil');
+const { paraSent, tarihGoster } = require('./_lib/dil');
 const { h, miniSayfa, yanitHtml, yanitMetin, yanitYonlendir } = require('./_lib/html');
 const {
   sarmala, govdeOku, formCoz, cerezEkle, kaynakIzinli, istemciIp, yoneticiSiniri,

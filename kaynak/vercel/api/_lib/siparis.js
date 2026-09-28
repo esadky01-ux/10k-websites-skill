@@ -44,9 +44,9 @@ const SAAT_DESENI = /^([01]\d|2[0-3]):[0-5]\d$/;
 // ---------------------------------------------------------------- metin temizligi
 
 // Kontrol karakterleri (C0, DEL, C1), satir/paragraf ayiricilari ve U+FFFD -> bosluk
-const KONTROL = /[\u0000-\u001F\u007F-\u009F  �]/g;
+const KONTROL = /[\u{0}-\u{1F}\u{7F}-\u{9F}\u{2028}\u{2029}\u{FFFD}]/gu;
 // Gorunmez bicim karakterleri (sifir genislik, bidi yonlendirme, BOM) -> silinir
-const GORUNMEZ = /[​-‏‪-‮⁠-⁤⁦-⁩﻿]/g;
+const GORUNMEZ = /[\u{200B}-\u{200F}\u{202A}-\u{202E}\u{2060}-\u{2064}\u{2066}-\u{2069}\u{FEFF}]/gu;
 
 /** Kontrol karakterlerini at, bosluklari tekilles, kirp. NFC. */
 function temizMetin(s) {
@@ -96,6 +96,21 @@ const ALAN_MESAJI = {
   dil: 'err_pay', kaynak: 'err_pay', yolcu: 'err_pay', buyuk: 'err_pay', kucuk: 'err_pay', arac: 'err_pay', web: 'err_pay',
 };
 const BILINEN_ALANLAR = Object.keys(ALAN_MESAJI);
+
+// ---------------------------------------------------------------- yapisal kontrol (dizi / tekrar eden alan)
+
+/**
+ * Bilinen bir alan TEKRAR ediyorsa (alis=a&alis=b) ya da dizi bicimindeyse (alis[]=x, alis[k]=x)
+ * o alanin adini doner; yoksa null. `tumu`: Map<ad, string[]> (formCoz().tumu).
+ */
+function yapisalHata(tumu) {
+  for (const [anahtar, degerler] of tumu) {
+    const govdeAdi = anahtar.replace(/\[.*$/, '');
+    if (!BILINEN_ALANLAR.includes(govdeAdi)) continue;
+    if (anahtar !== govdeAdi || degerler.length > 1) return govdeAdi;
+  }
+  return null;
+}
 
 // ---------------------------------------------------------------- dogrulama
 
@@ -331,7 +346,7 @@ function metadataDanSiparis(odeme) {
 
 module.exports = {
   bugunBrussels, gunNo, temizMetin, epostaGecerli, tamSayiAyikla, sinirla,
-  dogrula, ALAN_MESAJI, BILINEN_ALANLAR,
+  dogrula, yapisalHata, ALAN_MESAJI, BILINEN_ALANLAR,
   siparisNoGecerli, siparisNoUret, SIPARIS_NO_DESENI,
   metadataOlustur, metadataKirp, jsonBayt, METADATA_SINIRI,
   durumEsle, metadataDanSiparis,

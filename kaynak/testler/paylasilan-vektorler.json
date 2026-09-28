@@ -1,0 +1,1817 @@
+{
+ "_aciklama": "PHP (kaynak/pay) ve Node (kaynak/vercel) katmanlarinin AYNI mantigi verdigini kilitleyen ortak test vektorleri. Node tarafi kaynak/testler/test_vercel_api.py ile dogrulanir; PHP tarafi bu dosyaya gore sertlestirilecek. Bolumler: (1) fiyat: tamsayi-sent kesin fiyat (beklenenler PHP fiyat_hesapla ile uretilip dogrulandi; toplam=round(10+km*1.99,2), kapora=round(toplam*0.20,2) yarim yukari, kalan=toplam-kapora). (2) km_karar: {istemci, google, dahili, tol} -> beklenen km ya da \"RET\". Politika: istemci 1..800 disiysa RET; google (>0) varsa fark = |google-istemci|/google*100 ve fark > tol ise google, aksi istemci (TAM sinirda istemci); google yoksa ama dahili varsa istemci*100 < dahili*(100-tol) ise dahili, aksi istemci (istemci daha yuksekse kabul); ikisi de yoksa RET; sonuc 1..800 disiysa RET. Tamsayi aritmetigi kullanin (|g-i|*100 > tol*g ; i*100 < d*(100-tol)). (3) yer_bul: serbest metin adres -> yer anahtari ya da null (normalize: kucuk harf, i-noktasiz->i, ss, oe, ae, NFD+Mn sil, [^a-z0-9]+ -> bosluk; tam eslesme, yoksa kelime siniri korunarak EN UZUN takma ad kazanir). (4) dahili_mesafe: iki adres de taniniyorsa KESIN tablo (iki yon) yoksa round(haversine*1.17) (JS Math.round: .5 yukari); tanınmayan / ayni yer -> null. (5) dogrulama: form alanlarinin dogrulama/temizleme kurallari. Her vaka `dogrulama_taban` alanlarina `alan=deger` uygular (`baglam` varsa ONCE onun alanlari uygulanir). `deger` liste ise alan TEKRAR gonderilmis demektir; alan adi `x[]` ise dizi alani. `gecerli:false` ise ilk hata `hata_alani` alaninda ve `mesaj` strings anahtariyla verilir (dogrulama sirasi: guzergah, tarih/saat, ad, e-posta, telefon, km). `temiz` verilmisse dogrulanmis+temizlenmis degerin beklenen degeridir (metin: kontrol karakterleri -> bosluk, gorunmez bicim karakterleri silinir, NFC, bosluk tekillestirme, kirpma; uzunluklar KOD NOKTASI sayisidir; yolcu/buyuk/kucuk sinirlanir, hata vermez). Zaman: Brussels; bu vektorlerde bugun = `dogrulama_bugun`. tarih: bugunden 365 gune kadar; donus tarihi >= gidis ve bugunden en fazla 365 gun ileri; donus tarihi bos ise donus saati yok sayilir. E-posta: <=100, ASCII, yerel kisim <=64, TLD >=2 harf, bosluk/kontrol karakteri/IP-literal yok. Telefon: >=8 rakam ve <=25 karakter. Ad 2-80, adresler 1-120 karakter.",
+ "fiyat_sabitleri": {
+  "acilis": 10.0,
+  "km_ucret": 1.99,
+  "kapora_yuzde": 20,
+  "min_km": 1,
+  "max_km": 800
+ },
+ "fiyat": [
+  {
+   "km": 1,
+   "toplam": 11.99,
+   "kapora": 2.4,
+   "kalan": 9.59
+  },
+  {
+   "km": 2,
+   "toplam": 13.98,
+   "kapora": 2.8,
+   "kalan": 11.18
+  },
+  {
+   "km": 3,
+   "toplam": 15.97,
+   "kapora": 3.19,
+   "kalan": 12.78
+  },
+  {
+   "km": 4,
+   "toplam": 17.96,
+   "kapora": 3.59,
+   "kalan": 14.37
+  },
+  {
+   "km": 5,
+   "toplam": 19.95,
+   "kapora": 3.99,
+   "kalan": 15.96
+  },
+  {
+   "km": 6,
+   "toplam": 21.94,
+   "kapora": 4.39,
+   "kalan": 17.55
+  },
+  {
+   "km": 7,
+   "toplam": 23.93,
+   "kapora": 4.79,
+   "kalan": 19.14
+  },
+  {
+   "km": 10,
+   "toplam": 29.9,
+   "kapora": 5.98,
+   "kalan": 23.92
+  },
+  {
+   "km": 12,
+   "toplam": 33.88,
+   "kapora": 6.78,
+   "kalan": 27.1
+  },
+  {
+   "km": 13,
+   "toplam": 35.87,
+   "kapora": 7.17,
+   "kalan": 28.7
+  },
+  {
+   "km": 22,
+   "toplam": 53.78,
+   "kapora": 10.76,
+   "kalan": 43.02
+  },
+  {
+   "km": 29,
+   "toplam": 67.71,
+   "kapora": 13.54,
+   "kalan": 54.17
+  },
+  {
+   "km": 45,
+   "toplam": 99.55,
+   "kapora": 19.91,
+   "kalan": 79.64
+  },
+  {
+   "km": 56,
+   "toplam": 121.44,
+   "kapora": 24.29,
+   "kalan": 97.15
+  },
+  {
+   "km": 57,
+   "toplam": 123.43,
+   "kapora": 24.69,
+   "kalan": 98.74
+  },
+  {
+   "km": 89,
+   "toplam": 187.11,
+   "kapora": 37.42,
+   "kalan": 149.69
+  },
+  {
+   "km": 100,
+   "toplam": 209.0,
+   "kapora": 41.8,
+   "kalan": 167.2
+  },
+  {
+   "km": 114,
+   "toplam": 236.86,
+   "kapora": 47.37,
+   "kalan": 189.49
+  },
+  {
+   "km": 115,
+   "toplam": 238.85,
+   "kapora": 47.77,
+   "kalan": 191.08
+  },
+  {
+   "km": 153,
+   "toplam": 314.47,
+   "kapora": 62.89,
+   "kalan": 251.58
+  },
+  {
+   "km": 178,
+   "toplam": 364.22,
+   "kapora": 72.84,
+   "kalan": 291.38
+  },
+  {
+   "km": 203,
+   "toplam": 413.97,
+   "kapora": 82.79,
+   "kalan": 331.18
+  },
+  {
+   "km": 220,
+   "toplam": 447.8,
+   "kapora": 89.56,
+   "kalan": 358.24
+  },
+  {
+   "km": 228,
+   "toplam": 463.72,
+   "kapora": 92.74,
+   "kalan": 370.98
+  },
+  {
+   "km": 257,
+   "toplam": 521.43,
+   "kapora": 104.29,
+   "kalan": 417.14
+  },
+  {
+   "km": 281,
+   "toplam": 569.19,
+   "kapora": 113.84,
+   "kalan": 455.35
+  },
+  {
+   "km": 306,
+   "toplam": 618.94,
+   "kapora": 123.79,
+   "kalan": 495.15
+  },
+  {
+   "km": 315,
+   "toplam": 636.85,
+   "kapora": 127.37,
+   "kalan": 509.48
+  },
+  {
+   "km": 331,
+   "toplam": 668.69,
+   "kapora": 133.74,
+   "kalan": 534.95
+  },
+  {
+   "km": 356,
+   "toplam": 718.44,
+   "kapora": 143.69,
+   "kalan": 574.75
+  },
+  {
+   "km": 406,
+   "toplam": 817.94,
+   "kapora": 163.59,
+   "kalan": 654.35
+  },
+  {
+   "km": 456,
+   "toplam": 917.44,
+   "kapora": 183.49,
+   "kalan": 733.95
+  },
+  {
+   "km": 511,
+   "toplam": 1026.89,
+   "kapora": 205.38,
+   "kalan": 821.51
+  },
+  {
+   "km": 514,
+   "toplam": 1032.86,
+   "kapora": 206.57,
+   "kalan": 826.29
+  },
+  {
+   "km": 562,
+   "toplam": 1128.38,
+   "kapora": 225.68,
+   "kalan": 902.7
+  },
+  {
+   "km": 637,
+   "toplam": 1277.63,
+   "kapora": 255.53,
+   "kalan": 1022.1
+  },
+  {
+   "km": 712,
+   "toplam": 1426.88,
+   "kapora": 285.38,
+   "kalan": 1141.5
+  },
+  {
+   "km": 762,
+   "toplam": 1526.38,
+   "kapora": 305.28,
+   "kalan": 1221.1
+  },
+  {
+   "km": 787,
+   "toplam": 1576.13,
+   "kapora": 315.23,
+   "kalan": 1260.9
+  },
+  {
+   "km": 799,
+   "toplam": 1600.01,
+   "kapora": 320.0,
+   "kalan": 1280.01
+  },
+  {
+   "km": 800,
+   "toplam": 1602.0,
+   "kapora": 320.4,
+   "kalan": 1281.6
+  }
+ ],
+ "km_karar": [
+  {
+   "istemci": 56,
+   "google": null,
+   "dahili": 56,
+   "tol": 12,
+   "beklenen": 56,
+   "not": "google yok, dahili var, istemci = dahili"
+  },
+  {
+   "istemci": 56,
+   "google": 56,
+   "dahili": 56,
+   "tol": 12,
+   "beklenen": 56
+  },
+  {
+   "istemci": 88,
+   "google": 100,
+   "dahili": null,
+   "tol": 12,
+   "beklenen": 88,
+   "not": "google: fark TAM %12 -> istemci (asilmamis)"
+  },
+  {
+   "istemci": 87,
+   "google": 100,
+   "dahili": null,
+   "tol": 12,
+   "beklenen": 100,
+   "not": "google: fark %13 -> google"
+  },
+  {
+   "istemci": 112,
+   "google": 100,
+   "dahili": null,
+   "tol": 12,
+   "beklenen": 112,
+   "not": "google: istemci %12 yuksek (tam sinir) -> istemci"
+  },
+  {
+   "istemci": 113,
+   "google": 100,
+   "dahili": null,
+   "tol": 12,
+   "beklenen": 100,
+   "not": "google: istemci %13 yuksek -> google"
+  },
+  {
+   "istemci": 22,
+   "google": 25,
+   "dahili": null,
+   "tol": 12,
+   "beklenen": 22,
+   "not": "google: 3/25 = tam %12"
+  },
+  {
+   "istemci": 21,
+   "google": 25,
+   "dahili": null,
+   "tol": 12,
+   "beklenen": 25,
+   "not": "google: 4/25 = %16"
+  },
+  {
+   "istemci": 704,
+   "google": 800,
+   "dahili": null,
+   "tol": 12,
+   "beklenen": 704,
+   "not": "google: 96/800 = tam %12"
+  },
+  {
+   "istemci": 703,
+   "google": 800,
+   "dahili": null,
+   "tol": 12,
+   "beklenen": 800,
+   "not": "google: 97/800 = %12.125"
+  },
+  {
+   "istemci": 703,
+   "google": 799,
+   "dahili": null,
+   "tol": 12,
+   "beklenen": 799,
+   "not": "google: 96/799 = %12.015 (%12.01 vakasi) -> google"
+  },
+  {
+   "istemci": 704,
+   "google": 799,
+   "dahili": null,
+   "tol": 12,
+   "beklenen": 704,
+   "not": "google: 95/799 = %11.89 -> istemci"
+  },
+  {
+   "istemci": 30,
+   "google": 56,
+   "dahili": null,
+   "tol": 12,
+   "beklenen": 56,
+   "not": "istemci cok dusuk, google kazanir"
+  },
+  {
+   "istemci": 300,
+   "google": 56,
+   "dahili": null,
+   "tol": 12,
+   "beklenen": 56,
+   "not": "istemci cok yuksek, google kazanir"
+  },
+  {
+   "istemci": 1,
+   "google": 1,
+   "dahili": null,
+   "tol": 12,
+   "beklenen": 1
+  },
+  {
+   "istemci": 800,
+   "google": 800,
+   "dahili": null,
+   "tol": 12,
+   "beklenen": 800
+  },
+  {
+   "istemci": 56,
+   "google": 900,
+   "dahili": null,
+   "tol": 12,
+   "beklenen": "RET",
+   "not": "google sonucu 800'u asiyor -> sonuc RET"
+  },
+  {
+   "istemci": 56,
+   "google": 0,
+   "dahili": 56,
+   "tol": 12,
+   "beklenen": 56,
+   "not": "google 0 yok sayilir, dahili devreye girer"
+  },
+  {
+   "istemci": 1,
+   "google": 0,
+   "dahili": 56,
+   "tol": 12,
+   "beklenen": 56,
+   "not": "google 0 yok sayilir; istemci dahilinin cok altinda -> dahili"
+  },
+  {
+   "istemci": 56,
+   "google": 57,
+   "dahili": 13,
+   "tol": 12,
+   "beklenen": 56,
+   "not": "google varsa dahili YOK SAYILIR (istemci google'a yakin)"
+  },
+  {
+   "istemci": 13,
+   "google": 56,
+   "dahili": 13,
+   "tol": 12,
+   "beklenen": 56,
+   "not": "google varsa dahili YOK SAYILIR (istemci uzak -> google)"
+  },
+  {
+   "istemci": 49,
+   "google": null,
+   "dahili": 56,
+   "tol": 12,
+   "beklenen": 56,
+   "not": "dahili: 49 < 56*0.88=49.28 -> dahili"
+  },
+  {
+   "istemci": 50,
+   "google": null,
+   "dahili": 56,
+   "tol": 12,
+   "beklenen": 50,
+   "not": "dahili: 50 >= 49.28 -> istemci kabul"
+  },
+  {
+   "istemci": 1,
+   "google": null,
+   "dahili": 56,
+   "tol": 12,
+   "beklenen": 56,
+   "not": "fiyat tahrifati: km=1 -> dahili"
+  },
+  {
+   "istemci": 22,
+   "google": null,
+   "dahili": 25,
+   "tol": 12,
+   "beklenen": 22,
+   "not": "dahili: 22 = 25*0.88 TAM sinir -> istemci"
+  },
+  {
+   "istemci": 21,
+   "google": null,
+   "dahili": 25,
+   "tol": 12,
+   "beklenen": 25,
+   "not": "dahili: 21 < 22 -> dahili"
+  },
+  {
+   "istemci": 100,
+   "google": null,
+   "dahili": 56,
+   "tol": 12,
+   "beklenen": 100,
+   "not": "dahili varken istemci daha yuksek -> istemci kabul"
+  },
+  {
+   "istemci": 800,
+   "google": null,
+   "dahili": 800,
+   "tol": 12,
+   "beklenen": 800
+  },
+  {
+   "istemci": 1,
+   "google": null,
+   "dahili": 1,
+   "tol": 12,
+   "beklenen": 1
+  },
+  {
+   "istemci": 800,
+   "google": null,
+   "dahili": null,
+   "tol": 12,
+   "beklenen": "RET",
+   "not": "google de dahili de yok -> DOGRULANAMAZ -> RET"
+  },
+  {
+   "istemci": 56,
+   "google": null,
+   "dahili": null,
+   "tol": 12,
+   "beklenen": "RET",
+   "not": "google de dahili de yok -> RET"
+  },
+  {
+   "istemci": 0,
+   "google": null,
+   "dahili": 56,
+   "tol": 12,
+   "beklenen": "RET",
+   "not": "istemci 0"
+  },
+  {
+   "istemci": -5,
+   "google": 56,
+   "dahili": 56,
+   "tol": 12,
+   "beklenen": "RET",
+   "not": "istemci negatif"
+  },
+  {
+   "istemci": 801,
+   "google": 800,
+   "dahili": 800,
+   "tol": 12,
+   "beklenen": "RET",
+   "not": "istemci 801"
+  },
+  {
+   "istemci": 9999,
+   "google": 56,
+   "dahili": 56,
+   "tol": 12,
+   "beklenen": "RET",
+   "not": "istemci 9999"
+  },
+  {
+   "istemci": 0,
+   "google": 1,
+   "dahili": 1,
+   "tol": 12,
+   "beklenen": "RET"
+  },
+  {
+   "istemci": 56,
+   "google": null,
+   "dahili": 900,
+   "tol": 12,
+   "beklenen": "RET",
+   "not": "dahili 800'u asiyor -> RET"
+  },
+  {
+   "istemci": 99,
+   "google": 100,
+   "dahili": null,
+   "tol": 0,
+   "beklenen": 100,
+   "not": "tol=0: 1 km fark bile google"
+  },
+  {
+   "istemci": 100,
+   "google": 100,
+   "dahili": null,
+   "tol": 0,
+   "beklenen": 100
+  },
+  {
+   "istemci": 50,
+   "google": 100,
+   "dahili": null,
+   "tol": 50,
+   "beklenen": 50,
+   "not": "tol=50: fark tam %50 -> istemci"
+  },
+  {
+   "istemci": 49,
+   "google": 100,
+   "dahili": null,
+   "tol": 50,
+   "beklenen": 100
+  },
+  {
+   "istemci": 50,
+   "google": null,
+   "dahili": 100,
+   "tol": 50,
+   "beklenen": 50,
+   "not": "tol=50 dahili: 50 = 100*0.5 tam sinir -> istemci"
+  },
+  {
+   "istemci": 49,
+   "google": null,
+   "dahili": 100,
+   "tol": 50,
+   "beklenen": 100
+  }
+ ],
+ "yer_bul": [
+  {
+   "girdi": "Rue de la Loi 16, Bruxelles",
+   "beklenen": "brussels"
+  },
+  {
+   "girdi": "Wetstraat 16, 1000 Brussel",
+   "beklenen": "brussels"
+  },
+  {
+   "girdi": "Brussels",
+   "beklenen": "brussels"
+  },
+  {
+   "girdi": "Gare du Midi",
+   "beklenen": "brussels",
+   "not": "takma ad"
+  },
+  {
+   "girdi": "Brussel Zuid",
+   "beklenen": "brussels",
+   "not": "takma ad"
+  },
+  {
+   "girdi": "Grote Markt 1, 9000 Gent",
+   "beklenen": "gent"
+  },
+  {
+   "girdi": "Korenmarkt 12, Gent",
+   "beklenen": "gent"
+  },
+  {
+   "girdi": "9000 Gent",
+   "beklenen": "gent"
+  },
+  {
+   "girdi": "Ghent",
+   "beklenen": "gent"
+  },
+  {
+   "girdi": "Gand",
+   "beklenen": "gent"
+  },
+  {
+   "girdi": "Place Saint-Lambert, Liège",
+   "beklenen": "liege",
+   "not": "aksan silinir (NFD)"
+  },
+  {
+   "girdi": "Brügge",
+   "beklenen": "brugge",
+   "not": "ü -> u"
+  },
+  {
+   "girdi": "Brussels Airport (Zaventem)",
+   "beklenen": "bru",
+   "not": "en uzun eslesme: 'brussels airport' > 'brussels'"
+  },
+  {
+   "girdi": "Brussels Airport",
+   "beklenen": "bru"
+  },
+  {
+   "girdi": "Zaventem Airport",
+   "beklenen": "bru"
+  },
+  {
+   "girdi": "Aéroport de Bruxelles",
+   "beklenen": "bru"
+  },
+  {
+   "girdi": "Luchthaven Zaventem",
+   "beklenen": "bru"
+  },
+  {
+   "girdi": "Brüksel Havalimanı (Zaventem)",
+   "beklenen": "bru",
+   "not": "Turkce ı -> i"
+  },
+  {
+   "girdi": "BRU",
+   "beklenen": "bru"
+  },
+  {
+   "girdi": "Zaventem",
+   "beklenen": "bru",
+   "not": "tek basina 'zaventem' havalimani takma adi"
+  },
+  {
+   "girdi": "Zaventem centrum",
+   "beklenen": "zaventem-stad",
+   "not": "en uzun eslesme: 'zaventem centrum' > 'zaventem'"
+  },
+  {
+   "girdi": "Charleroi Airport",
+   "beklenen": "crl"
+  },
+  {
+   "girdi": "Aéroport de Charleroi (CRL)",
+   "beklenen": "crl"
+  },
+  {
+   "girdi": "Luchthaven Charleroi",
+   "beklenen": "crl"
+  },
+  {
+   "girdi": "Gosselies",
+   "beklenen": "crl"
+  },
+  {
+   "girdi": "Antwerpen Centraal",
+   "beklenen": "antwerpen"
+  },
+  {
+   "girdi": "Anvers",
+   "beklenen": "antwerpen"
+  },
+  {
+   "girdi": "Meir 1, 2000 Antwerpen",
+   "beklenen": "antwerpen"
+  },
+  {
+   "girdi": "Amsterdam Schiphol (AMS)",
+   "beklenen": "ams"
+  },
+  {
+   "girdi": "Schiphol",
+   "beklenen": "ams"
+  },
+  {
+   "girdi": "Parijs",
+   "beklenen": "paris"
+  },
+  {
+   "girdi": "Paris Charles de Gaulle (CDG)",
+   "beklenen": "cdg"
+  },
+  {
+   "girdi": "Luxemburg",
+   "beklenen": "luxembourg"
+  },
+  {
+   "girdi": "Luxembourg Airport",
+   "beklenen": "lux",
+   "not": "en uzun eslesme"
+  },
+  {
+   "girdi": "Köln/Bonn Havalimanı (CGN)",
+   "beklenen": "cgn"
+  },
+  {
+   "girdi": "Flughafen Köln",
+   "beklenen": "cgn"
+  },
+  {
+   "girdi": "Aken",
+   "beklenen": "aachen"
+  },
+  {
+   "girdi": "Louvain",
+   "beklenen": "leuven"
+  },
+  {
+   "girdi": "Malines",
+   "beklenen": "mechelen"
+  },
+  {
+   "girdi": "Doornik",
+   "beklenen": "tournai"
+  },
+  {
+   "girdi": "Aéroport de Liège",
+   "beklenen": "lgg"
+  },
+  {
+   "girdi": "Rue de Bruxelles 5, Namur",
+   "beklenen": "brussels",
+   "not": "BILINEN HUY: en uzun eslesme 'bruxelles' (9) 'namur'dan (5) uzun; istemci JS motoru da ayni sonucu verir"
+  },
+  {
+   "girdi": "Löwen",
+   "beklenen": null,
+   "not": "tabloda olmayan takma ad"
+  },
+  {
+   "girdi": "Londen",
+   "beklenen": null
+  },
+  {
+   "girdi": "Tokyo",
+   "beklenen": null
+  },
+  {
+   "girdi": "Xyz 123",
+   "beklenen": null
+  },
+  {
+   "girdi": "1000",
+   "beklenen": null,
+   "not": "yalniz posta kodu"
+  },
+  {
+   "girdi": "",
+   "beklenen": null
+  },
+  {
+   "girdi": "   ",
+   "beklenen": null
+  },
+  {
+   "girdi": "!!!",
+   "beklenen": null,
+   "not": "normalize sonrasi bos"
+  }
+ ],
+ "dahili_mesafe": [
+  {
+   "a": "Gent",
+   "b": "Brussels Airport",
+   "km": 56,
+   "not": "KESIN"
+  },
+  {
+   "a": "Brussels Airport",
+   "b": "Gent",
+   "km": 56,
+   "not": "KESIN, ters yon"
+  },
+  {
+   "a": "Bruxelles",
+   "b": "Zaventem",
+   "km": 13,
+   "not": "KESIN (Zaventem = havalimani takma adi)"
+  },
+  {
+   "a": "Brussel",
+   "b": "Antwerpen",
+   "km": 45,
+   "not": "KESIN"
+  },
+  {
+   "a": "Brussels",
+   "b": "Antwerp",
+   "km": 45,
+   "not": "KESIN, farkli dilde adlar"
+  },
+  {
+   "a": "Bruxelles",
+   "b": "Liège",
+   "km": 100,
+   "not": "KESIN"
+  },
+  {
+   "a": "Bruges",
+   "b": "Brussels Airport",
+   "km": 107,
+   "not": "KESIN"
+  },
+  {
+   "a": "Gand",
+   "b": "Aéroport de Charleroi (CRL)",
+   "km": 115,
+   "not": "KESIN"
+  },
+  {
+   "a": "Brussels",
+   "b": "Paris",
+   "km": 315,
+   "not": "KESIN"
+  },
+  {
+   "a": "Brussels",
+   "b": "Schiphol",
+   "km": 193,
+   "not": "KESIN"
+  },
+  {
+   "a": "Antwerpen",
+   "b": "Amsterdam",
+   "km": 160,
+   "not": "KESIN"
+  },
+  {
+   "a": "Leuven",
+   "b": "Namur",
+   "km": 55,
+   "not": "haversine x 1.17 yedegi (55.484 -> 55)"
+  },
+  {
+   "a": "Gent",
+   "b": "Luxembourg",
+   "km": 275,
+   "not": "haversine yedegi (274.624 -> 275)"
+  },
+  {
+   "a": "Oostende",
+   "b": "Maastricht",
+   "km": 231,
+   "not": "haversine yedegi"
+  },
+  {
+   "a": "Hasselt",
+   "b": "Charleroi",
+   "km": 100,
+   "not": "haversine yedegi (99.927 -> 100)"
+  },
+  {
+   "a": "Aachen",
+   "b": "Frankfurt",
+   "km": 232,
+   "not": "haversine yedegi"
+  },
+  {
+   "a": "Amsterdam",
+   "b": "Rotterdam",
+   "km": 67,
+   "not": "haversine yedegi"
+  },
+  {
+   "a": "Eupen",
+   "b": "Aachen",
+   "km": 20,
+   "not": "haversine yedegi (19.605 -> 20)"
+  },
+  {
+   "a": "Brussels",
+   "b": "Brussels",
+   "km": null,
+   "not": "ayni yer -> null"
+  },
+  {
+   "a": "Brussels Airport",
+   "b": "Zaventem",
+   "km": null,
+   "not": "iki adres de ayni yere (bru) eslesir -> null"
+  },
+  {
+   "a": "Gent",
+   "b": "Xyz",
+   "km": null,
+   "not": "varis taninmiyor -> null"
+  },
+  {
+   "a": "Tokyo",
+   "b": "Gent",
+   "km": null,
+   "not": "alis taninmiyor -> null"
+  },
+  {
+   "a": "",
+   "b": "Gent",
+   "km": null,
+   "not": "bos adres -> null"
+  }
+ ],
+ "dogrulama_bugun": {
+  "simdi_utc": "2026-09-27T22:30:00Z",
+  "bugun_brussels": "2026-09-28",
+  "not": "22:30 UTC = 00:30 Brussels (CEST +2): UTC tarihi 27'si olsa da Brussels gunu 28'idir"
+ },
+ "dogrulama_taban": {
+  "dil": "nl",
+  "alis": "Gent",
+  "varis": "Brussels Airport",
+  "km": "56",
+  "tarih": "2026-10-08",
+  "saat": "14:30",
+  "donus_tarih": "",
+  "donus_saat": "",
+  "yolcu": "3",
+  "buyuk": "1",
+  "kucuk": "0",
+  "arac": "wagon",
+  "ad": "Jan Peeters",
+  "eposta": "jan@voorbeeld.be",
+  "telefon": "+32 470 11 22 33"
+ },
+ "dogrulama": [
+  {
+   "alan": "tarih",
+   "deger": "2026-09-27",
+   "gecerli": false,
+   "sebep": "gecmis",
+   "hata_alani": "tarih",
+   "mesaj": "val_date"
+  },
+  {
+   "alan": "tarih",
+   "deger": "2026-09-28",
+   "gecerli": true,
+   "sebep": "bugun kabul"
+  },
+  {
+   "alan": "tarih",
+   "deger": "2026-09-29",
+   "gecerli": true,
+   "sebep": "yarin"
+  },
+  {
+   "alan": "tarih",
+   "deger": "2027-09-28",
+   "gecerli": true,
+   "sebep": "tam 365 gun ileri kabul"
+  },
+  {
+   "alan": "tarih",
+   "deger": "2027-09-29",
+   "gecerli": false,
+   "sebep": "366 gun ileri",
+   "hata_alani": "tarih",
+   "mesaj": "val_date"
+  },
+  {
+   "alan": "tarih",
+   "deger": "2027-11-01",
+   "gecerli": false,
+   "sebep": "400 gun sonrasi",
+   "hata_alani": "tarih",
+   "mesaj": "val_date"
+  },
+  {
+   "alan": "tarih",
+   "deger": "2026-02-30",
+   "gecerli": false,
+   "sebep": "takvimde olmayan gun",
+   "hata_alani": "tarih",
+   "mesaj": "val_date"
+  },
+  {
+   "alan": "tarih",
+   "deger": "2026-13-01",
+   "gecerli": false,
+   "sebep": "gecersiz ay",
+   "hata_alani": "tarih",
+   "mesaj": "val_date"
+  },
+  {
+   "alan": "tarih",
+   "deger": "2026-09-31",
+   "gecerli": false,
+   "sebep": "eylulde 31 yok",
+   "hata_alani": "tarih",
+   "mesaj": "val_date"
+  },
+  {
+   "alan": "tarih",
+   "deger": "2026-9-30",
+   "gecerli": false,
+   "sebep": "sifir dolgusuz bicim",
+   "hata_alani": "tarih",
+   "mesaj": "val_date"
+  },
+  {
+   "alan": "tarih",
+   "deger": "30-09-2026",
+   "gecerli": false,
+   "sebep": "yanlis bicim",
+   "hata_alani": "tarih",
+   "mesaj": "val_date"
+  },
+  {
+   "alan": "tarih",
+   "deger": "",
+   "gecerli": false,
+   "sebep": "bos",
+   "hata_alani": "tarih",
+   "mesaj": "val_date"
+  },
+  {
+   "alan": "tarih",
+   "deger": " 2026-10-08 ",
+   "gecerli": true,
+   "sebep": "bosluklar kirpilir",
+   "temiz": "2026-10-08"
+  },
+  {
+   "alan": "saat",
+   "deger": "00:00",
+   "gecerli": true,
+   "sebep": "gece yarisi"
+  },
+  {
+   "alan": "saat",
+   "deger": "23:59",
+   "gecerli": true,
+   "sebep": "gunun son dakikasi"
+  },
+  {
+   "alan": "saat",
+   "deger": "24:00",
+   "gecerli": false,
+   "sebep": "gecersiz saat",
+   "hata_alani": "saat",
+   "mesaj": "val_date"
+  },
+  {
+   "alan": "saat",
+   "deger": "12:60",
+   "gecerli": false,
+   "sebep": "gecersiz dakika",
+   "hata_alani": "saat",
+   "mesaj": "val_date"
+  },
+  {
+   "alan": "saat",
+   "deger": "7:30",
+   "gecerli": false,
+   "sebep": "sifir dolgusuz",
+   "hata_alani": "saat",
+   "mesaj": "val_date"
+  },
+  {
+   "alan": "saat",
+   "deger": "14:30:00",
+   "gecerli": false,
+   "sebep": "saniyeli bicim",
+   "hata_alani": "saat",
+   "mesaj": "val_date"
+  },
+  {
+   "alan": "saat",
+   "deger": "",
+   "gecerli": false,
+   "sebep": "bos",
+   "hata_alani": "saat",
+   "mesaj": "val_date"
+  },
+  {
+   "alan": "donus_tarih",
+   "deger": "2026-10-09",
+   "gecerli": true,
+   "sebep": "gidisten sonra",
+   "baglam": {
+    "donus_saat": "18:00"
+   }
+  },
+  {
+   "alan": "donus_tarih",
+   "deger": "2026-10-07",
+   "gecerli": false,
+   "sebep": "donus < gidis",
+   "hata_alani": "donus_tarih",
+   "mesaj": "val_date"
+  },
+  {
+   "alan": "donus_tarih",
+   "deger": "2026-10-08",
+   "gecerli": true,
+   "sebep": "ayni gun donus (saat yok)"
+  },
+  {
+   "alan": "donus_saat",
+   "deger": "13:00",
+   "gecerli": false,
+   "sebep": "ayni gun donus saati gidisten once",
+   "baglam": {
+    "donus_tarih": "2026-10-08"
+   },
+   "hata_alani": "donus_saat",
+   "mesaj": "val_date"
+  },
+  {
+   "alan": "donus_saat",
+   "deger": "14:30",
+   "gecerli": true,
+   "sebep": "ayni gun ayni saat",
+   "baglam": {
+    "donus_tarih": "2026-10-08"
+   }
+  },
+  {
+   "alan": "donus_saat",
+   "deger": "18:00",
+   "gecerli": true,
+   "sebep": "ayni gun daha gec",
+   "baglam": {
+    "donus_tarih": "2026-10-08"
+   }
+  },
+  {
+   "alan": "donus_saat",
+   "deger": "25:00",
+   "gecerli": false,
+   "sebep": "donus saati gecersiz",
+   "baglam": {
+    "donus_tarih": "2026-10-09"
+   },
+   "hata_alani": "donus_saat",
+   "mesaj": "val_date"
+  },
+  {
+   "alan": "donus_saat",
+   "deger": "99:99",
+   "gecerli": true,
+   "sebep": "donus tarihi YOKSA donus saati yok sayilir"
+  },
+  {
+   "alan": "donus_tarih",
+   "deger": "2026-02-30",
+   "gecerli": false,
+   "sebep": "donus tarihi takvimde yok",
+   "hata_alani": "donus_tarih",
+   "mesaj": "val_date"
+  },
+  {
+   "alan": "donus_tarih",
+   "deger": "2027-09-29",
+   "gecerli": false,
+   "sebep": "donus 365 gunden ileri",
+   "hata_alani": "donus_tarih",
+   "mesaj": "val_date"
+  },
+  {
+   "alan": "donus_tarih",
+   "deger": "2027-09-28",
+   "gecerli": true,
+   "sebep": "donus tam 365 gun ileri",
+   "baglam": {
+    "tarih": "2027-09-28"
+   }
+  },
+  {
+   "alan": "eposta",
+   "deger": "jan@voorbeeld.be",
+   "gecerli": true,
+   "sebep": "normal"
+  },
+  {
+   "alan": "eposta",
+   "deger": "a+tag@sub.example.co.uk",
+   "gecerli": true,
+   "sebep": "artı etiketi ve alt alan adi"
+  },
+  {
+   "alan": "eposta",
+   "deger": "jan@voorbeeld",
+   "gecerli": false,
+   "sebep": "TLD yok",
+   "hata_alani": "eposta",
+   "mesaj": "val_email"
+  },
+  {
+   "alan": "eposta",
+   "deger": "a@b",
+   "gecerli": false,
+   "sebep": "TLD yok",
+   "hata_alani": "eposta",
+   "mesaj": "val_email"
+  },
+  {
+   "alan": "eposta",
+   "deger": "a@b.c",
+   "gecerli": false,
+   "sebep": "TLD tek harf (Node: en az 2)",
+   "hata_alani": "eposta",
+   "mesaj": "val_email"
+  },
+  {
+   "alan": "eposta",
+   "deger": "jan voorbeeld@x.be",
+   "gecerli": false,
+   "sebep": "bosluk",
+   "hata_alani": "eposta",
+   "mesaj": "val_email"
+  },
+  {
+   "alan": "eposta",
+   "deger": "jan@x.be\r\nBcc: kotu@example.com",
+   "gecerli": false,
+   "sebep": "CRLF baslik enjeksiyonu",
+   "hata_alani": "eposta",
+   "mesaj": "val_email"
+  },
+  {
+   "alan": "eposta",
+   "deger": "jan@x.be\nBcc: kotu@example.com",
+   "gecerli": false,
+   "sebep": "LF baslik enjeksiyonu",
+   "hata_alani": "eposta",
+   "mesaj": "val_email"
+  },
+  {
+   "alan": "eposta",
+   "deger": "jan@x.be\r\n",
+   "gecerli": true,
+   "sebep": "SONDAKI satir sonu kirpilir",
+   "temiz": "jan@x.be"
+  },
+  {
+   "alan": "eposta",
+   "deger": "jan@x.be,kotu@y.be",
+   "gecerli": false,
+   "sebep": "birden fazla adres",
+   "hata_alani": "eposta",
+   "mesaj": "val_email"
+  },
+  {
+   "alan": "eposta",
+   "deger": "<jan@x.be>",
+   "gecerli": false,
+   "sebep": "aci parantez",
+   "hata_alani": "eposta",
+   "mesaj": "val_email"
+  },
+  {
+   "alan": "eposta",
+   "deger": "a..b@x.be",
+   "gecerli": false,
+   "sebep": "ardisik nokta",
+   "hata_alani": "eposta",
+   "mesaj": "val_email"
+  },
+  {
+   "alan": "eposta",
+   "deger": ".a@x.be",
+   "gecerli": false,
+   "sebep": "noktayla baslar",
+   "hata_alani": "eposta",
+   "mesaj": "val_email"
+  },
+  {
+   "alan": "eposta",
+   "deger": "a@-x.be",
+   "gecerli": false,
+   "sebep": "etiket tireyle baslar",
+   "hata_alani": "eposta",
+   "mesaj": "val_email"
+  },
+  {
+   "alan": "eposta",
+   "deger": "é@x.be",
+   "gecerli": false,
+   "sebep": "ASCII disi yerel kisim",
+   "hata_alani": "eposta",
+   "mesaj": "val_email"
+  },
+  {
+   "alan": "eposta",
+   "deger": "a@[1.2.3.4]",
+   "gecerli": false,
+   "sebep": "IP literal",
+   "hata_alani": "eposta",
+   "mesaj": "val_email"
+  },
+  {
+   "alan": "eposta",
+   "deger": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@x.be",
+   "gecerli": true,
+   "sebep": "96 karakter (<=100)"
+  },
+  {
+   "alan": "eposta",
+   "deger": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.be",
+   "gecerli": true,
+   "sebep": "yerel kisim 64 (<=64), toplam 100 (<=100)"
+  },
+  {
+   "alan": "eposta",
+   "deger": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@x.be",
+   "gecerli": false,
+   "sebep": "yerel kisim 65 > 64",
+   "hata_alani": "eposta",
+   "mesaj": "val_email"
+  },
+  {
+   "alan": "eposta",
+   "deger": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@x.be",
+   "gecerli": false,
+   "sebep": "toplam 101 > 100",
+   "hata_alani": "eposta",
+   "mesaj": "val_email"
+  },
+  {
+   "alan": "eposta",
+   "deger": "",
+   "gecerli": false,
+   "sebep": "bos",
+   "hata_alani": "eposta",
+   "mesaj": "val_email"
+  },
+  {
+   "alan": "telefon",
+   "deger": "+32 470 11 22 33",
+   "gecerli": true,
+   "sebep": "normal"
+  },
+  {
+   "alan": "telefon",
+   "deger": "12345678",
+   "gecerli": true,
+   "sebep": "tam 8 rakam"
+  },
+  {
+   "alan": "telefon",
+   "deger": "1234567",
+   "gecerli": false,
+   "sebep": "7 rakam",
+   "hata_alani": "telefon",
+   "mesaj": "val_phone"
+  },
+  {
+   "alan": "telefon",
+   "deger": "+32 (0)470-11.22.33",
+   "gecerli": true,
+   "sebep": "ayiracli"
+  },
+  {
+   "alan": "telefon",
+   "deger": "1111111111111111111111111",
+   "gecerli": true,
+   "sebep": "25 karakter"
+  },
+  {
+   "alan": "telefon",
+   "deger": "11111111111111111111111111",
+   "gecerli": false,
+   "sebep": "26 karakter",
+   "hata_alani": "telefon",
+   "mesaj": "val_phone"
+  },
+  {
+   "alan": "telefon",
+   "deger": "abc 12345678 xyz",
+   "gecerli": true,
+   "sebep": "harfler serbest, >=8 rakam yeterli"
+  },
+  {
+   "alan": "telefon",
+   "deger": "abcdefghij",
+   "gecerli": false,
+   "sebep": "rakam yok",
+   "hata_alani": "telefon",
+   "mesaj": "val_phone"
+  },
+  {
+   "alan": "telefon",
+   "deger": "0470\u0000112233",
+   "gecerli": true,
+   "sebep": "kontrol karakteri bosluga cevrilir",
+   "temiz": "0470 112233"
+  },
+  {
+   "alan": "telefon",
+   "deger": "",
+   "gecerli": false,
+   "sebep": "bos",
+   "hata_alani": "telefon",
+   "mesaj": "val_phone"
+  },
+  {
+   "alan": "ad",
+   "deger": "Jan",
+   "gecerli": true,
+   "sebep": "3 karakter"
+  },
+  {
+   "alan": "ad",
+   "deger": "Jo",
+   "gecerli": true,
+   "sebep": "tam 2 karakter"
+  },
+  {
+   "alan": "ad",
+   "deger": "J",
+   "gecerli": false,
+   "sebep": "1 karakter",
+   "hata_alani": "ad",
+   "mesaj": "val_name"
+  },
+  {
+   "alan": "ad",
+   "deger": "   ",
+   "gecerli": false,
+   "sebep": "yalniz bosluk",
+   "hata_alani": "ad",
+   "mesaj": "val_name"
+  },
+  {
+   "alan": "ad",
+   "deger": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+   "gecerli": true,
+   "sebep": "tam 80 karakter"
+  },
+  {
+   "alan": "ad",
+   "deger": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+   "gecerli": false,
+   "sebep": "81 karakter",
+   "hata_alani": "ad",
+   "mesaj": "val_name"
+  },
+  {
+   "alan": "ad",
+   "deger": "Jan\u0000\t  Peeters",
+   "gecerli": true,
+   "sebep": "kontrol karakterleri + bosluklar tekillesir",
+   "temiz": "Jan Peeters"
+  },
+  {
+   "alan": "ad",
+   "deger": "Jan​Peeters﻿",
+   "gecerli": true,
+   "sebep": "sifir genislikli/BOM karakterler silinir",
+   "temiz": "JanPeeters"
+  },
+  {
+   "alan": "ad",
+   "deger": "Jan‮Peeters",
+   "gecerli": true,
+   "sebep": "bidi yonlendirme karakteri silinir",
+   "temiz": "JanPeeters"
+  },
+  {
+   "alan": "ad",
+   "deger": "Jan \"J\" O'Brien & <b>Zn</b>",
+   "gecerli": true,
+   "sebep": "tirnak/HTML karakterleri KORUNUR (cikista kacislanir)",
+   "temiz": "Jan \"J\" O'Brien & <b>Zn</b>"
+  },
+  {
+   "alan": "ad",
+   "deger": "José 😀",
+   "gecerli": true,
+   "sebep": "emoji kod noktasi tek karakter sayilir"
+  },
+  {
+   "alan": "ad",
+   "deger": "éé",
+   "gecerli": true,
+   "sebep": "NFC: 2 karakter",
+   "temiz": "éé"
+  },
+  {
+   "alan": "alis",
+   "deger": "",
+   "gecerli": false,
+   "sebep": "bos alis",
+   "hata_alani": "alis",
+   "mesaj": "val_route"
+  },
+  {
+   "alan": "varis",
+   "deger": "   ",
+   "gecerli": false,
+   "sebep": "bos varis",
+   "hata_alani": "varis",
+   "mesaj": "val_route"
+  },
+  {
+   "alan": "alis",
+   "deger": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+   "gecerli": true,
+   "sebep": "tam 120 karakter"
+  },
+  {
+   "alan": "alis",
+   "deger": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+   "gecerli": false,
+   "sebep": "121 karakter",
+   "hata_alani": "alis",
+   "mesaj": "val_route"
+  },
+  {
+   "alan": "varis",
+   "deger": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+   "gecerli": false,
+   "sebep": "200 karakterlik adres reddedilir",
+   "hata_alani": "varis",
+   "mesaj": "val_route"
+  },
+  {
+   "alan": "alis",
+   "deger": "Rue\r\nde la Loi",
+   "gecerli": true,
+   "sebep": "kontrol karakterleri bosluga cevrilir",
+   "temiz": "Rue de la Loi"
+  },
+  {
+   "alan": "alis",
+   "deger": [
+    "a",
+    "b"
+   ],
+   "gecerli": false,
+   "sebep": "tekrar eden alan (alis=a&alis=b)",
+   "hata_alani": "alis",
+   "mesaj": "val_route"
+  },
+  {
+   "alan": "alis[]",
+   "deger": "x",
+   "gecerli": false,
+   "sebep": "dizi alan (alis[]=x)",
+   "hata_alani": "alis",
+   "mesaj": "val_route"
+  },
+  {
+   "alan": "eposta[]",
+   "deger": "a@b.be",
+   "gecerli": false,
+   "sebep": "dizi alan (eposta[]=..)",
+   "hata_alani": "eposta",
+   "mesaj": "val_email"
+  },
+  {
+   "alan": "km",
+   "deger": [
+    "56",
+    "1"
+   ],
+   "gecerli": false,
+   "sebep": "tekrar eden km",
+   "hata_alani": "km",
+   "mesaj": "err_km"
+  },
+  {
+   "alan": "ad",
+   "deger": [
+    "Jan",
+    "Piet"
+   ],
+   "gecerli": false,
+   "sebep": "tekrar eden ad",
+   "hata_alani": "ad",
+   "mesaj": "val_name"
+  },
+  {
+   "alan": "km",
+   "deger": "56",
+   "gecerli": true,
+   "sebep": "normal"
+  },
+  {
+   "alan": "km",
+   "deger": "1",
+   "gecerli": true,
+   "sebep": "alt sinir"
+  },
+  {
+   "alan": "km",
+   "deger": "800",
+   "gecerli": true,
+   "sebep": "ust sinir"
+  },
+  {
+   "alan": "km",
+   "deger": "0",
+   "gecerli": false,
+   "sebep": "sifir",
+   "hata_alani": "km",
+   "mesaj": "err_km"
+  },
+  {
+   "alan": "km",
+   "deger": "-5",
+   "gecerli": false,
+   "sebep": "negatif",
+   "hata_alani": "km",
+   "mesaj": "err_km"
+  },
+  {
+   "alan": "km",
+   "deger": "801",
+   "gecerli": false,
+   "sebep": "801",
+   "hata_alani": "km",
+   "mesaj": "err_km"
+  },
+  {
+   "alan": "km",
+   "deger": "9999",
+   "gecerli": false,
+   "sebep": "9999",
+   "hata_alani": "km",
+   "mesaj": "err_km"
+  },
+  {
+   "alan": "km",
+   "deger": "abc",
+   "gecerli": false,
+   "sebep": "sayi degil",
+   "hata_alani": "km",
+   "mesaj": "err_km"
+  },
+  {
+   "alan": "km",
+   "deger": "",
+   "gecerli": false,
+   "sebep": "bos",
+   "hata_alani": "km",
+   "mesaj": "err_km"
+  },
+  {
+   "alan": "km",
+   "deger": "56.5",
+   "gecerli": false,
+   "sebep": "ondalik",
+   "hata_alani": "km",
+   "mesaj": "err_km"
+  },
+  {
+   "alan": "km",
+   "deger": "1e2",
+   "gecerli": false,
+   "sebep": "bilimsel gosterim",
+   "hata_alani": "km",
+   "mesaj": "err_km"
+  },
+  {
+   "alan": "km",
+   "deger": "056",
+   "gecerli": false,
+   "sebep": "bas sifir",
+   "hata_alani": "km",
+   "mesaj": "err_km"
+  },
+  {
+   "alan": "km",
+   "deger": "+56",
+   "gecerli": true,
+   "sebep": "arti isaretli tamsayi",
+   "temiz": 56
+  },
+  {
+   "alan": "km",
+   "deger": " 56 ",
+   "gecerli": true,
+   "sebep": "bosluklar kirpilir",
+   "temiz": 56
+  },
+  {
+   "alan": "yolcu",
+   "deger": "0",
+   "gecerli": true,
+   "sebep": "0 -> 1'e sinirlanir",
+   "temiz": 1
+  },
+  {
+   "alan": "yolcu",
+   "deger": "99",
+   "gecerli": true,
+   "sebep": "99 -> 7",
+   "temiz": 7
+  },
+  {
+   "alan": "yolcu",
+   "deger": "abc",
+   "gecerli": true,
+   "sebep": "sayi degil -> varsayilan 1",
+   "temiz": 1
+  },
+  {
+   "alan": "yolcu",
+   "deger": "7",
+   "gecerli": true,
+   "sebep": "7",
+   "temiz": 7
+  },
+  {
+   "alan": "buyuk",
+   "deger": "-3",
+   "gecerli": true,
+   "sebep": "negatif -> 0",
+   "temiz": 0
+  },
+  {
+   "alan": "buyuk",
+   "deger": "9",
+   "gecerli": true,
+   "sebep": "9 -> 6",
+   "temiz": 6
+  },
+  {
+   "alan": "kucuk",
+   "deger": "9",
+   "gecerli": true,
+   "sebep": "9 -> 4",
+   "temiz": 4
+  },
+  {
+   "alan": "kucuk",
+   "deger": "",
+   "gecerli": true,
+   "sebep": "bos -> 0",
+   "temiz": 0
+  },
+  {
+   "alan": "arac",
+   "deger": "bus",
+   "gecerli": true,
+   "sebep": "bilinmeyen arac -> eco",
+   "temiz": "eco"
+  },
+  {
+   "alan": "arac",
+   "deger": "vip",
+   "gecerli": true,
+   "sebep": "vip",
+   "temiz": "vip"
+  },
+  {
+   "alan": "dil",
+   "deger": "xx",
+   "gecerli": true,
+   "sebep": "bilinmeyen dil -> fr",
+   "temiz": "fr"
+  },
+  {
+   "alan": "dil",
+   "deger": "tr",
+   "gecerli": true,
+   "sebep": "tr",
+   "temiz": "tr"
+  },
+  {
+   "alan": "dil",
+   "deger": "NL",
+   "gecerli": true,
+   "sebep": "buyuk harf tanınmaz -> fr",
+   "temiz": "fr"
+  }
+ ]
+}

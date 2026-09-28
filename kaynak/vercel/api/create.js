@@ -16,7 +16,7 @@ const {
 } = require('./_lib/guvenlik');
 const { fiyatHesapla } = require('./_lib/fiyat');
 const { googleKm, dahiliMesafe, kmKarar } = require('./_lib/mesafe');
-const { dogrula, siparisNoUret, metadataOlustur, ALAN_MESAJI, BILINEN_ALANLAR } = require('./_lib/siparis');
+const { dogrula, yapisalHata, siparisNoUret, metadataOlustur, ALAN_MESAJI, BILINEN_ALANLAR } = require('./_lib/siparis');
 const { mollie } = require('./_lib/mollie');
 const { kayit } = require('./_lib/log');
 
@@ -94,13 +94,10 @@ module.exports = sarmala('create', async function handler(req, res, ctx) {
   }
 
   // ---- dizi / tekrar eden alan: reddet (alis[]=x, alis=a&alis=b ...)
-  for (const [anahtar, degerler] of form.tumu) {
-    const govdeAdi = anahtar.replace(/\[.*$/, '');
-    const dizi = anahtar !== govdeAdi && BILINEN_ALANLAR.includes(govdeAdi);
-    if (dizi || (BILINEN_ALANLAR.includes(anahtar) && degerler.length > 1)) {
-      hataSayfasi(res, dil, 400, t(dil, ALAN_MESAJI[govdeAdi] || 'err_pay'));
-      return;
-    }
+  const yapisal = yapisalHata(form.tumu);
+  if (yapisal) {
+    hataSayfasi(res, dil, 400, t(dil, ALAN_MESAJI[yapisal] || 'err_pay'));
+    return;
   }
 
   // ---- girdileri temizle ve dogrula (PHP sirasiyla; ilk hata gosterilir)

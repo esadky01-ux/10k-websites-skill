@@ -14,7 +14,7 @@ const YOL_KATSAYI = VERI.sabitler.yol_katsayisi;
 // ---- metin normallestirme: template.html JS'i / test_adim1.py ile ayni kurallar ----
 function normalize(s) {
   s = String(s).toLowerCase().replace(/ı/g, 'i').replace(/ß/g, 'ss').replace(/œ/g, 'oe').replace(/æ/g, 'ae');
-  s = s.normalize('NFD').replace(/[̀-ͯ]/g, '');
+  s = s.normalize('NFD').replace(/[\u{300}-\u{36f}]/gu, '');
   s = s.replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
   return s;
 }

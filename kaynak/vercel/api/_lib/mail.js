@@ -118,7 +118,7 @@ function sirketEpostaMetni(s) {
   const donus = s.donus_tarih ? tarihGoster('tr', s.donus_tarih, s.donus_saat || '') : '-';
   const dogrulama = s.km_sunucu !== null && s.km_sunucu !== undefined
     ? 'Google ile dogrulandi'
-    : 'dahili tablo ile dogrulandi (Google sunucu anahtari yok/ulasilamadi)';
+    : 'dahili tablo ile dogrulandi; Google sunucu dogrulamasi yok';
   return 'YENI REZERVASYON — KAPORA ODENDI\n' +
     '================================\n' +
     'Referans     : ' + s.no + '\n' +
