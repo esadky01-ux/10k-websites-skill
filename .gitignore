@@ -1,0 +1,13 @@
+
+# --- derleme/gecici artiklar (Europa Taxi) ---
+*.whl
+__pycache__/
+*.pyc
+node_modules/
+.vercel/
+vercel-out/
+# siparis kayitlari ve loglar ASLA depoya girmez (kisisel veri)
+**/orders/ET-*.json
+**/orders/kayit.log
+**/orders/rl/
+*.tmp
