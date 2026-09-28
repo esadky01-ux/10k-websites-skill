@@ -82,6 +82,13 @@ Bu adresler değişmez: site formu `/pay/create.php`'ye gönderir, Mollie'ye ver
   }
 }
 ```
+`vercel_build.py`, `kaynak/vercel/vercel.json` varsa içindeki bu 5 rewrite'ı doğrular (eksikse derleme **hata verir**) ve dosyayı çıktının köküne kopyalar.
+
+**`.htaccess` karşılıkları** (`www/.htaccess` Vercel'e alınmaz; ihtiyaç duyulanlar `vercel.json`/Vercel ayarlarıyla karşılanmalıdır):
+HTTPS zorunluluğu ve www→çıplak yönlendirme Vercel Domains ayarlarında; gzip/brotli Vercel'de otomatiktir; önbellek süreleri
+(görseller uzun, `assets/config.js` "no-cache") ve 404 davranışı (`ErrorDocument 404 /fr/index.html`) `headers`/`404.html` ile tanımlanır.
+`/pay/orders/` ve `config.php` korumalarına gerek yoktur: bu dosyalar çıktıda yoktur.
+
 Webhook en kötü durumda Mollie GET + iki Brevo çağrısı + bir PATCH yapar (her biri en çok 10 sn); süre sınırı yetersizse
 fonksiyon yarıda kesilir ve Mollie yeniden dener (bkz. §6 çift e-posta notu). `regions`: Belçika trafiği için `fra1`/`cdg1`.
 
@@ -187,7 +194,7 @@ python3 kaynak/build.py
 python3 kaynak/testler/test_vercel_api.py      # çıkış kodu 0 = geçti (ağ dışı; sahte Mollie/Brevo/Google)
 ```
 Test paketi `vercel_build.py`'yi geçici dizine derler, sahte servisleri (`mock_dis_servisler.py`) ve `dev-server.js`'in 5 ortam varyantını
-9500–9599 portlarında başlatır (`ET_TEST_PORT` ile taban değişir; hata ayıklarken `ET_TEST_TMP_KORU=1` geçici dizini/logları saklar).
+9500–9599 portlarında başlatır (boş bir 7'li aralık otomatik seçilir, `ET_TEST_PORT` ile taban verilebilir; hata ayıklarken `ET_TEST_TMP_KORU=1` geçici dizini/logları saklar).
 
 Elle deneme:
 ```bash

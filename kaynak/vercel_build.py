@@ -101,6 +101,9 @@ if not (WWW / "index.html").is_file():
 for d in DILLER:
     if not (WWW / d / "index.html").is_file():
         hata(f"{WWW}/{d}/index.html yok — once `python3 kaynak/build.py` calistirin")
+for cakisan in ["api", "package.json", "vercel.json"]:
+    if (WWW / cakisan).exists():
+        hata(f"{WWW}/{cakisan} var: Vercel fonksiyonlari/yapilandirmasiyla cakisir; www/ icinde bu adlar olmamali")
 
 # ---------------------------------------------------------------- anahtar denetimi (build.py ile ayni)
 referans = set(strings["fr"].keys())
@@ -329,6 +332,30 @@ for kok, dizinler, dosyalar in os.walk(VERCEL / "api"):
         goreli = Path(kok).relative_to(VERCEL) / ad
         (OUT / goreli).parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(Path(kok) / ad, OUT / goreli)
+
+GEREKLI_REWRITE = {
+    "/pay/create.php": "/api/create",
+    "/pay/webhook.php": "/api/webhook",
+    "/pay/success.php": "/api/success",
+    "/pay/orders.php": "/api/orders",
+    "/pay/test.php": "/api/test",
+}
+if (VERCEL / "vercel.json").is_file():
+    vj = json_oku(VERCEL / "vercel.json")
+    tanimli = {}
+    for r in (vj.get("rewrites") or []) if isinstance(vj, dict) else []:
+        if isinstance(r, dict) and isinstance(r.get("source"), str) and isinstance(r.get("destination"), str):
+            tanimli[r["source"]] = r["destination"]
+    gerekli = dict(GEREKLI_REWRITE)
+    if ARG.test_ucu_yok:
+        gerekli.pop("/pay/test.php")
+    eksik_rw = [f"{k} -> {v}" for k, v in gerekli.items() if tanimli.get(k) != v]
+    if eksik_rw:
+        hata("kaynak/vercel/vercel.json'da gereken rewrite eksik/yanlis: " + "; ".join(eksik_rw))
+    for kaynak_yol, hedef_yol in tanimli.items():
+        if "_lib" in hedef_yol:
+            hata(f"vercel.json: rewrite api/_lib'e yonlenemez: {kaynak_yol} -> {hedef_yol}")
+    print("✓ vercel.json: 5 gerekli rewrite (/pay/*.php -> /api/*) tanimli")
 
 for ad in ["package.json", "vercel.json"]:
     if (VERCEL / ad).is_file():

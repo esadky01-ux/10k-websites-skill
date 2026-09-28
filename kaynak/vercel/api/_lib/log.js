@@ -12,13 +12,13 @@ const TELEFON = /\d(?:[\s().-]?\d){7,}/g;                 // >= 8 rakam (bosluk/
 const ANAHTAR = /\b(?:test|live)_[A-Za-z0-9]{8,}/g;       // Mollie anahtari benzeri
 const UZUN_TOKEN = /[A-Za-z0-9_-]{32,}/g;                 // uzun sir benzeri diziler (siparis no / odeme id bunlardan kisadir)
 
-const SIPARIS_NO = /ET-[0-9]{6}-[A-Z0-9]{6}/g;   // siparis numarasi (rakamdan olusabilir; telefon gibi maskelenmemeli)
+const KORUNAN = /ET-[0-9]{6}-[A-Z0-9]{6}|tr_[A-Za-z0-9]{6,20}/g;   // siparis no / odeme id (rakamdan olusabilir; telefon gibi maskelenmemeli)
 const KORU_ACIK = String.fromCharCode(1);
 const KORU_KAPA = String.fromCharCode(2);
 
 function temizle(metin) {
   const saklanan = [];
-  const korunmus = String(metin).replace(SIPARIS_NO, (m) => {
+  const korunmus = String(metin).replace(KORUNAN, (m) => {
     saklanan.push(m);
     return KORU_ACIK + (saklanan.length - 1) + KORU_KAPA;
   });

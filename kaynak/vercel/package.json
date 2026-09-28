@@ -4,6 +4,7 @@
   "private": true,
   "description": "Europa Taxi odeme katmani: Mollie + Brevo, Vercel Node.js serverless fonksiyonlari (sifir bagimlilik, durumsuz).",
   "license": "UNLICENSED",
+  "type": "commonjs",
   "engines": {
     "node": "22.x"
   }

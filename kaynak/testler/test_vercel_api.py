@@ -11,7 +11,7 @@ Ne yapar:
   3. kaynak/vercel/dev-server.js ile (yalniz Node http) birkac ortam varyantinda fonksiyonlari calistirir.
   4. Senaryolari kosar (odeme, webhook, success, orders, test ucu, fiyat tahrifati, Google, dogrulama, koruma...).
   5. paylasilan-vektorler.json'u Node'a, Python referansina ve PHP'ye karsi dogrular.
-Portlar 9500-9599: ET_TEST_PORT ile taban degistirilebilir (varsayilan 9500).
+Portlar 9500-9599: bos bir 7li aralik otomatik secilir; ET_TEST_PORT ile taban verilebilir.
 """
 import hashlib
 import hmac as hmac_mod
@@ -56,8 +56,29 @@ def kontrol(kosul, mesaj):
         hatalar.append(mesaj)
 
 
+def port_bos_mu(port):
+    with socket.socket() as s:
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        try:
+            s.bind(("127.0.0.1", port))
+            return True
+        except OSError:
+            return False
+
+
+def port_tabani():
+    """ET_TEST_PORT verilmisse onu, yoksa 9500-9599 icinde 7 ardisik bos port bulunan ilk tabani kullanir."""
+    ham = os.environ.get("ET_TEST_PORT")
+    if ham:
+        return int(ham)
+    for taban in range(9500, 9593, 10):
+        if all(port_bos_mu(taban + i) for i in range(7)):
+            return taban
+    sys.exit("HATA: 9500-9599 araliginda 7 ardisik bos port bulunamadi (ET_TEST_PORT ile taban verin)")
+
+
 # ================================================================ sabitler
-PORT0 = int(os.environ.get("ET_TEST_PORT", "9500"))
+PORT0 = port_tabani()
 MOCK = PORT0
 PORT = {"A": PORT0 + 1, "B": PORT0 + 2, "C": PORT0 + 3, "D": PORT0 + 4, "E": PORT0 + 5}
 
@@ -207,16 +228,6 @@ def bekle_port(port, sn=15):
         except OSError:
             time.sleep(0.1)
     return False
-
-
-def port_bos_mu(port):
-    with socket.socket() as s:
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        try:
-            s.bind(("127.0.0.1", port))
-            return True
-        except OSError:
-            return False
 
 
 def temiz_ortam(**ek):
@@ -565,6 +576,33 @@ def senaryo_kaynak_ve_derleme():
                            capture_output=True, text=True)
         kontrol(p.returncode != 0 and "Fiyat sabiti uyusmuyor" in p.stdout,
                 f"{ad}: sabit uyusmazliginda derleme HATA vermeli (kod={p.returncode}): {p.stdout[-200:]}")
+
+    # vercel.json (lider yazacak) varsa: 5 rewrite dogrulanir; eksikse HATA, tamsa cikti dizinine kopyalanir
+    k = kopya_kaynak("vj_eksik")
+    (k / "vercel" / "vercel.json").write_text(json.dumps({"rewrites": [{"source": "/pay/create.php", "destination": "/api/create"}]}), encoding="utf-8")
+    p = subprocess.run([sys.executable, str(k / "vercel_build.py"), "--out", str(TMP / "vj_eksik" / "cikti"), "--www", str(WWW)], capture_output=True, text=True)
+    kontrol(p.returncode != 0 and "rewrite eksik" in p.stdout, "eksik rewrite'li vercel.json'da derleme HATA vermeli: " + p.stdout[-200:])
+    k = kopya_kaynak("vj_tam")
+    tam = {"rewrites": [{"source": kaynak_yol, "destination": hedef} for kaynak_yol, hedef in [
+        ("/pay/create.php", "/api/create"), ("/pay/webhook.php", "/api/webhook"), ("/pay/success.php", "/api/success"),
+        ("/pay/orders.php", "/api/orders"), ("/pay/test.php", "/api/test")]]}
+    (k / "vercel" / "vercel.json").write_text(json.dumps(tam), encoding="utf-8")
+    p = subprocess.run([sys.executable, str(k / "vercel_build.py"), "--out", str(TMP / "vj_tam" / "cikti"), "--www", str(WWW)], capture_output=True, text=True)
+    kontrol(p.returncode == 0 and json.loads((TMP / "vj_tam" / "cikti" / "vercel.json").read_text(encoding="utf-8")) == tam,
+            "tam rewrite'li vercel.json cikti kokune kopyalanmali: " + p.stdout[-200:] + p.stderr[-200:])
+    (k / "vercel" / "vercel.json").write_text("{bozuk", encoding="utf-8")
+    p = subprocess.run([sys.executable, str(k / "vercel_build.py"), "--out", str(TMP / "vj_tam" / "cikti2"), "--www", str(WWW)], capture_output=True, text=True)
+    kontrol(p.returncode != 0 and "JSON bozuk" in p.stdout, "bozuk vercel.json'da derleme HATA vermeli")
+    # www icinde api/ varsa cakisma HATA
+    sahte2 = TMP / "sahte_www2"
+    shutil.copytree(sahte, sahte2)
+    (sahte2 / "api").mkdir()
+    (sahte2 / "api" / "x.js").write_text("x", encoding="utf-8")
+    p = subprocess.run([sys.executable, str(KAYNAK / "vercel_build.py"), "--out", str(TMP / "cikti_cakisma"), "--www", str(sahte2)], capture_output=True, text=True)
+    kontrol(p.returncode != 0 and "cakisir" in p.stdout, "www/api varsa derleme HATA vermeli")
+    # ikinci calistirma (cikti adi 'vercel-out') temizler ve yeniden uretir
+    p = subprocess.run([sys.executable, str(KAYNAK / "vercel_build.py"), "--out", str(CIKTI)], capture_output=True, text=True)
+    kontrol(p.returncode == 0 and (CIKTI / "api" / "create.js").is_file(), "vercel-out ikinci kez derlenebilmeli: " + p.stdout[-200:])
 
     # --test-ucu-yok: api/test.js ciktiya girmez, gerisi tamam
     out3 = TMP / "cikti_testsiz"
@@ -1625,9 +1663,8 @@ def senaryo_bozuk_istekler():
     mock_sifirla()
     mock("POST", "/__test/mollie_fail/1", {})
     y = istek(p, "POST", "/pay/create.php", form())
-    kontrol(y.kod == 502 and "Traceback" not in y.metin and "at " not in re.sub(r"<[^>]+>|Réessayez|at ", "", y.metin)[:0], f"Mollie 500 -> create temiz 502 ({y.kod})")
-    kontrol(th("nl", "err_pay").replace("'", "&#039;") in y.metin, "502 sayfasi dilde mesaj verir")
-    # Mollie 422 (metadata sinirini asma simulasyonu yerine yanlis anahtar): sunucu C'de key var; D'de yok? -> create 503 icin
+    kontrol(y.kod == 502 and "Traceback" not in y.metin, f"Mollie 500 -> create temiz 502 ({y.kod})")
+    kontrol(th("nl", "err_pay") in y.metin, "502 sayfasi dilde mesaj verir")
     # tum API yanitlarinda temel basliklar
     eksik = []
     for port, yontem, yol, r in API_YANITLARI:
