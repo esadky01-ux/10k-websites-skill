@@ -870,6 +870,23 @@ footer.alt::before{ /* ince dama cizgisi */
 .fab .f-tel{background:var(--gold);animation-delay:1s}
 .fab .f-tel:hover{box-shadow:0 10px 30px rgba(255,193,7,.5)}
 .fab svg{width:26px;height:26px}
+.fab .f-book{display:none}
+
+/* Mobil: yuzen dugmeler yerine alt cubuk (icerigi ortmez, tek dokunusla rezervasyon) */
+@media (max-width:700px){
+  .fab{
+    left:0;right:0;bottom:0;flex-direction:row;align-items:center;gap:10px;
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+    background:rgba(10,10,10,.94);border-top:1px solid var(--cizgi);
+    -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  }
+  .fab a{width:48px;height:48px;box-shadow:none;animation:none}
+  .fab .f-book{
+    display:flex;flex:1;width:auto;border-radius:14px;background:var(--gold);color:#141005;
+    font-weight:800;font-size:15px;letter-spacing:.01em;
+  }
+  body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+}
 
 /* ============================================================
    KAYDIRMA GIRISLERI: yalniz CSS (animation-timeline: view()).

@@ -101,3 +101,13 @@ Bu maddeler gerçek anahtarlar girilince `pay/test.php?pw=…` ile tek ekrandan 
 2. Brevo ile gerçek test e-postası (buton sayfada)
 3. `https://…/pay/orders/` adresinin Apache'de 403 verdiği (yerel PHP sunucusu .htaccess işlemez)
 4. Google tarayıcı anahtarıyla canlı Autocomplete/Directions ve tarayıcı konsolunun temizliği
+
+
+---
+
+## Güncelleme: arayüz yenileme + güvenlik/SEO entegrasyonu
+
+Son sürümde tüm paketler yeşil: test_adim1 (2447), test_adim2 (684), test_adim3 (83), test_adim4 (69),
+test_seo (4917), test_php_pay (1630, 50/50 mutasyon yakalandı), test_vercel_api (999), tarayıcı testi (Chromium,
+masaüstü + mobil, taşma 0), gerçek CSP başlığıyla 5 sayfada CSP ihlali 0. Ayrıntı: `SECURITY-RAPORU.md`.
+Bu turda test sırasında bulunup düzeltilen gerçek hata: `.webmanifest` adresi `/fr/`'ye 301 ile yönleniyordu.

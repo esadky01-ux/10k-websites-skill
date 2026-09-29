@@ -133,3 +133,18 @@ derleyin → yükleyin. Şu anki görseller markaya uygun yer tutuculardır.
 ### Sipariş kayıtları
 `pay/orders/` içindeki JSON dosyaları rezervasyon kayıtlarıdır (web'den erişilemez).
 Muhasebe için yılda bir yedeğini almanız yeterlidir.
+
+---
+
+## Ek A. Saklama süreleri için cron (Combell)
+
+Combell paneli → **Cron işleri** → günde bir kez: `php /…/www/pay/temizle.php` (yol paneldeki gerçek dizine göre).
+Ödenmemiş siparişler 30 gün sonra silinir, diğerleri 12 ay sonra anonimleştirilir, muhasebe kayıtları 7 yıl saklanır.
+
+## Ek B. Vercel'de çalıştırma
+
+Vercel'de PHP çalışmaz; ödeme katmanının Node karşılığı vardır. Ayrıntılar ve ortam değişkeni tablosu:
+`kaynak/vercel/README.md`. Kısaca: `python3 kaynak/build.py && python3 kaynak/vercel_build.py` → `vercel-out/`
+klasörü dağıtılır. `MOLLIE_API_KEY`, `SITE_URL`, `COMPANY_EMAIL`, `BREVO_API_KEY`, `GOOGLE_SERVER_KEY`,
+`ADMIN_PASSWORD` ve `SIGNING_SECRET` (çerez imzası) ortam değişkenleri olarak girilir; girilene kadar form
+WhatsApp'a düşer. Vercel Hobby planı ticari kullanım için uygun değildir.
