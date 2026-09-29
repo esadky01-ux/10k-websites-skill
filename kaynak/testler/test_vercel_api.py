@@ -487,7 +487,7 @@ echo json_encode(['fiyat' => $o, 'esdeger_fark' => $fark]);
 """
 
 ISTEMCI_FIYAT_JS = r"""
-// template.html'deki istemci formulunun (Math.round) 1..800 taramasi ve Node fiyat.js ile karsilastirma
+// assets/app.js'teki istemci formulunun (Math.round) 1..800 taramasi ve Node fiyat.js ile karsilastirma
 const f = require(process.argv[1] + '/api/_lib/fiyat.js');
 const bozuk = [];
 for (let km = 1; km <= 800; km++) {
@@ -635,13 +635,15 @@ def senaryo_kaynak_ve_derleme():
         hedef.mkdir(parents=True)
         for f in ["vercel_build.py", "build.py", "strings.json", "mesafe-verisi.json", "isletme.json", "template.html"]:
             shutil.copy2(KAYNAK / f, hedef / f)
+        (hedef / "assets").mkdir()
+        shutil.copy2(KAYNAK / "assets" / "app.js", hedef / "assets" / "app.js")
         (hedef / "pay").mkdir()
         shutil.copy2(KAYNAK / "pay" / "create.php", hedef / "pay" / "create.php")
         shutil.copytree(KAYNAK / "vercel", hedef / "vercel")
         return hedef
 
     for ad, dosya, eski, yeni, beklenen in [
-        ("sapma_tpl", "template.html", "KM_UCRET: 1.99", "KM_UCRET: 1.98", "template.html"),
+        ("sapma_tpl", "assets/app.js", "KM_UCRET: 1.99", "KM_UCRET: 1.98", "app.js"),
         ("sapma_php", "pay/create.php", "const KM_UCRETI      = 1.99;", "const KM_UCRETI      = 2.05;", "create.php"),
         ("sapma_json", "mesafe-verisi.json", '"kapora_yuzde": 20', '"kapora_yuzde": 25', "kapora_yuzde"),
     ]:
@@ -1120,7 +1122,7 @@ def senaryo_fiyat_tahrifati():
     # taninmayan adres + Google yok -> 422 + WhatsApp yonlendirmesi
     n0 = len(odemeler())
     y = istek(PORT["A"], "POST", "/pay/create.php", form(alis="Xyz Straat 1", km="30"))
-    kontrol(y.kod == 422 and h_php(th("nl", "err_km")) in y.metin, f"taninmayan adres -> 422 err_km ({y.kod})")
+    kontrol(y.kod == 422 and h_php(th("nl", "err_km_wa")) in y.metin, f"taninmayan adres -> 422 err_km ({y.kod})")
     kontrol("wa.me/" in y.metin and h_php(th("nl", "succ_wa")) in y.metin, "422 sayfasi WhatsApp'a yonlendirmeli")
     kontrol(len(odemeler()) == n0, "reddedilen istekte odeme OLUSMAMALI")
     # ayni yer iki uc
@@ -1440,7 +1442,7 @@ def senaryo_koruma():
     y = istek(p, "POST", "/pay/create.php", form(eposta="gecersiz"), ip=ip)
     kontrol(y.kod == 429 and (y.baslik("retry-after") or "").isdigit() and 1 <= int(y.baslik("retry-after")) <= 60,
             f"429 + Retry-After (1..60): {y.baslik('retry-after')}")
-    kontrol(h_php(th("nl", "err_pay")) in y.metin, "429 sayfasi dilde mesaj verir (err_pay yedegi)")
+    kontrol(h_php(th("nl", "err_rate")) in y.metin, "429 sayfasi dilde mesaj verir (err_rate)")
     y = istek(p, "POST", "/pay/create.php", form(eposta="gecersiz"), ip="10.250.1.2")
     kontrol(y.kod == 422, "baska IP etkilenmez")
     y = istek(p, "POST", "/pay/create.php", form(eposta="gecersiz"), ip="10.250.1.3, 1.2.3.4")

@@ -1,4 +1,39 @@
+# Europa Taxi - robots.txt (uretildi: kaynak/seo.py robots_txt)
+# Son guncelleme: 2026-09-29
+#
+# /pay/ (odeme uc noktalari) ve /api/ (sunucu uc noktalari) hicbir botta taranmaz.
+
 User-agent: *
+Allow: /
 Disallow: /pay/
+Disallow: /api/
+
+# --- ARAMA ve YANIT motorlari: acikca IZINLI ---
+# Bu botlar siteyi arama sonuclarinda ve yapay zeka yanitlarinda (ChatGPT search, Perplexity,
+# Claude search, Apple, Google, Bing) gostermek icin sayfa okur. Adli bir grup, o bot icin
+# '*' grubunun yerine gectiginden ozel alan kurallari burada da tekrarlanir.
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: PerplexityBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: Applebot
+User-agent: Googlebot
+User-agent: Bingbot
+Allow: /
+Disallow: /pay/
+Disallow: /api/
+
+# --- YAPAY ZEKA EGITIM tarayicilari: KARAR = IZINLI (varsayilan) ---
+# Bu botlar yukaridaki '*' grubuna duser ve siteyi tarayabilir. Isletme egitim verisi olarak
+# kullanilmasini ISTEMIYORSA asagidaki satirlarin basindaki '# ' isaretlerini kaldirin
+# (arama/yanit botlari yukaridaki gruplarda ayrica izinli kalir):
+#
+# User-agent: GPTBot
+# User-agent: ClaudeBot
+# User-agent: Google-Extended
+# User-agent: Applebot-Extended
+# User-agent: CCBot
+# Disallow: /
 
 Sitemap: https://europetaxi24.be/sitemap.xml

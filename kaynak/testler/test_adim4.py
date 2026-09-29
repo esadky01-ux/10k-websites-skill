@@ -36,10 +36,10 @@ kontrol("RewriteCond %{HTTPS} !=on" in ht, "HTTPS zorunlulugu eksik")
 kontrol("^www\\." in ht, "www -> ciplak yonlendirmesi eksik")
 kontrol("^pay/orders(/.*)?$ - [F,L]" in ht, "pay/orders erisim engeli eksik")
 kontrol("config\\.php" in ht, "config.php korumasi eksik")
-kontrol("ErrorDocument 404 /fr/index.html" in ht, "404 -> /fr/ eksik")
+kontrol("ErrorDocument 404 /404.html" in ht and (WWW / "404.html").exists(), "markali 404 sayfasi eksik")
 kontrol('image/jpeg "access plus 1 year"' in ht, "resim onbellegi 1 yil olmali")
 kontrol("mod_deflate" in ht, "gzip (mod_deflate) eksik")
-kontrol('"config.js"' in ht and "no-cache" in ht,
+kontrol("config\\.js" in ht and "no-cache" in ht,
         "config.js onbellege takilmamali (anahtar degisince aninda okunmali)")
 # kok / yonlendirilmemeli (tarayici JS'i yonlendirir); dil onekli yollar da haric
 kontrol("!^/(fr|nl|en|tr)(/|$)" in ht, "dil onekli yollar yonlendirme disi olmali")

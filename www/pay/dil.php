@@ -44,7 +44,12 @@ return json_decode(<<<'VERI'
   "veh_wagon_name": "Break",
   "veh_wagon_model": "Grand volume de coffre",
   "veh_vip_name": "Business / VIP Van",
-  "veh_vip_model": "Mercedes Vito"
+  "veh_vip_model": "Mercedes Vito",
+  "val_cancel": "Veuillez accepter les conditions d'annulation.",
+  "err_km_wa": "Nous ne pouvons pas vérifier automatiquement cette distance. Confirmez votre réservation par WhatsApp, nous vous répondons rapidement.",
+  "err_rate": "Trop de tentatives en peu de temps. Patientez une minute puis réessayez.",
+  "err_forbidden": "Cette demande n'a pas pu être vérifiée. Rechargez la page du site puis réessayez.",
+  "err_bad_request": "La demande est trop volumineuse. Rechargez la page et réessayez."
  },
  "nl": {
   "succ_paid_t": "Betaling ontvangen, reservering bevestigd",
@@ -87,7 +92,12 @@ return json_decode(<<<'VERI'
   "veh_wagon_name": "Break",
   "veh_wagon_model": "Extra grote koffer",
   "veh_vip_name": "Business / VIP Van",
-  "veh_vip_model": "Mercedes Vito"
+  "veh_vip_model": "Mercedes Vito",
+  "val_cancel": "Aanvaard de annuleringsvoorwaarden om verder te gaan.",
+  "err_km_wa": "We kunnen deze afstand niet automatisch controleren. Bevestig uw reservering via WhatsApp, we antwoorden snel.",
+  "err_rate": "Te veel pogingen in korte tijd. Wacht een minuut en probeer het opnieuw.",
+  "err_forbidden": "Deze aanvraag kon niet worden gecontroleerd. Laad de pagina opnieuw en probeer het nog eens.",
+  "err_bad_request": "De aanvraag is te groot. Laad de pagina opnieuw en probeer het nog eens."
  },
  "en": {
   "succ_paid_t": "Payment received, booking confirmed",
@@ -130,7 +140,12 @@ return json_decode(<<<'VERI'
   "veh_wagon_name": "Station Wagon",
   "veh_wagon_model": "Extra-large boot",
   "veh_vip_name": "Business / VIP Van",
-  "veh_vip_model": "Mercedes Vito"
+  "veh_vip_model": "Mercedes Vito",
+  "val_cancel": "Please accept the cancellation terms.",
+  "err_km_wa": "We can't verify this distance automatically. Please confirm your booking on WhatsApp and we'll reply quickly.",
+  "err_rate": "Too many attempts in a short time. Please wait a minute and try again.",
+  "err_forbidden": "This request could not be verified. Reload the site page and try again.",
+  "err_bad_request": "The request is too large. Reload the page and try again."
  },
  "tr": {
   "succ_paid_t": "Ödeme alındı, rezervasyon onaylandı",
@@ -173,7 +188,12 @@ return json_decode(<<<'VERI'
   "veh_wagon_name": "Station Wagon",
   "veh_wagon_model": "Ekstra geniş bagaj",
   "veh_vip_name": "Business / VIP Van",
-  "veh_vip_model": "Mercedes Vito"
+  "veh_vip_model": "Mercedes Vito",
+  "val_cancel": "Devam etmek için iptal koşullarını kabul edin.",
+  "err_km_wa": "Bu mesafeyi otomatik doğrulayamadık. Rezervasyonunuzu WhatsApp'tan onaylayın, hızla dönüş yapalım.",
+  "err_rate": "Kısa sürede çok fazla deneme yapıldı. Bir dakika bekleyip tekrar deneyin.",
+  "err_forbidden": "Bu istek doğrulanamadı. Site sayfasını yenileyip tekrar deneyin.",
+  "err_bad_request": "İstek çok büyük. Sayfayı yenileyip tekrar deneyin."
  }
 }
 VERI, true);

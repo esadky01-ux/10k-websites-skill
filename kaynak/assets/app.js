@@ -1,0 +1,754 @@
+/* ============================================================
+   EUROPA TAXI: istemci mantigi (app.js)  YON A "GECE YOLCULUGU"
+   - Satir ici JS YOK: sayfa verisi #et-data JSON blogundan okunur.
+   - config.js bu dosyadan ONCE yuklenir (ikisi de defer, sirali).
+   Iki katmanli mesafe motoru:
+     Katman 1: Google Places + Directions (anahtar varsa ve testi gecerse)
+     Katman 2: dahili KESIN tablo + haversine x katsayi
+   Google calismasa bile site TAM islevsel kalir (kabul kriteri).
+   Bolumler: 1 veri, 2 mesafe motoru, 3 Google, 4 form mantigi, 5 dogrulama/odeme,
+             6 canlilik (baslik, paralaks, sayaclar, rota cizgisi)
+   ============================================================ */
+(function () {
+"use strict";
+
+/* ---- Fiyat sabitleri: pay/create.php ile BIREBIR AYNI olmali.
+   build.py derlemede esitligi kontrol eder. ---- */
+var SABIT = {
+  ACILIS: 10.00,        // indi-bindi (EUR)
+  KM_UCRET: 1.99,       // km basina (EUR)
+  KAPORA_YUZDE: 20,     // on odeme yuzdesi
+  YOL_KATSAYI: 1.17,    // haversine -> karayolu katsayisi
+  MIN_KM: 1,
+  MAX_KM: 800,
+  ORT_HIZ: 70           // yedek mod sure tahmini (km/s)
+};
+
+/* ---- Sayfa verisi: derlemede #et-data blogu olarak gomulur ---- */
+var ET = {};
+try { ET = JSON.parse(document.getElementById("et-data").textContent); }
+catch (e) { ET = { veri: { yerler: {}, kesin: {} }, soz: {}, dil: "fr", wa: "" }; }
+var VERI = ET.veri;      /* {yerler:{anahtar:{a:gorunen ad, l:[lat,lng], h:havalimani, t:[takma adlar]}}, kesin:{"a|b":km}} */
+var SOZ = ET.soz;        /* calisma zamani metinleri */
+var DIL = ET.dil;
+var WA_LINK = ET.wa;
+
+/* ---- yardimcilar ---- */
+function $(id){ return document.getElementById(id); }
+function paraFormat(n){
+  var yerel = DIL === "en" ? "en-GB" : (DIL === "tr" ? "tr-TR" : DIL + "-BE");
+  return new Intl.NumberFormat(yerel, {style:"currency", currency:"EUR"}).format(n);
+}
+function doldur(sablon, degerler){
+  return sablon.replace(/\{(\w+)\}/g, function(_, k){
+    return (k in degerler) ? degerler[k] : "{" + k + "}";
+  });
+}
+/* Dil tercihi: localStorage SADECE bunun icin kullanilir */
+function dilKaydet(d){ try { localStorage.setItem("europa_dil", d); } catch(e){} }
+document.querySelectorAll("[data-dil]").forEach(function(a){
+  a.addEventListener("click", function(){ dilKaydet(a.getAttribute("data-dil")); });
+});
+dilKaydet(DIL);
+
+/* ---- hareket tercihi: CANLI dinlenir (sistem ayari degisirse hemen uygulanir) ---- */
+var hareketMq = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
+function hareketAzalt(){ return !!(hareketMq && hareketMq.matches); }
+function kaydirmaDavranisi(){ return hareketAzalt() ? "auto" : "smooth"; }
+var hareketDinleyicileri = [];
+function hareketDegisince(fn){ hareketDinleyicileri.push(fn); }
+if (hareketMq){
+  var hareketOlay = function(){ hareketDinleyicileri.forEach(function(fn){ fn(hareketAzalt()); }); };
+  if (hareketMq.addEventListener) hareketMq.addEventListener("change", hareketOlay);
+  else if (hareketMq.addListener) hareketMq.addListener(hareketOlay);
+}
+
+/* ============================================================
+   2. MESAFE MOTORU
+   ============================================================ */
+/* metin normallestirme (Python test_adim1.py ile birebir ayni kurallar) */
+function normalize(s){
+  s = s.toLowerCase().replace(/ı/g,"i").replace(/ß/g,"ss").replace(/œ/g,"oe").replace(/æ/g,"ae");
+  s = s.normalize("NFD").replace(/[̀-ͯ]/g,"");
+  s = s.replace(/[^a-z0-9]+/g," ").replace(/\s+/g," ").trim();
+  return s;
+}
+
+/* eslesme dizini: normalize ad/takma -> yer anahtari */
+var ESLESME = {};
+Object.keys(VERI.yerler).forEach(function(k){
+  VERI.yerler[k].t.forEach(function(t){ ESLESME[t] = k; });
+});
+function yerBul(girdi){
+  var n = normalize(girdi || "");
+  if (!n) return null;
+  if (ESLESME[n]) return ESLESME[n];
+  var hedef = " " + n + " ", enIyi = null, enUzun = 0;
+  Object.keys(ESLESME).forEach(function(t){
+    if (t.length > enUzun && hedef.indexOf(" " + t + " ") !== -1){ enIyi = ESLESME[t]; enUzun = t.length; }
+  });
+  return enIyi;
+}
+function haversineKm(a, b){
+  var R = 6371, d2r = Math.PI / 180;
+  var dLat = (b[0]-a[0])*d2r, dLng = (b[1]-a[1])*d2r;
+  var h = Math.sin(dLat/2)*Math.sin(dLat/2) +
+          Math.cos(a[0]*d2r)*Math.cos(b[0]*d2r)*Math.sin(dLng/2)*Math.sin(dLng/2);
+  return 2*R*Math.asin(Math.sqrt(h));
+}
+/* Dahili mesafe: once KESIN tablo, yoksa haversine x katsayi. Bulamazsa null. */
+function dahiliMesafe(girdiA, girdiB){
+  var ka = yerBul(girdiA), kb = yerBul(girdiB);
+  if (!ka || !kb || ka === kb) return null;
+  var kesin = VERI.kesin[ka+"|"+kb] || VERI.kesin[kb+"|"+ka];
+  if (kesin) return kesin;
+  return Math.round(haversineKm(VERI.yerler[ka].l, VERI.yerler[kb].l) * SABIT.YOL_KATSAYI);
+}
+
+/* ---- durum ---- */
+var durum = {
+  mod: "km",              // "km" | "hava"
+  km: null,               // hesaplanan mesafe (yoksa fiyat YOK)
+  sureDk: null,
+  kaynak: null,           // "google" | "dahili"
+  arac: "eco",
+  yontem: "online",
+  googleAktif: false,
+  onaylandi: false,
+  sayac: { yolcu: 1, buyuk: 0, kucuk: 0 }
+};
+var SAYAC_SINIR = { yolcu: {min:1, max:7}, buyuk: {min:0, max:6}, kucuk: {min:0, max:4} };
+
+/* ---- fiyat paneli guncelle ---- */
+var sonToplam = null;        // fiyat degisti mi? (vurgu animasyonu icin)
+var vurguErtele = false;     // hizli sekmede kaydirma bitmeden parlama basmasin
+function vurgu(){
+  var panel = $("fiyat-panel");
+  panel.classList.remove("guncel");
+  void panel.offsetWidth;    // animasyonu bastan baslat
+  panel.classList.add("guncel");
+  setTimeout(function(){ panel.classList.remove("guncel"); }, 900);
+}
+function paneliGuncelle(){
+  var panel = $("fiyat-panel");
+  var f = $("p-fiyat"), kap = $("p-kapora"), kal = $("p-kalan"),
+      mes = $("p-mesafe"), sur = $("p-sure"), dur = $("p-durum"),
+      onlineDetay = $("odeme-online-detay");
+  if (durum.km === null){
+    f.textContent = "—"; kap.textContent = "—"; kal.textContent = "—";
+    mes.textContent = "—"; sur.textContent = "—";
+    panel.classList.remove("dolu");
+    sonToplam = null;
+    if (onlineDetay) onlineDetay.textContent = doldur(SOZ.paym_online_d, {deposit:"—", rest:"—"});
+    return;
+  }
+  var toplam = Math.round((SABIT.ACILIS + durum.km * SABIT.KM_UCRET) * 100) / 100;
+  var kapora = Math.round(toplam * SABIT.KAPORA_YUZDE) / 100;
+  var kalan  = Math.round((toplam - kapora) * 100) / 100;
+  f.textContent = paraFormat(toplam);
+  kap.textContent = paraFormat(kapora);
+  kal.textContent = paraFormat(kalan);
+  mes.textContent = durum.km + " km";
+  sur.textContent = durum.sureDk !== null ? ("≈ " + durum.sureDk + " min") : "—";
+  if (onlineDetay) onlineDetay.textContent = doldur(SOZ.paym_online_d, {deposit: paraFormat(kapora), rest: paraFormat(kalan)});
+  dur.classList.remove("hata");
+  dur.textContent = durum.kaynak === "google" ? SOZ.status_google : SOZ.status_fallback;
+  panel.classList.add("dolu");
+  if (toplam !== sonToplam && !vurguErtele && !hareketAzalt()) vurgu();
+  sonToplam = toplam;
+}
+function fiyatYok(uyari){
+  durum.km = null; durum.sureDk = null; durum.kaynak = null;
+  paneliGuncelle();
+  var dur = $("p-durum");
+  if (uyari){ dur.textContent = SOZ.status_unknown; dur.classList.add("hata"); }
+  else { dur.textContent = SOZ.status_waiting; dur.classList.remove("hata"); }
+}
+
+/* ---- dahili hesap ---- */
+function dahiliHesapla(){
+  var a = $("f-alis").value, b = $("f-varis").value;
+  if (!a.trim() || !b.trim()){ fiyatYok(false); return; }
+  var km = dahiliMesafe(a, b);
+  if (km === null){ fiyatYok(true); return; }   /* adres taninmadi -> fiyat URETME */
+  durum.km = km;
+  durum.sureDk = Math.round(km / SABIT.ORT_HIZ * 60);
+  durum.kaynak = "dahili";
+  paneliGuncelle();
+}
+
+/* ============================================================
+   3. GOOGLE KATMANI: anahtari haritayi kurmadan ONCE test et
+   ============================================================ */
+var gSecim = { alis: null, varis: null };   // Autocomplete'ten gelen konumlar
+var gServis = null;                          // DirectionsService
+
+function fallbackMode(sebep){
+  durum.googleAktif = false;
+  gSecim.alis = null; gSecim.varis = null;
+  /* Google nesnelerinin enjekte ettigi DOM kalintilarini temizle */
+  document.querySelectorAll(".pac-container,.gm-err-container,.gm-style-moc").forEach(function(el){ el.remove(); });
+  /* dahili sehir listesini (datalist) geri ac */
+  var alis = $("f-alis"), varis = $("f-varis");
+  alis.setAttribute("list", "yer-listesi");
+  varis.setAttribute("list", "yer-listesi");
+  console.warn("Google devre disi: " + sebep);
+  dahiliHesapla();
+}
+
+function attachGoogle(){
+  durum.googleAktif = true;
+  $("f-alis").removeAttribute("list");
+  $("f-varis").removeAttribute("list");
+  gServis = new google.maps.DirectionsService();
+  ["alis","varis"].forEach(function(rol){
+    var girdi = rol === "alis" ? $("f-alis") : $("f-varis");
+    var oto = new google.maps.places.Autocomplete(girdi, {
+      fields: ["formatted_address","geometry"],
+      componentRestrictions: { country: ["be","de","fr","lu","nl"] }
+    });
+    oto.addListener("place_changed", function(){
+      var yer = oto.getPlace();
+      if (yer && yer.geometry && yer.geometry.location){
+        if (yer.formatted_address) girdi.value = yer.formatted_address;
+        gSecim[rol] = yer.geometry.location;
+        googleHesapla();
+      } else {
+        gSecim[rol] = null;
+        hesapla();   /* secim yoksa dahili katman dener */
+      }
+    });
+  });
+}
+
+function googleHesapla(){
+  if (!gSecim.alis || !gSecim.varis){ hesapla(); return; }
+  gServis.route({
+    origin: gSecim.alis,
+    destination: gSecim.varis,
+    travelMode: google.maps.TravelMode.DRIVING
+  }, function(sonuc, st){
+    if (st === "OK" && sonuc.routes && sonuc.routes[0] && sonuc.routes[0].legs[0]){
+      var bacak = sonuc.routes[0].legs[0];
+      durum.km = Math.round(bacak.distance.value / 1000);
+      durum.sureDk = Math.round(bacak.duration.value / 60);
+      durum.kaynak = "google";
+      paneliGuncelle();
+    } else {
+      dahiliHesapla();   /* rota bulunamadi -> dahili tahmin */
+    }
+  });
+}
+
+/* Genel hesap: Google secimleri tamsa Google, degilse dahili */
+function hesapla(){
+  if (durum.mod !== "km") return;
+  if (durum.googleAktif && gSecim.alis && gSecim.varis){ googleHesapla(); return; }
+  dahiliHesapla();
+}
+
+function initGoogleMaps(){
+  if (!(window.google && google.maps && google.maps.places)){ fallbackMode("NO_API"); return; }
+  var yanitlandi = false;
+  var sayici = setTimeout(function(){
+    if (!yanitlandi){ yanitlandi = true; fallbackMode("TIMEOUT"); }
+  }, 6000);
+  try {
+    new google.maps.places.AutocompleteService().getPlacePredictions(
+      { input: "Bruxelles", componentRestrictions: { country: ["be"] } },
+      function(res, st){
+        if (yanitlandi) return;
+        yanitlandi = true; clearTimeout(sayici);
+        var S = google.maps.places.PlacesServiceStatus;
+        (st === S.OK || st === S.ZERO_RESULTS) ? attachGoogle() : fallbackMode(st);
+      });
+  } catch(e){
+    if (!yanitlandi){ yanitlandi = true; clearTimeout(sayici); fallbackMode("EXCEPTION"); }
+  }
+}
+window.initGoogleMaps = initGoogleMaps;
+window.gm_authFailure = function(){ fallbackMode("AUTH_FAILURE"); };
+
+/* Anahtar varsa Google betigini yukle; yoksa dogrudan dahili mod */
+(function(){
+  var cfg = window.EUROPA_CONFIG || {};
+  var anahtar = (cfg.googleMapsKey || "").trim();
+  if (!anahtar){ fallbackMode("NO_KEY"); return; }
+  var b = document.createElement("script");
+  b.src = "https://maps.googleapis.com/maps/api/js?key=" + encodeURIComponent(anahtar) +
+          "&libraries=places&language=" + DIL + "&callback=initGoogleMaps&loading=async";
+  b.async = true;
+  b.onerror = function(){ fallbackMode("SCRIPT_ERROR"); };
+  document.head.appendChild(b);
+})();
+
+/* ============================================================
+   4. FORM MANTIGI
+   ============================================================ */
+/* ---- adres girdileri: yazarak da dahili katman calissin ---- */
+var yazmaSayici = null;
+["f-alis","f-varis"].forEach(function(id){
+  $(id).addEventListener("input", function(){
+    var rol = id === "f-alis" ? "alis" : "varis";
+    gSecim[rol] = null;   /* elle degisiklik Google secimini gecersiz kilar */
+    sekmeTemizle();
+    clearTimeout(yazmaSayici);
+    yazmaSayici = setTimeout(hesapla, 350);
+  });
+  $(id).addEventListener("change", hesapla);
+});
+
+/* ---- degistir (swap) ---- */
+$("btn-swap").addEventListener("click", function(){
+  var a = $("f-alis"), b = $("f-varis");
+  var t = a.value; a.value = b.value; b.value = t;
+  var g = gSecim.alis; gSecim.alis = gSecim.varis; gSecim.varis = g;
+  sekmeTemizle();
+  hesapla();
+});
+
+/* ---- mod secici ---- */
+function modAyarla(m){
+  durum.mod = m;
+  var km = m === "km";
+  $("mod-km").setAttribute("aria-pressed", km ? "true" : "false");
+  $("mod-hava").setAttribute("aria-pressed", km ? "false" : "true");
+  $("fiyat-panel").hidden = !km;
+  $("hava-panel").hidden = km;
+  $("odeme-yontem-alani").hidden = !km;
+  $("btn-onayla").hidden = !km;
+  $("odeme-final").classList.remove("acik");
+  durum.onaylandi = false;
+  if (km) hesapla();
+}
+$("mod-km").addEventListener("click", function(){ modAyarla("km"); });
+$("mod-hava").addEventListener("click", function(){ modAyarla("hava"); });
+
+/* Havalimani modu WhatsApp butonu: doldurulan alanlari mesaja ekle */
+$("btn-hava-wa").addEventListener("click", function(ev){
+  var satirlar = [SOZ.airport_wa_msg];
+  var a = $("f-alis").value.trim(), b = $("f-varis").value.trim();
+  if (a && b) satirlar.push(doldur(SOZ.wa_route, {from:a, to:b}));
+  var t = $("f-tarih").value;
+  if (t) satirlar.push(doldur(SOZ.wa_date, {date: tarihYaz(t, $("f-saat").value)}));
+  ev.currentTarget.href = WA_LINK + "?text=" + encodeURIComponent(satirlar.join("\n"));
+});
+
+/* ---- tarih sinirlari: gecmis tarih secilemesin ---- */
+(function(){
+  var bugun = new Date();
+  var iso = bugun.getFullYear() + "-" +
+            String(bugun.getMonth()+1).padStart(2,"0") + "-" +
+            String(bugun.getDate()).padStart(2,"0");
+  $("f-tarih").min = iso;
+  $("f-donus-tarih").min = iso;
+  $("f-tarih").addEventListener("change", function(){
+    if (this.value) $("f-donus-tarih").min = this.value;
+  });
+})();
+function tarihYaz(tarih, saat){
+  if (!tarih) return "";
+  var p = tarih.split("-");
+  var okunur = p[2] + "." + p[1] + "." + p[0];
+  return saat ? doldur(SOZ.dt_join, {date: okunur, time: saat}) : okunur;
+}
+
+/* ---- donus alani ---- */
+$("f-donus").addEventListener("change", function(){
+  $("donus-alani").hidden = !this.checked;
+});
+
+/* ---- sayaclar ---- */
+function sayacCiz(ad){
+  $("s-" + ad).textContent = durum.sayac[ad];
+  document.querySelectorAll('[data-sayac="' + ad + '"]').forEach(function(btn){
+    var yon = parseInt(btn.getAttribute("data-yon"), 10);
+    var yeni = durum.sayac[ad] + yon;
+    var s = SAYAC_SINIR[ad];
+    btn.classList.toggle("kapali", yeni < s.min || yeni > s.max);
+  });
+}
+document.querySelectorAll("[data-sayac]").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    var ad = btn.getAttribute("data-sayac");
+    var yon = parseInt(btn.getAttribute("data-yon"), 10);
+    var s = SAYAC_SINIR[ad];
+    var yeni = durum.sayac[ad] + yon;
+    if (yeni >= s.min && yeni <= s.max){ durum.sayac[ad] = yeni; sayacCiz(ad); }
+  });
+});
+["yolcu","buyuk","kucuk"].forEach(sayacCiz);
+
+/* ---- arac secimi ---- */
+function aracSec(kod){
+  durum.arac = kod;
+  document.querySelectorAll(".arac-kart").forEach(function(k){
+    k.setAttribute("aria-pressed", k.getAttribute("data-arac") === kod ? "true" : "false");
+  });
+}
+document.querySelectorAll(".arac-kart").forEach(function(k){
+  k.addEventListener("click", function(){ aracSec(k.getAttribute("data-arac")); });
+});
+/* Formu ekranda goster: hizli sekmeden geliyorsa ve fiyat zaten gorunuyorsa kaydirma */
+function formaKaydir(fiyatGorunuyorsaKalsin){
+  var kart = $("rezervasyon"), panel = $("fiyat-panel");
+  if (fiyatGorunuyorsaKalsin){
+    var r = panel.getBoundingClientRect();
+    if (r.top >= 70 && r.bottom <= window.innerHeight - 8) return false;
+  }
+  kart.scrollIntoView({behavior: kaydirmaDavranisi(), block: "start"});
+  return true;
+}
+/* Filo bolumundeki "Sec ve rezerve et" -> araci sec + forma kaydir */
+document.querySelectorAll(".filo-sec").forEach(function(b){
+  b.addEventListener("click", function(){
+    aracSec(b.getAttribute("data-arac"));
+    formaKaydir(false);
+  });
+});
+
+/* Hero/kapanis CTA ve baslik CTA'si: forma kaydir; imlecli (masaustu) cihazda ilk alana odaklan.
+   Dokunmatik cihazda odak vermeyiz (ekran klavyesi ekrani kapatmasin). */
+document.querySelectorAll('a[href="#rezervasyon"]:not(.chip)').forEach(function(a){
+  a.addEventListener("click", function(ev){
+    var kart = $("rezervasyon");
+    ev.preventDefault();
+    kart.scrollIntoView({behavior: kaydirmaDavranisi(), block: "start"});
+    var ince = window.matchMedia && window.matchMedia("(pointer: fine)").matches;
+    if (ince) setTimeout(function(){ $("f-alis").focus({preventScroll: true}); }, hareketAzalt() ? 0 : 520);
+  });
+});
+
+/* ---- odeme yontemi kartlari ---- */
+document.querySelectorAll(".odeme-kart").forEach(function(k){
+  k.addEventListener("click", function(){
+    durum.yontem = k.getAttribute("data-yontem");
+    document.querySelectorAll(".odeme-kart").forEach(function(x){
+      x.setAttribute("aria-pressed", x === k ? "true" : "false");
+    });
+  });
+});
+
+/* ---- rota chip'leri + hizli baslat sekmeleri: rotayi forma yukle ---- */
+function sekmeTemizle(){
+  document.querySelectorAll(".hizli-sekme[aria-pressed='true']").forEach(function(s){
+    s.setAttribute("aria-pressed", "false");
+  });
+}
+document.querySelectorAll(".chip, .hizli-sekme").forEach(function(c){
+  c.addEventListener("click", function(ev){
+    ev.preventDefault();
+    var sekme = c.classList.contains("hizli-sekme");
+    var a = c.getAttribute("data-alis"), b = c.getAttribute("data-varis");
+    var yuklendi = false;
+    if (a && b && VERI.yerler[a] && VERI.yerler[b]){
+      gSecim.alis = null; gSecim.varis = null;
+      $("f-alis").value = VERI.yerler[a].a;
+      $("f-varis").value = VERI.yerler[b].a;
+      yuklendi = true;
+      sekmeTemizle();
+      if (sekme) c.setAttribute("aria-pressed", "true");
+      vurguErtele = true;     /* parlama kaydirma bittikten sonra */
+      modAyarla("km");
+      hesapla();
+      vurguErtele = false;
+    }
+    var kaydi = formaKaydir(sekme);
+    if (yuklendi && !hareketAzalt()) setTimeout(vurgu, kaydi ? 480 : 60);
+  });
+});
+
+/* ============================================================
+   5. DOGRULAMA + ODEME
+   ============================================================ */
+function gecersizTemizle(){
+  document.querySelectorAll('#rezervasyon [aria-invalid="true"]').forEach(function(e){ e.removeAttribute("aria-invalid"); });
+}
+function hataGoster(mesaj, odak){
+  var kutu = $("hata-kutu");
+  kutu.textContent = mesaj;
+  kutu.classList.remove("acik");
+  void kutu.offsetWidth;          // sarsma animasyonu her hatada yeniden oynasin
+  kutu.classList.add("acik");
+  gecersizTemizle();
+  if (odak){ odak.setAttribute("aria-invalid", "true"); odak.focus(); }   // hatali alan kirmizi vurgulanir
+}
+function hataTemizle(){ $("hata-kutu").classList.remove("acik"); gecersizTemizle(); }
+/* kullanici alani duzeltmeye baslayinca kirmizi vurgu kalkar */
+["input", "change"].forEach(function(o){
+  $("rezervasyon").addEventListener(o, function(ev){
+    if (ev.target && ev.target.removeAttribute) ev.target.removeAttribute("aria-invalid");
+  });
+});
+
+function epostaGecerli(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e); }
+function telefonGecerli(t){ return (t.replace(/\D/g,"").length) >= 8; }
+
+function ortakDogrula(){
+  if (!$("f-alis").value.trim() || !$("f-varis").value.trim())
+    return {mesaj: SOZ.val_route, odak: $("f-alis")};
+  if (durum.mod === "km" && durum.km === null)
+    return {mesaj: SOZ.val_price, odak: $("f-alis")};
+  if (!$("f-tarih").value || !$("f-saat").value)
+    return {mesaj: SOZ.val_date, odak: $("f-tarih")};
+  if (!$("f-iptal").checked)
+    return {mesaj: SOZ.val_cancel, odak: $("f-iptal")};
+  return null;
+}
+function iletisimDogrula(){
+  if ($("f-ad").value.trim().length < 2) return {mesaj: SOZ.val_name, odak: $("f-ad")};
+  if (!epostaGecerli($("f-eposta").value.trim())) return {mesaj: SOZ.val_email, odak: $("f-eposta")};
+  if (!telefonGecerli($("f-telefon").value.trim())) return {mesaj: SOZ.val_phone, odak: $("f-telefon")};
+  return null;
+}
+
+/* ---- rezervasyonu onayla -> odeme secimi ---- */
+$("rezervasyon").addEventListener("submit", function(ev){
+  ev.preventDefault();
+  hataTemizle();
+  var h = ortakDogrula();
+  if (h){ hataGoster(h.mesaj, h.odak); return; }
+  durum.onaylandi = true;
+  var final = $("odeme-final");
+  final.classList.add("acik");
+  final.scrollIntoView({behavior: kaydirmaDavranisi(), block: "nearest"});
+});
+
+/* ---- online ode: POST /pay/create.php (sunucu fiyati YENIDEN hesaplar) ---- */
+/* idem: sayfa yuklemesi basina rastgele belirtec; sunucu bunu Mollie'ye Idempotency-Key olarak gonderir,
+   boylece cift tiklama/tekrar gonderim ikinci bir odeme yaratmaz. Sunucu 16-64 karakter [A-Za-z0-9-] bekler. */
+function yeniIdem(){
+  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 12) + Math.random().toString(36).slice(2, 12);
+}
+var IDEM = yeniIdem();
+var odemeGonderildi = false;
+/* Geri tusuyla (bfcache) donuldugunde dugme canli kalsin ve eski belirtec yeni bir denemeye tasinmasin */
+window.addEventListener("pageshow", function(ev){
+  if (ev.persisted){ odemeGonderildi = false; IDEM = yeniIdem(); }
+});
+$("btn-online").addEventListener("click", function(){
+  if (odemeGonderildi) return;
+  hataTemizle();
+  var h = ortakDogrula() || iletisimDogrula();   /* iletisim online odemede ZORUNLU */
+  if (h){ hataGoster(h.mesaj, h.odak); return; }
+  var alanlar = {
+    iptal: "1",   /* iptal kosullari onayi (kutu ortakDogrula'da denetlendi); sunucu da ZORUNLU tutar */
+    idem: IDEM,
+    dil: DIL,
+    alis: $("f-alis").value.trim(),
+    varis: $("f-varis").value.trim(),
+    km: durum.km,
+    kaynak: durum.kaynak || "",
+    tarih: $("f-tarih").value,
+    saat: $("f-saat").value,
+    donus_tarih: $("f-donus").checked ? $("f-donus-tarih").value : "",
+    donus_saat: $("f-donus").checked ? $("f-donus-saat").value : "",
+    yolcu: durum.sayac.yolcu,
+    buyuk: durum.sayac.buyuk,
+    kucuk: durum.sayac.kucuk,
+    arac: durum.arac,
+    ad: $("f-ad").value.trim(),
+    eposta: $("f-eposta").value.trim(),
+    telefon: $("f-telefon").value.trim()
+  };
+  var f = document.createElement("form");
+  f.method = "POST";
+  f.action = "/pay/create.php";
+  Object.keys(alanlar).forEach(function(k){
+    var g = document.createElement("input");
+    g.type = "hidden"; g.name = k; g.value = alanlar[k];
+    f.appendChild(g);
+  });
+  document.body.appendChild(f);
+  odemeGonderildi = true;
+  f.submit();
+});
+
+/* ---- WhatsApp ile onayla: bos/yarim satir olmadan mesaj kur ---- */
+$("btn-wa").addEventListener("click", function(){
+  hataTemizle();
+  var h = ortakDogrula();   /* iletisim WhatsApp'ta OPSIYONEL */
+  if (h){ hataGoster(h.mesaj, h.odak); return; }
+  var aracAd = { eco: SOZ.veh_eco, wagon: SOZ.veh_wagon, vip: SOZ.veh_vip }[durum.arac];
+  var satirlar = [SOZ.wa_title, ""];
+  if (durum.mod === "hava") satirlar.push(SOZ.wa_mode_airport);
+  satirlar.push(doldur(SOZ.wa_route, {from: $("f-alis").value.trim(), to: $("f-varis").value.trim()}));
+  satirlar.push(doldur(SOZ.wa_date, {date: tarihYaz($("f-tarih").value, $("f-saat").value)}));
+  if ($("f-donus").checked && $("f-donus-tarih").value)
+    satirlar.push(doldur(SOZ.wa_return, {date: tarihYaz($("f-donus-tarih").value, $("f-donus-saat").value)}));
+  satirlar.push(doldur(SOZ.wa_pax, {pax: durum.sayac.yolcu}));
+  if (durum.sayac.buyuk > 0 || durum.sayac.kucuk > 0)
+    satirlar.push(doldur(SOZ.wa_bags, {big: durum.sayac.buyuk, small: durum.sayac.kucuk}));
+  satirlar.push(doldur(SOZ.wa_vehicle, {vehicle: aracAd}));
+  if (durum.mod === "km" && durum.km !== null){
+    var toplam = Math.round((SABIT.ACILIS + durum.km * SABIT.KM_UCRET) * 100) / 100;
+    var kapora = Math.round(toplam * SABIT.KAPORA_YUZDE) / 100;
+    satirlar.push(doldur(SOZ.wa_price, {price: paraFormat(toplam)}));
+    satirlar.push(doldur(SOZ.wa_deposit, {deposit: paraFormat(kapora)}));
+    satirlar.push(doldur(SOZ.wa_rest, {rest: paraFormat(Math.round((toplam-kapora)*100)/100)}));
+  }
+  var ad = $("f-ad").value.trim(), ep = $("f-eposta").value.trim(), tel = $("f-telefon").value.trim();
+  if (ad) satirlar.push(doldur(SOZ.wa_name, {name: ad}));
+  if (tel) satirlar.push(doldur(SOZ.wa_phone, {phone: tel}));
+  if (ep) satirlar.push(doldur(SOZ.wa_email, {email: ep}));
+  /* bos/yarim satir suzgeci: ust uste bos satir birakma */
+  var temiz = satirlar.filter(function(s, i){ return !(s === "" && i > 1); });
+  window.open(WA_LINK + "?text=" + encodeURIComponent(temiz.join("\n")), "_blank", "noopener");
+});
+
+/* baslangic durumu */
+paneliGuncelle();
+
+/* ============================================================
+   6. CANLILIK: baslik, paralaks, sayilan rakamlar, rota cizgisi
+   Hepsi ilerici gelistirme: JS calismazsa icerik yine tam gorunur.
+   ============================================================ */
+var IO = "IntersectionObserver" in window;
+var ust = $("ust"), hero = $("top");
+
+/* ---- yapiskan baslik: gercek yuksekligi CSS'e bildir + kaydirinca cam gorunum ---- */
+function ustOlc(){
+  document.documentElement.style.setProperty("--ust-yuk", ust.offsetHeight + "px");
+}
+ustOlc();
+if (window.ResizeObserver) new ResizeObserver(ustOlc).observe(ust);
+else window.addEventListener("resize", ustOlc);
+
+/* ---- paralaks: cok hafif, yalniz transform, rAF ile, imlec + kaydirma ---- */
+var plx = { hedefX: 0, hedefY: 0, x: 0, y: 0, kare: 0, gorunur: true, acik: false, katmanlar: [] };
+document.querySelectorAll("[data-plx]").forEach(function(el){
+  plx.katmanlar.push({ el: el, f: parseFloat(el.getAttribute("data-plx")) || 1 });
+});
+function plxCiz(){
+  plx.kare = 0;
+  var kaydirma = Math.min(window.pageYOffset || 0, 900);
+  plx.x += (plx.hedefX - plx.x) * 0.085;
+  plx.y += (plx.hedefY - plx.y) * 0.085;
+  plx.katmanlar.forEach(function(k){
+    var tx = plx.x * k.f * -7;
+    var ty = plx.y * k.f * -5 + kaydirma * k.f * 0.045;
+    k.el.style.transform = "translate3d(" + tx.toFixed(2) + "px," + ty.toFixed(2) + "px,0)";
+  });
+  /* imlec hedefine yaklasana kadar devam et */
+  if (Math.abs(plx.hedefX - plx.x) > 0.002 || Math.abs(plx.hedefY - plx.y) > 0.002) plxIste();
+}
+function plxIste(){
+  if (!plx.acik || !plx.gorunur || plx.kare) return;
+  plx.kare = requestAnimationFrame(plxCiz);
+}
+function plxAyarla(azalt){
+  plx.acik = !azalt;
+  if (azalt){
+    if (plx.kare){ cancelAnimationFrame(plx.kare); plx.kare = 0; }
+    plx.hedefX = plx.hedefY = plx.x = plx.y = 0;
+    plx.katmanlar.forEach(function(k){ k.el.style.transform = ""; });
+  } else plxIste();
+}
+if (hero){
+  hero.addEventListener("pointermove", function(ev){
+    if (!plx.acik || ev.pointerType !== "mouse") return;
+    plx.hedefX = (ev.clientX / window.innerWidth - 0.5) * 2;
+    plx.hedefY = (ev.clientY / window.innerHeight - 0.5) * 2;
+    plxIste();
+  }, { passive: true });
+  hero.addEventListener("pointerleave", function(){ plx.hedefX = plx.hedefY = 0; plxIste(); }, { passive: true });
+}
+function kaydirmaOlayi(){
+  ust.classList.toggle("kaydi", (window.pageYOffset || 0) > 12);
+  plxIste();
+}
+window.addEventListener("scroll", kaydirmaOlayi, { passive: true });
+kaydirmaOlayi();
+plxAyarla(hareketAzalt());
+hareketDegisince(plxAyarla);
+
+/* ---- hero gorunmuyorsa/sekme arka plandaysa animasyonlar dursun (pil + CPU) ---- */
+function durgunAyarla(){
+  var gorunmuyor = !plx.gorunur || document.hidden;
+  if (hero) hero.classList.toggle("durgun", gorunmuyor);
+}
+if (IO && hero){
+  new IntersectionObserver(function(kayitlar){
+    plx.gorunur = kayitlar[kayitlar.length - 1].isIntersecting;
+    durgunAyarla();
+    plxIste();
+  }).observe(hero);
+}
+document.addEventListener("visibilitychange", durgunAyarla);
+
+/* ---- guven seridi: rakamlar gorunce sayilir (metin JS'siz de nihai halde) ---- */
+var sayilar = [];
+document.querySelectorAll(".sayi").forEach(function(el){
+  var son = el.textContent, para = el.getAttribute("data-para"), hedef, bicim;
+  if (para){
+    hedef = parseFloat(para);
+    bicim = function(v){ return paraFormat(v); };
+  } else {
+    var m = /^(\d+)(.*)$/.exec(son);
+    if (!m) return;
+    hedef = parseInt(m[1], 10);
+    bicim = (function(ek){ return function(v){ return Math.round(v) + ek; }; })(m[2]);
+  }
+  sayilar.push({ el: el, son: son, hedef: hedef, bicim: bicim, bitti: false, kare: 0 });
+});
+function sayiBitir(s){
+  if (s.kare){ cancelAnimationFrame(s.kare); s.kare = 0; }
+  s.bitti = true;
+  s.el.textContent = s.son;
+}
+function sayiOynat(s){
+  if (s.bitti) return;
+  var t0 = null, sure = 1500;
+  function adim(t){
+    if (t0 === null) t0 = t;
+    var p = Math.min((t - t0) / sure, 1);
+    var e = 1 - Math.pow(1 - p, 3);            // ease-out cubic
+    if (p < 1){ s.el.textContent = s.bicim(s.hedef * e); s.kare = requestAnimationFrame(adim); }
+    else sayiBitir(s);
+  }
+  s.kare = requestAnimationFrame(adim);
+}
+if (IO && !hareketAzalt()){
+  var sayiGozcu = new IntersectionObserver(function(kayitlar){
+    kayitlar.forEach(function(k){
+      if (!k.isIntersecting) return;
+      sayiGozcu.unobserve(k.target);
+      var s = sayilar.filter(function(x){ return x.el === k.target; })[0];
+      if (s) sayiOynat(s);
+    });
+  }, { threshold: 0.6 });
+  sayilar.forEach(function(s){
+    /* yalniz ekranin ALTINDAKI rakamlar sifirlanir; ekrandakiler (ve tarayici botlari) nihai degeri gorur */
+    if (s.el.getBoundingClientRect().top > window.innerHeight){
+      s.el.textContent = s.bicim(0);
+      sayiGozcu.observe(s.el);
+    }
+  });
+}
+hareketDegisince(function(azalt){ if (azalt) sayilar.forEach(sayiBitir); });
+
+/* ---- nasil calisir: rota cizgisi. CSS animation-timeline destegi yoksa IntersectionObserver ---- */
+var adimlar = document.querySelector(".adimlar");
+var adimGozcu = null;
+function rotaHazirla(azalt){
+  if (!adimlar) return;
+  var destek = window.CSS && CSS.supports && CSS.supports("animation-timeline: view()");
+  if (destek || azalt || !IO){
+    adimlar.classList.remove("hazir");
+    if (adimGozcu){ adimGozcu.disconnect(); adimGozcu = null; }
+    return;
+  }
+  adimlar.classList.add("hazir");
+  if (adimGozcu) adimGozcu.disconnect();
+  adimGozcu = new IntersectionObserver(function(kayitlar){
+    kayitlar.forEach(function(k){
+      if (k.isIntersecting){ k.target.classList.add("canli"); adimGozcu.unobserve(k.target); }
+    });
+  }, { threshold: 0.5, rootMargin: "0px 0px -8% 0px" });
+  adimlar.querySelectorAll(".adim:not(.canli)").forEach(function(li){ adimGozcu.observe(li); });
+}
+rotaHazirla(hareketAzalt());
+hareketDegisince(rotaHazirla);
+
+})();

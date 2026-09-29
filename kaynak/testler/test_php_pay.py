@@ -390,8 +390,8 @@ def strings_onerilerini_uygula(repo):
     bp = repo / "kaynak" / "build.py"
     b = bp.read_text(encoding="utf-8")
     ek = "".join(f'"{k}", ' for k in oneri["_php_anahtarlari"])
-    yeni = b.replace('"err_t", "err_pay", "err_km", "err_back",', '"err_t", "err_pay", "err_km", "err_back", ' + ek.rstrip() , 1)
-    if yeni == b:
+    yeni = b if '"err_km_wa"' in b else b.replace('"err_t", "err_pay", "err_km", "err_back",', '"err_t", "err_pay", "err_km", "err_back", ' + ek.rstrip() , 1)
+    if yeni == b and '"err_km_wa"' not in b:
         raise SystemExit("build.py PHP_ANAHTARLARI satiri bulunamadi (test guncellenmeli)")
     bp.write_text(yeni, encoding="utf-8")
 
@@ -765,7 +765,7 @@ def senaryo_statik():
         for d in DILLER:
             for k, v in oneri[d].items():
                 kontrol("—" not in v and "–" not in v, f"STRINGS-ONERI [{d}.{k}] duz uzun/orta tire icermemeli")
-                kontrol(k not in strings[d], f"STRINGS-ONERI [{d}.{k}] strings.json'da zaten var (oneri gereksiz)")
+                kontrol(strings[d].get(k) == v, f"STRINGS-ONERI [{d}.{k}] strings.json'a AYNEN entegre edilmis olmali")
         # Node README §9 ile ayni metinler
         readme = (KAYNAK / "vercel" / "README.md").read_text(encoding="utf-8")
         for d in DILLER:
@@ -2964,6 +2964,12 @@ def senaryo_node_esdegerligi():
 def senaryo_mevcut_yedek():
     print("— 18. strings.json YENI anahtarlar olmadan (mevcut): PHP yedek anahtarlara duser, ham anahtar adi GORUNMEZ")
     repo, www = www_uret("mevcut", onerilen=False)
+    # yeni anahtarlar artik strings.json'da; eski dil.php'yi (bu anahtarlar olmadan) taklit et
+    dil = dil_verisi_yukle(www)
+    for d_ in DILLER:
+        for k_ in ("err_km_wa", "err_rate", "err_forbidden", "err_bad_request", "val_cancel"):
+            dil[d_].pop(k_, None)
+    (www / "pay" / "dil.php").write_text("<?php\nreturn json_decode(<<<'VERI'\n" + json.dumps(dil, ensure_ascii=False) + "\nVERI, true);\n", encoding="utf-8")
     dil = dil_verisi_yukle(www)
     kontrol("err_km_wa" not in dil["fr"] and "err_rate" not in dil["fr"] and "val_cancel" not in dil["fr"], "on kosul: mevcut dil.php yeni anahtarlari icermez")
     od = TMP / "siparisler_M"

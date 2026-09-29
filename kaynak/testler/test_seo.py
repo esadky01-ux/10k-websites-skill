@@ -249,7 +249,7 @@ for k in sorted(set().union(*[set(seo_strings[d]) for d in DILLER])):
                 f"'{k}' yer tutucu kumeleri diller arasinda ayni degil: {kumeler}")
     # override anahtarlarinin yer tutuculari strings.json'daki 4 dille uyumlu alt kume olmali
     for d in kumeler:
-        yasal = {"pct", "base", "perkm", "company", "vat", "email", "year", "price"} | \
+        yasal = {"pct", "base", "perkm", "company", "vat", "email", "company_email", "year", "price"} | \
                 {p + "_" + c for p in ("km", "price") for c in seo.ROTA_KODLARI}
         kontrol(kumeler[d] <= yasal, f"[{d}] '{k}' bilinmeyen yer tutucu: {sorted(kumeler[d] - yasal)}")
 
@@ -556,7 +556,7 @@ kontrol(seo.para_goster("fr", 10.0) == "10 €" and seo.para_goster("fr", 1.99) 
         and seo.para_goster("tr", 1.99) == "1,99 €" and seo.para_goster("nl", 10.0) == "10 €", "para bicimleri")
 
 for d in DILLER:
-    m = "{base}|{perkm}|{pct}|{company}|{vat}|{email}|{year}|{price_bru}|{price_crl}|{km_bru}|{km_crl}|{price}|{deposit}"
+    m = "{base}|{perkm}|{pct}|{company}|{vat}|{company_email}|{year}|{price_bru}|{price_crl}|{km_bru}|{km_crl}|{price}|{deposit}"
     dolu = seo.statik_doldur(d, m, ctx).split("|")
     beklenen = [bf["para_goster"](d, 10.0), bf["para_goster"](d, 1.99), "20", isletme["unvan"], isletme["kdv"],
                 isletme["eposta"], BUGUN[:4], bf["para_tam"](d, bagimsiz_fiyat(km_bul("brussels", "bru"))),

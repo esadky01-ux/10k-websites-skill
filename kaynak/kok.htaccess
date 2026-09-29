@@ -43,7 +43,7 @@ RewriteCond %{REQUEST_URI} !^/(fr|nl|en|tr)(/|$)
 RewriteCond %{REQUEST_URI} !^/(assets|pay)/
 RewriteCond %{REQUEST_URI} !^/\.well-known/
 RewriteCond %{REQUEST_URI} !^/(index\.html)?$
-RewriteCond %{REQUEST_URI} !\.[A-Za-z0-9]{2,5}$
+RewriteCond %{REQUEST_URI} !\.[A-Za-z0-9]{2,12}$
 RewriteRule ^ /fr/ [R=301,L]
 </IfModule>
 
@@ -81,7 +81,7 @@ ExpiresByType text/html "access plus 0 seconds"
 
 <IfModule mod_headers.c>
 # ---- kalici (icerik-hash'li) ve degisken varliklar
-<FilesMatch "^(site\.css|app\.js)$">
+<FilesMatch "^(site\.css|app\.js|kok\.css|kok\.js)$">
   Header set Cache-Control "public, max-age=31536000, immutable"
 </FilesMatch>
 # musteri anahtari degistirince site aninda yeni degeri okumali

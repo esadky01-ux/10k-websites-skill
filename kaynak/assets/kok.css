@@ -1,0 +1,13 @@
+/* Kok sayfa (JS kapaliysa dil secim listesi). Yazi tipi gerekmez: sistem yazisi. */
+body{background:#0A0A0C;color:#F4F4F6;font:400 16px/1.6 system-ui,sans-serif;
+display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}
+.kutu{text-align:center;padding:24px}
+h1{font-size:26px;letter-spacing:.5px}h1 span{color:#FFC107}
+ul{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:10px}
+a{display:block;padding:13px 40px;border:1px solid rgba(255,255,255,.18);border-radius:12px;
+color:#F4F4F6;text-decoration:none;font-weight:600}
+a:hover{border-color:#FFC107;color:#FFC107}
+
+/* 404 sayfasi: dort dilde kisa mesaj */
+.nf{margin:18px 0 6px}
+.nf-msg{margin:4px 0;color:#A8AAB3;font-size:15px}

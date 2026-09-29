@@ -35,9 +35,19 @@ strings = json.loads((KAYNAK / "strings.json").read_text(encoding="utf-8"))
 veri = json.loads((KAYNAK / "mesafe-verisi.json").read_text(encoding="utf-8"))
 isletme = json.loads((KAYNAK / "isletme.json").read_text(encoding="utf-8"))
 sablon = (KAYNAK / "template.html").read_text(encoding="utf-8")
+# Tum istemci JS'i assets/app.js icinde (satir ici JS yok); fiyat sabitleri oradan okunur
+app_js = (KAYNAK / "assets" / "app.js").read_text(encoding="utf-8")
 SABIT = veri["sabitler"]
 YERLER = veri["yerler"]
 ALAN = isletme["alan_adi"].rstrip("/")
+
+# ---------------------------------------------------------------- SEO/GEO katmani (kaynak/seo.py)
+# seo-strings.json, strings[dil] uzerine BIRLESTIRILIR (ayni anahtar varsa seo-strings kazanir).
+sys.path.insert(0, str(KAYNAK))
+import seo  # noqa: E402
+_seo_strings = json.loads((KAYNAK / "seo-strings.json").read_text(encoding="utf-8"))
+for _d in DILLER:
+    strings[_d].update(_seo_strings[_d])
 
 # ---------------------------------------------------------------- anahtar denetimi
 referans = set(strings["fr"].keys())
@@ -49,7 +59,7 @@ for dil in DILLER:
 
 # ---------------------------------------------------------------- sabit esitligi
 def js_sabitleri_oku(metin):
-    """template.html icindeki SABIT blogundan degerleri ceker."""
+    """assets/app.js icindeki SABIT blogundan degerleri ceker."""
     desen = {
         "acilis_ucreti": r"ACILIS:\s*([\d.]+)",
         "km_ucreti": r"KM_UCRET:\s*([\d.]+)",
@@ -63,15 +73,15 @@ def js_sabitleri_oku(metin):
     for ad, d in desen.items():
         e = re.search(d, metin)
         if not e:
-            hata(f"template.html icinde fiyat sabiti bulunamadi: {ad}")
+            hata(f"assets/app.js icinde fiyat sabiti bulunamadi: {ad}")
         sonuc[ad] = float(e.group(1))
     return sonuc
 
 
-js_sabit = js_sabitleri_oku(sablon)
+js_sabit = js_sabitleri_oku(app_js)
 for ad, deger in js_sabit.items():
     if abs(deger - float(SABIT[ad])) > 1e-9:
-        hata(f"Fiyat sabiti uyusmuyor: template.html {ad}={deger}, mesafe-verisi.json {ad}={SABIT[ad]}")
+        hata(f"Fiyat sabiti uyusmuyor: app.js {ad}={deger}, mesafe-verisi.json {ad}={SABIT[ad]}")
 
 create_php = KAYNAK / "pay" / "create.php"
 if create_php.exists():
@@ -89,7 +99,7 @@ if create_php.exists():
             hata(f"pay/create.php icinde fiyat sabiti bulunamadi: {ad}")
         if abs(float(e.group(1)) - float(SABIT[ad])) > 1e-9:
             hata(f"Fiyat sabiti uyusmuyor: create.php {ad}={e.group(1)}, beklenen {SABIT[ad]}")
-    print("✓ Fiyat sabitleri esit: template.html = create.php")
+    print("✓ Fiyat sabitleri esit: app.js = create.php")
 else:
     print("! pay/create.php henuz yok — sabit esitligi kontrolu PHP katmani eklenince tamamlanacak")
 
@@ -106,7 +116,9 @@ def normalize(s):
 
 def esc(s):
     """HTML metin baglami icin kacis."""
-    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    # cift tirnak da kacislanir: {{...}} degerleri nitelik icine de girer (placeholder="...", content="...");
+    # strings.json'a tirnakli bir metin girilirse HTML/nitelik kirilmasin
+    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
 
 
 def para_goster(dil, deger):
@@ -137,23 +149,17 @@ YIL = str(datetime.date.today().year)
 # {rest}, {price}, {ref}, {name}, {from}, {to}, {date}, {time}, {pax}, {big},
 # {small}, {vehicle}, {phone -> sadece em_outro/wa}) JS/PHP'ye birakilir.
 def statik_doldur(dil, metin):
-    degerler = {
-        "base": para_goster(dil, SABIT["acilis_ucreti"]),
-        "perkm": para_goster(dil, SABIT["km_ucreti"]),
-        "pct": str(SABIT["kapora_yuzde"]),
-        "company": isletme["unvan"],
-        "vat": isletme["kdv"],
-        "email": isletme["eposta"],
-        "year": YIL,
-    }
-    for k, v in degerler.items():
-        metin = metin.replace("{" + k + "}", v)
-    return metin
+    # seo.statik_doldur: {base} {perkm} {pct} {company} {vat} {email} {year} + {km_*}/{price_*}
+    return seo.statik_doldur(dil, metin, SEO_CTX)
 
 
 KESIN_SOZLUK = {}
 for a, b, km in veri["kesin"]:
     KESIN_SOZLUK[f"{a}|{b}"] = km
+
+BUGUN = datetime.date.today().isoformat()
+SEO_CTX = dict(strings=strings, veri=veri, isletme=isletme, alan=ALAN, diller=DILLER,
+               bugun=BUGUN, fiyat=fiyat_hesapla, kesin=KESIN_SOZLUK)
 
 # ---------------------------------------------------------------- www hazirla
 for parca in ["fr", "nl", "en", "tr", "assets"]:
@@ -161,13 +167,14 @@ for parca in ["fr", "nl", "en", "tr", "assets"]:
     if hedef.exists():
         shutil.rmtree(hedef)
 WWW.mkdir(exist_ok=True)
-shutil.copytree(KAYNAK / "assets", WWW / "assets")
+# fonts/fonts.css yalniz kaynak: @font-face bloklari site.css'in basina gomulu (yayina gitmez)
+shutil.copytree(KAYNAK / "assets", WWW / "assets", ignore=shutil.ignore_patterns("fonts.css"))
 # pay/ katmani kopyalanir; siparis kayitlari ve loglar TASINMAZ (orders/.htaccess kalir)
 if (KAYNAK / "pay").exists():
     if (WWW / "pay").exists():
         shutil.rmtree(WWW / "pay")
     shutil.copytree(KAYNAK / "pay", WWW / "pay",
-                    ignore=shutil.ignore_patterns("ET-*.json", "*.log", "*.tmp"))
+                    ignore=shutil.ignore_patterns("ET-*.json", "*.log", "*.tmp", "STRINGS-ONERI.json", "__pycache__"))
 
     # PHP katmaninin ihtiyac duydugu metinler strings.json'dan uretilir
     # (tek kaynak kurali: metin degisikligi = strings.json + build.py)
@@ -181,6 +188,8 @@ if (KAYNAK / "pay").exists():
         "val_route", "val_date", "val_name", "val_email", "val_phone",
         "veh_eco_name", "veh_eco_model", "veh_wagon_name", "veh_wagon_model",
         "veh_vip_name", "veh_vip_model",
+        # sertlestirilmis PHP katmaninin ek metinleri (Node dil.json ile ayni kaynak)
+        "val_cancel", "err_km_wa", "err_rate", "err_forbidden", "err_bad_request",
     ]
 
     def php_json_dosyasi(veri, aciklama):
@@ -196,6 +205,33 @@ if (KAYNAK / "pay").exists():
     (WWW / "pay" / "isletme.php").write_text(
         php_json_dosyasi({k: v for k, v in isletme.items() if not k.startswith("_")},
                          "Isletme sabitleri (kaynak: isletme.json)"), encoding="utf-8")
+
+    # Sunucu tarafi km dogrulamasi icin dahili mesafe tablosu (pay/mesafe.php okur).
+    # Bu dosya OLMAZSA Google anahtari da yoksa TUM rezervasyonlar 422+WhatsApp'a duser (fail-closed).
+    from pay_veri import mesafe_json_yaz
+    mesafe_json_yaz(WWW / "pay" / "mesafe.json", veri)
+
+# ---------------------------------------------------------------- varlik surumleme
+# site.css / app.js / kok.* icin dosya ADI sabit kalir; sayfalar ?v=<icerik hash'i> ile cagirir.
+# Sunucu bu dosyalara 1 yil 'immutable' onbellek verir: icerik degisince hash degisir, adres degisir.
+import hashlib
+SURUM = {ad: hashlib.sha256((WWW / "assets" / ad).read_bytes()).hexdigest()[:10]
+         for ad in ("site.css", "app.js", "kok.css", "kok.js")}
+
+
+def surumle(html):
+    for ad, h in SURUM.items():
+        html = html.replace(f'/assets/{ad}"', f'/assets/{ad}?v={h}"')
+    return html
+
+
+# dizin listeleme kalkani: 'Options -Indexes' AllowOverride'a bagli (izin yoksa site 500 verir);
+# bunun yerine her klasore noindex bir index.html konur.
+for _alt in ("assets", "assets/fonts", "assets/icons"):
+    if (WWW / _alt).is_dir():
+        (WWW / _alt / "index.html").write_text(
+            '<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><title>Europa Taxi</title>\n',
+            encoding="utf-8")
 
 # ---------------------------------------------------------------- dil sayfalari
 boyutlar = {}
@@ -214,75 +250,29 @@ for dil in DILLER:
     og_alt = [f'<meta property="og:locale:alternate" content="{strings[d2]["dil_og_locale"]}">'
               for d2 in DILLER if d2 != dil]
 
-    # JSON-LD 1: TaxiService + LocalBusiness (tek @id)
-    jsonld_isletme = {
-        "@context": "https://schema.org",
-        "@type": ["TaxiService", "LocalBusiness"],
-        "@id": ALAN + "/#isletme",
-        "name": isletme["marka"],
-        "legalName": isletme["unvan"],
-        "vatID": isletme["kdv"],
-        "slogan": isletme["slogan"],
-        "url": canonical,
-        "telephone": isletme["telefon"],
-        "email": isletme["eposta"],
-        "image": ALAN + "/assets/og.jpg",
-        "logo": ALAN + "/assets/logo.svg",
-        "priceRange": "€€",
-        "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "Excelsiorlaan 31",
-            "postalCode": "1930",
-            "addressLocality": "Zaventem",
-            "addressCountry": "BE",
-        },
-        "geo": {"@type": "GeoCoordinates", "latitude": 50.8845, "longitude": 4.4715},
-        "openingHoursSpecification": {
-            "@type": "OpeningHoursSpecification",
-            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-            "opens": "00:00",
-            "closes": "23:59",
-        },
-        "areaServed": [{"@type": "Country", "name": u} for u in ["BE", "DE", "FR", "LU", "NL"]],
-        "makesOffer": [{
-            "@type": "Offer",
-            "name": s["mode_km"],
-            "priceCurrency": "EUR",
-            "priceSpecification": {
-                "@type": "UnitPriceSpecification",
-                "price": SABIT["km_ucreti"],
-                "priceCurrency": "EUR",
-                "unitCode": "KMT",
-            },
-        }, {
-            "@type": "Offer",
-            "name": s["mode_airport"],
-            "priceCurrency": "EUR",
-        }],
-        "potentialAction": {
-            "@type": "ReserveAction",
-            "target": {"@type": "EntryPoint", "urlTemplate": isletme["whatsapp"]},
-        },
-    }
+    # JSON-LD 1: tek @graph (Organization + WebSite + TaxiService/LocalBusiness + WebPage)
+    # JSON-LD 2: sayfada GORUNEN 10 SSS (faq1..faq10)
+    jsonld_isletme = seo.jsonld_graph(dil, SEO_CTX)
+    jsonld_faq = seo.jsonld_faq(dil, SEO_CTX, [(s[f"faq{i}_q"], s[f"faq{i}_a"]) for i in range(1, 11)])
 
-    # JSON-LD 2: sayfada GORUNEN 6 SSS
-    jsonld_faq = {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [{
-            "@type": "Question",
-            "name": s[f"faq{i}_q"],
-            "acceptedAnswer": {"@type": "Answer", "text": s[f"faq{i}_a"]},
-        } for i in range(1, 7)],
-    }
+    # h1: virgulden sonrasi altin vurgu. Her kelime maske+yukselis animasyonu icin
+    # <span class="w wN"><span>kelime</span></span> ile sarilir (animasyon saf CSS).
+    def kelime_sar(metin, ilk):
+        parcalar = metin.split(" ")
+        html = " ".join(
+            f'<span class="w w{min(ilk + i, 14)}"><span>{p}</span></span>'
+            for i, p in enumerate(parcalar)
+        )
+        return html, ilk + len(parcalar)
 
-    # h1: virgulden sonrasi altin vurgu
     baslik = esc(s["hero_title"])
     if ", " in baslik:
         on, arka = baslik.split(", ", 1)
-        hero_baslik = f"{on}, <em>{arka}</em>"
+        on_html, sonraki = kelime_sar(on + ",", 0)
+        arka_html, _ = kelime_sar(arka, sonraki)
+        hero_baslik = f"{on_html} <em>{arka_html}</em>"
     else:
-        hero_baslik = baslik
+        hero_baslik, _ = kelime_sar(baslik, 0)
 
     # datalist: bu dilin gorunen adlari (havalimanlari once, sonra alfabetik)
     def sirala(oge):
@@ -302,6 +292,19 @@ for dil in DILLER:
             f'<a class="chip" href="#rezervasyon" data-alis="{a}" data-varis="{b}">'
             f'<span>{esc(YERLER[a]["ad"][dil])}</span><span class="ok">→</span>'
             f'<span>{esc(YERLER[b]["ad"][dil])}</span><b>{para_tam(dil, toplam)}</b></a>'
+        )
+
+    # hizli baslat sekmeleri: hero'da tek dokunusla forma yuklenen ilk 4 populer rota
+    # (havalimani hedefli; fiyat KESIN tablodan, chip'lerle ayni kaynak)
+    hizli = []
+    for a, b in veri["populer"][:4]:
+        km = KESIN_SOZLUK.get(f"{a}|{b}") or KESIN_SOZLUK.get(f"{b}|{a}")
+        toplam, _, _ = fiyat_hesapla(km)
+        hizli.append(
+            f'<button type="button" class="hizli-sekme" data-alis="{a}" data-varis="{b}" aria-pressed="false">'
+            f'<span class="hs-nereden">{esc(YERLER[a]["ad"][dil])}</span>'
+            f'<span class="hs-nereye">{esc(YERLER[b]["ad"][dil])}</span>'
+            f'<b class="hs-fiyat">{para_tam(dil, toplam)}</b></button>'
         )
 
     # arac kapasite satirlari
@@ -337,11 +340,29 @@ for dil in DILLER:
     soz["veh_vip"] = f'{s["veh_vip_name"]} ({s["veh_vip_model"]})'
 
     def js_json(v):
-        # </script> kacisini garantile
-        return json.dumps(v, ensure_ascii=False).replace("</", "<\\/")
+        # </script> ve <!-- kacisini garantile (JSON bloklari HTML icinde gomulu)
+        return json.dumps(v, ensure_ascii=False).replace("</", "<\\/").replace("<!--", "<\\u0021--")
+
+    # Sayfa basina veri blogu: app.js bunu JSON.parse eder (satir ici calistirilabilir JS yok)
+    et_data = {"dil": s["dil_kod"], "wa": isletme["whatsapp"], "veri": veri_js, "soz": soz}
 
     def paragraflar(metin):
         return "".join(f"<p>{esc(p)}</p>" for p in metin.split("\n\n"))
+
+    def bolgeler_html():
+        """Gorunur 'Hizmet bolgeleri' bolumu: seo.zone_data -> mevcut .chip bicimi."""
+        z = seo.zone_data(dil, SEO_CTX)
+        def chip(o):
+            fiyat_etiketi = s["zones_from"].replace("{price}", o["fiyat_metin"])
+            return (f'<a class="chip" href="#rezervasyon" data-alis="{o["alis_anahtar"]}" '
+                    f'data-varis="{o["varis_anahtar"]}"><span>{esc(o["ad"])}</span>'
+                    f'<span class="ok">{o["km"]} km</span><b>{esc(fiyat_etiketi)}</b></a>')
+        bloklar = []
+        for baslik, anahtar in (("zones_airports_t", "havalimanlari"), ("zones_cities_t", "sehirler"),
+                                ("zones_border_t", "sinir_otesi")):
+            bloklar.append(f'<h3 class="bolge-baslik">{esc(s[baslik])}</h3>\n'
+                           f'<div class="chipler">' + "\n".join(chip(o) for o in z[anahtar]) + '</div>')
+        return "\n      ".join(bloklar)
 
     # ---- yer tutuculari doldur ----
     sayfa = sablon
@@ -354,6 +375,7 @@ for dil in DILLER:
         "HERO_BASLIK": hero_baslik,
         "DATALIST": datalist,
         "ROTA_CHIPS": "\n      ".join(chipler),
+        "BOLGELER": bolgeler_html(),
         "KAP_ECO": kapasite("eco"),
         "KAP_WAGON": kapasite("wagon"),
         "KAP_VIP": kapasite("vip"),
@@ -361,8 +383,11 @@ for dil in DILLER:
         "PRIVACY_PARAGRAFLAR": paragraflar(s["privacy_d"]),
         "TERMS_PARAGRAFLAR": paragraflar(s["terms_d"]),
         "FOOTER_RIGHTS": esc(s["footer_rights"]),
-        "VERI_JS": js_json(veri_js),
-        "SOZLUK_JS": js_json(soz),
+        "ET_DATA": js_json(et_data),
+        "HIZLI_SEKMELER": "\n          ".join(hizli),
+        "KM_UCRETI": para_goster(dil, SABIT["km_ucreti"]),
+        "KM_UCRETI_SAYI": str(SABIT["km_ucreti"]),
+        "HEAD_EK": "",   # SEO asamasi dolduracak (head sonu)
         "WHATSAPP": isletme["whatsapp"],
         "TELEFON": isletme["telefon"],
         "TEL_LINK": isletme["telefon_link"],
@@ -386,8 +411,12 @@ for dil in DILLER:
     if kalan:
         hata(f"[{dil}] cozulmemis yer tutucular: {sorted(set(kalan))}")
 
+    # SEO/GEO <head> eki (geo meta, og:image boyutu/alt, manifest, apple-touch-icon, robots yonergeleri)
+    sayfa = sayfa.replace("</head>", seo.head_ek(dil, SEO_CTX) + "</head>", 1)
+
     hedef = WWW / dil
     hedef.mkdir(parents=True, exist_ok=True)
+    sayfa = surumle(sayfa)
     (hedef / "index.html").write_text(sayfa, encoding="utf-8")
     boyutlar[dil] = len(sayfa.encode("utf-8"))
 
@@ -398,6 +427,8 @@ dil_linkleri = "\n    ".join(
     f'<li><a href="{strings[d]["dil_yol"]}" hreflang="{strings[d]["dil_hreflang"]}">{strings[d]["dil_ad"]}</a></li>'
     for d in DILLER
 )
+# Kok sayfanin CSS ve JS'i harici dosyada (assets/kok.css, assets/kok.js):
+# siki CSP (script-src 'self') altinda satir ici betik/stil calismaz.
 kok_html = f"""<!doctype html>
 <html lang="en">
 <head>
@@ -407,32 +438,8 @@ kok_html = f"""<!doctype html>
 <meta name="robots" content="noindex,follow">
 <title>Europa Taxi</title>
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-<style>
-body{{background:#0A0A0C;color:#F4F4F6;font:400 16px/1.6 system-ui,sans-serif;
-display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}}
-.kutu{{text-align:center;padding:24px}}
-h1{{font-size:26px;letter-spacing:.5px}}h1 span{{color:#FFC107}}
-ul{{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:10px}}
-a{{display:block;padding:13px 40px;border:1px solid rgba(255,255,255,.18);border-radius:12px;
-color:#F4F4F6;text-decoration:none;font-weight:600}}
-a:hover{{border-color:#FFC107;color:#FFC107}}
-</style>
-<script>
-/* Kok yonlendirme: once kayitli tercih, sonra tarayici dili, yoksa /fr/ */
-(function(){{
-  var diller = ["fr","nl","en","tr"], hedef = null;
-  try {{ hedef = localStorage.getItem("europa_dil"); }} catch(e){{}}
-  if (diller.indexOf(hedef) === -1) {{
-    hedef = null;
-    var tercihler = navigator.languages || [navigator.language || ""];
-    for (var i = 0; i < tercihler.length && !hedef; i++) {{
-      var kod = String(tercihler[i]).slice(0, 2).toLowerCase();
-      if (diller.indexOf(kod) !== -1) hedef = kod;
-    }}
-  }}
-  location.replace("/" + (hedef || "fr") + "/");
-}})();
-</script>
+<link rel="stylesheet" href="/assets/kok.css">
+<script src="/assets/kok.js"></script>
 </head>
 <body>
 <div class="kutu">
@@ -444,38 +451,32 @@ a:hover{{border-color:#FFC107;color:#FFC107}}
 </body>
 </html>
 """
-(WWW / "index.html").write_text(kok_html, encoding="utf-8")
+(WWW / "index.html").write_text(surumle(kok_html), encoding="utf-8")
+
+# 404: markali, noindex; Apache ErrorDocument ve Vercel bunu 404 durum koduyla sunar.
+# (Bilinmeyen adresleri /fr/'ye 301'lemek 'yumusak 404'tur; taramayi ve SEO'yu bozar.)
+nf_satirlari = "\n    ".join(f'<p class="nf-msg" lang="{strings[d]["dil_hreflang"]}">{esc(strings[d]["nf_msg"])}</p>' for d in DILLER)
+yok404_html = kok_html.replace("<title>Europa Taxi</title>", "<title>404 · Europa Taxi</title>", 1)
+yok404_html = yok404_html.replace('<script src="/assets/kok.js"></script>\n', "", 1)   # 404'te dil yonlendirmesi YOK
+yok404_html = yok404_html.replace('<h1>EUROPA<span>TAXI</span></h1>',
+                                  '<h1>EUROPA<span>TAXI</span></h1>\n  <div class="nf">' + nf_satirlari + '</div>', 1)
+(WWW / "404.html").write_text(surumle(yok404_html), encoding="utf-8")
 
 # ---------------------------------------------------------------- .htaccess + sitemap + robots
 # Kok .htaccess kaynaktan kopyalanir (sartname §11)
-shutil.copyfile(KAYNAK / "kok.htaccess", WWW / ".htaccess")
+_host = ALAN.split("://", 1)[-1].split("/")[0]
+(WWW / ".htaccess").write_text(
+    (KAYNAK / "kok.htaccess").read_text(encoding="utf-8").replace("%%HOST%%", _host), encoding="utf-8")
 
-# sitemap.xml: her URL icin TAM xhtml:link kumesi (kendisi dahil 4 dil + x-default).
-# Eksik kume tum grubu gecersiz kilar (sartname §11).
-bugun = datetime.date.today().isoformat()
-alternatifler = "\n".join(
-    f'    <xhtml:link rel="alternate" hreflang="{strings[d]["dil_hreflang"]}" href="{ALAN}{strings[d]["dil_yol"]}"/>'
-    for d in DILLER
-) + f'\n    <xhtml:link rel="alternate" hreflang="x-default" href="{ALAN}/fr/"/>'
-sitemap_girdileri = "\n".join(
-    f"""  <url>
-    <loc>{ALAN}{strings[d]["dil_yol"]}</loc>
-{alternatifler}
-    <lastmod>{bugun}</lastmod>
-  </url>"""
-    for d in DILLER
-)
-sitemap = f"""<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
-{sitemap_girdileri}
-</urlset>
-"""
-(WWW / "sitemap.xml").write_text(sitemap, encoding="utf-8")
-
-# robots.txt: /pay/ tarama disi + sitemap referansi
-(WWW / "robots.txt").write_text(
-    f"User-agent: *\nDisallow: /pay/\n\nSitemap: {ALAN}/sitemap.xml\n", encoding="utf-8")
+# sitemap.xml (4 URL x tam 5'li xhtml:link + lastmod + image:image), robots.txt, llms*.txt,
+# manifest, security.txt: hepsi kaynak/seo.py'den (sartname §11: eksik hreflang kumesi grubu gecersiz kilar).
+(WWW / "sitemap.xml").write_text(seo.sitemap_xml(SEO_CTX), encoding="utf-8")
+(WWW / "robots.txt").write_text(seo.robots_txt(SEO_CTX), encoding="utf-8")
+(WWW / "llms.txt").write_text(seo.llms_txt(SEO_CTX), encoding="utf-8")
+(WWW / "llms-full.txt").write_text(seo.llms_full_txt(SEO_CTX), encoding="utf-8")
+(WWW / "manifest.webmanifest").write_text(seo.manifest_json(SEO_CTX), encoding="utf-8")
+(WWW / ".well-known").mkdir(exist_ok=True)
+(WWW / ".well-known" / "security.txt").write_text(seo.security_txt(SEO_CTX), encoding="utf-8")
 
 # ---------------------------------------------------------------- rapor
 print("✓ Derleme tamam:")

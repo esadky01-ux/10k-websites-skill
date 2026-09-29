@@ -212,7 +212,7 @@ def _yer_tutucular(dil, ctx):
         "pct": str(sabit["kapora_yuzde"]),
         "company": isl["unvan"],
         "vat": isl["kdv"],
-        "email": isl["eposta"],
+        "company_email": isl["eposta"],
         "year": str(ctx["bugun"])[:4],
     }
     for kod, (a, b) in ROTA_KODLARI.items():

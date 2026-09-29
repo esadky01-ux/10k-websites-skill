@@ -143,12 +143,12 @@ def sabit_karsilastir(bulunan, kaynak_adi):
             hata(f"Fiyat sabiti uyusmuyor: {kaynak_adi} {ad}={deger}, mesafe-verisi.json {ad}={SABIT[ad]}")
 
 
-sabit_karsilastir(js_sabitleri_oku(sablon, "template.html", True), "template.html")
+# tasarim sozlesmesi: sabitler assets/app.js'te (satir ici JS yok); eski tek-dosya yerlesimi yedek
 uygulama_js = KAYNAK / "assets" / "app.js"
 if uygulama_js.is_file():
-    bulunan = js_sabitleri_oku(uygulama_js.read_text(encoding="utf-8"), "assets/app.js", False)
-    if bulunan:
-        sabit_karsilastir(bulunan, "assets/app.js")
+    sabit_karsilastir(js_sabitleri_oku(uygulama_js.read_text(encoding="utf-8"), "assets/app.js", True), "assets/app.js")
+else:
+    sabit_karsilastir(js_sabitleri_oku(sablon, "template.html", True), "template.html")
 
 create_php = KAYNAK / "pay" / "create.php"
 if create_php.is_file():
@@ -166,7 +166,7 @@ if create_php.is_file():
             hata(f"pay/create.php icinde fiyat sabiti bulunamadi: {ad}")
         if abs(float(e.group(1)) - float(SABIT[ad])) > 1e-9:
             hata(f"Fiyat sabiti uyusmuyor: create.php {ad}={e.group(1)}, beklenen {SABIT[ad]}")
-    print("✓ Fiyat sabitleri esit: mesafe-verisi.json = template.html = create.php (Node fiyat.js mesafe.json'dan okur)")
+    print("✓ Fiyat sabitleri esit: mesafe-verisi.json = assets/app.js = create.php (Node fiyat.js mesafe.json'dan okur)")
 else:
     print("! pay/create.php yok — PHP sabit esitligi kontrol edilemedi")
 

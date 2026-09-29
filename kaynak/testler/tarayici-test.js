@@ -1,7 +1,7 @@
 /* Adim 2 tarayici oz-testi: konsol, fiyat motoru, dogrulama, mobil */
 const { chromium } = require('playwright');
 
-const TABAN = 'http://127.0.0.1:8123';
+const TABAN = 'http://127.0.0.1:8201';
 const hatalar = [];
 function kontrol(kosul, mesaj){ if (!kosul) hatalar.push(mesaj); }
 
@@ -11,10 +11,12 @@ function kontrol(kosul, mesaj){ if (!kosul) hatalar.push(mesaj); }
   /* ---------- masaustu ---------- */
   const sayfa = await b.newPage({ viewport: { width: 1280, height: 900 } });
   const konsolHatalari = [];
-  const disKopmalar = [];  // sandbox proxy'sinin kestigi harici istekler (fonts vb.)
+  const disKopmalar = [];  // sandbox proxy'sinin kestigi harici istekler (wa.me vb.)
+  const hariciIstekler = [];  // sayfa yuklenirken TABAN disina giden her istek (yazi tipi dahil) YASAK
+  sayfa.on('request', r => { if (!r.url().startsWith(TABAN) && !r.url().startsWith('data:')) hariciIstekler.push(r.url()); });
   sayfa.on('requestfailed', r => {
     const u = r.url();
-    if (u.includes('fonts.g') || u.includes('wa.me')) disKopmalar.push(u);
+    if (u.includes('wa.me')) disKopmalar.push(u);
     else konsolHatalari.push('requestfailed: ' + u);
   });
   sayfa.on('console', m => {
@@ -28,9 +30,28 @@ function kontrol(kosul, mesaj){ if (!kosul) hatalar.push(mesaj); }
   // 1. Konsolda hata olmamali (uyari serbest)
   kontrol(konsolHatalari.length === 0, 'FR konsol hatalari: ' + JSON.stringify(konsolHatalari));
 
+  // 1b. Hicbir istek fonts.googleapis.com / fonts.gstatic.com'a (veya baska harice) gitmemeli
+  kontrol(hariciIstekler.length === 0, 'Sayfa harici istek yapmamali (yazi tipi yerel): ' + JSON.stringify(hariciIstekler));
+  // 1c. Yazi tipi gercekten yerel Archivo ile yuklendi mi?
+  const fontDurumu = await sayfa.evaluate(async () => {
+    await document.fonts.ready;
+    return [...document.fonts].filter(f => f.status === 'loaded').map(f => f.family.replace(/['"]/g, ''));
+  });
+  kontrol(fontDurumu.includes('Archivo'), 'Archivo yazi tipi yerel dosyadan yuklenmeli: ' + JSON.stringify(fontDurumu));
+
   // 2. Anahtar bos -> dahili mod, datalist acik
   const listAttr = await sayfa.getAttribute('#f-alis', 'list');
   kontrol(listAttr === 'yer-listesi', 'Dahili modda datalist acilmali, bulunan: ' + listAttr);
+
+  // 2b. Hizli baslat sekmesi: tek dokunusla form dolar ve fiyat aninda gorunur
+  await sayfa.click('.hizli-sekme[data-alis="brussels"][data-varis="crl"]');
+  await sayfa.waitForTimeout(400);
+  kontrol((await sayfa.inputValue('#f-alis')).length > 0 && (await sayfa.inputValue('#f-varis')).includes('Charleroi'),
+    'Hizli sekme alis/varis alanlarini doldurmali');
+  kontrol((await sayfa.textContent('#p-fiyat')).includes('119,45'), 'Hizli sekme fiyati aninda gostermeli (119,45)');
+  kontrol((await sayfa.getAttribute('.hizli-sekme[data-varis="crl"]', 'aria-pressed')) === 'true', 'Secili sekme aria-pressed=true olmali');
+  await sayfa.fill('#f-alis', 'Gent');
+  kontrol((await sayfa.getAttribute('.hizli-sekme[data-varis="crl"]', 'aria-pressed')) === 'false', 'Elle yazinca sekme secimi kalkmali');
 
   // 3. Bruxelles -> Zaventem : 13 km, 35,87 EUR
   await sayfa.fill('#f-alis', 'Bruxelles');
@@ -134,6 +155,74 @@ function kontrol(kosul, mesaj){ if (!kosul) hatalar.push(mesaj); }
     await s2.close();
   }
 
+  /* ---------- acilis animasyonu: <= 1.6 sn, perde yok, icerik JS'siz gorunur ---------- */
+  const ac = await b.newPage({ viewport: { width: 1440, height: 900 } });
+  await ac.goto(TABAN + '/fr/', { waitUntil: 'networkidle' });
+  const acilis = await ac.evaluate(() => {
+    const sonlu = document.getAnimations().filter(a => a.timeline && a.timeline.constructor.name === 'DocumentTimeline')
+      .map(a => a.effect.getComputedTiming()).filter(t => t.iterations !== Infinity);
+    const bitis = sonlu.reduce((m, t) => Math.max(m, t.delay + t.activeDuration + t.endDelay), 0);
+    return { sayi: sonlu.length, bitis };
+  });
+  kontrol(acilis.sayi >= 10, 'Acilis animasyonlari CSS ile calismali: ' + acilis.sayi);
+  kontrol(acilis.bitis <= 1600, 'Acilis animasyonu 1.6 sn\'yi gecmemeli: ' + acilis.bitis + ' ms');
+  const tamEkranOrtu = await ac.evaluate(() => {
+    // tam ekran, opak, tiklamayi tutan perde/preloader var mi? (tarama isigi saydam ve pointer-events:none olmali)
+    return [...document.querySelectorAll('body > *')].filter(e => {
+      const cs = getComputedStyle(e), r = e.getBoundingClientRect();
+      return cs.position === 'fixed' && r.width >= innerWidth - 2 && r.height >= innerHeight - 2 && cs.pointerEvents !== 'none';
+    }).length;
+  });
+  kontrol(tamEkranOrtu === 0, 'Tam ekran, tiklamayi engelleyen perde/preloader olmamali');
+  await ac.close();
+  // JS KAPALI: icerik yine gorunur (ilerici gelistirme)
+  const jsyiz = await b.newContext({ viewport: { width: 1440, height: 900 }, javaScriptEnabled: false });
+  const jp = await jsyiz.newPage();
+  await jp.goto(TABAN + '/fr/', { waitUntil: 'load' });
+  await jp.waitForTimeout(2200);
+  // ekranin ustundeki icerik hemen gorunur; asagidaki bolumler kaydirinca gorunur (CSS animation-timeline, JS'siz)
+  for (const q of ['h1', '#rezervasyon', '.hizli-sekme', '.rez-kart']) {
+    const g = await jp.evaluate((s) => { const cs = getComputedStyle(document.querySelector(s)); return cs.visibility !== 'hidden' && cs.display !== 'none' && parseFloat(cs.opacity) > 0.99; }, q);
+    kontrol(g, 'JS kapaliyken ekran ustundeki ' + q + ' gorunur olmali');
+  }
+  for (const q of ['.guven-liste', '.adim', '.neden', '.filo-kart', '.chip', '.sss details', '.kapanis h2', 'footer.alt']) {
+    await jp.evaluate((s) => document.querySelector(s).scrollIntoView({ block: 'center', behavior: 'instant' }), q);
+    await jp.waitForTimeout(250);
+    const g = await jp.evaluate((s) => { const cs = getComputedStyle(document.querySelector(s)); return cs.visibility !== 'hidden' && cs.display !== 'none' && parseFloat(cs.opacity) > 0.99; }, q);
+    kontrol(g, 'JS kapaliyken ' + q + ' kaydirinca gorunur olmali');
+  }
+  await jsyiz.close();
+  // HAREKET AZALT: tum animasyon kapali, nihai durum gorunur
+  const azalt = await b.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
+  const ap = await azalt.newPage();
+  await ap.goto(TABAN + '/fr/', { waitUntil: 'networkidle' });
+  const az = await ap.evaluate(() => ({
+    anim: document.getAnimations().length,
+    tarama: getComputedStyle(document.querySelector('.tarama')).display,
+    kart: getComputedStyle(document.querySelector('.rez-kart')).opacity,
+    kelime: getComputedStyle(document.querySelector('.w > span')).transform,
+    plx: [...document.querySelectorAll('[data-plx]')].map(e => e.style.transform).join('')
+  }));
+  kontrol(az.anim === 0, 'reduced-motion: hicbir animasyon calismamali: ' + az.anim);
+  kontrol(az.tarama === 'none', 'reduced-motion: tarama isigi kapali olmali');
+  kontrol(az.kart === '1' && (az.kelime === 'none' || az.kelime === 'matrix(1, 0, 0, 1, 0, 0)'), 'reduced-motion: nihai durum gorunur olmali');
+  await ap.mouse.move(1200, 200); await ap.waitForTimeout(300);
+  kontrol((await ap.evaluate(() => [...document.querySelectorAll('[data-plx]')].map(e => e.style.transform).join(''))) === '',
+    'reduced-motion: paralaks kapali olmali');
+  // CANLI dinleme: acikken reduce'a gecilirse hemen kapanir
+  const canli = await b.newPage({ viewport: { width: 1440, height: 900 } });
+  await canli.goto(TABAN + '/fr/', { waitUntil: 'networkidle' });
+  await canli.waitForTimeout(1800);
+  await canli.mouse.move(1300, 200); await canli.waitForTimeout(400);
+  kontrol((await canli.evaluate(() => [...document.querySelectorAll('[data-plx]')].map(e => e.style.transform).join(''))) !== '',
+    'Hareket serbestken paralaks calismali');
+  await canli.emulateMedia({ reducedMotion: 'reduce' });
+  await canli.waitForTimeout(300);
+  kontrol((await canli.evaluate(() => [...document.querySelectorAll('[data-plx]')].map(e => e.style.transform).join(''))) === '',
+    'reduced-motion canli acilinca paralaks hemen kapanmali');
+  kontrol((await canli.evaluate(() => document.getAnimations().length)) === 0, 'reduced-motion canli acilinca animasyonlar durmali');
+  await canli.close(); await azalt.close();
+
   /* ---------- mobil 360px ---------- */
   const mobil = await b.newPage({ viewport: { width: 360, height: 780 } });
   const mkh = [];
@@ -162,6 +251,33 @@ function kontrol(kosul, mesaj){ if (!kosul) hatalar.push(mesaj); }
   await mobil.waitForTimeout(300);
   const tasma320 = await mobil.evaluate(() => document.scrollingElement.scrollWidth - window.innerWidth);
   kontrol(tasma320 <= 0, '320px yatay tasma: ' + tasma320 + 'px');
+  // 360/412 px + Android "buyuk yazi" (%130): tum yazi boyutlari 1.3 katina cikarilir; gorunen oge sayfadan tasmamali
+  const OLCEK = (k) => { const el = [...document.querySelectorAll('body, body *')]; const bs = el.map(e => parseFloat(getComputedStyle(e).fontSize)); el.forEach((e, i) => e.style.setProperty('font-size', (bs[i] * k) + 'px', 'important')); };
+  const DISARI = () => {
+    const W = innerWidth, kotu = [];
+    document.querySelectorAll('body *').forEach(e => {
+      if (e.closest('.hiz,.hero-sahne,.tarama,.kapanis-hiz,.atlama,.fab,.dama,.seg,.fh-cizgi,datalist,script,[hidden]')) return;
+      const cs = getComputedStyle(e); if (cs.display === 'none' || cs.visibility === 'hidden') return;
+      const r = e.getBoundingClientRect(); if (!r.width && !r.height) return;
+      if (r.right > W + 0.5 || r.left < -0.5) kotu.push(e.tagName + '.' + (typeof e.className === 'string' ? e.className : '') + ' ' + Math.round(r.left) + '..' + Math.round(r.right));
+    });
+    return kotu;
+  };
+  for (const gen of [320, 360, 390, 412]) {
+    for (const dil of ['fr', 'nl', 'tr']) {
+      const bctx = await b.newContext({ viewport: { width: gen, height: 800 }, isMobile: true, hasTouch: true });   // dokunmatik: 44 px hedefler devrede
+      const bp = await bctx.newPage();
+      await bp.goto(TABAN + '/' + dil + '/', { waitUntil: 'networkidle' });
+      await bp.evaluate(() => document.fonts.ready);
+      await bp.waitForTimeout(1700);
+      await bp.evaluate(OLCEK, 1.3);
+      await bp.waitForTimeout(250);
+      const t = await bp.evaluate(() => document.scrollingElement.scrollWidth - window.innerWidth);
+      const d = await bp.evaluate(DISARI);
+      kontrol(t <= 0 && d.length === 0, '[' + dil + '] ' + gen + 'px + %130 yazi: yatay tasma ' + t + 'px, disari tasan: ' + JSON.stringify(d.slice(0, 3)));
+      await bctx.close();
+    }
+  }
 
   /* ---------- D. Google dayanikliligi: gm_authFailure simulasyonu ---------- */
   const g1 = await b.newPage({ viewport: { width: 1280, height: 900 } });
@@ -233,6 +349,49 @@ function kontrol(kosul, mesaj){ if (!kosul) hatalar.push(mesaj); }
   kontrol(tasmaG2 <= 0, 'Gecersiz anahtar durumunda form bozulmamali (yatay tasma yok)');
   kontrol(g2h.length === 0, 'Gecersiz anahtar testinde konsol hatasi: ' + JSON.stringify(g2h));
   await g2.close();
+
+  /* ---------- D3. Google MUTLU YOL (sahte google.maps): gecerli anahtarla Autocomplete + Directions kullanilir ---------- */
+  const g3 = await b.newPage({ viewport: { width: 1280, height: 900 } });
+  const g3h = [];
+  g3.on('console', m => { if (m.type() === 'error' && !m.text().includes('ERR_CONNECTION_RESET')) g3h.push(m.text()); });
+  g3.on('pageerror', e => g3h.push('pageerror: ' + e.message));
+  await g3.route('**/assets/config.js', r => r.fulfill({
+    contentType: 'application/javascript',
+    body: 'window.EUROPA_CONFIG={googleMapsKey:"TEST_ANAHTAR"};',
+  }));
+  let g3Url = '';
+  await g3.route('**maps.googleapis.com/**', r => {
+    g3Url = r.request().url();
+    r.fulfill({ contentType: 'application/javascript', body: `
+      window.__ac = [];
+      window.google = { maps: {
+        places: {
+          PlacesServiceStatus: { OK: 'OK', ZERO_RESULTS: 'ZERO_RESULTS' },
+          AutocompleteService: function(){ this.getPlacePredictions = function(o, cb){ cb([], 'OK'); }; },
+          Autocomplete: function(input, opts){ var self = this; this.opts = opts; this.addListener = function(ev, fn){ self._l = fn; }; this.getPlace = function(){ return self._yer; }; window.__ac.push(self); }
+        },
+        DirectionsService: function(){ this.route = function(req, cb){ cb({ routes: [{ legs: [{ distance: { value: 56000 }, duration: { value: 3300 } }] }] }, 'OK'); }; },
+        TravelMode: { DRIVING: 'DRIVING' }
+      } };
+      if (window.initGoogleMaps) window.initGoogleMaps();` });
+  });
+  await g3.goto(TABAN + '/fr/', { waitUntil: 'networkidle' });
+  await g3.waitForTimeout(800);
+  kontrol(g3Url.includes('key=TEST_ANAHTAR') && g3Url.includes('callback=initGoogleMaps') && g3Url.includes('libraries=places'),
+    'Anahtar varken Google betigi dogru parametrelerle yuklenmeli: ' + g3Url);
+  kontrol((await g3.getAttribute('#f-alis', 'list')) === null, 'Google aktifken datalist kapali olmali');
+  kontrol((await g3.evaluate(() => JSON.stringify(window.__ac.map(a => a.opts.componentRestrictions)))) === '[{"country":["be","de","fr","lu","nl"]},{"country":["be","de","fr","lu","nl"]}]',
+    'Autocomplete ulke kisitlamasi be,de,fr,lu,nl olmali');
+  await g3.evaluate(() => {
+    window.__ac[0]._yer = { formatted_address: 'Rue de la Loi 16, 1000 Bruxelles', geometry: { location: {} } }; window.__ac[0]._l();
+    window.__ac[1]._yer = { formatted_address: 'Sint-Baafsplein, 9000 Gent', geometry: { location: {} } }; window.__ac[1]._l();
+  });
+  await g3.waitForTimeout(400);
+  kontrol((await g3.textContent('#p-fiyat')).includes('121,44'), 'Google mesafesi (56 km) fiyata yansimali: 121,44');
+  kontrol((await g3.textContent('#p-mesafe')).trim() === '56 km', 'Google mesafesi 56 km gorunmeli');
+  kontrol((await g3.textContent('#p-durum')).includes('Google'), 'Google durum satiri gorunmeli');
+  kontrol(g3h.length === 0, 'Google mutlu yol konsol hatasi: ' + JSON.stringify(g3h));
+  await g3.close();
 
   await b.close();
 
