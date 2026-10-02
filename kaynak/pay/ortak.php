@@ -354,7 +354,7 @@ function mini_sayfa(string $dil, string $baslik, string $icerikHtml, int $yenile
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <meta name="color-scheme" content="dark">
-<title>' . h($baslik) . ' · Europa Taxi</title>
+<title>' . h($baslik) . ' · europetaxi24</title>
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 ' . $yenileEtiketi . '
 <style>
@@ -378,7 +378,7 @@ text-decoration:none;color:#141005;background:linear-gradient(180deg,#FFC107,#E5
 </head>
 <body>
 <div class="kart">
-  <div class="marka"><b>EUROPA</b><span>TAXI</span></div>
+  <div class="marka"><b>EUROPETAXI</b><span>24</span></div>
   <h1>' . h($baslik) . '</h1>
   ' . $icerikHtml . '
 </div>

@@ -269,7 +269,7 @@ header('Content-Type: text/html; charset=utf-8');
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <meta name="color-scheme" content="dark">
-<title>Rezervasyonlar · Europa Taxi</title>
+<title>Rezervasyonlar · europetaxi24</title>
 <style>
 body{background:#0A0A0C;color:#F4F4F6;font:400 15px/1.5 system-ui,sans-serif;margin:0;padding:24px}
 .ust{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px}
@@ -293,7 +293,7 @@ code{background:#1A1A1F;padding:2px 6px;border-radius:6px}
 </head>
 <body>
 <div class="ust">
-  <h1>EUROPA<span>TAXI</span> · Rezervasyonlar</h1>
+  <h1>EUROPETAXI<span>24</span> · Rezervasyonlar</h1>
   <?= orders_sekme('hepsi', 'Hepsi', count($siparisler), $suzgec) ?>
   <?= orders_sekme('odendi', 'Ödendi', $odendiSayi, $suzgec) ?>
   <?= orders_sekme('beklemede', 'Bekliyor', $bekleyenSayi, $suzgec) ?>

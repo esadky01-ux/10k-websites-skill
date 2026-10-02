@@ -1,5 +1,5 @@
 {
-  "_aciklama": "Europa Taxi mesafe motoru verisi. build.py bu dosyayi template.html icine gomer. 'yerler' = dahili sehir/havalimani tablosu (Google yedegi), 'kesin' = gercek karayolu km tablosu, 'sabitler' = fiyat sabitleri. Takma adlar kucuk harf ve aksansiz yazilir (normalize edilmis).",
+  "_aciklama": "europetaxi24 mesafe motoru verisi. build.py bu dosyayi template.html icine gomer. 'yerler' = dahili sehir/havalimani tablosu (Google yedegi), 'kesin' = gercek karayolu km tablosu, 'sabitler' = fiyat sabitleri. Takma adlar kucuk harf ve aksansiz yazilir (normalize edilmis).",
   "sabitler": {
     "acilis_ucreti": 10.0,
     "km_ucreti": 1.99,

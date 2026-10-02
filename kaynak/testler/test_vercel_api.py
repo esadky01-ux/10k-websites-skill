@@ -701,7 +701,7 @@ def senaryo_mock_dogrudan():
     print("— B. sahte servislerin kendi davranisi (PHP testleri de buna guvenecek)")
     mock_sifirla()
     gecerli = {
-        "amount": {"currency": "EUR", "value": "24.29"}, "description": "Europa Taxi ET-260101-ABCDEF",
+        "amount": {"currency": "EUR", "value": "24.29"}, "description": "europetaxi24 ET-260101-ABCDEF",
         "redirectUrl": "https://ornek.be/ok", "webhookUrl": "https://ornek.be/wh",
         "locale": "nl_BE", "method": ["bancontact", "creditcard"], "metadata": {"n": 1},
     }
@@ -864,7 +864,7 @@ def senaryo_mutlu_yol():
     kontrol(re.fullmatch(rf"http://127\.0\.0\.1:{MOCK}/checkout/tr_[A-Za-z0-9]{{10}}", loc or "") is not None, f"Location mock checkout olmali: {loc}")
     o = s.odeme
     kontrol(o["amount"] == {"currency": "EUR", "value": "24.29"}, f"odeme tutari 24.29 olmali: {o['amount']}")
-    kontrol(o["description"] == "Europa Taxi " + s.no and re.fullmatch(r"ET-\d{6}-[A-Z0-9]{6}", s.no) is not None, f"description/no: {o['description']}")
+    kontrol(o["description"] == "europetaxi24 " + s.no and re.fullmatch(r"ET-\d{6}-[A-Z0-9]{6}", s.no) is not None, f"description/no: {o['description']}")
     kontrol(o["status"] == "open" and o["locale"] == "nl_BE", "durum open, locale nl_BE")
     kontrol(o["redirectUrl"] == f"http://127.0.0.1:{PORT['A']}/pay/success.php?order={s.no}&dil=nl", f"redirectUrl: {o['redirectUrl']}")
     kontrol(o["webhookUrl"] == f"http://127.0.0.1:{PORT['A']}/pay/webhook.php", f"webhookUrl: {o['webhookUrl']}")
@@ -937,7 +937,7 @@ def senaryo_paid():
         kontrol(h_php(t("nl", "em_paid")) in m["html"] and h_php(t("nl", "em_due")) in m["html"], "em_paid / em_due etiketleri")
         kontrol("24,29 €" in m["html"] and "97,15 €" in m["html"], "musteri e-postasinda kapora 24,29 ve kalan 97,15")
         kontrol(s.no in m["html"], "musteri e-postasinda referans")
-        kontrol(m["gonderen"]["email"] == GONDEREN and m["gonderen"]["name"] == "Europa Taxi", f"gonderen: {m['gonderen']}")
+        kontrol(m["gonderen"]["email"] == GONDEREN and m["gonderen"]["name"] == "europetaxi24", f"gonderen: {m['gonderen']}")
         # HTML kacisi (ad alaninda tirnak/etiket)
         kontrol("Jan &quot;J&quot; O&#039;Brien &amp; &lt;b&gt;Zn&lt;/b&gt;" in m["html"] and "<b>Zn</b>" not in m["html"],
                 "musteri e-postasi HTML kacisli olmali (tirnak/&/<b>)")
@@ -1713,7 +1713,7 @@ def senaryo_test_ucu():
     n0 = len(postalar())
     y2 = istek(p, "POST", "/pay/test.php", {"eposta_testi": "1"}, cerez=c.split(";")[0])
     P = postalar()
-    kontrol(y2.kod == 200 and len(P) == n0 + 1 and P[-1]["alicilar"] == [SIRKET_EPOSTA] and P[-1]["konu"] == "Europa Taxi kurulum testi" and "Gönderildi" in y2.metin,
+    kontrol(y2.kod == 200 and len(P) == n0 + 1 and P[-1]["alicilar"] == [SIRKET_EPOSTA] and P[-1]["konu"] == "europetaxi24 kurulum testi" and "Gönderildi" in y2.metin,
             f"test e-postasi COMPANY_EMAIL'e gider ({len(P)}, {y2.kod})")
     # oturumsuz eposta_testi gonderemez
     n1 = len(postalar())

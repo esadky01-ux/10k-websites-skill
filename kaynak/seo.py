@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-EUROPA TAXI - SEO / yerel SEO / GEO katmani.
+EUROPETAXI24 - SEO / yerel SEO / GEO katmani.
 
 Saf fonksiyonlar: dosyaya yazmaz, agdan bir sey cekmez, global durumu degistirmez.
 Yalniz standart kutuphane. build.py bu modulu SONRADAN baglar (bkz. SEO-NOTLARI.md,
@@ -814,7 +814,7 @@ def robots_txt(ctx):
     arama_botlari = ["OAI-SearchBot", "ChatGPT-User", "PerplexityBot", "Claude-SearchBot", "Claude-User",
                      "Applebot", "Googlebot", "Bingbot"]
     L = [
-        "# Europa Taxi - robots.txt (uretildi: kaynak/seo.py robots_txt)",
+        "# europetaxi24 - robots.txt (uretildi: kaynak/seo.py robots_txt)",
         f'# Son guncelleme: {ctx["bugun"]}',
         "#",
         "# /pay/ (odeme uc noktalari) ve /api/ (sunucu uc noktalari) hicbir botta taranmaz.",
@@ -859,7 +859,7 @@ def security_txt(ctx):
     bugun = datetime.date.fromisoformat(ctx["bugun"])
     bitis = bugun + datetime.timedelta(days=365)
     L = [
-        "# Europa Taxi - guvenlik iletisimi (RFC 9116)",
+        "# europetaxi24 - guvenlik iletisimi (RFC 9116)",
         f'Contact: mailto:{ctx["isletme"]["eposta"]}',
         f"Expires: {bitis.isoformat()}T00:00:00.000Z",
     ]

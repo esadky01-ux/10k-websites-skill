@@ -124,7 +124,7 @@ function panelSayfasi(siparisler, suzgec, uyari) {
 '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
 '<meta name="robots" content="noindex,nofollow">\n' +
 '<meta name="color-scheme" content="dark">\n' +
-'<title>Rezervasyonlar · Europa Taxi</title>\n' +
+'<title>Rezervasyonlar · europetaxi24</title>\n' +
 '<style>\n' +
 'body{background:#0A0A0C;color:#F4F4F6;font:400 15px/1.5 system-ui,sans-serif;margin:0;padding:24px}\n' +
 '.ust{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px}\n' +
@@ -142,7 +142,7 @@ function panelSayfasi(siparisler, suzgec, uyari) {
 '.uyari{background:#8a6d0022;border:1px solid #8a6d00;color:#FFE08A;border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:14px}\n' +
 '</style>\n</head>\n<body>\n' +
 '<div class="ust">\n' +
-'  <h1>EUROPA<span>TAXI</span> · Rezervasyonlar</h1>\n' +
+'  <h1>EUROPETAXI<span>24</span> · Rezervasyonlar</h1>\n' +
 '  ' + sekme('hepsi', 'Hepsi', siparisler.length, suzgec) + '\n' +
 '  ' + sekme('odendi', 'Ödendi', odendiSayi, suzgec) + '\n' +
 '  ' + sekme('beklemede', 'Bekliyor', bekleyenSayi, suzgec) + '\n' +

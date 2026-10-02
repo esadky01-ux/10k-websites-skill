@@ -138,7 +138,7 @@ for yer_tutucu in ["{{CANONICAL}}", "{{HREFLANG_BLOKU}}", "{{OG_LOCALE_ALT_BLOKU
 KIMLIKLER = ["f-alis", "f-varis", "btn-swap", "mod-km", "mod-hava", "fiyat-panel", "hava-panel", "btn-hava-wa",
              "p-fiyat", "p-kapora", "p-kalan", "p-mesafe", "p-sure", "p-durum", "f-tarih", "f-saat", "f-donus",
              "donus-alani", "f-donus-tarih", "f-donus-saat", "s-yolcu", "s-buyuk", "s-kucuk", "f-ad", "f-eposta",
-             "f-telefon", "f-iptal", "hata-kutu", "btn-onayla", "odeme-final", "btn-online", "btn-wa",
+             "f-telefon", "f-iptal", "hata-kutu", "btn-ileri-1", "btn-ileri-2", "ozet", "o-alis", "btn-online", "btn-wa",
              "rezervasyon", "yer-listesi"]
 for dil, h in sayfalar.items():
     for k in KIMLIKLER:
@@ -146,8 +146,9 @@ for dil, h in sayfalar.items():
     for kalip, ad in [(r'data-sayac="yolcu" data-yon="-1"', "yolcu -"), (r'data-sayac="kucuk" data-yon="1"', "kucuk +"),
                       (r'class="arac-kart" data-arac="vip"', ".arac-kart[data-arac]"),
                       (r'class="btn btn--cerceve filo-sec" data-arac="eco"', ".filo-sec[data-arac]"),
-                      (r'class="odeme-kart" data-yontem="wa"', ".odeme-kart[data-yontem]"),
-                      (r'class="chip" href="#rezervasyon" data-alis="gent" data-varis="bru"', ".chip[data-alis][data-varis]"),
+                      (r'class="adim acik" data-adim="1"', "sihirbaz adim 1"),
+                      (r'class="adim" data-adim="3"', "sihirbaz adim 3"),
+                      (r'class="chip[^"]*" href="#rezervasyon" data-alis="gent" data-varis="bru"', ".chip[data-alis][data-varis]"),
                       (r'class="hizli-sekme" data-alis="brussels" data-varis="crl"', "hizli baslat sekmesi")]:
         kontrol(re.search(kalip, h) is not None, f"[{dil}] {ad} eksik")
     for d2 in DILLER:
@@ -241,10 +242,10 @@ for dil, h in sayfalar.items():
 print("— F. mobil kurallar (sartname §10)")
 CSS_SIKI = CSS.replace(" ", "")
 for dil, h in sayfalar.items():
-    kontrol('name="color-scheme" content="dark"' in h, f"[{dil}] color-scheme dark meta eksik")
-    kontrol("color-scheme:dark" in CSS_SIKI, "site.css input color-scheme:dark eksik")
+    kontrol('name="color-scheme" content="light"' in h, f"[{dil}] color-scheme light meta eksik")
+    kontrol("color-scheme:light" in CSS_SIKI, "site.css input color-scheme:light eksik")
     kontrol("font-size:16px" in CSS_SIKI, "site.css input font-size 16px eksik")
-    kontrol(".grid-2>div{min-width:0}" in CSS_SIKI, "site.css .grid-2 > div min-width:0 eksik")
+    kontrol(".ikili>*{min-width:0}" in CSS_SIKI, "site.css .ikili > * min-width:0 eksik")
     kontrol("overflow-wrap:anywhere" in CSS_SIKI, "site.css overflow-wrap:anywhere eksik")
     kontrol("env(safe-area-inset-bottom)" in CSS, "site.css safe-area-inset eksik")
     kontrol("overflow-x:clip" in CSS_SIKI, "site.css yatay tasma guvenlik agi (overflow-x:clip) eksik")
@@ -255,9 +256,9 @@ for dil, h in sayfalar.items():
             "site.css 400px alti fiyat kutulari dikey olmali")
     kontrol("padding:60pxvar(--gut)calc(96px+env(safe-area-inset-bottom))" in CSS_SIKI
             or "calc(96px+env(safe-area-inset-bottom))" in CSS_SIKI, "footer alt bosluk >= 92px + safe-area eksik")
-    kontrol(".sayacbutton.kapali{opacity:.3;pointer-events:none}" in CSS_SIKI, "sinirda dugme opacity:.3 pointer-events:none eksik")
+    kontrol(".sayac-satirbutton.kapali{opacity:.3;pointer-events:none}" in CSS_SIKI, "sinirda dugme opacity:.3 pointer-events:none eksik")
     kontrol("@media(pointer:coarse)" in CSS_SIKI and "min-height:44px" in CSS_SIKI, "44px dokunma hedefi (pointer:coarse) eksik")
-    kontrol(":focus-visible{outline:2pxsolidvar(--gold)" in CSS_SIKI, "altin :focus-visible eksik")
+    kontrol(":focus-visible{outline:3pxsolidvar(--amber-2)" in CSS_SIKI, "amber :focus-visible eksik")
 
 # hareket azaltma: CSS'te VE JS'te (canli dinleme)
 print("— F2. prefers-reduced-motion (CSS + canli JS dinleme)")
@@ -266,7 +267,7 @@ kontrol("@media (prefers-reduced-motion:reduce)" in CSS and "animation:none!impo
 kontrol("prefers-reduced-motion: reduce" in APP_JS and "addEventListener(\"change\"" in APP_JS,
         "app.js prefers-reduced-motion'i CANLI dinlemeli (change olayi)")
 # giris animasyonlari: yalniz 'from' halinden baslar (nihai durum taban stildir), fill-mode both
-kontrol(CSS_SIKI.count("both;") + CSS_SIKI.count("both}") >= 10, "giris animasyonlari animation-fill-mode:both kullanmali")
+kontrol(CSS_SIKI.count("both;") + CSS_SIKI.count("both}") >= 4, "giris animasyonlari animation-fill-mode:both kullanmali")
 CSS_YORUMSUZ = re.sub(r"/\*.*?\*/", "", CSS, flags=re.S).lower()   # yorumlarda kavram gecebilir; kurallarda gecmemeli
 kontrol("preloader" not in CSS_YORUMSUZ and "perde" not in CSS_YORUMSUZ and "curtain" not in CSS_YORUMSUZ,
         "tam ekran preloader/perde olmamali")
@@ -313,9 +314,9 @@ for dil in DILLER:
     mobil_gz = hesapla_ilk_yukleme(dil, "hero-mobil.jpg", True)
     kontrol(masa_gz <= 300, f"[{dil}] masaustu ilk yukleme (gzip) {masa_gz:.0f} KB (hedef <=300)")
     kontrol(mobil_gz <= 250, f"[{dil}] mobil ilk yukleme (gzip) {mobil_gz:.0f} KB (hedef <=250)")
-# eski ham (sikistirmasiz) butceler de korunur
-kontrol(hesapla_ilk_yukleme("fr", "hero-masa.jpg", False) < 260, "masaustu ilk yukleme (ham) >= 260 KB")
-kontrol(hesapla_ilk_yukleme("fr", "hero-mobil.jpg", False) < 230, "mobil ilk yukleme (ham) >= 230 KB")
+# ham (sikistirmasiz) butce: sunucu gzip verir; ham sinir yalniz kontrolsuz buyumeye karsi (tum 70 bolge satiri + logo yolu dahil)
+kontrol(hesapla_ilk_yukleme("fr", "hero-masa.jpg", False) < 320, "masaustu ilk yukleme (ham) >= 320 KB")
+kontrol(hesapla_ilk_yukleme("fr", "hero-mobil.jpg", False) < 300, "mobil ilk yukleme (ham) >= 300 KB")
 
 # ============================================================ H. kok yonlendirme
 print("— H. kok sayfa")

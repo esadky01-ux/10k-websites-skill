@@ -78,25 +78,45 @@ function kontrol(kosul, mesaj){ if (!kosul) hatalar.push(mesaj); }
   kontrol(fiyat.includes('121,44'), 'Gent->BRU 121,44 EUR bekleniyordu: ' + fiyat);
   kontrol(kapora.includes('24,29'), 'Gent->BRU kapora 24,29 EUR bekleniyordu: ' + kapora);
 
-  // 6. Bos form onayi -> engellenmeli (tarih yok)
-  await sayfa.click('#btn-onayla');
+  // 6. Adim 1: tarih yokken "Continuer" engellenmeli (hata adim 1'de gorunur)
+  await sayfa.click('#btn-ileri-1');
   await sayfa.waitForTimeout(200);
-  let hataGorunur = await sayfa.isVisible('#hata-kutu');
-  kontrol(hataGorunur, 'Tarih bosken onay engellenmeli');
+  kontrol(await sayfa.isVisible('[data-adim-hata="1"]'), 'Tarih bosken adim 1 ilerlememeli (hata gorunmeli)');
+  kontrol(await sayfa.isHidden('.adim[data-adim="2"]'), 'Hata varken adim 2 acilmamali');
 
-  // 7. Tarih + saat + iptal onayi -> odeme secimi acilmali
+  // 7. Tarih + saat -> adim 2 (arac + iletisim); sonra adim 3 (ozet + odeme)
   const yarin = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
   await sayfa.fill('#f-tarih', yarin);
   await sayfa.fill('#f-saat', '14:30');
-  await sayfa.check('#f-iptal');
-  await sayfa.click('#btn-onayla');
-  await sayfa.waitForTimeout(300);
-  kontrol(await sayfa.isVisible('#odeme-final .btnler'), 'Onaydan sonra odeme secimi acilmali');
+  await sayfa.click('#btn-ileri-1');
+  await sayfa.waitForTimeout(250);
+  kontrol(await sayfa.isVisible('.adim[data-adim="2"] .arac-kart'), 'Adim 2 (arac secimi) acilmali');
+  kontrol((await sayfa.textContent('.adim[data-adim="2"] [data-v="toplam"]')).includes('121,44'), 'Adim 2 toplam satiri fiyati gostermeli');
+  await sayfa.click('.arac-kart[data-arac="wagon"]');
+  kontrol((await sayfa.getAttribute('.arac-kart[data-arac="wagon"]', 'aria-pressed')) === 'true', 'Arac karti secilebilmeli');
+  await sayfa.click('#btn-ileri-2');
+  await sayfa.waitForTimeout(250);
+  kontrol(await sayfa.isVisible('#ozet'), 'Adim 3 ozeti acilmali');
+  kontrol((await sayfa.textContent('#o-varis')).includes('Brussels Airport'), 'Ozet varis adresini gostermeli');
+  kontrol((await sayfa.textContent('#o-arac')).includes('Break'), 'Ozet secilen araci gostermeli');
+  kontrol((await sayfa.textContent('.ozet-fiyat .on [data-v="kapora"]')).includes('24,29'), 'Ozet kaporayi gostermeli (24,29)');
+  await sayfa.click('.adim[data-adim="3"] .btn-geri');
+  await sayfa.waitForTimeout(200);
+  kontrol(await sayfa.isVisible('.adim[data-adim="2"] .arac-kart'), 'Geri dugmesi adim 2yi acmali');
+  await sayfa.click('#btn-ileri-2');
+  await sayfa.waitForTimeout(200);
 
-  // 8. Online ode iletisimsiz -> engellenmeli
+  // 8. Iptal onayi yokken online ode -> engellenmeli; sonra onay + iletisimsiz online -> iletisim adimina doner
   await sayfa.click('#btn-online');
   await sayfa.waitForTimeout(200);
-  kontrol(await sayfa.isVisible('#hata-kutu'), 'Iletisimsiz online odeme engellenmeli');
+  kontrol(await sayfa.isVisible('#hata-kutu'), 'Iptal onayi yokken online odeme engellenmeli');
+  await sayfa.check('#f-iptal');
+  await sayfa.click('#btn-online');
+  await sayfa.waitForTimeout(300);
+  kontrol(await sayfa.isVisible('.adim[data-adim="2"] [data-adim-hata="2"]'), 'Iletisimsiz online odeme: iletisim adimina donup hata gostermeli');
+  kontrol((await sayfa.evaluate(() => document.activeElement && document.activeElement.id)) === 'f-ad', 'Hatali iletisim alanina odaklanmali');
+  await sayfa.click('#btn-ileri-2');
+  await sayfa.waitForTimeout(200);
 
   // 9. WhatsApp mesaji: iletisimsiz de calismali, bos satir olmamali
   await sayfa.evaluate(() => {
@@ -114,7 +134,12 @@ function kontrol(kosul, mesaj){ if (!kosul) hatalar.push(mesaj); }
     kontrol(!satirlar.some((s, i) => s.trim() === '' && i > 1), 'WA mesajinda bos satir olmamali:\n' + metin);
     kontrol(metin.includes('121,44'), 'WA mesajinda fiyat olmali');
     kontrol(metin.includes('Gand') && metin.includes('Brussels Airport'), 'WA mesajinda rota olmali');
+    kontrol(metin.includes('Break'), 'WA mesajinda secilen arac olmali');
   }
+  // adim 1'e don (sihirbaz basina)
+  await sayfa.click('.adim[data-adim="3"] .btn-geri');
+  await sayfa.click('.adim[data-adim="2"] .btn-geri');
+  await sayfa.waitForTimeout(200);
 
   // 10. Sayac sinirlari: yolcu 7'de + pasif (6 tik: 1 -> 7; sinirda buton zaten tiklanamaz)
   for (let i = 0; i < 6; i++) await sayfa.click('[data-sayac="yolcu"][data-yon="1"]');
@@ -129,7 +154,7 @@ function kontrol(kosul, mesaj){ if (!kosul) hatalar.push(mesaj); }
   await sayfa.waitForTimeout(200);
   kontrol(await sayfa.isHidden('#fiyat-panel'), 'Hava modunda fiyat paneli kapanmali');
   kontrol(await sayfa.isVisible('#btn-hava-wa'), 'Hava modunda WA fiyat sorma butonu gorunmeli');
-  kontrol(await sayfa.isHidden('#btn-onayla'), 'Hava modunda onay butonu gizlenmeli');
+  kontrol(await sayfa.isHidden('#btn-ileri-1'), 'Hava modunda devam butonu gizlenmeli');
   await sayfa.click('#mod-km');
 
   // 12. Swap
@@ -164,7 +189,7 @@ function kontrol(kosul, mesaj){ if (!kosul) hatalar.push(mesaj); }
     const bitis = sonlu.reduce((m, t) => Math.max(m, t.delay + t.activeDuration + t.endDelay), 0);
     return { sayi: sonlu.length, bitis };
   });
-  kontrol(acilis.sayi >= 10, 'Acilis animasyonlari CSS ile calismali: ' + acilis.sayi);
+  kontrol(acilis.sayi >= 6, 'Acilis animasyonlari CSS ile calismali: ' + acilis.sayi);
   kontrol(acilis.bitis <= 1600, 'Acilis animasyonu 1.6 sn\'yi gecmemeli: ' + acilis.bitis + ' ms');
   const tamEkranOrtu = await ac.evaluate(() => {
     // tam ekran, opak, tiklamayi tutan perde/preloader var mi? (tarama isigi saydam ve pointer-events:none olmali)
@@ -181,11 +206,11 @@ function kontrol(kosul, mesaj){ if (!kosul) hatalar.push(mesaj); }
   await jp.goto(TABAN + '/fr/', { waitUntil: 'load' });
   await jp.waitForTimeout(2200);
   // ekranin ustundeki icerik hemen gorunur; asagidaki bolumler kaydirinca gorunur (CSS animation-timeline, JS'siz)
-  for (const q of ['h1', '#rezervasyon', '.hizli-sekme', '.rez-kart']) {
+  for (const q of ['h1', '#rezervasyon', '.hizli-sekme', '.rez']) {
     const g = await jp.evaluate((s) => { const cs = getComputedStyle(document.querySelector(s)); return cs.visibility !== 'hidden' && cs.display !== 'none' && parseFloat(cs.opacity) > 0.99; }, q);
     kontrol(g, 'JS kapaliyken ekran ustundeki ' + q + ' gorunur olmali');
   }
-  for (const q of ['.guven-liste', '.adim', '.neden', '.filo-kart', '.chip', '.sss details', '.kapanis h2', 'footer.alt']) {
+  for (const q of ['.guven-liste', '.kart-adim', '.neden', '.kart-filo', '.chip', '.sss details', '.kapanis h2', 'footer.alt']) {
     await jp.evaluate((s) => document.querySelector(s).scrollIntoView({ block: 'center', behavior: 'instant' }), q);
     await jp.waitForTimeout(250);
     const g = await jp.evaluate((s) => { const cs = getComputedStyle(document.querySelector(s)); return cs.visibility !== 'hidden' && cs.display !== 'none' && parseFloat(cs.opacity) > 0.99; }, q);
@@ -198,28 +223,17 @@ function kontrol(kosul, mesaj){ if (!kosul) hatalar.push(mesaj); }
   await ap.goto(TABAN + '/fr/', { waitUntil: 'networkidle' });
   const az = await ap.evaluate(() => ({
     anim: document.getAnimations().length,
-    tarama: getComputedStyle(document.querySelector('.tarama')).display,
-    kart: getComputedStyle(document.querySelector('.rez-kart')).opacity,
-    kelime: getComputedStyle(document.querySelector('.w > span')).transform,
-    plx: [...document.querySelectorAll('[data-plx]')].map(e => e.style.transform).join('')
+    kart: getComputedStyle(document.querySelector('.rez')).opacity,
+    baslik: getComputedStyle(document.querySelector('h1')).opacity
   }));
   kontrol(az.anim === 0, 'reduced-motion: hicbir animasyon calismamali: ' + az.anim);
-  kontrol(az.tarama === 'none', 'reduced-motion: tarama isigi kapali olmali');
-  kontrol(az.kart === '1' && (az.kelime === 'none' || az.kelime === 'matrix(1, 0, 0, 1, 0, 0)'), 'reduced-motion: nihai durum gorunur olmali');
-  await ap.mouse.move(1200, 200); await ap.waitForTimeout(300);
-  kontrol((await ap.evaluate(() => [...document.querySelectorAll('[data-plx]')].map(e => e.style.transform).join(''))) === '',
-    'reduced-motion: paralaks kapali olmali');
-  // CANLI dinleme: acikken reduce'a gecilirse hemen kapanir
+  kontrol(az.kart === '1' && az.baslik === '1', 'reduced-motion: nihai durum gorunur olmali');
+  // CANLI dinleme: acikken reduce'a gecilirse animasyonlar hemen durur
   const canli = await b.newPage({ viewport: { width: 1440, height: 900 } });
   await canli.goto(TABAN + '/fr/', { waitUntil: 'networkidle' });
   await canli.waitForTimeout(1800);
-  await canli.mouse.move(1300, 200); await canli.waitForTimeout(400);
-  kontrol((await canli.evaluate(() => [...document.querySelectorAll('[data-plx]')].map(e => e.style.transform).join(''))) !== '',
-    'Hareket serbestken paralaks calismali');
   await canli.emulateMedia({ reducedMotion: 'reduce' });
   await canli.waitForTimeout(300);
-  kontrol((await canli.evaluate(() => [...document.querySelectorAll('[data-plx]')].map(e => e.style.transform).join(''))) === '',
-    'reduced-motion canli acilinca paralaks hemen kapanmali');
   kontrol((await canli.evaluate(() => document.getAnimations().length)) === 0, 'reduced-motion canli acilinca animasyonlar durmali');
   await canli.close(); await azalt.close();
 
@@ -256,7 +270,7 @@ function kontrol(kosul, mesaj){ if (!kosul) hatalar.push(mesaj); }
   const DISARI = () => {
     const W = innerWidth, kotu = [];
     document.querySelectorAll('body *').forEach(e => {
-      if (e.closest('.hiz,.hero-sahne,.tarama,.kapanis-hiz,.atlama,.fab,.dama,.seg,.fh-cizgi,datalist,script,[hidden]')) return;
+      if (e.closest('.kaydir,.hizli-liste,.hero-sahne,.atlama,.fab,.menu-panel,.dil-menu ul,datalist,script,[hidden]')) return;
       const cs = getComputedStyle(e); if (cs.display === 'none' || cs.visibility === 'hidden') return;
       const r = e.getBoundingClientRect(); if (!r.width && !r.height) return;
       if (r.right > W + 0.5 || r.left < -0.5) kotu.push(e.tagName + '.' + (typeof e.className === 'string' ? e.className : '') + ' ' + Math.round(r.left) + '..' + Math.round(r.right));
@@ -309,7 +323,11 @@ function kontrol(kosul, mesaj){ if (!kosul) hatalar.push(mesaj); }
   await g1.waitForTimeout(600);
   kontrol((await g1.textContent('#p-fiyat')).includes('99,55'),
     'authFailure sonrasi fiyat yine hesaplanmali (99,55 EUR)');
-  // kalan sayac sinirlari: buyuk 6, kucuk 4 (sartname §14-C)
+  // kalan sayac sinirlari: buyuk 6, kucuk 4 (sartname §14-C); valiz sayaclari adim 2'dedir
+  await g1.fill('#f-tarih', new Date(Date.now() + 86400000).toISOString().slice(0, 10));
+  await g1.fill('#f-saat', '09:00');
+  await g1.click('#btn-ileri-1');
+  await g1.waitForTimeout(250);
   for (let i = 0; i < 6; i++) await g1.click('[data-sayac="buyuk"][data-yon="1"]');
   for (let i = 0; i < 4; i++) await g1.click('[data-sayac="kucuk"][data-yon="1"]');
   await g1.waitForTimeout(150);

@@ -1,10 +1,10 @@
 <!doctype html>
 <!-- ============================================================
-     EUROPA TAXI: tek sablon. Cift suslu parantezli yer tutucular
+     europetaxi24: tek sablon. Cift suslu parantezli yer tutucular
      build.py tarafindan strings.json + isletme.json degerleriyle
      doldurulur. Duzenledikten sonra: python3 kaynak/build.py
 
-     YON A "GECE YOLCULUGU":
+     TASARIM: acik krem zemin, murekkep siyahi metin, amber CTA (mobil oncelikli).
        - Tum CSS  : assets/site.css   (yazi tipi @font-face dahil)
        - Tum JS   : assets/app.js     (satir ici calistirilabilir JS YOK)
        - Sayfa verisi (mesafe tablosu, metinler): #et-data JSON blogu
@@ -13,10 +13,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- color-scheme: dark -> tarih/saat secici koyu temada acilir (mobil zorunlu kural) -->
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#0A0A0C">
-<title>Brussels Taxi &amp; Airport Transfer 24/7 | Europa Taxi</title>
+<!-- color-scheme: light -> tarih/saat secici acik temada acilir -->
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F6F4EF">
+<title>Brussels Taxi &amp; Airport Transfer 24/7 | europetaxi24</title>
 <meta name="description" content="Brussels taxi at a fixed price: Zaventem taxi, Charleroi airport taxi and cross-border taxi from Belgium to Germany, France, Luxembourg and the Netherlands.">
 <link rel="canonical" href="https://europetaxi24.be/en/">
 <link rel="alternate" hreflang="fr-BE" href="https://europetaxi24.be/fr/">
@@ -25,8 +25,8 @@
 <link rel="alternate" hreflang="tr" href="https://europetaxi24.be/tr/">
 <link rel="alternate" hreflang="x-default" href="https://europetaxi24.be/fr/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Europa Taxi">
-<meta property="og:title" content="Europa Taxi · Taxi &amp; airport transfers in Belgium">
+<meta property="og:site_name" content="europetaxi24">
+<meta property="og:title" content="europetaxi24 · Taxi &amp; airport transfers, Benelux">
 <meta property="og:description" content="Fixed price upfront: €10 + €1.99 per km. Pay a 20% deposit online, the rest to your driver. Zaventem, Charleroi and all of Belgium.">
 <meta property="og:url" content="https://europetaxi24.be/en/">
 <meta property="og:image" content="https://europetaxi24.be/assets/og.jpg">
@@ -35,7 +35,7 @@
 <meta property="og:locale:alternate" content="nl_BE">
 <meta property="og:locale:alternate" content="tr_TR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Europa Taxi · Taxi &amp; airport transfers in Belgium">
+<meta name="twitter:title" content="europetaxi24 · Taxi &amp; airport transfers, Benelux">
 <meta name="twitter:description" content="Fixed price upfront: €10 + €1.99 per km. Pay a 20% deposit online, the rest to your driver. Zaventem, Charleroi and all of Belgium.">
 <meta name="twitter:image" content="https://europetaxi24.be/assets/og.jpg">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
@@ -45,16 +45,18 @@
 <!-- Hero gorseli: dogru kadraj onceden yuklensin (masaustu/mobil ayri) -->
 <link rel="preload" as="image" href="/assets/hero-masa.jpg" media="(min-width: 760px)" fetchpriority="high">
 <link rel="preload" as="image" href="/assets/hero-mobil.jpg" media="(max-width: 759px)" fetchpriority="high">
-<link rel="stylesheet" href="/assets/site.css?v=6c09efe62e">
+<link rel="stylesheet" href="/assets/site.css?v=33a5184309">
 
 <!-- Yapisal veri: TaxiService + LocalBusiness (tek @id) -->
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://europetaxi24.be/#organization", "name": "Europa Taxi", "legalName": "CAN COMPANY", "vatID": "BE 1016.219.906", "url": "https://europetaxi24.be/", "slogan": "Your Ride, Our Priority", "telephone": "+32 493 83 98 98", "email": "Europataxisrl@gmail.com", "address": {"@type": "PostalAddress", "streetAddress": "Excelsiorlaan 31", "postalCode": "1930", "addressLocality": "Zaventem", "addressRegion": "Vlaams-Brabant", "addressCountry": "BE"}, "logo": {"@type": "ImageObject", "@id": "https://europetaxi24.be/#logo", "url": "https://europetaxi24.be/assets/icons/icon-512.png", "contentUrl": "https://europetaxi24.be/assets/icons/icon-512.png", "width": 512, "height": 512, "caption": "Europa Taxi"}, "contactPoint": [{"@type": "ContactPoint", "contactType": "customer service", "telephone": "+32 493 83 98 98", "email": "Europataxisrl@gmail.com", "hoursAvailable": {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], "opens": "00:00", "closes": "23:59"}, "availableLanguage": ["fr", "nl", "en", "tr"]}]}, {"@type": "WebSite", "@id": "https://europetaxi24.be/#website", "url": "https://europetaxi24.be/", "name": "Europa Taxi", "alternateName": "europetaxi24.be", "inLanguage": ["fr-BE", "nl-BE", "en", "tr"], "publisher": {"@id": "https://europetaxi24.be/#organization"}}, {"@type": ["TaxiService", "LocalBusiness"], "@id": "https://europetaxi24.be/#isletme", "name": "Europa Taxi", "legalName": "CAN COMPANY", "vatID": "BE 1016.219.906", "slogan": "Your Ride, Our Priority", "description": "Brussels taxi at a fixed price: Zaventem taxi, Charleroi airport taxi and cross-border taxi from Belgium to Germany, France, Luxembourg and the Netherlands.", "url": "https://europetaxi24.be/en/", "telephone": "+32 493 83 98 98", "email": "Europataxisrl@gmail.com", "image": {"@type": "ImageObject", "url": "https://europetaxi24.be/assets/og.jpg", "width": 1200, "height": 630}, "logo": {"@id": "https://europetaxi24.be/#logo"}, "priceRange": "€€", "currenciesAccepted": "EUR", "paymentAccepted": "Bancontact, Credit card, Apple Pay, Cash", "parentOrganization": {"@id": "https://europetaxi24.be/#organization"}, "address": {"@type": "PostalAddress", "streetAddress": "Excelsiorlaan 31", "postalCode": "1930", "addressLocality": "Zaventem", "addressRegion": "Vlaams-Brabant", "addressCountry": "BE"}, "geo": {"@type": "GeoCoordinates", "latitude": 50.8845, "longitude": 4.4715}, "hasMap": "https://www.google.com/maps/search/?api=1&query=Excelsiorlaan%2031%2C%201930%20Zaventem%2C%20Belgium", "openingHoursSpecification": {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], "opens": "00:00", "closes": "23:59"}, "areaServed": [{"@type": "Country", "name": "Belgium", "identifier": "BE"}, {"@type": "Country", "name": "Germany", "identifier": "DE"}, {"@type": "Country", "name": "France", "identifier": "FR"}, {"@type": "Country", "name": "Luxembourg", "identifier": "LU"}, {"@type": "Country", "name": "Netherlands", "identifier": "NL"}, {"@type": "City", "name": "Brussels"}, {"@type": "City", "name": "Antwerp"}, {"@type": "City", "name": "Ghent"}, {"@type": "City", "name": "Bruges"}, {"@type": "City", "name": "Leuven"}, {"@type": "City", "name": "Liège"}, {"@type": "City", "name": "Charleroi"}, {"@type": "City", "name": "Namur"}, {"@type": "City", "name": "Mons"}, {"@type": "City", "name": "Hasselt"}, {"@type": "City", "name": "Mechelen"}, {"@type": "City", "name": "Kortrijk"}, {"@type": "City", "name": "Ostend"}, {"@type": "City", "name": "Amsterdam"}, {"@type": "City", "name": "Rotterdam"}, {"@type": "City", "name": "Eindhoven"}, {"@type": "City", "name": "Maastricht"}, {"@type": "City", "name": "Paris"}, {"@type": "City", "name": "Lille"}, {"@type": "City", "name": "Cologne"}, {"@type": "City", "name": "Düsseldorf"}, {"@type": "City", "name": "Aachen"}, {"@type": "City", "name": "Luxembourg"}, {"@type": "Airport", "name": "Brussels Airport (Zaventem)", "iataCode": "BRU"}, {"@type": "Airport", "name": "Charleroi Airport (CRL)", "iataCode": "CRL"}, {"@type": "Airport", "name": "Antwerp Airport (ANR)", "iataCode": "ANR"}, {"@type": "Airport", "name": "Ostend-Bruges Airport (OST)", "iataCode": "OST"}, {"@type": "Airport", "name": "Liège Airport (LGG)", "iataCode": "LGG"}, {"@type": "Airport", "name": "Amsterdam Schiphol (AMS)", "iataCode": "AMS"}, {"@type": "Airport", "name": "Eindhoven Airport (EIN)", "iataCode": "EIN"}, {"@type": "Airport", "name": "Paris Charles de Gaulle (CDG)", "iataCode": "CDG"}, {"@type": "Airport", "name": "Paris Orly (ORY)", "iataCode": "ORY"}, {"@type": "Airport", "name": "Cologne/Bonn Airport (CGN)", "iataCode": "CGN"}, {"@type": "Airport", "name": "Düsseldorf Airport (DUS)", "iataCode": "DUS"}, {"@type": "Airport", "name": "Frankfurt Airport (FRA)", "iataCode": "FRA"}, {"@type": "Airport", "name": "Luxembourg Airport (LUX)", "iataCode": "LUX"}], "owns": [{"@type": "Car", "name": "Tesla Model 3", "vehicleSeatingCapacity": 4, "description": "4 passengers · 2 large + 2 small bags", "brand": {"@type": "Brand", "name": "Tesla"}, "model": "Model 3"}, {"@type": "Car", "name": "Station Wagon", "vehicleSeatingCapacity": 4, "description": "4 passengers · 4 large + 2 small bags"}, {"@type": "Car", "name": "Mercedes Vito", "vehicleSeatingCapacity": 7, "description": "7 passengers · 6 large + 4 small bags", "brand": {"@type": "Brand", "name": "Mercedes-Benz"}, "model": "Vito"}], "makesOffer": [{"@type": "Offer", "@id": "https://europetaxi24.be/#offer-tarife", "name": "Price per kilometre", "description": "Base fare of €10 plus €1.99 per kilometre. Fixed price shown at booking, with no night or weekend surcharge.", "priceCurrency": "EUR", "priceSpecification": [{"@type": "PriceSpecification", "name": "Base fare", "price": 10, "priceCurrency": "EUR"}, {"@type": "UnitPriceSpecification", "name": "Price per kilometre", "price": 1.99, "priceCurrency": "EUR", "unitCode": "KMT"}], "url": "https://europetaxi24.be/en/#rezervasyon"}, {"@type": "Offer", "@id": "https://europetaxi24.be/#offer-forfait-aeroport", "name": "Fixed airport price", "description": "For airports we offer competitive fixed prices, updated regularly. Ask for today's price in one click.", "priceCurrency": "EUR", "url": "https://europetaxi24.be/en/#rezervasyon"}, {"@type": "Offer", "@id": "https://europetaxi24.be/#offer-brussels-bru", "name": "Brussels → Brussels Airport (Zaventem)", "description": "13 km. Indicative price at the per-kilometre rate (€10 + €1.99 per km). The final price is confirmed at booking.", "price": 35.87, "priceCurrency": "EUR", "priceSpecification": {"@type": "PriceSpecification", "price": 35.87, "priceCurrency": "EUR"}, "itemOffered": {"@type": "Service", "name": "Brussels → Brussels Airport (Zaventem)", "serviceType": "Airport transfer"}, "url": "https://europetaxi24.be/en/#rezervasyon"}, {"@type": "Offer", "@id": "https://europetaxi24.be/#offer-brussels-crl", "name": "Brussels → Charleroi Airport (CRL)", "description": "55 km. Indicative price at the per-kilometre rate (€10 + €1.99 per km). The final price is confirmed at booking.", "price": 119.45, "priceCurrency": "EUR", "priceSpecification": {"@type": "PriceSpecification", "price": 119.45, "priceCurrency": "EUR"}, "itemOffered": {"@type": "Service", "name": "Brussels → Charleroi Airport (CRL)", "serviceType": "Airport transfer"}, "url": "https://europetaxi24.be/en/#rezervasyon"}, {"@type": "Offer", "@id": "https://europetaxi24.be/#offer-gent-bru", "name": "Ghent → Brussels Airport (Zaventem)", "description": "56 km. Indicative price at the per-kilometre rate (€10 + €1.99 per km). The final price is confirmed at booking.", "price": 121.44, "priceCurrency": "EUR", "priceSpecification": {"@type": "PriceSpecification", "price": 121.44, "priceCurrency": "EUR"}, "itemOffered": {"@type": "Service", "name": "Ghent → Brussels Airport (Zaventem)", "serviceType": "Airport transfer"}, "url": "https://europetaxi24.be/en/#rezervasyon"}, {"@type": "Offer", "@id": "https://europetaxi24.be/#offer-antwerpen-bru", "name": "Antwerp → Brussels Airport (Zaventem)", "description": "37 km. Indicative price at the per-kilometre rate (€10 + €1.99 per km). The final price is confirmed at booking.", "price": 83.63, "priceCurrency": "EUR", "priceSpecification": {"@type": "PriceSpecification", "price": 83.63, "priceCurrency": "EUR"}, "itemOffered": {"@type": "Service", "name": "Antwerp → Brussels Airport (Zaventem)", "serviceType": "Airport transfer"}, "url": "https://europetaxi24.be/en/#rezervasyon"}, {"@type": "Offer", "@id": "https://europetaxi24.be/#offer-brussels-antwerpen", "name": "Brussels → Antwerp", "description": "45 km. Indicative price at the per-kilometre rate (€10 + €1.99 per km). The final price is confirmed at booking.", "price": 99.55, "priceCurrency": "EUR", "priceSpecification": {"@type": "PriceSpecification", "price": 99.55, "priceCurrency": "EUR"}, "itemOffered": {"@type": "Service", "name": "Brussels → Antwerp", "serviceType": "Intercity taxi"}, "url": "https://europetaxi24.be/en/#rezervasyon"}, {"@type": "Offer", "@id": "https://europetaxi24.be/#offer-brussels-gent", "name": "Brussels → Ghent", "description": "56 km. Indicative price at the per-kilometre rate (€10 + €1.99 per km). The final price is confirmed at booking.", "price": 121.44, "priceCurrency": "EUR", "priceSpecification": {"@type": "PriceSpecification", "price": 121.44, "priceCurrency": "EUR"}, "itemOffered": {"@type": "Service", "name": "Brussels → Ghent", "serviceType": "Intercity taxi"}, "url": "https://europetaxi24.be/en/#rezervasyon"}, {"@type": "Offer", "@id": "https://europetaxi24.be/#offer-brussels-ams", "name": "Brussels → Amsterdam Schiphol (AMS)", "description": "193 km. Indicative price at the per-kilometre rate (€10 + €1.99 per km). The final price is confirmed at booking.", "price": 394.07, "priceCurrency": "EUR", "priceSpecification": {"@type": "PriceSpecification", "price": 394.07, "priceCurrency": "EUR"}, "itemOffered": {"@type": "Service", "name": "Brussels → Amsterdam Schiphol (AMS)", "serviceType": "Cross-border transfer"}, "url": "https://europetaxi24.be/en/#rezervasyon"}, {"@type": "Offer", "@id": "https://europetaxi24.be/#offer-brussels-paris", "name": "Brussels → Paris", "description": "315 km. Indicative price at the per-kilometre rate (€10 + €1.99 per km). The final price is confirmed at booking.", "price": 636.85, "priceCurrency": "EUR", "priceSpecification": {"@type": "PriceSpecification", "price": 636.85, "priceCurrency": "EUR"}, "itemOffered": {"@type": "Service", "name": "Brussels → Paris", "serviceType": "Cross-border transfer"}, "url": "https://europetaxi24.be/en/#rezervasyon"}, {"@type": "Offer", "@id": "https://europetaxi24.be/#offer-retour", "name": "Return trip", "description": "Add a return date and time when you book.", "priceCurrency": "EUR", "itemOffered": {"@type": "Service", "name": "Return trip"}, "url": "https://europetaxi24.be/en/#rezervasyon"}], "hasOfferCatalog": {"@type": "OfferCatalog", "name": "Europa Taxi services and prices", "itemListElement": [{"@type": "OfferCatalog", "name": "Airport transfer", "itemListElement": [{"@id": "https://europetaxi24.be/#offer-forfait-aeroport"}, {"@id": "https://europetaxi24.be/#offer-brussels-bru"}, {"@id": "https://europetaxi24.be/#offer-brussels-crl"}, {"@id": "https://europetaxi24.be/#offer-gent-bru"}, {"@id": "https://europetaxi24.be/#offer-antwerpen-bru"}]}, {"@type": "OfferCatalog", "name": "Intercity taxi", "itemListElement": [{"@id": "https://europetaxi24.be/#offer-brussels-antwerpen"}, {"@id": "https://europetaxi24.be/#offer-brussels-gent"}]}, {"@type": "OfferCatalog", "name": "Cross-border transfer", "itemListElement": [{"@id": "https://europetaxi24.be/#offer-brussels-ams"}, {"@id": "https://europetaxi24.be/#offer-brussels-paris"}]}, {"@type": "OfferCatalog", "name": "Return trip", "itemListElement": [{"@id": "https://europetaxi24.be/#offer-retour"}]}]}, "potentialAction": {"@type": "ReserveAction", "name": "Book now", "inLanguage": "en", "target": [{"@type": "EntryPoint", "urlTemplate": "https://europetaxi24.be/en/#rezervasyon", "inLanguage": "en", "actionPlatform": ["https://schema.org/DesktopWebPlatform", "https://schema.org/MobileWebPlatform"]}, {"@type": "EntryPoint", "urlTemplate": "https://wa.me/32493839898", "inLanguage": "en", "actionPlatform": ["https://schema.org/DesktopWebPlatform", "https://schema.org/MobileWebPlatform"]}]}, "knowsLanguage": ["fr", "nl", "en", "tr"]}, {"@type": "WebPage", "@id": "https://europetaxi24.be/en/#webpage", "url": "https://europetaxi24.be/en/", "name": "Brussels Taxi & Airport Transfer 24/7 | Europa Taxi", "description": "Brussels taxi at a fixed price: Zaventem taxi, Charleroi airport taxi and cross-border taxi from Belgium to Germany, France, Luxembourg and the Netherlands.", "inLanguage": "en", "isPartOf": {"@id": "https://europetaxi24.be/#website"}, "about": {"@id": "https://europetaxi24.be/#isletme"}, "primaryImageOfPage": {"@type": "ImageObject", "url": "https://europetaxi24.be/assets/og.jpg", "width": 1200, "height": 630}, "speakable": {"@type": "SpeakableSpecification", "cssSelector": ["h1", ".hero-alt"]}}]}</script>
-<!-- Yapisal veri: sayfada GORUNEN 6 SSS -->
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://europetaxi24.be/#organization", "name": "europetaxi24", "legalName": "CAN COMPANY", "vatID": "BE 1016.219.906", "url": "https://europetaxi24.be/", "slogan": "Your Ride, Our Priority", "telephone": "+32 493 83 98 98", "email": "Europataxisrl@gmail.com", "address": {"@type": "PostalAddress", "streetAddress": "Excelsiorlaan 31", "postalCode": "1930", "addressLocality": "Zaventem", "addressRegion": "Vlaams-Brabant", "addressCountry": "BE"}, "logo": {"@type": "ImageObject", "@id": "https://europetaxi24.be/#logo", "url": "https://europetaxi24.be/assets/icons/icon-512.png", "contentUrl": "https://europetaxi24.be/assets/icons/icon-512.png", "width": 512, "height": 512, "caption": "europetaxi24"}, "contactPoint": [{"@type": "ContactPoint", "contactType": "customer service", "telephone": "+32 493 83 98 98", "email": "Europataxisrl@gmail.com", "hoursAvailable": {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], "opens": "00:00", "closes": "23:59"}, "availableLanguage": ["fr", "nl", "en", "tr"]}]}, {"@type": "WebSite", "@id": "https://europetaxi24.be/#website", "url": "https://europetaxi24.be/", "name": "europetaxi24", "alternateName": "europetaxi24.be", "inLanguage": ["fr-BE", "nl-BE", "en", "tr"], "publisher": {"@id": "https://europetaxi24.be/#organization"}}, {"@type": ["TaxiService", "LocalBusiness"], "@id": "https://europetaxi24.be/#isletme", "name": "europetaxi24", "legalName": "CAN COMPANY", "vatID": "BE 1016.219.906", "slogan": "Your Ride, Our Priority", "description": "Brussels taxi at a fixed price: Zaventem taxi, Charleroi airport taxi and cross-border taxi from Belgium to Germany, France, Luxembourg and the Netherlands.", "url": "https://europetaxi24.be/en/", "telephone": "+32 493 83 98 98", "email": "Europataxisrl@gmail.com", "image": {"@type": "ImageObject", "url": "https://europetaxi24.be/assets/og.jpg", "width": 1200, "height": 630}, "logo": {"@id": "https://europetaxi24.be/#logo"}, "priceRange": "€€", "currenciesAccepted": "EUR", "paymentAccepted": "Bancontact, Credit card, Apple Pay, Cash", "parentOrganization": {"@id": "https://europetaxi24.be/#organization"}, "address": {"@type": "PostalAddress", "streetAddress": "Excelsiorlaan 31", "postalCode": "1930", "addressLocality": "Zaventem", "addressRegion": "Vlaams-Brabant", "addressCountry": "BE"}, "geo": {"@type": "GeoCoordinates", "latitude": 50.8845, "longitude": 4.4715}, "hasMap": "https://www.google.com/maps/search/?api=1&query=Excelsiorlaan%2031%2C%201930%20Zaventem%2C%20Belgium", "openingHoursSpecification": {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], "opens": "00:00", "closes": "23:59"}, "areaServed": [{"@type": "Country", "name": "Belgium", "identifier": "BE"}, {"@type": "Country", "name": "Germany", "identifier": "DE"}, {"@type": "Country", "name": "France", "identifier": "FR"}, {"@type": "Country", "name": "Luxembourg", "identifier": "LU"}, {"@type": "Country", "name": "Netherlands", "identifier": "NL"}, {"@type": "City", "name": "Brussels"}, {"@type": "City", "name": "Antwerp"}, {"@type": "City", "name": "Ghent"}, {"@type": "City", "name": "Bruges"}, {"@type": "City", "name": "Leuven"}, {"@type": "City", "name": "Liège"}, {"@type": "City", "name": "Charleroi"}, {"@type": "City", "name": "Namur"}, {"@type": "City", "name": "Mons"}, {"@type": "City", "name": "Hasselt"}, {"@type": "City", "name": "Mechelen"}, {"@type": "City", "name": "Kortrijk"}, {"@type": "City", "name": "Ostend"}, {"@type": "City", "name": "Amsterdam"}, {"@type": "City", "name": "Rotterdam"}, {"@type": "City", "name": "Eindhoven"}, {"@type": "City", "name": "Maastricht"}, {"@type": "City", "name": "Paris"}, {"@type": "City", "name": "Lille"}, {"@type": "City", "name": "Cologne"}, {"@type": "City", "name": "Düsseldorf"}, {"@type": "City", "name": "Aachen"}, {"@type": "City", "name": "Luxembourg"}, {"@type": "Airport", "name": "Brussels Airport (Zaventem)", "iataCode": "BRU"}, {"@type": "Airport", "name": "Charleroi Airport (CRL)", "iataCode": "CRL"}, {"@type": "Airport", "name": "Antwerp Airport (ANR)", "iataCode": "ANR"}, {"@type": "Airport", "name": "Ostend-Bruges Airport (OST)", "iataCode": "OST"}, {"@type": "Airport", "name": "Liège Airport (LGG)", "iataCode": "LGG"}, {"@type": "Airport", "name": "Amsterdam Schiphol (AMS)", "iataCode": "AMS"}, {"@type": "Airport", "name": "Eindhoven Airport (EIN)", "iataCode": "EIN"}, {"@type": "Airport", "name": "Paris Charles de Gaulle (CDG)", "iataCode": "CDG"}, {"@type": "Airport", "name": "Paris Orly (ORY)", "iataCode": "ORY"}, {"@type": "Airport", "name": "Cologne/Bonn Airport (CGN)", "iataCode": "CGN"}, {"@type": "Airport", "name": "Düsseldorf Airport (DUS)", "iataCode": "DUS"}, {"@type": "Airport", "name": "Frankfurt Airport (FRA)", "iataCode": "FRA"}, {"@type": "Airport", "name": "Luxembourg Airport (LUX)", "iataCode": "LUX"}], "owns": [{"@type": "Car", "name": "Tesla Model 3", "vehicleSeatingCapacity": 4, "description": "4 passengers · 2 large + 2 small bags", "brand": {"@type": "Brand", "name": "Tesla"}, "model": "Model 3"}, {"@type": "Car", "name": "Station Wagon", "vehicleSeatingCapacity": 4, "description": "4 passengers · 4 large + 2 small bags"}, {"@type": "Car", "name": "Mercedes Vito", "vehicleSeatingCapacity": 7, "description": "7 passengers · 6 large + 4 small bags", "brand": {"@type": "Brand", "name": "Mercedes-Benz"}, "model": "Vito"}], "makesOffer": [{"@type": "Offer", "@id": "https://europetaxi24.be/#offer-tarife", "name": "Price per kilometre", "description": "Base fare of €10 plus €1.99 per kilometre. Fixed price shown at booking, with no night or weekend surcharge.", "priceCurrency": "EUR", "priceSpecification": [{"@type": "PriceSpecification", "name": "Base fare", "price": 10, "priceCurrency": "EUR"}, {"@type": "UnitPriceSpecification", "name": "Price per kilometre", "price": 1.99, "priceCurrency": "EUR", "unitCode": "KMT"}], "url": "https://europetaxi24.be/en/#rezervasyon"}, {"@type": "Offer", "@id": "https://europetaxi24.be/#offer-forfait-aeroport", "name": "Fixed airport price", "description": "For airports we offer competitive fixed prices, updated regularly. Ask for today's price in one click.", "priceCurrency": "EUR", "url": "https://europetaxi24.be/en/#rezervasyon"}, {"@type": "Offer", "@id": "https://europetaxi24.be/#offer-brussels-bru", "name": "Brussels → Brussels Airport (Zaventem)", "description": "13 km. Indicative price at the per-kilometre rate (€10 + €1.99 per km). The final price is confirmed at booking.", "price": 35.87, "priceCurrency": "EUR", "priceSpecification": {"@type": "PriceSpecification", "price": 35.87, "priceCurrency": "EUR"}, "itemOffered": {"@type": "Service", "name": "Brussels → Brussels Airport (Zaventem)", "serviceType": "Airport transfer"}, "url": "https://europetaxi24.be/en/#rezervasyon"}, {"@type": "Offer", "@id": "https://europetaxi24.be/#offer-brussels-crl", "name": "Brussels → Charleroi Airport (CRL)", "description": "55 km. Indicative price at the per-kilometre rate (€10 + €1.99 per km). The final price is confirmed at booking.", "price": 119.45, "priceCurrency": "EUR", "priceSpecification": {"@type": "PriceSpecification", "price": 119.45, "priceCurrency": "EUR"}, "itemOffered": {"@type": "Service", "name": "Brussels → Charleroi Airport (CRL)", "serviceType": "Airport transfer"}, "url": "https://europetaxi24.be/en/#rezervasyon"}, {"@type": "Offer", "@id": "https://europetaxi24.be/#offer-gent-bru", "name": "Ghent → Brussels Airport (Zaventem)", "description": "56 km. Indicative price at the per-kilometre rate (€10 + €1.99 per km). The final price is confirmed at booking.", "price": 121.44, "priceCurrency": "EUR", "priceSpecification": {"@type": "PriceSpecification", "price": 121.44, "priceCurrency": "EUR"}, "itemOffered": {"@type": "Service", "name": "Ghent → Brussels Airport (Zaventem)", "serviceType": "Airport transfer"}, "url": "https://europetaxi24.be/en/#rezervasyon"}, {"@type": "Offer", "@id": "https://europetaxi24.be/#offer-antwerpen-bru", "name": "Antwerp → Brussels Airport (Zaventem)", "description": "37 km. Indicative price at the per-kilometre rate (€10 + €1.99 per km). The final price is confirmed at booking.", "price": 83.63, "priceCurrency": "EUR", "priceSpecification": {"@type": "PriceSpecification", "price": 83.63, "priceCurrency": "EUR"}, "itemOffered": {"@type": "Service", "name": "Antwerp → Brussels Airport (Zaventem)", "serviceType": "Airport transfer"}, "url": "https://europetaxi24.be/en/#rezervasyon"}, {"@type": "Offer", "@id": "https://europetaxi24.be/#offer-brussels-antwerpen", "name": "Brussels → Antwerp", "description": "45 km. Indicative price at the per-kilometre rate (€10 + €1.99 per km). The final price is confirmed at booking.", "price": 99.55, "priceCurrency": "EUR", "priceSpecification": {"@type": "PriceSpecification", "price": 99.55, "priceCurrency": "EUR"}, "itemOffered": {"@type": "Service", "name": "Brussels → Antwerp", "serviceType": "Intercity taxi"}, "url": "https://europetaxi24.be/en/#rezervasyon"}, {"@type": "Offer", "@id": "https://europetaxi24.be/#offer-brussels-gent", "name": "Brussels → Ghent", "description": "56 km. Indicative price at the per-kilometre rate (€10 + €1.99 per km). The final price is confirmed at booking.", "price": 121.44, "priceCurrency": "EUR", "priceSpecification": {"@type": "PriceSpecification", "price": 121.44, "priceCurrency": "EUR"}, "itemOffered": {"@type": "Service", "name": "Brussels → Ghent", "serviceType": "Intercity taxi"}, "url": "https://europetaxi24.be/en/#rezervasyon"}, {"@type": "Offer", "@id": "https://europetaxi24.be/#offer-brussels-ams", "name": "Brussels → Amsterdam Schiphol (AMS)", "description": "193 km. Indicative price at the per-kilometre rate (€10 + €1.99 per km). The final price is confirmed at booking.", "price": 394.07, "priceCurrency": "EUR", "priceSpecification": {"@type": "PriceSpecification", "price": 394.07, "priceCurrency": "EUR"}, "itemOffered": {"@type": "Service", "name": "Brussels → Amsterdam Schiphol (AMS)", "serviceType": "Cross-border transfer"}, "url": "https://europetaxi24.be/en/#rezervasyon"}, {"@type": "Offer", "@id": "https://europetaxi24.be/#offer-brussels-paris", "name": "Brussels → Paris", "description": "315 km. Indicative price at the per-kilometre rate (€10 + €1.99 per km). The final price is confirmed at booking.", "price": 636.85, "priceCurrency": "EUR", "priceSpecification": {"@type": "PriceSpecification", "price": 636.85, "priceCurrency": "EUR"}, "itemOffered": {"@type": "Service", "name": "Brussels → Paris", "serviceType": "Cross-border transfer"}, "url": "https://europetaxi24.be/en/#rezervasyon"}, {"@type": "Offer", "@id": "https://europetaxi24.be/#offer-retour", "name": "Return trip", "description": "Add a return date and time when you book.", "priceCurrency": "EUR", "itemOffered": {"@type": "Service", "name": "Return trip"}, "url": "https://europetaxi24.be/en/#rezervasyon"}], "hasOfferCatalog": {"@type": "OfferCatalog", "name": "europetaxi24 services and prices", "itemListElement": [{"@type": "OfferCatalog", "name": "Airport transfer", "itemListElement": [{"@id": "https://europetaxi24.be/#offer-forfait-aeroport"}, {"@id": "https://europetaxi24.be/#offer-brussels-bru"}, {"@id": "https://europetaxi24.be/#offer-brussels-crl"}, {"@id": "https://europetaxi24.be/#offer-gent-bru"}, {"@id": "https://europetaxi24.be/#offer-antwerpen-bru"}]}, {"@type": "OfferCatalog", "name": "Intercity taxi", "itemListElement": [{"@id": "https://europetaxi24.be/#offer-brussels-antwerpen"}, {"@id": "https://europetaxi24.be/#offer-brussels-gent"}]}, {"@type": "OfferCatalog", "name": "Cross-border transfer", "itemListElement": [{"@id": "https://europetaxi24.be/#offer-brussels-ams"}, {"@id": "https://europetaxi24.be/#offer-brussels-paris"}]}, {"@type": "OfferCatalog", "name": "Return trip", "itemListElement": [{"@id": "https://europetaxi24.be/#offer-retour"}]}]}, "potentialAction": {"@type": "ReserveAction", "name": "Book now", "inLanguage": "en", "target": [{"@type": "EntryPoint", "urlTemplate": "https://europetaxi24.be/en/#rezervasyon", "inLanguage": "en", "actionPlatform": ["https://schema.org/DesktopWebPlatform", "https://schema.org/MobileWebPlatform"]}, {"@type": "EntryPoint", "urlTemplate": "https://wa.me/32493839898", "inLanguage": "en", "actionPlatform": ["https://schema.org/DesktopWebPlatform", "https://schema.org/MobileWebPlatform"]}]}, "knowsLanguage": ["fr", "nl", "en", "tr"]}, {"@type": "WebPage", "@id": "https://europetaxi24.be/en/#webpage", "url": "https://europetaxi24.be/en/", "name": "Brussels Taxi & Airport Transfer 24/7 | europetaxi24", "description": "Brussels taxi at a fixed price: Zaventem taxi, Charleroi airport taxi and cross-border taxi from Belgium to Germany, France, Luxembourg and the Netherlands.", "inLanguage": "en", "isPartOf": {"@id": "https://europetaxi24.be/#website"}, "about": {"@id": "https://europetaxi24.be/#isletme"}, "primaryImageOfPage": {"@type": "ImageObject", "url": "https://europetaxi24.be/assets/og.jpg", "width": 1200, "height": 630}, "speakable": {"@type": "SpeakableSpecification", "cssSelector": ["h1", ".hero-alt"]}}]}</script>
+<!-- Yapisal veri: sayfada GORUNEN 10 SSS -->
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "@id": "https://europetaxi24.be/en/#faq", "inLanguage": "en", "isPartOf": {"@id": "https://europetaxi24.be/en/#webpage"}, "mainEntity": [{"@type": "Question", "name": "How is the price calculated?", "acceptedAnswer": {"@type": "Answer", "text": "A base fare of €10 plus €1.99 per kilometre driven. The price shown at booking is final: no night or weekend surcharges."}}, {"@type": "Question", "name": "How does payment work?", "acceptedAnswer": {"@type": "Answer", "text": "You pay a 20% deposit online via Bancontact, credit card or Apple Pay (secured by Mollie). The rest is paid to the driver, in cash or by card."}}, {"@type": "Question", "name": "Can I cancel my booking?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Cancel more than 24 hours before departure and the deposit is fully refunded. Within 24 hours of departure, the deposit is non-refundable."}}, {"@type": "Question", "name": "What if my flight is delayed?", "acceptedAnswer": {"@type": "Answer", "text": "At airports, waiting is free for 60 minutes after landing. At other addresses, the first 15 minutes are free, then 0.50 € per minute."}}, {"@type": "Question", "name": "Do you drive abroad?", "acceptedAnswer": {"@type": "Answer", "text": "Yes: Germany, France, Luxembourg and the Netherlands. Paris, Amsterdam, Cologne or Schiphol, the price is calculated the same way."}}, {"@type": "Question", "name": "How many passengers and bags fit?", "acceptedAnswer": {"@type": "Answer", "text": "Up to 7 passengers and 6 large suitcases in our Mercedes Vito. For 4 passengers or fewer, the Tesla Model 3 or the station wagon is plenty."}}, {"@type": "Question", "name": "How much is a taxi from Brussels to Brussels Airport (Zaventem, BRU)?", "acceptedAnswer": {"@type": "Answer", "text": "From central Brussels to Brussels Airport (Zaventem), the airport transfer is about 13 km, so €35.87 at the per-kilometre rate (€10 + €1.99 per km). From Ghent (about 56 km) it is €121.44. The price confirmed at booking is final; for the fixed airport price, ask for today's price on WhatsApp. Pay a 20% deposit online and the rest to the driver."}}, {"@type": "Question", "name": "How much is a taxi from Brussels to Charleroi Airport (CRL)?", "acceptedAnswer": {"@type": "Answer", "text": "From Brussels to Charleroi Airport it is about 55 km, so €119.45 at the per-kilometre rate (€10 + €1.99 per km). The price confirmed at booking is final. At the airport, waiting is free for 60 minutes after landing."}}, {"@type": "Question", "name": "Do you drive at night and early in the morning?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, we are available every day, 24 hours a day, including for early flights and late arrivals. There is no night or weekend surcharge: the price confirmed at booking does not change."}}, {"@type": "Question", "name": "How much is a cross-border taxi from Brussels to Paris or Amsterdam?", "acceptedAnswer": {"@type": "Answer", "text": "We drive to Germany, France, Luxembourg and the Netherlands with the same formula (€10 + €1.99 per km). From Brussels: Amsterdam Schiphol is about 193 km, so €394.07; Paris is about 315 km, so €636.85. The exact price is shown before you book."}}]}</script>
 
 <!-- Musteri anahtari (derleme gerektirmez), app.js'den ONCE calisir; ikisi de defer -->
 <script src="/assets/config.js" defer></script>
-<script src="/assets/app.js?v=c261c13b33" defer></script>
+<script src="/assets/app.js?v=565bac1fa6" defer></script>
+<!-- JS yoksa adimlar alt alta tam gorunur -->
+<noscript><link rel="stylesheet" href="/assets/nojs.css"></noscript>
 
 <!-- SEO/GEO eki (kaynak/seo.py): robots yonergeleri, geo, gorsel boyutu, manifest, ikon -->
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -65,470 +67,509 @@
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Europa Taxi logo: yellow taxi icon on a black background with the slogan Your Ride, Our Priority">
-<meta name="twitter:image:alt" content="Europa Taxi logo: yellow taxi icon on a black background with the slogan Your Ride, Our Priority">
+<meta property="og:image:alt" content="europetaxi24 logo: yellow taxi icon on a black background with the slogan Your Ride, Our Priority">
+<meta name="twitter:image:alt" content="europetaxi24 logo: yellow taxi icon on a black background with the slogan Your Ride, Our Priority">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
 </head>
 <body>
 <a class="atlama" href="#main">Skip to content</a>
 
-<!-- IMZA 1: acilista tum sayfayi tarayan altin "hiz isigi". Saf CSS, tikanmaz, perde DEGIL. -->
-<div class="tarama" aria-hidden="true"></div>
+<!-- Logo sembolu (sayfada bir kez) + simge dizisi: baslik, altbilgi ve formda <use> ile kullanilir -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="et-logo" viewBox="0 0 704 100" role="img" aria-label="europetaxi24"><g transform="translate(0 0) scale(1.0)"><rect width="100" height="100" rx="26" fill="#F7B32B"/><rect x="39" y="20" width="22" height="18" rx="5" fill="#121110"/><path d="M31.5 33h38a5.5 5.5 0 0 1 0 11H42.5v6.5h19a5.5 5.5 0 0 1 0 11h-19V67h27a5.5 5.5 0 0 1 0 11h-38a5.5 5.5 0 0 1-5.5-5.5v-34a5.5 5.5 0 0 1 5.5-5.5Z" fill="#121110"/></g><path d="M122.90949287080903 70.0V25.930285395408163H159.31579981322886V34.93211324708455H134.4196997995627V43.19232302295919H156.14506935586735V51.95014975856414H134.4196997995627V60.99817214832362H159.73549676567055V70.0Z M188.90244624635568 70.76967930029154Q182.50242005284255 70.76967930029154 177.93246486652697 68.78762043321794Q173.36250968021136 66.80556156614432 170.9231092269497 62.81494852405248Q168.48370877368802 58.824335481960645 168.48370877368802 52.90673685768951V25.930285395408163H179.99391570244168V52.68503439322157Q179.99391570244168 56.91551453170554 182.25486430621356 59.35632430985787Q184.5158129099854 61.7971340880102 188.86758894405975 61.7971340880102Q193.2193649781341 61.7971340880102 195.52702487244898 59.35632430985787Q197.83468476676384 56.91551453170554 197.83468476676384 52.68503439322157V25.930285395408163H209.34489169551748V52.90673685768951Q209.34489169551748 58.824335481960645 206.90827857370624 62.81494852405248Q204.47166545189503 66.80556156614432 199.90171026557942 68.78762043321794Q195.33175507926384 70.76967930029154 188.90244624635568 70.76967930029154Z M219.784512800656 70.0V25.930285395408163H245.37904291180757Q250.28853578261663 25.930285395408163 253.54781882060863 27.77221039085277Q256.8071018586006 29.614135386297377 258.4454577031706 32.76256719205539Q260.08381354774053 35.91099899781341 260.08381354774053 39.836094091654516Q260.08381354774053 44.09861288265306 258.12475799471576 47.40181987973761Q256.165702441691 50.70502687682216 252.61987233509475 52.54695187226676L261.4837429391399 70.0H248.680997175656L241.33136787080903 54.480890123906704H231.29471972940962V70.0ZM231.29471972940962 45.95591517857143H243.16906489158163Q245.53948672102769 45.95591517857143 246.95754942602042 44.392143939048836Q248.37561213101313 42.82837269952624 248.37561213101313 40.149809812317784Q248.37561213101313 38.451479364067055 247.74536203990527 37.23490314094388Q247.1151119487974 36.0183269178207 245.95360901056853 35.33579087326895Q244.79210607233966 34.6532548287172 243.16906489158163 34.6532548287172H231.29471972940962Z M289.9967969888848 70.76967930029154Q282.7852502049927 70.76967930029154 277.608048241618 68.24800559174562Q272.4308462782434 65.7263318831997 269.6818954423287 60.64184783846574Q266.93294460641397 55.55736379373178 266.93294460641397 47.96514269770408Q266.93294460641397 40.30878165998543 269.6818954423287 35.25636758609694Q272.4308462782434 30.203953512208457 277.608048241618 27.68227980366254Q282.7852502049927 25.16060609511662 289.9967969888848 25.16060609511662Q297.2724837144679 25.16060609511662 302.435044358145 27.68227980366254Q307.5976050018221 30.203953512208457 310.34655583773684 35.25636758609694Q313.0955066736516 40.30878165998543 313.0955066736516 47.96514269770408Q313.0955066736516 55.55736379373178 310.34655583773684 60.64184783846574Q307.5976050018221 65.7263318831997 302.435044358145 68.24800559174562Q297.2724837144679 70.76967930029154 289.9967969888848 70.76967930029154ZM289.9967969888848 61.7971340880102Q292.77435712008014 61.7971340880102 294.8895971893221 60.95703552068149Q297.0048372585641 60.11693695335277 298.44032861470475 58.5210957429847Q299.87581997084544 56.92525453261662 300.5994926430393 54.62316930120262Q301.3231653152332 52.321084069788625 301.3231653152332 49.431968043914V46.55688263028426Q301.3231653152332 43.63848396501457 300.5994926430393 41.32175741390306Q299.87581997084544 39.00503086279154 298.44032861470475 37.409189652423464Q297.0048372585641 35.81334844205539 294.8895971893221 34.973249874726676Q292.77435712008014 34.13315130739796 289.9967969888848 34.13315130739796Q287.21923685768945 34.13315130739796 285.1039967884475 34.973249874726676Q282.9887567192055 35.81334844205539 281.5706940142128 37.409189652423464Q280.1526313092201 39.00503086279154 279.44359995672374 41.32175741390306Q278.7345686042274 43.63848396501457 278.7345686042274 46.55688263028426V49.431968043914Q278.7345686042274 52.321084069788625 279.44359995672374 54.62316930120262Q280.1526313092201 56.92525453261662 281.5706940142128 58.5210957429847Q282.9887567192055 60.11693695335277 285.1039967884475 60.95703552068149Q287.21923685768945 61.7971340880102 289.9967969888848 61.7971340880102Z M321.76702008928567 70.0V25.930285395408163H345.99231277332353Q350.48351801658157 25.930285395408163 353.65844513028424 27.749207076803934Q356.83337224398684 29.568128758199705 358.5414426931486 32.8155578079446Q360.24951314231043 36.0629868576895 360.24951314231043 40.45936019497084Q360.24951314231043 44.896165497448976 358.4947314026056 48.19030583773688Q356.7399496629008 51.48444617802478 353.5064572704081 53.30058052797012Q350.2729648779154 55.116714877915456 345.78733429755823 55.116714877915456H333.2772270180393V70.0ZM333.2772270180393 46.25431623542274H343.09076337008014Q345.77490092018945 46.25431623542274 347.1901762937317 44.76304693194243Q348.605451667274 43.271777628462104 348.605451667274 40.52907479956268Q348.605451667274 38.66760716563411 347.99263022731407 37.424535634566325Q347.3798087873542 36.18146410349854 346.1660198956814 35.521931372995624Q344.9522310040087 34.862398642492714 343.09076337008014 34.862398642492714H333.2772270180393Z M367.6033704218294 70.0V25.930285395408163H404.0096773642492V34.93211324708455H379.11357735058306V43.19232302295919H400.8389469068877V51.95014975856414H379.11357735058306V60.99817214832362H404.42937431669094V70.0Z M424.31422820244165 70.0V35.34482621173469H410.0235798560495V25.930285395408163H450.10950881468654V35.34482621173469H435.8244351311953V70.0Z M453.24134190506555 70.0 469.80898949981776 25.930285395408163H483.56966905065593L500.16659928480317 70.0H487.8811383928571L485.25973145954805 62.34357632561954H467.664372836188L465.04296590287896 70.0ZM470.468396956997 53.754461438593296H482.4612820016399L479.2904889076166 44.47358725856414Q479.03392914085276 43.76247323706268 478.6985881127004 42.71601818740889Q478.36324708454805 41.669563137755105 478.0132647366982 40.46554556532435Q477.66328238884836 39.26152799289359 477.3133000409985 38.06029775191327Q476.96331769314867 36.859067510932945 476.67747528698976 35.93182568786443H476.2522036716472Q475.93707862609324 37.14490991709184 475.4616037263119 38.707976494169095Q474.9861288265306 40.27104307124635 474.5078665952988 41.798547683582356Q474.02960436406704 43.326052295918366 473.63919005102036 44.47358725856414Z M502.0183895544825 70.0 517.8260978498542 46.77019178206997 503.5284655156705 25.930285395408163H517.4913048924927L525.5674255193148 38.77089502095481H525.8532679254737L533.9642458545918 25.930285395408163H546.9371127915451L532.6046231550656 46.77576644497084L548.4416140898323 70.0H534.4732000501093L524.892578125 54.78063786898688H524.5774530794461L515.0553964331268 70.0Z M554.5308684857872 70.0V25.930285395408163H566.0410754145408V70.0Z" fill="currentColor"/><rect x="585.8" y="18.0" width="114.2" height="62" rx="16" fill="#F7B32B"/><path d="M604.9915098852041 70.0V67.36052238975948Q604.9915098852041 64.57879692055394 606.0874635568514 62.18819042684038Q607.1834172284986 59.79758393312682 609.0371962121903 57.73674380466473Q610.890975195882 55.67590367620262 613.161663800565 53.80748337281341Q615.4323524052479 51.93906306942419 617.7873969342202 50.19613531796647Q620.4115598806487 48.24265442784257 622.7150231186225 46.44881872950073Q625.0184863565963 44.65498303115889 626.4588477131924 42.67987683354592Q627.8992090697886 40.704770635932945 627.8992090697886 38.27161818968659Q627.8992090697886 36.99439401876822 627.292666955175 35.80431310358965Q626.6861248405613 34.61423218841108 625.3824053616984 33.838273562773324Q624.0786858828353 33.06231493713557 621.8853692146502 33.06231493713557Q619.6920525464651 33.06231493713557 618.2105545622268 33.846635557124635Q616.7290565779884 34.6309561771137 615.9621646091473 36.05388888256195Q615.1952726403061 37.4768215880102 615.1952726403061 39.41357848943149V41.31131275054665H605.4181908254374Q605.3540508837464 40.95575573979592 605.3247682443514 40.47121418321793Q605.2954856049563 39.986672626639944 605.2954856049563 39.3731465242347Q605.2954856049563 34.731362745991255 607.4093163493076 31.58642293412901Q609.523147093659 28.441483122266767 613.4314868804665 26.801044608691694Q617.3398266672741 25.16060609511662 622.6940711552479 25.16060609511662Q626.8115860741618 25.16060609511662 629.7933887003462 26.25168976630831Q632.7751913265307 27.3427734375 634.6951929209184 29.20911107188411Q636.6151945153061 31.07544870626822 637.5382396820336 33.42491857233965Q638.461284848761 35.77438843841108 638.461284848761 38.26187818877551Q638.461284848761 41.27088078534985 637.3855471597121 43.71726522640306Q636.3098094706634 46.16364966745627 634.3800365570337 48.28933440005466Q632.4502636434039 50.41501913265306 629.8993072954629 52.38314134247449Q627.3483509475219 54.35126355229592 624.3923389668367 56.368884384110785Q622.8822630056487 57.395123451166185 621.7151854045189 58.229647355594025Q620.5481078033893 59.064171260021865 619.8209431372995 59.70698000182216Q619.0937784712099 60.34978874362245 618.7605201120627 60.888025578534986H638.8572738247085V70.0Z M665.069683286261 70.0V60.60487654883382H644.5491299198252V52.48287456723761Q646.8707264713922 48.877069856960645 649.1037704423288 44.54413179892493Q651.3368144132654 40.211193740889215 653.3070192920919 35.28984688183309Q655.2772241709184 30.36850002277697 656.6297376093295 25.16060609511662H667.2099467018951Q666.6898431805758 27.862876958819243 665.4767589513485 30.966711461370263Q664.2636747221211 34.07054596392128 662.6197442146503 37.26081905976676Q660.9758137071794 40.451092155612244 659.157596688229 43.369459502551024Q657.3393796692785 46.2878268494898 655.6236518882107 48.68051601220846Q653.9079241071429 51.07320517492711 652.5456706678208 52.552589171829446H665.069683286261V42.502098328170554Q665.7863719706634 41.31829673833819 666.5902039108055 39.78243013165087Q667.3940358509476 38.246563524963555 668.2006551225402 36.5942710231414Q669.0072743941328 34.94197852131924 669.6305404974491 33.35382596118805Q670.2538066007654 31.76567340105685 670.6037889486153 30.44801726494169H675.2650527286809V52.552589171829446H681.1003780976678V60.60487654883382H675.2650527286809V70.0Z" fill="#121110"/></symbol></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.3" fill="currentColor"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20c.8-3.6 3.8-5.4 7.5-5.4s6.7 1.8 7.5 5.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><rect x="6" y="7.5" width="12" height="13" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9.5 7.5V5.2a1.7 1.7 0 0 1 1.7-1.7h1.6a1.7 1.7 0 0 1 1.7 1.7v2.3M9.5 12.5h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-plane" viewBox="0 0 24 24"><path d="M21 15.5v-1.8l-8-5V4a1.5 1.5 0 0 0-3 0v4.7l-8 5v1.8l8-2.3V18l-2 1.6V21l3.5-.9 3.5.9v-1.4L13 18v-4.8z" fill="currentColor"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5.5 5.5 5.5-5.5 5.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m7 9.5 5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-chev-r" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 20V4M7 4 3.5 7.5M7 4l3.5 3.5M17 4v16M17 20l-3.5-3.5M17 20l3.5-3.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 12h17M12 3.5c2.4 2.4 3.6 5.2 3.6 8.5s-1.2 6.1-3.6 8.5C9.6 18.1 8.4 15.3 8.4 12S9.6 5.9 12 3.5Z" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.65 15L2 22l5.15-1.33A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.18-1.14l-.3-.18-3.06.79.82-2.98-.2-.31A8.2 8.2 0 1 1 12 20.2Zm4.5-6.13c-.25-.12-1.46-.72-1.68-.8s-.39-.13-.55.12-.63.8-.78.96-.29.19-.53.06a6.7 6.7 0 0 1-1.97-1.21 7.4 7.4 0 0 1-1.36-1.69c-.14-.25 0-.38.11-.5s.25-.29.37-.44a1.7 1.7 0 0 0 .25-.41.46.46 0 0 0 0-.43c-.06-.13-.55-1.33-.76-1.82s-.4-.42-.55-.42h-.47a.9.9 0 0 0-.65.3 2.73 2.73 0 0 0-.85 2.03 4.74 4.74 0 0 0 1 2.52 10.86 10.86 0 0 0 4.16 3.68 13.9 13.9 0 0 0 1.39.51 3.34 3.34 0 0 0 1.53.1 2.5 2.5 0 0 0 1.64-1.16 2 2 0 0 0 .14-1.15c-.06-.11-.22-.17-.47-.29Z" fill="currentColor"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.36 11.36 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.57 1 1 0 0 1-.25 1.02Z" fill="currentColor"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 7.6 7.5 9.5 4.4-1.9 7.5-4.9 7.5-9.5V6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m8.6 12.2 2.5 2.5 4.4-4.9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3.5 12.2V4.8a1.3 1.3 0 0 1 1.3-1.3h7.4a1.3 1.3 0 0 1 .9.4l8 8a1.3 1.3 0 0 1 0 1.8l-7.4 7.4a1.3 1.3 0 0 1-1.8 0l-8-8a1.3 1.3 0 0 1-.4-.9Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="8" cy="8" r="1.4" fill="currentColor"/></symbol>
+</svg>
 
 <header class="ust" id="ust">
-  <a class="marka" href="#top" aria-label="Europa Taxi">
-    <!-- Marka ikonu: sari taksi on yuzu + dama (yuklenen logoya sadik SVG yeniden cizim) -->
-    <svg width="40" height="30" viewBox="0 0 40 30" fill="none" aria-hidden="true">
-      <rect x="1" y="12" width="4" height="4" fill="#FFC107"/><rect x="5" y="16" width="4" height="4" fill="#FFC107"/>
-      <rect x="35" y="12" width="4" height="4" fill="#FFC107"/><rect x="31" y="16" width="4" height="4" fill="#FFC107"/>
-      <path d="M10 13 L12 5.5 Q12.5 3.5 14.5 3.5 L25.5 3.5 Q27.5 3.5 28 5.5 L30 13 Q31.5 14 31.5 16.5 L31.5 24 Q31.5 25.5 30 25.5 L27.5 25.5 Q26 25.5 26 24 L26 22.5 L14 22.5 L14 24 Q14 25.5 12.5 25.5 L10 25.5 Q8.5 25.5 8.5 24 L8.5 16.5 Q8.5 14 10 13 Z" stroke="#FFC107" stroke-width="1.8" fill="none"/>
-      <rect class="lamba" x="14" y="5.5" width="12" height="5" rx="1" fill="#FFC107"/>
-      <text x="20" y="9.6" text-anchor="middle" font-family="Archivo,system-ui,sans-serif" font-size="4.2" font-weight="900" fill="#0A0A0C">TAXI</text>
-      <path d="M12 16 Q14 15 16 16.2 L16 18 Q14 18.6 12 18 Z" fill="#FFC107"/>
-      <path d="M28 16 Q26 15 24 16.2 L24 18 Q26 18.6 28 18 Z" fill="#FFC107"/>
-      <rect x="16.5" y="20" width="7" height="1.4" rx=".7" fill="#FFC107"/>
-    </svg>
-    <span class="marka-yazi"><b>EUROPA</b><span>TAXI</span></span>
-  </a>
-  <nav class="ana" aria-label="Site">
-    <a href="#how">How it works</a>
-    <a href="#why">Why us</a>
-    <a href="#fleet">Our fleet</a>
-    <a href="#routes">Routes</a>
-    <a href="#faq">FAQ</a>
-    <a href="#legal">Contact</a>
-  </nav>
-  <nav class="dil-nav" aria-label="Language">
-    <a href="/fr/" data-dil="fr" >FR</a>
-    <a href="/nl/" data-dil="nl" >NL</a>
-    <a href="/en/" data-dil="en" aria-current="true">EN</a>
-    <a href="/tr/" data-dil="tr" >TR</a>
-  </nav>
-  <a class="btn btn--altin ust-cta" href="#rezervasyon">Book now</a>
+  <div class="ust-ic">
+    <a class="marka" href="#top" aria-label="europetaxi24"><svg class="logo-svg" viewBox="0 0 704 100" aria-hidden="true" focusable="false"><use href="#et-logo"/></svg></a>
+    <nav class="ana" aria-label="Site">
+      <a href="#how">How it works</a>
+      <a href="#services">Our services</a>
+      <a href="#fleet">Our fleet</a>
+      <a href="#routes">Routes</a>
+      <a href="#faq">FAQ</a>
+      <a href="#legal">Contact</a>
+    </nav>
+    <div class="ust-sag">
+      <details class="dil-menu">
+        <summary aria-label="Language"><svg class="i" aria-hidden="true"><use href="#i-globe"/></svg><span>EN</span><svg class="i i--kucuk" aria-hidden="true"><use href="#i-chev"/></svg></summary>
+        <ul>
+          <li><a href="/fr/" data-dil="fr" hreflang="fr-BE" >Français</a></li>
+          <li><a href="/nl/" data-dil="nl" hreflang="nl-BE" >Nederlands</a></li>
+          <li><a href="/en/" data-dil="en" hreflang="en" aria-current="true">English</a></li>
+          <li><a href="/tr/" data-dil="tr" hreflang="tr" >Türkçe</a></li>
+        </ul>
+      </details>
+      <a class="btn btn--amber ust-cta" href="#rezervasyon">Book now</a>
+      <details class="menu" id="menu">
+        <summary class="menu-dugme" aria-label="Open menu"><span class="m-cizgi" aria-hidden="true"></span></summary>
+        <div class="menu-panel">
+          <nav class="menu-liste" aria-label="Menu">
+            <a href="#how">How it works<svg class="i" aria-hidden="true"><use href="#i-chev-r"/></svg></a>
+            <a href="#services">Our services<svg class="i" aria-hidden="true"><use href="#i-chev-r"/></svg></a>
+            <a href="#fleet">Our fleet<svg class="i" aria-hidden="true"><use href="#i-chev-r"/></svg></a>
+            <a href="#routes">Routes<svg class="i" aria-hidden="true"><use href="#i-chev-r"/></svg></a>
+            <a href="#faq">FAQ<svg class="i" aria-hidden="true"><use href="#i-chev-r"/></svg></a>
+            <a href="#legal">Contact<svg class="i" aria-hidden="true"><use href="#i-chev-r"/></svg></a>
+          </nav>
+          <div class="menu-alt">
+            <a class="menu-kisa" href="https://wa.me/32493839898" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-wa"/></svg>WhatsApp</a>
+            <a class="menu-kisa" href="tel:+32493839898"><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg>+32 493 83 98 98</a>
+          </div>
+          <a class="btn btn--amber btn--tam" href="#rezervasyon">Book now<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+      </details>
+    </div>
+  </div>
 </header>
 
 <main id="main" tabindex="-1">
 
 <!-- ============================ HERO + FORM ============================ -->
 <section class="hero" id="top">
-  <!-- Arka plan: bokeh sahne + hiz cizgileri (hepsi dekoratif, ekran okuyucudan gizli) -->
   <div class="hero-sahne" aria-hidden="true">
     <picture>
       <source media="(max-width:759px)" srcset="/assets/hero-mobil.jpg">
-      <!-- alt bos: dekoratif atmosfer. Gercek fotograf gelince alt="Black Tesla at night in the streets of Brussels" yapilir. -->
-      <img src="/assets/hero-masa.jpg" alt="" fetchpriority="high" width="1600" height="900" data-plx="0.5">
+      <img src="/assets/hero-masa.jpg" alt="" fetchpriority="high" width="1600" height="900">
     </picture>
-  </div>
-  <div class="hiz" aria-hidden="true">
-    <div class="hiz-ic">
-      <div class="plx" data-plx="0.8">
-        <i class="iz i1"></i><i class="iz i2"></i><i class="iz i3"></i><i class="iz i4"></i>
-      </div>
-      <div class="plx" data-plx="1.4">
-        <i class="iz i5"></i><i class="iz i6"></i><i class="iz i7"></i><i class="iz i8"></i><i class="iz i9"></i>
-      </div>
-      <div class="plx" data-plx="2.2">
-        <i class="iz i10"></i><i class="iz i11"></i><i class="iz i12"></i><i class="iz i13"></i>
-      </div>
-      <i class="kosu k1"></i><i class="kosu k2"></i><i class="kosu k3"></i>
-    </div>
   </div>
 
   <div class="hero-ic">
     <div class="hero-metin">
-      <p class="kicker">Taxi &amp; airport transfers in Belgium</p>
-      <h1><span class="w w0"><span>Your</span></span> <span class="w w1"><span>taxi</span></span> <span class="w w2"><span>in</span></span> <span class="w w3"><span>Belgium,</span></span> <em><span class="w w4"><span>priced</span></span> <span class="w w5"><span>before</span></span> <span class="w w6"><span>you</span></span> <span class="w w7"><span>ride.</span></span></em></h1>
-      <p class="hero-alt">Enter your pickup and drop-off address and see the exact price instantly. Pay a 20% deposit online; the rest goes to your driver. Every day, day and night.</p>
-      <div class="hero-cta">
-        <!-- IMZA 2: taksi cati levhasi gibi parlayan ana CTA -->
-        <a class="levha" href="#rezervasyon"><span>Book now</span></a>
-        <a class="btn btn--wa" href="https://wa.me/32493839898" target="_blank" rel="noopener">WhatsApp</a>
-      </div>
-      <!-- Hizli baslat: tek dokunusla formu doldurur, fiyati aninda gosterir -->
-      <div class="hizli">
-        <p class="hizli-baslik" id="hizli-baslik">One tap, your price</p>
-        <div class="hizli-liste" role="group" aria-labelledby="hizli-baslik">
-          <button type="button" class="hizli-sekme" data-alis="brussels" data-varis="bru" aria-pressed="false"><span class="hs-nereden">Brussels</span><span class="hs-nereye">Brussels Airport (Zaventem)</span><b class="hs-fiyat">€35.87</b></button>
-          <button type="button" class="hizli-sekme" data-alis="brussels" data-varis="crl" aria-pressed="false"><span class="hs-nereden">Brussels</span><span class="hs-nereye">Charleroi Airport (CRL)</span><b class="hs-fiyat">€119.45</b></button>
-          <button type="button" class="hizli-sekme" data-alis="gent" data-varis="bru" aria-pressed="false"><span class="hs-nereden">Ghent</span><span class="hs-nereye">Brussels Airport (Zaventem)</span><b class="hs-fiyat">€121.44</b></button>
-          <button type="button" class="hizli-sekme" data-alis="antwerpen" data-varis="bru" aria-pressed="false"><span class="hs-nereden">Antwerp</span><span class="hs-nereye">Brussels Airport (Zaventem)</span><b class="hs-fiyat">€83.63</b></button>
+      <p class="kicker">Taxi &amp; airport transfers · Belgium and Benelux</p>
+      <h1>Your taxi across the Benelux, <em>priced before you ride.</em></h1>
+      <p class="hero-alt">Enter your pickup and drop-off address and see the exact price instantly. Pay a 20% deposit online; the rest goes to your driver. Belgium, the Netherlands, Luxembourg, France and Germany, every day.</p>
+      <ul class="ulkeler" aria-label="We drive in Belgium, the Netherlands, Luxembourg, France and Germany."><li><i class="bayrak b-be" aria-hidden="true"></i>Belgium</li><li><i class="bayrak b-nl" aria-hidden="true"></i>Netherlands</li><li><i class="bayrak b-lu" aria-hidden="true"></i>Luxembourg</li><li><i class="bayrak b-fr" aria-hidden="true"></i>France</li><li><i class="bayrak b-de" aria-hidden="true"></i>Germany</li></ul>
+      <div class="hizli hizli--hero" role="group" aria-labelledby="hizli-baslik-2">
+        <p class="et" id="hizli-baslik-2">One tap, your price</p>
+        <div class="hizli-liste">
+          <button type="button" class="hizli-sekme" data-alis="brussels" data-varis="bru" aria-pressed="false"><span class="hs-yol"><span class="hs-nereden">Brussels</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg><span class="hs-nereye">Brussels Airport (Zaventem)</span></span><b class="hs-fiyat">€35.87</b></button>
+          <button type="button" class="hizli-sekme" data-alis="brussels" data-varis="crl" aria-pressed="false"><span class="hs-yol"><span class="hs-nereden">Brussels</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg><span class="hs-nereye">Charleroi Airport (CRL)</span></span><b class="hs-fiyat">€119.45</b></button>
+          <button type="button" class="hizli-sekme" data-alis="gent" data-varis="bru" aria-pressed="false"><span class="hs-yol"><span class="hs-nereden">Ghent</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg><span class="hs-nereye">Brussels Airport (Zaventem)</span></span><b class="hs-fiyat">€121.44</b></button>
+          <button type="button" class="hizli-sekme" data-alis="antwerpen" data-varis="bru" aria-pressed="false"><span class="hs-yol"><span class="hs-nereden">Antwerp</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg><span class="hs-nereye">Brussels Airport (Zaventem)</span></span><b class="hs-fiyat">€83.63</b></button>
         </div>
       </div>
+      <ul class="noktalar">
+        <li><svg class="i" aria-hidden="true"><use href="#i-tag"/></svg>Guaranteed fixed price</li>
+        <li><svg class="i" aria-hidden="true"><use href="#i-clock"/></svg>Available 24/7</li>
+        <li><svg class="i" aria-hidden="true"><use href="#i-shield"/></svg>Licensed drivers</li>
+      </ul>
     </div>
 
-    <!-- ================= REZERVASYON FORMU (cam kart) ================= -->
-    <form class="rez-kart" id="rezervasyon" autocomplete="off" novalidate aria-labelledby="form-baslik">
-      <div class="kart-ust">
-        <h2 id="form-baslik">Book your ride</h2>
-        <p class="alt-cizgi">Your exact price in seconds, no surprises.</p>
-      </div>
+    <!-- ================= REZERVASYON FORMU (3 adim) ================= -->
+    <form class="rez" id="rezervasyon" method="post" action="/pay/create.php" autocomplete="off" novalidate aria-labelledby="form-baslik">
+      <h2 id="form-baslik">Book your ride</h2>
+      <ol class="adim-cubuk" aria-label="Book your ride">
+        <li class="on" data-git="1"><span>1</span>Trip</li>
+        <li data-git="2"><span>2</span>Details</li>
+        <li data-git="3"><span>3</span>Payment</li>
+      </ol>
 
-      <!-- 1. mod secici (kayan gosterge) -->
-      <div class="modlar" role="group" aria-label="Fare type">
-        <button type="button" id="mod-km" aria-pressed="true">Price per kilometre</button>
-        <button type="button" id="mod-hava" aria-pressed="false">Fixed airport price</button>
-      </div>
-
-      <!-- 2. alis, 3. varis (+ yer degistir): sol tarafta rota rayi -->
-      <div class="rota rota-alan">
-        <span class="rl rl-a" aria-hidden="true"></span>
-        <span class="rl rl-h" aria-hidden="true"></span>
-        <span class="rl rl-b" aria-hidden="true"></span>
-        <label class="etiket" for="f-alis">Pickup address</label>
-        <input id="f-alis" name="alis" type="text" placeholder="e.g. Rue de la Loi 16, Brussels" autocomplete="off" enterkeyhint="next">
-        <label class="etiket" for="f-varis">Drop-off address</label>
-        <input id="f-varis" name="varis" type="text" placeholder="e.g. Brussels Airport (Zaventem)" autocomplete="off" enterkeyhint="next">
-        <button type="button" class="swap" id="btn-swap" aria-label="Swap pickup and drop-off">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 20V4M7 4 3.5 7.5M7 4l3.5 3.5M17 4v16M17 20l-3.5-3.5M17 20l3.5-3.5"/></svg>
-        </button>
-      </div>
-      <datalist id="yer-listesi"><option value="Amsterdam Schiphol (AMS)"></option><option value="Antwerp Airport (ANR)"></option><option value="Brussels Airport (Zaventem)"></option><option value="Charleroi Airport (CRL)"></option><option value="Cologne/Bonn Airport (CGN)"></option><option value="Düsseldorf Airport (DUS)"></option><option value="Eindhoven Airport (EIN)"></option><option value="Frankfurt Airport (FRA)"></option><option value="Liège Airport (LGG)"></option><option value="Luxembourg Airport (LUX)"></option><option value="Ostend-Bruges Airport (OST)"></option><option value="Paris Charles de Gaulle (CDG)"></option><option value="Paris Orly (ORY)"></option><option value="Aachen"></option><option value="Aalst"></option><option value="Amsterdam"></option><option value="Antwerp"></option><option value="Arlon"></option><option value="Bastogne"></option><option value="Bonn"></option><option value="Breda"></option><option value="Bruges"></option><option value="Brussels"></option><option value="Calais"></option><option value="Charleroi"></option><option value="Cologne"></option><option value="Dendermonde"></option><option value="Dinant"></option><option value="Dunkirk"></option><option value="Durbuy"></option><option value="Düsseldorf"></option><option value="Eindhoven"></option><option value="Eupen"></option><option value="Frankfurt"></option><option value="Genk"></option><option value="Ghent"></option><option value="Hasselt"></option><option value="Knokke-Heist"></option><option value="Kortrijk"></option><option value="La Louvière"></option><option value="Leuven"></option><option value="Lille"></option><option value="Liège"></option><option value="Lokeren"></option><option value="Louvain-la-Neuve"></option><option value="Luxembourg"></option><option value="Maastricht"></option><option value="Mechelen"></option><option value="Metz"></option><option value="Mons"></option><option value="Namur"></option><option value="Nivelles"></option><option value="Ostend"></option><option value="Paris"></option><option value="Reims"></option><option value="Roeselare"></option><option value="Rotterdam"></option><option value="Sint-Niklaas"></option><option value="Spa"></option><option value="The Hague"></option><option value="Tilburg"></option><option value="Tongeren"></option><option value="Tournai"></option><option value="Turnhout"></option><option value="Utrecht"></option><option value="Verviers"></option><option value="Vilvoorde"></option><option value="Waterloo"></option><option value="Wavre"></option><option value="Ypres"></option><option value="Zaventem (centre)"></option></datalist>
-
-      <!-- 4. hizmet bolgesi notu (tek satir) -->
-      <p class="servis-notu">We drive across Belgium and to Germany, France, Luxembourg and the Netherlands.</p>
-
-      <!-- 5. fiyat paneli -->
-      <div class="fiyat-panel" id="fiyat-panel">
-        <div class="fiyat-ana">
-          <span class="fiyat-etiket">Estimated price</span>
-          <div class="fiyat-buyuk" id="p-fiyat">—</div>
+      <!-- ---------- ADIM 1: yolculuk ---------- -->
+      <div class="adim acik" data-adim="1">
+        <div class="modlar" role="group" aria-label="Fare type">
+          <button type="button" id="mod-km" aria-pressed="true"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg>Price per kilometre</button>
+          <button type="button" id="mod-hava" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-plane"/></svg>Fixed airport price</button>
         </div>
-        <!-- rota cizgisi: rota bulununca A'dan B'ye kendini cizer -->
-        <div class="fiyat-hat" aria-hidden="true"><i class="fh-a"></i><span class="fh-cizgi"><i></i></span><i class="fh-b"></i></div>
-        <div class="fiyat-detay">
-          <div class="fiyat-kutu fiyat-kutu--on"><span>Deposit (20%)</span><b id="p-kapora">—</b></div>
-          <div class="fiyat-kutu"><span>Due to the driver</span><b id="p-kalan">—</b></div>
-          <div class="fiyat-kutu fiyat-kutu--kucuk"><span>Distance</span><b id="p-mesafe">—</b></div>
-          <div class="fiyat-kutu fiyat-kutu--kucuk"><span>Travel time</span><b id="p-sure">—</b></div>
-        </div>
-        <p class="durum-satiri" id="p-durum" role="status">Enter pickup and drop-off to see your price.</p>
-        <p class="formul-satiri">Base fare €10 + €1.99 per km</p>
-      </div>
 
-      <!-- havalimani sabit fiyat modu: hesaplayici kapanir, WhatsApp'a yonlendirir -->
-      <div class="hava-panel" id="hava-panel" hidden>
-        <p>For airports we offer competitive fixed prices, updated regularly. Ask for today's price in one click.</p>
-        <a class="btn btn--wa" id="btn-hava-wa" href="https://wa.me/32493839898" target="_blank" rel="noopener">Ask for the current airport price</a>
-      </div>
-
-      <!-- 6. tarih + saat -->
-      <div class="grid-2 alan-grup">
-        <div>
-          <label class="etiket" for="f-tarih">Pickup date</label>
-          <input id="f-tarih" name="tarih" type="date">
-        </div>
-        <div>
-          <label class="etiket" for="f-saat">Pickup time</label>
-          <input id="f-saat" name="saat" type="time">
-        </div>
-      </div>
-
-      <!-- 7. donus yolculugu -->
-      <div class="anahtar">
-        <input type="checkbox" id="f-donus" role="switch">
-        <label for="f-donus">Add a return trip</label>
-      </div>
-      <div class="grid-2 alan-grup" id="donus-alani" hidden>
-        <div>
-          <label class="etiket" for="f-donus-tarih">Return date</label>
-          <input id="f-donus-tarih" type="date">
-        </div>
-        <div>
-          <label class="etiket" for="f-donus-saat">Return time</label>
-          <input id="f-donus-saat" type="time">
-        </div>
-      </div>
-
-      <!-- 8-9-10. sayaclar: yolcu 1-7, buyuk 0-6, kucuk 0-4 -->
-      <div class="sayaclar">
-        <div class="sayac">
-          <span class="s-etiket">Passengers</span>
-          <div class="sayac-satir">
-            <button type="button" data-sayac="yolcu" data-yon="-1" aria-label="Decrease">&#8722;</button>
-            <output id="s-yolcu">1</output>
-            <button type="button" data-sayac="yolcu" data-yon="1" aria-label="Increase">+</button>
+        <div class="hizli hizli--form" role="group" aria-labelledby="hizli-baslik">
+          <p class="et" id="hizli-baslik">One tap, your price</p>
+          <div class="hizli-liste">
+            <button type="button" class="hizli-sekme" data-alis="brussels" data-varis="bru" aria-pressed="false"><span class="hs-yol"><span class="hs-nereden">Brussels</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg><span class="hs-nereye">Brussels Airport (Zaventem)</span></span><b class="hs-fiyat">€35.87</b></button>
+          <button type="button" class="hizli-sekme" data-alis="brussels" data-varis="crl" aria-pressed="false"><span class="hs-yol"><span class="hs-nereden">Brussels</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg><span class="hs-nereye">Charleroi Airport (CRL)</span></span><b class="hs-fiyat">€119.45</b></button>
+          <button type="button" class="hizli-sekme" data-alis="gent" data-varis="bru" aria-pressed="false"><span class="hs-yol"><span class="hs-nereden">Ghent</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg><span class="hs-nereye">Brussels Airport (Zaventem)</span></span><b class="hs-fiyat">€121.44</b></button>
+          <button type="button" class="hizli-sekme" data-alis="antwerpen" data-varis="bru" aria-pressed="false"><span class="hs-yol"><span class="hs-nereden">Antwerp</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg><span class="hs-nereye">Brussels Airport (Zaventem)</span></span><b class="hs-fiyat">€83.63</b></button>
           </div>
         </div>
-        <div class="sayac">
-          <span class="s-etiket">Large suitcases</span>
-          <div class="sayac-satir">
-            <button type="button" data-sayac="buyuk" data-yon="-1" aria-label="Decrease">&#8722;</button>
-            <output id="s-buyuk">0</output>
-            <button type="button" data-sayac="buyuk" data-yon="1" aria-label="Increase">+</button>
+
+        <div class="rota">
+          <label class="kutu kutu--ikon" for="f-alis">
+            <svg class="i kutu-ikon" aria-hidden="true"><use href="#i-pin"/></svg>
+            <span class="kutu-ic"><span class="et">Pickup address</span>
+              <input id="f-alis" name="alis" type="text" placeholder="e.g. Rue de la Loi 16, Brussels" autocomplete="off" enterkeyhint="next"></span>
+          </label>
+          <button type="button" class="swap" id="btn-swap" aria-label="Swap pickup and drop-off"><svg class="i" aria-hidden="true"><use href="#i-swap"/></svg></button>
+          <label class="kutu kutu--ikon" for="f-varis">
+            <svg class="i kutu-ikon" aria-hidden="true"><use href="#i-pin"/></svg>
+            <span class="kutu-ic"><span class="et">Drop-off address</span>
+              <input id="f-varis" name="varis" type="text" placeholder="e.g. Brussels Airport (Zaventem)" autocomplete="off" enterkeyhint="done"></span>
+          </label>
+        </div>
+        <datalist id="yer-listesi"><option value="Amsterdam Schiphol (AMS)"></option><option value="Antwerp Airport (ANR)"></option><option value="Brussels Airport (Zaventem)"></option><option value="Charleroi Airport (CRL)"></option><option value="Cologne/Bonn Airport (CGN)"></option><option value="Düsseldorf Airport (DUS)"></option><option value="Eindhoven Airport (EIN)"></option><option value="Frankfurt Airport (FRA)"></option><option value="Liège Airport (LGG)"></option><option value="Luxembourg Airport (LUX)"></option><option value="Ostend-Bruges Airport (OST)"></option><option value="Paris Charles de Gaulle (CDG)"></option><option value="Paris Orly (ORY)"></option><option value="Aachen"></option><option value="Aalst"></option><option value="Amsterdam"></option><option value="Antwerp"></option><option value="Arlon"></option><option value="Bastogne"></option><option value="Bonn"></option><option value="Breda"></option><option value="Bruges"></option><option value="Brussels"></option><option value="Calais"></option><option value="Charleroi"></option><option value="Cologne"></option><option value="Dendermonde"></option><option value="Dinant"></option><option value="Dunkirk"></option><option value="Durbuy"></option><option value="Düsseldorf"></option><option value="Eindhoven"></option><option value="Eupen"></option><option value="Frankfurt"></option><option value="Genk"></option><option value="Ghent"></option><option value="Hasselt"></option><option value="Knokke-Heist"></option><option value="Kortrijk"></option><option value="La Louvière"></option><option value="Leuven"></option><option value="Lille"></option><option value="Liège"></option><option value="Lokeren"></option><option value="Louvain-la-Neuve"></option><option value="Luxembourg"></option><option value="Maastricht"></option><option value="Mechelen"></option><option value="Metz"></option><option value="Mons"></option><option value="Namur"></option><option value="Nivelles"></option><option value="Ostend"></option><option value="Paris"></option><option value="Reims"></option><option value="Roeselare"></option><option value="Rotterdam"></option><option value="Sint-Niklaas"></option><option value="Spa"></option><option value="The Hague"></option><option value="Tilburg"></option><option value="Tongeren"></option><option value="Tournai"></option><option value="Turnhout"></option><option value="Utrecht"></option><option value="Verviers"></option><option value="Vilvoorde"></option><option value="Waterloo"></option><option value="Wavre"></option><option value="Ypres"></option><option value="Zaventem (centre)"></option></datalist>
+        <p class="servis-notu">We drive in Belgium, the Netherlands, Luxembourg, France and Germany.</p>
+
+        <div class="ikili">
+          <label class="kutu kutu--ikon" for="f-tarih">
+            <svg class="i kutu-ikon" aria-hidden="true"><use href="#i-cal"/></svg>
+            <span class="kutu-ic"><span class="et">Pickup date</span><input id="f-tarih" name="tarih" type="date"></span>
+          </label>
+          <label class="kutu kutu--ikon" for="f-saat">
+            <svg class="i kutu-ikon" aria-hidden="true"><use href="#i-clock"/></svg>
+            <span class="kutu-ic"><span class="et">Pickup time</span><input id="f-saat" name="saat" type="time"></span>
+          </label>
+        </div>
+
+        <div class="ikili ikili--yan">
+          <div class="donus">
+            <input type="checkbox" id="f-donus" role="switch">
+            <label for="f-donus"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>Add a return trip</label>
+          </div>
+          <div class="kutu sayac">
+            <span class="et">Passengers</span>
+            <div class="sayac-satir">
+              <button type="button" data-sayac="yolcu" data-yon="-1" aria-label="Decrease">&#8722;</button>
+              <output id="s-yolcu">1</output>
+              <button type="button" data-sayac="yolcu" data-yon="1" aria-label="Increase">+</button>
+            </div>
           </div>
         </div>
-        <div class="sayac">
-          <span class="s-etiket">Small bags</span>
-          <div class="sayac-satir">
-            <button type="button" data-sayac="kucuk" data-yon="-1" aria-label="Decrease">&#8722;</button>
-            <output id="s-kucuk">0</output>
-            <button type="button" data-sayac="kucuk" data-yon="1" aria-label="Increase">+</button>
+        <div class="ikili" id="donus-alani" hidden>
+          <label class="kutu kutu--ikon" for="f-donus-tarih">
+            <svg class="i kutu-ikon" aria-hidden="true"><use href="#i-cal"/></svg>
+            <span class="kutu-ic"><span class="et">Return date</span><input id="f-donus-tarih" type="date"></span>
+          </label>
+          <label class="kutu kutu--ikon" for="f-donus-saat">
+            <svg class="i kutu-ikon" aria-hidden="true"><use href="#i-clock"/></svg>
+            <span class="kutu-ic"><span class="et">Return time</span><input id="f-donus-saat" type="time"></span>
+          </label>
+        </div>
+
+        <!-- fiyat paneli: rota bulununca canli dolar -->
+        <div class="fiyat-panel" id="fiyat-panel">
+          <div class="fiyat-ana">
+            <span class="et">Estimated price</span>
+            <div class="fiyat-buyuk" id="p-fiyat" data-v="toplam">—</div>
           </div>
+          <div class="fiyat-detay">
+            <div class="fiyat-kutu fiyat-kutu--on"><span>Deposit (20%)</span><b id="p-kapora" data-v="kapora">—</b></div>
+            <div class="fiyat-kutu"><span>Due to the driver</span><b id="p-kalan" data-v="kalan">—</b></div>
+          </div>
+          <p class="fiyat-meta"><span>Distance: <b id="p-mesafe">—</b></span><span>Travel time: <b id="p-sure">—</b></span></p>
+          <p class="durum-satiri" id="p-durum" role="status">Enter pickup and drop-off to see your price.</p>
+          <p class="formul-satiri">Base fare €10 + €1.99 per km</p>
+        </div>
+
+        <!-- havalimani sabit fiyat modu: hesaplayici kapanir, WhatsApp'a yonlendirir -->
+        <div class="hava-panel" id="hava-panel" hidden>
+          <p>For airports we offer competitive fixed prices, updated regularly. Ask for today's price in one click.</p>
+          <a class="btn btn--wa btn--tam" id="btn-hava-wa" href="https://wa.me/32493839898" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-wa"/></svg>Ask for the current airport price</a>
+        </div>
+
+        <p class="hata-kutu" role="alert" data-adim-hata="1"></p>
+        <button type="button" class="btn btn--amber btn--tam btn-ileri" id="btn-ileri-1">Continue<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      </div>
+
+      <!-- ---------- ADIM 2: arac + iletisim ---------- -->
+      <div class="adim" data-adim="2">
+        <fieldset class="grup">
+          <legend>Choose your vehicle</legend>
+          <div class="arac-secim" id="arac-secim">
+            <button type="button" class="arac-kart" data-arac="eco" aria-pressed="true">
+              <img src="/assets/arac-eco.svg" alt="Black Tesla Model 3" width="96" height="48" loading="lazy">
+              <span class="a-metin"><b class="a-ad">Economy</b><span class="a-model">Tesla Model 3</span>
+                <span class="a-kap"><svg class="i" aria-hidden="true"><use href="#i-user"/></svg>4<svg class="i" aria-hidden="true"><use href="#i-bag"/></svg>2+2<span class="sr">4 passengers · 2 large + 2 small bags</span></span></span>
+              <span class="a-isaret" aria-hidden="true"><svg class="i"><use href="#i-check"/></svg></span>
+            </button>
+            <button type="button" class="arac-kart" data-arac="wagon" aria-pressed="false">
+              <img src="/assets/arac-wagon.svg" alt="Black station wagon with an extra-large boot" width="96" height="48" loading="lazy">
+              <span class="a-metin"><b class="a-ad">Station Wagon</b><span class="a-model">Extra-large boot</span>
+                <span class="a-kap"><svg class="i" aria-hidden="true"><use href="#i-user"/></svg>4<svg class="i" aria-hidden="true"><use href="#i-bag"/></svg>4+2<span class="sr">4 passengers · 4 large + 2 small bags</span></span></span>
+              <span class="a-isaret" aria-hidden="true"><svg class="i"><use href="#i-check"/></svg></span>
+            </button>
+            <button type="button" class="arac-kart" data-arac="vip" aria-pressed="false">
+              <img src="/assets/arac-vip.svg" alt="Black Mercedes Vito 7-seat van" width="96" height="48" loading="lazy">
+              <span class="a-metin"><b class="a-ad">Business / VIP Van</b><span class="a-model">Mercedes Vito</span>
+                <span class="a-kap"><svg class="i" aria-hidden="true"><use href="#i-user"/></svg>7<svg class="i" aria-hidden="true"><use href="#i-bag"/></svg>6+4<span class="sr">7 passengers · 6 large + 4 small bags</span></span></span>
+              <span class="a-isaret" aria-hidden="true"><svg class="i"><use href="#i-check"/></svg></span>
+            </button>
+          </div>
+        </fieldset>
+
+        <div class="ikili">
+          <div class="kutu sayac">
+            <span class="et">Large suitcases</span>
+            <div class="sayac-satir">
+              <button type="button" data-sayac="buyuk" data-yon="-1" aria-label="Decrease">&#8722;</button>
+              <output id="s-buyuk">0</output>
+              <button type="button" data-sayac="buyuk" data-yon="1" aria-label="Increase">+</button>
+            </div>
+          </div>
+          <div class="kutu sayac">
+            <span class="et">Small bags</span>
+            <div class="sayac-satir">
+              <button type="button" data-sayac="kucuk" data-yon="-1" aria-label="Decrease">&#8722;</button>
+              <output id="s-kucuk">0</output>
+              <button type="button" data-sayac="kucuk" data-yon="1" aria-label="Increase">+</button>
+            </div>
+          </div>
+        </div>
+
+        <fieldset class="grup">
+          <legend>Your details</legend>
+          <p class="servis-notu">Required for online payment, optional via WhatsApp.</p>
+          <label class="kutu" for="f-ad"><span class="et">Full name</span>
+            <input id="f-ad" name="ad" type="text" placeholder="e.g. Emma Johnson" autocomplete="name"></label>
+          <label class="kutu" for="f-eposta"><span class="et">Email</span>
+            <input id="f-eposta" name="eposta" type="email" placeholder="you@example.com" autocomplete="email"></label>
+          <label class="kutu" for="f-telefon"><span class="et">Phone</span>
+            <input id="f-telefon" name="telefon" type="tel" placeholder="+32 4xx xx xx xx" autocomplete="tel"></label>
+        </fieldset>
+
+        <p class="hata-kutu" role="alert" data-adim-hata="2"></p>
+        <p class="toplam-satiri"><span>Total</span><b data-v="toplam">—</b></p>
+        <div class="adim-alt">
+          <button type="button" class="btn btn--hayalet btn-geri" data-git="1">Back</button>
+          <button type="button" class="btn btn--amber btn-ileri" id="btn-ileri-2">Continue<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
         </div>
       </div>
 
-      <!-- 11. iletisim bilgileri -->
-      <fieldset class="grup">
-        <legend>Your details</legend>
-        <p class="servis-notu">Required for online payment, optional via WhatsApp.</p>
-        <div class="alan-grup">
-          <label class="etiket" for="f-ad">Full name</label>
-          <input id="f-ad" name="ad" type="text" placeholder="e.g. Emma Johnson" autocomplete="name">
-        </div>
-        <div class="grid-2 alan-grup">
-          <div>
-            <label class="etiket" for="f-eposta">Email</label>
-            <input id="f-eposta" name="eposta" type="email" placeholder="you@example.com" autocomplete="email">
+      <!-- ---------- ADIM 3: ozet + odeme ---------- -->
+      <div class="adim" data-adim="3">
+        <div class="ozet" id="ozet">
+          <h3>Summary</h3>
+          <dl>
+            <div><dt>Pickup address</dt><dd id="o-alis">—</dd></div>
+            <div><dt>Drop-off address</dt><dd id="o-varis">—</dd></div>
+            <div><dt>Pickup date</dt><dd id="o-tarih">—</dd></div>
+            <div id="o-donus-satir" hidden><dt>Return date</dt><dd id="o-donus">—</dd></div>
+            <div><dt>Vehicle</dt><dd id="o-arac">—</dd></div>
+            <div><dt>Passengers</dt><dd id="o-yolcu">—</dd></div>
+            <div id="o-bag-satir" hidden><dt>Large suitcases · Small bags</dt><dd id="o-bag">—</dd></div>
+          </dl>
+          <div class="ozet-fiyat">
+            <div><span>Total</span><b data-v="toplam">—</b></div>
+            <div class="on"><span>Deposit (20%)</span><b data-v="kapora">—</b></div>
+            <div><span>Due to the driver</span><b data-v="kalan">—</b></div>
           </div>
-          <div>
-            <label class="etiket" for="f-telefon">Phone</label>
-            <input id="f-telefon" name="telefon" type="tel" placeholder="+32 4xx xx xx xx" autocomplete="tel">
-          </div>
         </div>
-      </fieldset>
 
-      <!-- 12. arac secimi -->
-      <fieldset class="grup">
-        <legend>Choose your vehicle</legend>
-        <div class="arac-secim" id="arac-secim">
-          <button type="button" class="arac-kart" data-arac="eco" aria-pressed="true">
-            <img src="/assets/arac-eco.svg" alt="Black Tesla Model 3" width="64" height="40" loading="lazy">
-            <span class="a-metin"><span class="a-ad">Economy</span> · <span class="a-model">Tesla Model 3</span>
-              <span class="a-kap">4 passengers · 2 large + 2 small bags</span></span>
-            <span class="a-durum">Selected</span>
-          </button>
-          <button type="button" class="arac-kart" data-arac="wagon" aria-pressed="false">
-            <img src="/assets/arac-wagon.svg" alt="Black station wagon with an extra-large boot" width="64" height="40" loading="lazy">
-            <span class="a-metin"><span class="a-ad">Station Wagon</span> · <span class="a-model">Extra-large boot</span>
-              <span class="a-kap">4 passengers · 4 large + 2 small bags</span></span>
-            <span class="a-durum">Selected</span>
-          </button>
-          <button type="button" class="arac-kart" data-arac="vip" aria-pressed="false">
-            <img src="/assets/arac-vip.svg" alt="Black Mercedes Vito 7-seat van" width="64" height="40" loading="lazy">
-            <span class="a-metin"><span class="a-ad">Business / VIP Van</span> · <span class="a-model">Mercedes Vito</span>
-              <span class="a-kap">7 passengers · 6 large + 4 small bags</span></span>
-            <span class="a-durum">Selected</span>
-          </button>
+        <div class="onay-satir">
+          <input type="checkbox" id="f-iptal">
+          <label for="f-iptal">I accept the cancellation terms: Cancel more than 24 hours before departure: full refund. Less than 24 hours before departure, the deposit is non-refundable.</label>
         </div>
-      </fieldset>
 
-      <!-- 13. odeme yontemi (tutarlar canli) -->
-      <fieldset class="grup" id="odeme-yontem-alani">
-        <legend>Payment method</legend>
-        <div class="odeme-secenek">
-          <button type="button" class="odeme-kart" data-yontem="online" aria-pressed="true">
-            <span class="yuvarlak" aria-hidden="true"></span>
-            <span><b>Pay the deposit online</b><span id="odeme-online-detay">— now via Bancontact, credit card or Apple Pay. The rest, —, goes to your driver.</span></span>
-          </button>
-          <button type="button" class="odeme-kart" data-yontem="wa" aria-pressed="false">
-            <span class="yuvarlak" aria-hidden="true"></span>
-            <span><b>Confirm on WhatsApp</b><span>Send your booking on WhatsApp and we'll confirm it right away.</span></span>
-          </button>
+        <p class="hata-kutu" id="hata-kutu" role="alert" data-adim-hata="3"></p>
+
+        <p class="odeme-not" id="odeme-online-detay">— now via Bancontact, credit card or Apple Pay. The rest, —, goes to your driver.</p>
+        <div class="odeme-final">
+          <button type="button" class="btn btn--amber btn--tam" id="btn-online">Pay online<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          <button type="button" class="btn btn--wa btn--tam" id="btn-wa"><svg class="i" aria-hidden="true"><use href="#i-wa"/></svg>Confirm on WhatsApp</button>
         </div>
-      </fieldset>
-
-      <!-- 14. iptal kosullari onayi -->
-      <div class="onay-satir">
-        <input type="checkbox" id="f-iptal">
-        <label for="f-iptal">I accept the cancellation terms: Cancel more than 24 hours before departure: full refund. Less than 24 hours before departure, the deposit is non-refundable.</label>
-      </div>
-
-      <p class="hata-kutu" id="hata-kutu" role="alert"></p>
-
-      <!-- 15. rezervasyonu onayla -->
-      <button type="submit" class="levha levha--tam" id="btn-onayla"><span>Confirm booking</span></button>
-
-      <!-- 16. onaydan sonra: odeme secimi -->
-      <div class="odeme-final" id="odeme-final">
-        <b>How would you like to complete your booking?</b>
-        <div class="btnler">
-          <button type="button" class="btn btn--altin" id="btn-online">Pay online</button>
-          <button type="button" class="btn btn--wa" id="btn-wa">Confirm on WhatsApp</button>
-        </div>
+        <button type="button" class="btn btn--hayalet btn-geri" data-git="2">Back</button>
       </div>
     </form>
   </div>
-  <!-- dama seridi: logodaki dama motifi, yavasca akar -->
-  <div class="dama" aria-hidden="true"><i></i></div>
 </section>
 
 <!-- ============================ GUVEN SERIDI ============================ -->
-<section class="guven" aria-label="Europa Taxi in numbers">
+<section class="guven" aria-label="europetaxi24 in numbers">
   <ul class="guven-liste">
     <li><b class="sayi">24/7</b><span>Available day and night</span></li>
     <li><b class="sayi">4</b><span>Languages spoken</span></li>
     <li><b class="sayi">5</b><span>Countries served</span></li>
-    <li><b class="sayi" data-para="1.99">€1.99</b><span>Fixed price per km</span></li>
+    <li><b class="sayi">€1.99</b><span>Fixed price per km</span></li>
   </ul>
 </section>
 
 <!-- ============================ NASIL CALISIR ============================ -->
-<section class="bolum nasil" id="how" aria-labelledby="how-baslik">
+<section class="bolum" id="how" aria-labelledby="how-baslik">
   <div class="dar">
-    <div class="bolum-baslik gir">
-      <p class="kicker">Europa Taxi</p>
+    <div class="bolum-baslik">
+      <p class="ust-yazi">From booking to arrival</p>
       <h2 id="how-baslik">How it works</h2>
+      <p class="bolum-alt">A few simple steps. A smoother ride.</p>
     </div>
-    <!-- rota cizgisi: kaydirdikca kendini cizer (CSS animation-timeline; destek yoksa IntersectionObserver) -->
-    <ol class="adimlar">
-      <li class="adim">
-        <span class="dugum" aria-hidden="true">1</span>
-        <span class="seg" aria-hidden="true"><i></i></span>
-        <h3>Enter your trip</h3><p>Pickup, drop-off, date: your exact price appears instantly.</p>
+  </div>
+  <div class="kaydir" role="region" aria-label="How it works" tabindex="0">
+    <ol class="seritler seritler--3">
+      <li class="kart-adim">
+        <div class="gorsel gorsel--sahne">
+          <div class="mini">
+            <div class="mini-rota"><span class="n n--bos"></span><b>Brussels</b><span class="n n--dolu"></span><b>Brussels Airport (Zaventem)</b></div>
+            <p class="mini-alt">13 km · 11 min</p>
+            <div class="mini-fiyat"><span>€35.87</span><small>Deposit (20%): €7.17</small></div>
+            <p class="mini-not">Fixed price · Free cancellation up to 24h before</p>
+          </div>
+        </div>
+        <h3><span class="no">1.</span> Enter your trip</h3><p>Pickup, drop-off, date: your exact price appears instantly.</p>
       </li>
-      <li class="adim">
-        <span class="dugum" aria-hidden="true">2</span>
-        <span class="seg" aria-hidden="true"><i></i></span>
-        <h3>Book in 2 minutes</h3><p>Pay a 20% deposit online or confirm directly on WhatsApp.</p>
+      <li class="kart-adim">
+        <div class="gorsel gorsel--sahne">
+          <div class="levha-kart"><small>europetaxi24</small><b>M. Janssen</b><span>Brussels Airport (Zaventem)</span></div>
+        </div>
+        <h3><span class="no">2.</span> Book in 2 minutes</h3><p>Pay a 20% deposit online or confirm directly on WhatsApp.</p>
       </li>
-      <li class="adim">
-        <span class="dugum" aria-hidden="true">3</span>
-        <h3>Travel with peace of mind</h3><p>Your driver arrives on time. The rest is paid in the car.</p>
+      <li class="kart-adim">
+        <div class="gorsel gorsel--harita">
+          <svg viewBox="0 0 300 200" aria-hidden="true" focusable="false">
+            <path d="M52 168V120h92V70h96V32" fill="none" stroke="#F7B32B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="240" cy="32" r="16" fill="#F7B32B" opacity=".25"/><circle cx="240" cy="32" r="7" fill="#F7B32B"/>
+            <circle cx="144" cy="95" r="7" fill="#fff" stroke="#121110" stroke-width="3.5"/>
+            <circle cx="52" cy="168" r="14" fill="#121110"/>
+          </svg>
+          <p class="harita-alt"><b>Brussels → Ghent</b><span>56 km · 48 min</span></p>
+        </div>
+        <h3><span class="no">3.</span> Travel with peace of mind</h3><p>Your driver arrives on time. The rest is paid in the car.</p>
       </li>
     </ol>
   </div>
 </section>
 
-<!-- ============================ NEDEN BIZ ============================ -->
-<section class="bolum neden-bolum" id="why" aria-labelledby="why-baslik">
-  <div class="dar">
-    <div class="bolum-baslik gir"><h2 id="why-baslik">Why Europa Taxi</h2></div>
-    <div class="neden-izgara">
-      <div class="neden gir">
-        <svg class="ikon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 7.6A6.5 6.5 0 1 0 17.5 16.4M4.5 10h9M4.5 14h9"/></svg>
-        <h3>Fixed price, zero surprises</h3><p>The price you see at booking is the price you pay. No running meter.</p>
-      </div>
-      <div class="neden gir">
-        <svg class="ikon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.2l3.2 1.9"/></svg>
-        <h3>Available day and night</h3><p>Early flights, late arrivals: we're on the road 24/7.</p>
-      </div>
-      <div class="neden gir">
-        <svg class="ikon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>
-        <h3>Airports and long distance</h3><p>Zaventem, Charleroi, Schiphol, Paris: transfers across Belgium and to neighbouring countries.</p>
-      </div>
-      <div class="neden gir">
-        <svg class="ikon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 7.6 7.5 9.5 4.4-1.9 7.5-4.9 7.5-9.5V6z"/><path d="m8.6 12.2 2.5 2.5 4.4-4.9"/></svg>
-        <h3>Professional drivers</h3><p>Licensed drivers and modern, insured, well-maintained vehicles.</p>
-      </div>
-    </div>
+<!-- ============================ HIZMETLER ============================ -->
+<section class="bolum bolum--alt" id="services" aria-labelledby="svc-baslik">
+  <div class="dar"><div class="bolum-baslik"><h2 id="svc-baslik">Our services</h2></div></div>
+  <div class="kaydir" role="region" aria-label="Our services" tabindex="0">
+    <ul class="seritler seritler--4">
+      <li class="kart-hizmet">
+        <div class="gorsel gorsel--hizmet h1" aria-hidden="true">
+          <svg viewBox="0 0 320 200" focusable="false"><path d="M-10 150h340" stroke="#121110" stroke-opacity=".18" stroke-width="3" stroke-dasharray="14 12"/><g transform="translate(150 28) rotate(38) scale(4)"><use href="#i-plane" width="24" height="24" color="#121110"/></g></svg>
+        </div>
+        <h3>Airport transfers</h3><p>Zaventem, Charleroi, Schiphol, Düsseldorf and more: on-time pickup, price known upfront.</p>
+        <a class="ok-link" href="#rezervasyon">Book now<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </li>
+      <li class="kart-hizmet">
+        <div class="gorsel gorsel--hizmet h2" aria-hidden="true">
+          <svg viewBox="0 0 320 200" focusable="false"><g fill="#121110" fill-opacity=".85"><rect x="30" y="92" width="38" height="92" rx="4"/><rect x="76" y="58" width="44" height="126" rx="4"/><rect x="128" y="104" width="34" height="80" rx="4"/><rect x="170" y="40" width="48" height="144" rx="4"/><rect x="226" y="80" width="40" height="104" rx="4"/></g><g fill="#F7B32B"><rect x="84" y="72" width="8" height="8" rx="1.5"/><rect x="100" y="72" width="8" height="8" rx="1.5"/><rect x="84" y="94" width="8" height="8" rx="1.5"/><rect x="180" y="58" width="8" height="8" rx="1.5"/><rect x="198" y="58" width="8" height="8" rx="1.5"/><rect x="180" y="82" width="8" height="8" rx="1.5"/><rect x="234" y="98" width="8" height="8" rx="1.5"/></g><path d="M0 184h320" stroke="#121110" stroke-width="4"/></svg>
+        </div>
+        <h3>City to city</h3><p>Brussels, Antwerp, Ghent, Liège, Bruges: one direct ride, no changes.</p>
+        <a class="ok-link" href="#rezervasyon">Book now<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </li>
+      <li class="kart-hizmet">
+        <div class="gorsel gorsel--hizmet h3" aria-hidden="true">
+          <svg viewBox="0 0 320 200" focusable="false"><path d="M160 20 100 190h120z" fill="#121110" fill-opacity=".85"/><path d="M160 60v18M160 100v22M160 142v30" stroke="#F7B32B" stroke-width="6" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Benelux, France, Germany</h3><p>Netherlands, Luxembourg, Paris, Cologne: the same formula, across the border.</p>
+        <a class="ok-link" href="#rezervasyon">Book now<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </li>
+      <li class="kart-hizmet">
+        <div class="gorsel gorsel--hizmet h4" aria-hidden="true">
+          <svg viewBox="0 0 320 200" focusable="false"><path d="M70 70h150a30 30 0 0 1 0 60H110" fill="none" stroke="#121110" stroke-width="7" stroke-linecap="round" stroke-opacity=".85"/><path d="m92 48-26 22 26 22M128 152l26-22-26-22" fill="none" stroke="#121110" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="250" cy="100" r="9" fill="#F7B32B"/></svg>
+        </div>
+        <h3>Return trips</h3><p>Add the return date and time when you book.</p>
+        <a class="ok-link" href="#rezervasyon">Book now<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </li>
+    </ul>
   </div>
 </section>
 
 <!-- ============================ FILO ============================ -->
 <section class="bolum" id="fleet" aria-labelledby="fleet-baslik">
   <div class="dar">
-    <div class="bolum-baslik gir">
+    <div class="bolum-baslik">
       <h2 id="fleet-baslik">Our fleet</h2>
       <p class="bolum-alt">Three classes, the same comfort.</p>
     </div>
-    <div class="filo-izgara">
-      <div class="filo-kart gir">
-        <div class="f-gorsel"><img src="/assets/arac-eco.svg" alt="Black Tesla Model 3" width="200" height="86" loading="lazy"></div>
-        <span class="f-sinif">Economy</span>
-        <h3>Tesla Model 3</h3>
-        <p class="f-kap">4 passengers · 2 large + 2 small bags</p>
+  </div>
+  <div class="kaydir" role="region" aria-label="Our fleet" tabindex="0">
+    <ul class="seritler seritler--3">
+      <li class="kart-filo">
+        <div class="f-gorsel"><img src="/assets/arac-eco.svg" alt="Black Tesla Model 3" width="240" height="104" loading="lazy"></div>
+        <h3>Economy</h3>
+        <p class="f-model">Tesla Model 3</p>
+        <p class="f-kap"><svg class="i" aria-hidden="true"><use href="#i-user"/></svg>4<svg class="i" aria-hidden="true"><use href="#i-bag"/></svg>2+2<span class="sr">4 passengers · 2 large + 2 small bags</span></p>
         <button type="button" class="btn btn--cerceve filo-sec" data-arac="eco">Select and book</button>
-      </div>
-      <div class="filo-kart gir">
-        <div class="f-gorsel"><img src="/assets/arac-wagon.svg" alt="Black station wagon with an extra-large boot" width="200" height="86" loading="lazy"></div>
-        <span class="f-sinif">Station Wagon</span>
-        <h3>Extra-large boot</h3>
-        <p class="f-kap">4 passengers · 4 large + 2 small bags</p>
+      </li>
+      <li class="kart-filo">
+        <div class="f-gorsel"><img src="/assets/arac-wagon.svg" alt="Black station wagon with an extra-large boot" width="240" height="104" loading="lazy"></div>
+        <h3>Station Wagon</h3>
+        <p class="f-model">Extra-large boot</p>
+        <p class="f-kap"><svg class="i" aria-hidden="true"><use href="#i-user"/></svg>4<svg class="i" aria-hidden="true"><use href="#i-bag"/></svg>4+2<span class="sr">4 passengers · 4 large + 2 small bags</span></p>
         <button type="button" class="btn btn--cerceve filo-sec" data-arac="wagon">Select and book</button>
-      </div>
-      <div class="filo-kart gir">
-        <div class="f-gorsel"><img src="/assets/arac-vip.svg" alt="Black Mercedes Vito 7-seat van" width="200" height="86" loading="lazy"></div>
-        <span class="f-sinif">Business / VIP Van</span>
-        <h3>Mercedes Vito</h3>
-        <p class="f-kap">7 passengers · 6 large + 4 small bags</p>
+      </li>
+      <li class="kart-filo">
+        <div class="f-gorsel"><img src="/assets/arac-vip.svg" alt="Black Mercedes Vito 7-seat van" width="240" height="104" loading="lazy"></div>
+        <h3>Business / VIP Van</h3>
+        <p class="f-model">Mercedes Vito</p>
+        <p class="f-kap"><svg class="i" aria-hidden="true"><use href="#i-user"/></svg>7<svg class="i" aria-hidden="true"><use href="#i-bag"/></svg>6+4<span class="sr">7 passengers · 6 large + 4 small bags</span></p>
         <button type="button" class="btn btn--cerceve filo-sec" data-arac="vip">Select and book</button>
-      </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ NEDEN BIZ ============================ -->
+<section class="bolum bolum--alt" id="why" aria-labelledby="why-baslik">
+  <div class="dar">
+    <div class="bolum-baslik"><h2 id="why-baslik">Why europetaxi24</h2></div>
+    <div class="neden-izgara">
+      <div class="neden"><svg class="i i--buyuk" aria-hidden="true"><use href="#i-tag"/></svg><h3>Fixed price, zero surprises</h3><p>The price you see at booking is the price you pay. No running meter.</p></div>
+      <div class="neden"><svg class="i i--buyuk" aria-hidden="true"><use href="#i-clock"/></svg><h3>Available day and night</h3><p>Early flights, late arrivals: we're on the road 24/7.</p></div>
+      <div class="neden"><svg class="i i--buyuk" aria-hidden="true"><use href="#i-plane"/></svg><h3>Airports and long distance</h3><p>Zaventem, Charleroi, Schiphol, Paris, Cologne: transfers across Belgium, the Benelux and beyond.</p></div>
+      <div class="neden"><svg class="i i--buyuk" aria-hidden="true"><use href="#i-shield"/></svg><h3>Professional drivers</h3><p>Licensed drivers and modern, insured, well-maintained vehicles.</p></div>
     </div>
   </div>
 </section>
 
 <!-- ============================ POPULER ROTALAR ============================ -->
-<section class="bolum bolum--alt" id="routes" aria-labelledby="routes-baslik">
+<section class="bolum" id="routes" aria-labelledby="routes-baslik">
   <div class="dar">
-    <div class="bolum-baslik gir">
+    <div class="bolum-baslik">
       <h2 id="routes-baslik">Popular routes</h2>
-      <p class="bolum-alt">Prices follow our formula: €10 + €1.99 per km.</p>
+      <p class="bolum-alt">Book a private transfer from Brussels to airports and cities across the Benelux, France and Germany.</p>
     </div>
-    <div class="chipler gir"><a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="bru"><span>Brussels</span><span class="ok">→</span><span>Brussels Airport (Zaventem)</span><b>€35.87</b></a>
-      <a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="crl"><span>Brussels</span><span class="ok">→</span><span>Charleroi Airport (CRL)</span><b>€119.45</b></a>
-      <a class="chip" href="#rezervasyon" data-alis="gent" data-varis="bru"><span>Ghent</span><span class="ok">→</span><span>Brussels Airport (Zaventem)</span><b>€121.44</b></a>
-      <a class="chip" href="#rezervasyon" data-alis="antwerpen" data-varis="bru"><span>Antwerp</span><span class="ok">→</span><span>Brussels Airport (Zaventem)</span><b>€83.63</b></a>
-      <a class="chip" href="#rezervasyon" data-alis="brugge" data-varis="bru"><span>Bruges</span><span class="ok">→</span><span>Brussels Airport (Zaventem)</span><b>€222.93</b></a>
-      <a class="chip" href="#rezervasyon" data-alis="liege" data-varis="bru"><span>Liège</span><span class="ok">→</span><span>Brussels Airport (Zaventem)</span><b>€189.10</b></a>
-      <a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="ams"><span>Brussels</span><span class="ok">→</span><span>Amsterdam Schiphol (AMS)</span><b>€394.07</b></a>
-      <a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="paris"><span>Brussels</span><span class="ok">→</span><span>Paris</span><b>€636.85</b></a></div>
   </div>
+  <div class="kaydir" role="region" aria-label="Popular routes" tabindex="0">
+    <div class="seritler seritler--rota"><a class="chip dest-kart t1" href="#rezervasyon" data-alis="brussels" data-varis="bru"><span class="dk-yol">Brussels</span><b class="dk-ad">Brussels Airport (Zaventem)</b><span class="dk-alt">13 km</span><span class="dk-fiyat">from €35.87<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+      <a class="chip dest-kart t2" href="#rezervasyon" data-alis="brussels" data-varis="crl"><span class="dk-yol">Brussels</span><b class="dk-ad">Charleroi Airport (CRL)</b><span class="dk-alt">55 km</span><span class="dk-fiyat">from €119.45<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+      <a class="chip dest-kart t3" href="#rezervasyon" data-alis="gent" data-varis="bru"><span class="dk-yol">Ghent</span><b class="dk-ad">Brussels Airport (Zaventem)</b><span class="dk-alt">56 km</span><span class="dk-fiyat">from €121.44<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+      <a class="chip dest-kart t4" href="#rezervasyon" data-alis="antwerpen" data-varis="bru"><span class="dk-yol">Antwerp</span><b class="dk-ad">Brussels Airport (Zaventem)</b><span class="dk-alt">37 km</span><span class="dk-fiyat">from €83.63<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+      <a class="chip dest-kart t1" href="#rezervasyon" data-alis="brugge" data-varis="bru"><span class="dk-yol">Bruges</span><b class="dk-ad">Brussels Airport (Zaventem)</b><span class="dk-alt">107 km</span><span class="dk-fiyat">from €222.93<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+      <a class="chip dest-kart t2" href="#rezervasyon" data-alis="liege" data-varis="bru"><span class="dk-yol">Liège</span><b class="dk-ad">Brussels Airport (Zaventem)</b><span class="dk-alt">90 km</span><span class="dk-fiyat">from €189.10<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+      <a class="chip dest-kart t3" href="#rezervasyon" data-alis="brussels" data-varis="ams"><span class="dk-yol">Brussels</span><b class="dk-ad">Amsterdam Schiphol (AMS)</b><span class="dk-alt">193 km</span><span class="dk-fiyat">from €394.07<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+      <a class="chip dest-kart t4" href="#rezervasyon" data-alis="brussels" data-varis="paris"><span class="dk-yol">Brussels</span><b class="dk-ad">Paris</b><span class="dk-alt">315 km</span><span class="dk-fiyat">from €636.85<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></a></div>
+  </div>
+  <div class="dar"><p class="alt-not">Prices follow our formula: €10 + €1.99 per km.</p></div>
 </section>
 
 <!-- ============================ HIZMET BOLGELERI (yerel SEO/GEO: gorunur icerik, JSON-LD areaServed ile tutarli) ============================ -->
-<section class="bolum" id="zones" aria-labelledby="zones-baslik">
+<section class="bolum bolum--alt" id="zones" aria-labelledby="zones-baslik">
   <div class="dar">
-    <div class="bolum-baslik gir">
+    <div class="bolum-baslik">
       <h2 id="zones-baslik">Service areas: Belgium and neighbouring countries</h2>
       <p class="bolum-alt">Indicative prices from central Brussels, calculated with our formula (€10 + €1.99 per km). The exact price of your ride is shown when you book.</p>
     </div>
-    <div class="gir"><h3 class="bolge-baslik">Airport transfers</h3>
-<div class="chipler"><a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="bru"><span>Brussels Airport (Zaventem)</span><span class="ok">13 km</span><b>from €35.87</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="crl"><span>Charleroi Airport (CRL)</span><span class="ok">55 km</span><b>from €119.45</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="ein"><span>Eindhoven Airport (EIN)</span><span class="ok">118 km</span><b>from €244.82</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="ams"><span>Amsterdam Schiphol (AMS)</span><span class="ok">193 km</span><b>from €394.07</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="cgn"><span>Cologne/Bonn Airport (CGN)</span><span class="ok">230 km</span><b>from €467.70</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="cdg"><span>Paris Charles de Gaulle (CDG)</span><span class="ok">283 km</span><b>from €573.17</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="orly"><span>Paris Orly (ORY)</span><span class="ok">322 km</span><b>from €650.78</b></a></div>
-      <h3 class="bolge-baslik">Cities in Belgium</h3>
-<div class="chipler"><a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="leuven"><span>Leuven</span><span class="ok">27 km</span><b>from €63.73</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="mechelen"><span>Mechelen</span><span class="ok">27 km</span><b>from €63.73</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="antwerpen"><span>Antwerp</span><span class="ok">45 km</span><b>from €99.55</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="gent"><span>Ghent</span><span class="ok">56 km</span><b>from €121.44</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="namur"><span>Namur</span><span class="ok">64 km</span><b>from €137.36</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="mons"><span>Mons</span><span class="ok">67 km</span><b>from €143.33</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="hasselt"><span>Hasselt</span><span class="ok">83 km</span><b>from €175.17</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="kortrijk"><span>Kortrijk</span><span class="ok">90 km</span><b>from €189.10</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="brugge"><span>Bruges</span><span class="ok">100 km</span><b>from €209.00</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="liege"><span>Liège</span><span class="ok">100 km</span><b>from €209.00</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="oostende"><span>Ostend</span><span class="ok">114 km</span><b>from €236.86</b></a></div>
-      <h3 class="bolge-baslik">Cross-border rides</h3>
-<div class="chipler"><a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="breda"><span>Breda</span><span class="ok">102 km</span><b>from €212.98</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="maastricht"><span>Maastricht</span><span class="ok">115 km</span><b>from €238.85</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="eindhoven"><span>Eindhoven</span><span class="ok">122 km</span><b>from €252.78</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="rotterdam"><span>Rotterdam</span><span class="ok">148 km</span><b>from €304.52</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="den-haag"><span>The Hague</span><span class="ok">172 km</span><b>from €352.28</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="utrecht"><span>Utrecht</span><span class="ok">180 km</span><b>from €368.20</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="amsterdam"><span>Amsterdam</span><span class="ok">210 km</span><b>from €427.90</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="lille"><span>Lille</span><span class="ok">112 km</span><b>from €232.88</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="dunkerque"><span>Dunkirk</span><span class="ok">165 km</span><b>from €338.35</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="calais"><span>Calais</span><span class="ok">203 km</span><b>from €413.97</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="paris"><span>Paris</span><span class="ok">315 km</span><b>from €636.85</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="aachen"><span>Aachen</span><span class="ok">142 km</span><b>from €292.58</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="koln"><span>Cologne</span><span class="ok">215 km</span><b>from €437.85</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="dusseldorf"><span>Düsseldorf</span><span class="ok">222 km</span><b>from €451.78</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="frankfurt"><span>Frankfurt</span><span class="ok">400 km</span><b>from €806.00</b></a>
-<a class="chip" href="#rezervasyon" data-alis="brussels" data-varis="luxembourg"><span>Luxembourg</span><span class="ok">220 km</span><b>from €447.80</b></a></div></div>
+    <h3 class="bolge-baslik">Airport transfers</h3>
+<div class="satirlar"><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="bru"><span class="sat-ad"><b>Brussels Airport (Zaventem)</b><small>Belgium · 13 km</small></span><span class="sat-fiyat">from €35.87</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="crl"><span class="sat-ad"><b>Charleroi Airport (CRL)</b><small>Belgium · 55 km</small></span><span class="sat-fiyat">from €119.45</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="ein"><span class="sat-ad"><b>Eindhoven Airport (EIN)</b><small>Netherlands · 118 km</small></span><span class="sat-fiyat">from €244.82</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="ams"><span class="sat-ad"><b>Amsterdam Schiphol (AMS)</b><small>Netherlands · 193 km</small></span><span class="sat-fiyat">from €394.07</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="cgn"><span class="sat-ad"><b>Cologne/Bonn Airport (CGN)</b><small>Germany · 230 km</small></span><span class="sat-fiyat">from €467.70</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="cdg"><span class="sat-ad"><b>Paris Charles de Gaulle (CDG)</b><small>France · 283 km</small></span><span class="sat-fiyat">from €573.17</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><details class="plus"><summary>View all (7)<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="satirlar"><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="orly"><span class="sat-ad"><b>Paris Orly (ORY)</b><small>France · 322 km</small></span><span class="sat-fiyat">from €650.78</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a></div></details></div>
+    <h3 class="bolge-baslik">Cities in Belgium</h3>
+<div class="satirlar"><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="leuven"><span class="sat-ad"><b>Leuven</b><small>Belgium · 27 km</small></span><span class="sat-fiyat">from €63.73</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="mechelen"><span class="sat-ad"><b>Mechelen</b><small>Belgium · 27 km</small></span><span class="sat-fiyat">from €63.73</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="antwerpen"><span class="sat-ad"><b>Antwerp</b><small>Belgium · 45 km</small></span><span class="sat-fiyat">from €99.55</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="gent"><span class="sat-ad"><b>Ghent</b><small>Belgium · 56 km</small></span><span class="sat-fiyat">from €121.44</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="namur"><span class="sat-ad"><b>Namur</b><small>Belgium · 64 km</small></span><span class="sat-fiyat">from €137.36</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="mons"><span class="sat-ad"><b>Mons</b><small>Belgium · 67 km</small></span><span class="sat-fiyat">from €143.33</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><details class="plus"><summary>View all (11)<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="satirlar"><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="hasselt"><span class="sat-ad"><b>Hasselt</b><small>Belgium · 83 km</small></span><span class="sat-fiyat">from €175.17</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="kortrijk"><span class="sat-ad"><b>Kortrijk</b><small>Belgium · 90 km</small></span><span class="sat-fiyat">from €189.10</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="brugge"><span class="sat-ad"><b>Bruges</b><small>Belgium · 100 km</small></span><span class="sat-fiyat">from €209.00</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="liege"><span class="sat-ad"><b>Liège</b><small>Belgium · 100 km</small></span><span class="sat-fiyat">from €209.00</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="oostende"><span class="sat-ad"><b>Ostend</b><small>Belgium · 114 km</small></span><span class="sat-fiyat">from €236.86</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a></div></details></div>
+    <h3 class="bolge-baslik">Cross-border rides</h3>
+<div class="satirlar"><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="breda"><span class="sat-ad"><b>Breda</b><small>Netherlands · 102 km</small></span><span class="sat-fiyat">from €212.98</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="maastricht"><span class="sat-ad"><b>Maastricht</b><small>Netherlands · 115 km</small></span><span class="sat-fiyat">from €238.85</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="eindhoven"><span class="sat-ad"><b>Eindhoven</b><small>Netherlands · 122 km</small></span><span class="sat-fiyat">from €252.78</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="rotterdam"><span class="sat-ad"><b>Rotterdam</b><small>Netherlands · 148 km</small></span><span class="sat-fiyat">from €304.52</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="den-haag"><span class="sat-ad"><b>The Hague</b><small>Netherlands · 172 km</small></span><span class="sat-fiyat">from €352.28</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="utrecht"><span class="sat-ad"><b>Utrecht</b><small>Netherlands · 180 km</small></span><span class="sat-fiyat">from €368.20</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><details class="plus"><summary>View all (16)<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="satirlar"><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="amsterdam"><span class="sat-ad"><b>Amsterdam</b><small>Netherlands · 210 km</small></span><span class="sat-fiyat">from €427.90</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="lille"><span class="sat-ad"><b>Lille</b><small>France · 112 km</small></span><span class="sat-fiyat">from €232.88</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="dunkerque"><span class="sat-ad"><b>Dunkirk</b><small>France · 165 km</small></span><span class="sat-fiyat">from €338.35</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="calais"><span class="sat-ad"><b>Calais</b><small>France · 203 km</small></span><span class="sat-fiyat">from €413.97</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="paris"><span class="sat-ad"><b>Paris</b><small>France · 315 km</small></span><span class="sat-fiyat">from €636.85</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="aachen"><span class="sat-ad"><b>Aachen</b><small>Germany · 142 km</small></span><span class="sat-fiyat">from €292.58</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="koln"><span class="sat-ad"><b>Cologne</b><small>Germany · 215 km</small></span><span class="sat-fiyat">from €437.85</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="dusseldorf"><span class="sat-ad"><b>Düsseldorf</b><small>Germany · 222 km</small></span><span class="sat-fiyat">from €451.78</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="frankfurt"><span class="sat-ad"><b>Frankfurt</b><small>Germany · 400 km</small></span><span class="sat-fiyat">from €806.00</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="chip sat" href="#rezervasyon" data-alis="brussels" data-varis="luxembourg"><span class="sat-ad"><b>Luxembourg</b><small>Luxembourg · 220 km</small></span><span class="sat-fiyat">from €447.80</span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a></div></details></div>
   </div>
 </section>
 
 <!-- ============================ KAPANIS BANDI (son CTA) ============================ -->
 <section class="kapanis" aria-labelledby="kapanis-baslik">
-  <div class="kapanis-hiz" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-  <div class="dar">
+  <div class="kapanis-ic">
     <h2 id="kapanis-baslik">Ready to ride? See your price in 30 seconds.</h2>
-    <div class="hero-cta">
-      <a class="levha" href="#rezervasyon"><span>Book now</span></a>
-      <a class="btn btn--wa" href="https://wa.me/32493839898" target="_blank" rel="noopener">WhatsApp</a>
+    <div class="kapanis-btn">
+      <a class="btn btn--koyu" href="#rezervasyon">Book now<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      <a class="btn btn--wa" href="https://wa.me/32493839898" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-wa"/></svg>WhatsApp</a>
     </div>
   </div>
 </section>
 
 <!-- ============================ SSS ============================ -->
 <section class="bolum" id="faq" aria-labelledby="faq-baslik">
-  <div class="dar">
-    <div class="bolum-baslik gir"><h2 id="faq-baslik">Frequently asked questions</h2></div>
+  <div class="dar dar--dar">
+    <div class="bolum-baslik"><h2 id="faq-baslik">Frequently asked questions</h2></div>
     <div class="sss">
       <details><summary>How is the price calculated?</summary><p class="cevap">A base fare of €10 plus €1.99 per kilometre driven. The price shown at booking is final: no night or weekend surcharges.</p></details>
       <details><summary>How does payment work?</summary><p class="cevap">You pay a 20% deposit online via Bancontact, credit card or Apple Pay (secured by Mollie). The rest is paid to the driver, in cash or by card.</p></details>
@@ -545,25 +586,27 @@
 </section>
 
 <!-- ============================ YASAL ============================ -->
-<section class="bolum yasal" id="legal" aria-labelledby="legal-baslik">
-  <div class="dar dar--yasal">
+<section class="bolum bolum--alt yasal" id="legal" aria-labelledby="legal-baslik">
+  <div class="dar dar--dar">
     <div class="bolum-baslik"><h2 id="legal-baslik">Legal information</h2></div>
-    <details>
-      <summary>Company details</summary>
-      <div class="icerik">
-        <p>Europa Taxi is a service of CAN COMPANY, VAT BE 1016.219.906.</p>
-        <p>Email: <a href="mailto:Europataxisrl@gmail.com">Europataxisrl@gmail.com</a> · Phone: <a href="tel:+32493839898">+32 493 83 98 98</a></p>
-        <p class="adres-notu">CAN COMPANY · BE 1016.219.906 · Excelsiorlaan 31, 1930 Zaventem, Belgium</p>
-      </div>
-    </details>
-    <details>
-      <summary>Privacy policy</summary>
-      <div class="icerik"><p>We only collect the data needed for your booking: name, email, phone, pickup and drop-off address, date and time of the ride.</p><p>This data is used to provide your ride, process your payment and send your confirmation. It is shared only with our service providers: Mollie (payment), Google (route calculation), Brevo (emails) and your driver.</p><p>Billing data is kept for 7 years, as required by Belgian accounting law. All other data is deleted no later than 12 months after the ride.</p><p>You can request access to, correction of, or deletion of your data by emailing Europataxisrl@gmail.com. You can also lodge a complaint with the Belgian Data Protection Authority (dataprotectionauthority.be).</p><p>This site uses no advertising cookies. Only your language preference is stored in your browser, plus a strictly necessary technical session cookie after an online payment. If you message us on WhatsApp, WhatsApp handles your message under its own policy.</p></div>
-    </details>
-    <details>
-      <summary>Terms and conditions</summary>
-      <div class="icerik"><p>Services: passenger transport by taxi and airport transfers, in Belgium and to neighbouring countries, operated by CAN COMPANY (VAT BE 1016.219.906).</p><p>Price: a base fare of €10 plus €1.99 per kilometre, or a fixed price agreed in advance for airports. The price confirmed at booking is final.</p><p>Payment: a 20% deposit at booking via Mollie (Bancontact, credit card, Apple Pay). The rest is paid to the driver.</p><p>Cancellation: more than 24 hours before departure, the deposit is fully refunded. Less than 24 hours before departure, the deposit is not refunded.</p><p>Waiting time: 60 minutes free at airports after landing, 15 minutes at other addresses, then 0.50 € per minute.</p><p>Liability: our liability is limited to proven direct damages, within the limits of Belgian law. Delays caused by force majeure (traffic, weather, roadside checks) do not entitle you to compensation.</p><p>Governing law: Belgian law. Any dispute falls under the jurisdiction of the Brussels courts.</p></div>
-    </details>
+    <div class="sss">
+      <details>
+        <summary>Company details</summary>
+        <div class="cevap">
+          <p>europetaxi24 is a service of CAN COMPANY, VAT BE 1016.219.906.</p>
+          <p>Email: <a href="mailto:Europataxisrl@gmail.com">Europataxisrl@gmail.com</a> · Phone: <a href="tel:+32493839898">+32 493 83 98 98</a></p>
+          <p class="adres-notu">CAN COMPANY · BE 1016.219.906 · Excelsiorlaan 31, 1930 Zaventem, Belgium</p>
+        </div>
+      </details>
+      <details>
+        <summary>Privacy policy</summary>
+        <div class="cevap"><p>We only collect the data needed for your booking: name, email, phone, pickup and drop-off address, date and time of the ride.</p><p>This data is used to provide your ride, process your payment and send your confirmation. It is shared only with our service providers: Mollie (payment), Google (route calculation), Brevo (emails) and your driver.</p><p>Billing data is kept for 7 years, as required by Belgian accounting law. All other data is deleted no later than 12 months after the ride.</p><p>You can request access to, correction of, or deletion of your data by emailing Europataxisrl@gmail.com. You can also lodge a complaint with the Belgian Data Protection Authority (dataprotectionauthority.be).</p><p>This site uses no advertising cookies. Only your language preference is stored in your browser, plus a strictly necessary technical session cookie after an online payment. If you message us on WhatsApp, WhatsApp handles your message under its own policy.</p></div>
+      </details>
+      <details>
+        <summary>Terms and conditions</summary>
+        <div class="cevap"><p>Services: passenger transport by taxi and airport transfers, in Belgium and to neighbouring countries, operated by CAN COMPANY (VAT BE 1016.219.906).</p><p>Price: a base fare of €10 plus €1.99 per kilometre, or a fixed price agreed in advance for airports. The price confirmed at booking is final.</p><p>Payment: a 20% deposit at booking via Mollie (Bancontact, credit card, Apple Pay). The rest is paid to the driver.</p><p>Cancellation: more than 24 hours before departure, the deposit is fully refunded. Less than 24 hours before departure, the deposit is not refunded.</p><p>Waiting time: 60 minutes free at airports after landing, 15 minutes at other addresses, then 0.50 € per minute.</p><p>Liability: our liability is limited to proven direct damages, within the limits of Belgian law. Delays caused by force majeure (traffic, weather, roadside checks) do not entitle you to compensation.</p><p>Governing law: Belgian law. Any dispute falls under the jurisdiction of the Brussels courts.</p></div>
+      </details>
+    </div>
   </div>
 </section>
 
@@ -572,56 +615,48 @@
 <!-- ============================ ALTBILGI ============================ -->
 <footer class="alt">
   <div class="alt-izgara">
-    <div>
-      <a class="marka" href="#top" aria-label="Europa Taxi">
-        <svg width="34" height="26" viewBox="0 0 40 30" fill="none" aria-hidden="true">
-          <rect x="1" y="12" width="4" height="4" fill="#FFC107"/><rect x="5" y="16" width="4" height="4" fill="#FFC107"/>
-          <rect x="35" y="12" width="4" height="4" fill="#FFC107"/><rect x="31" y="16" width="4" height="4" fill="#FFC107"/>
-          <path d="M10 13 L12 5.5 Q12.5 3.5 14.5 3.5 L25.5 3.5 Q27.5 3.5 28 5.5 L30 13 Q31.5 14 31.5 16.5 L31.5 24 Q31.5 25.5 30 25.5 L27.5 25.5 Q26 25.5 26 24 L26 22.5 L14 22.5 L14 24 Q14 25.5 12.5 25.5 L10 25.5 Q8.5 25.5 8.5 24 L8.5 16.5 Q8.5 14 10 13 Z" stroke="#FFC107" stroke-width="1.8" fill="none"/>
-          <rect x="14" y="5.5" width="12" height="5" rx="1" fill="#FFC107"/>
-          <path d="M12 16 Q14 15 16 16.2 L16 18 Q14 18.6 12 18 Z" fill="#FFC107"/>
-          <path d="M28 16 Q26 15 24 16.2 L24 18 Q26 18.6 28 18 Z" fill="#FFC107"/>
-        </svg>
-        <span class="marka-yazi"><b>EUROPA</b><span>TAXI</span></span>
-      </a>
-      <p class="aciklama">Taxi and airport transfers in Belgium and to neighbouring countries. Your Ride, Our Priority.</p>
+    <div class="alt-marka">
+      <a class="marka" href="#top" aria-label="europetaxi24"><svg class="logo-svg" viewBox="0 0 704 100" aria-hidden="true" focusable="false"><use href="#et-logo"/></svg></a>
+      <p class="aciklama">Taxi and airport transfers in Belgium, the Benelux, France and Germany. Your Ride, Our Priority.</p>
+      <ul class="ulkeler ulkeler--koyu" aria-label="We drive in Belgium, the Netherlands, Luxembourg, France and Germany."><li><i class="bayrak b-be" aria-hidden="true"></i>Belgium</li><li><i class="bayrak b-nl" aria-hidden="true"></i>Netherlands</li><li><i class="bayrak b-lu" aria-hidden="true"></i>Luxembourg</li><li><i class="bayrak b-fr" aria-hidden="true"></i>France</li><li><i class="bayrak b-de" aria-hidden="true"></i>Germany</li></ul>
     </div>
-    <div>
-      <h4>Contact</h4>
+    <details class="alt-grup" open>
+      <summary>Contact<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></summary>
       <ul>
         <li><a href="https://wa.me/32493839898" target="_blank" rel="noopener">WhatsApp</a></li>
         <li><a href="tel:+32493839898">+32 493 83 98 98</a></li>
         <li><a href="mailto:Europataxisrl@gmail.com">Europataxisrl@gmail.com</a></li>
       </ul>
-    </div>
-    <div>
-      <h4>Language</h4>
+    </details>
+    <details class="alt-grup" open>
+      <summary>Our services<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></summary>
+      <ul>
+        <li><a href="#services">Airport transfers</a></li>
+        <li><a href="#services">City to city</a></li>
+        <li><a href="#services">Benelux, France, Germany</a></li>
+        <li><a href="#fleet">Our fleet</a></li>
+      </ul>
+    </details>
+    <details class="alt-grup" open>
+      <summary>Language<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></summary>
       <ul>
         <li><a href="/fr/" data-dil="fr" hreflang="fr-BE">Français</a></li>
         <li><a href="/nl/" data-dil="nl" hreflang="nl-BE">Nederlands</a></li>
         <li><a href="/en/" data-dil="en" hreflang="en">English</a></li>
         <li><a href="/tr/" data-dil="tr" hreflang="tr">Türkçe</a></li>
       </ul>
-    </div>
+    </details>
   </div>
   <div class="haklar">
-    <span>© 2026 Europa Taxi · CAN COMPANY · VAT BE 1016.219.906</span>
-    <span class="adres-notu adres-notu--duz">Excelsiorlaan 31, 1930 Zaventem, Belgium</span>
+    <span>© 2026 europetaxi24 · CAN COMPANY · VAT BE 1016.219.906</span>
+    <span class="adres-notu">Excelsiorlaan 31, 1930 Zaventem, Belgium</span>
   </div>
 </footer>
 
-<!-- Sabit hizli erisim: WhatsApp + Ara -->
-<div class="fab">
-  <a class="f-book" href="#rezervasyon">Book now</a>
-  <a class="f-wa" href="https://wa.me/32493839898" target="_blank" rel="noopener" aria-label="Message us on WhatsApp">
-    <svg viewBox="0 0 24 24" fill="#06250f" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.65 15L2 22l5.15-1.33A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.18-1.14l-.3-.18-3.06.79.82-2.98-.2-.31A8.2 8.2 0 1 1 12 20.2Zm4.5-6.13c-.25-.12-1.46-.72-1.68-.8s-.39-.13-.55.12-.63.8-.78.96-.29.19-.53.06a6.7 6.7 0 0 1-1.97-1.21 7.4 7.4 0 0 1-1.36-1.69c-.14-.25 0-.38.11-.5s.25-.29.37-.44a1.7 1.7 0 0 0 .25-.41.46.46 0 0 0 0-.43c-.06-.13-.55-1.33-.76-1.82s-.4-.42-.55-.42h-.47a.9.9 0 0 0-.65.3 2.73 2.73 0 0 0-.85 2.03 4.74 4.74 0 0 0 1 2.52 10.86 10.86 0 0 0 4.16 3.68 13.9 13.9 0 0 0 1.39.51 3.34 3.34 0 0 0 1.53.1 2.5 2.5 0 0 0 1.64-1.16 2 2 0 0 0 .14-1.15c-.06-.11-.22-.17-.47-.29Z"/></svg>
-  </a>
-  <a class="f-tel" href="tel:+32493839898" aria-label="Call us">
-    <svg viewBox="0 0 24 24" fill="#141005" aria-hidden="true"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.36 11.36 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.57 1 1 0 0 1-.25 1.02Z"/></svg>
-  </a>
-</div>
+<!-- Sabit hizli erisim: WhatsApp -->
+<a class="fab" href="https://wa.me/32493839898" target="_blank" rel="noopener" aria-label="Message us on WhatsApp"><svg class="i" aria-hidden="true"><use href="#i-wa"/></svg></a>
 
 <!-- Sayfa verisi: mesafe tablosu, calisma zamani metinleri, sabitler. JSON: calistirilmaz, app.js okur. -->
-<script type="application/json" id="et-data">{"dil": "en", "wa": "https://wa.me/32493839898", "veri": {"yerler": {"brussels": {"a": "Brussels", "l": [50.8467, 4.3517], "h": false, "t": ["bruksel", "brussel", "brussel stad", "brussel zuid", "brussels", "bruxelles", "bruxelles midi", "bruxelles ville", "bxl", "gare du midi"]}, "antwerpen": {"a": "Antwerp", "l": [51.2194, 4.4025], "h": false, "t": ["antwerp", "antwerpen", "antwerpen centraal", "anvers"]}, "gent": {"a": "Ghent", "l": [51.0543, 3.7174], "h": false, "t": ["gand", "gent", "gent sint pieters", "ghent"]}, "brugge": {"a": "Bruges", "l": [51.2093, 3.2247], "h": false, "t": ["brug", "bruges", "brugge"]}, "leuven": {"a": "Leuven", "l": [50.8798, 4.7005], "h": false, "t": ["leuven", "louvain", "loven"]}, "liege": {"a": "Liège", "l": [50.6326, 5.5797], "h": false, "t": ["liege", "liege guillemins", "luik", "luttich"]}, "charleroi": {"a": "Charleroi", "l": [50.4114, 4.4448], "h": false, "t": ["charleroi", "charleroi centrum", "charleroi ville", "sarlerua"]}, "namur": {"a": "Namur", "l": [50.4674, 4.872], "h": false, "t": ["namen", "namur"]}, "mons": {"a": "Mons", "l": [50.4542, 3.9523], "h": false, "t": ["bergen", "bergen mons", "mons"]}, "hasselt": {"a": "Hasselt", "l": [50.9307, 5.3378], "h": false, "t": ["hasselt"]}, "mechelen": {"a": "Mechelen", "l": [51.0259, 4.4776], "h": false, "t": ["malines", "mechelen"]}, "aalst": {"a": "Aalst", "l": [50.9378, 4.0402], "h": false, "t": ["aalst", "alost"]}, "kortrijk": {"a": "Kortrijk", "l": [50.828, 3.2649], "h": false, "t": ["courtrai", "kortrijk"]}, "oostende": {"a": "Ostend", "l": [51.2154, 2.9286], "h": false, "t": ["oostende", "ostend", "ostende"]}, "sint-niklaas": {"a": "Sint-Niklaas", "l": [51.1654, 4.1437], "h": false, "t": ["saint nicolas", "saint nicolas waas", "sint niklaas"]}, "genk": {"a": "Genk", "l": [50.9654, 5.5008], "h": false, "t": ["genk"]}, "roeselare": {"a": "Roeselare", "l": [50.9469, 3.1223], "h": false, "t": ["roeselare", "roulers"]}, "vilvoorde": {"a": "Vilvoorde", "l": [50.9281, 4.4287], "h": false, "t": ["vilvoorde", "vilvorde"]}, "waterloo": {"a": "Waterloo", "l": [50.7147, 4.3999], "h": false, "t": ["waterloo"]}, "tournai": {"a": "Tournai", "l": [50.607, 3.3893], "h": false, "t": ["doornik", "tournai"]}, "la-louviere": {"a": "La Louvière", "l": [50.4794, 4.1874], "h": false, "t": ["la louviere", "louviere"]}, "verviers": {"a": "Verviers", "l": [50.5891, 5.8624], "h": false, "t": ["verviers"]}, "dendermonde": {"a": "Dendermonde", "l": [51.0257, 4.1013], "h": false, "t": ["dendermonde", "termonde"]}, "wavre": {"a": "Wavre", "l": [50.7173, 4.6118], "h": false, "t": ["waver", "wavre"]}, "turnhout": {"a": "Turnhout", "l": [51.3227, 4.9449], "h": false, "t": ["turnhout"]}, "lokeren": {"a": "Lokeren", "l": [51.1043, 3.993], "h": false, "t": ["lokeren"]}, "knokke": {"a": "Knokke-Heist", "l": [51.35, 3.287], "h": false, "t": ["knokke", "knokke heist"]}, "tongeren": {"a": "Tongeren", "l": [50.7807, 5.464], "h": false, "t": ["tongeren", "tongres"]}, "ieper": {"a": "Ypres", "l": [50.851, 2.8857], "h": false, "t": ["ieper", "ypres"]}, "dinant": {"a": "Dinant", "l": [50.2607, 4.9122], "h": false, "t": ["dinant"]}, "spa": {"a": "Spa", "l": [50.4926, 5.8641], "h": false, "t": ["spa", "spa belgie", "spa belgique", "spa francorchamps"]}, "eupen": {"a": "Eupen", "l": [50.6276, 6.0367], "h": false, "t": ["eupen"]}, "arlon": {"a": "Arlon", "l": [49.6837, 5.8167], "h": false, "t": ["aarlen", "arlon"]}, "bastogne": {"a": "Bastogne", "l": [50.0008, 5.715], "h": false, "t": ["bastenaken", "bastogne"]}, "nivelles": {"a": "Nivelles", "l": [50.5977, 4.3283], "h": false, "t": ["nijvel", "nivelles"]}, "louvain-la-neuve": {"a": "Louvain-la-Neuve", "l": [50.6696, 4.6134], "h": false, "t": ["lln", "louvain la neuve"]}, "durbuy": {"a": "Durbuy", "l": [50.3527, 5.4563], "h": false, "t": ["durbuy"]}, "zaventem-stad": {"a": "Zaventem (centre)", "l": [50.8845, 4.4715], "h": false, "t": ["zaventem centre", "zaventem centrum", "zaventem merkez"]}, "bru": {"a": "Brussels Airport (Zaventem)", "l": [50.901, 4.4856], "h": true, "t": ["aeroport de bruxelles", "aeroport de zaventem", "aeroport zaventem", "bru", "bruksel havalimani", "bruksel havalimani zaventem", "brussel luchthaven", "brussel nationaal", "brussels airport", "brussels airport zaventem", "brussels luchthaven", "bruxelles national", "luchthaven zaventem", "zaventem", "zaventem airport", "zaventem havalimani"]}, "crl": {"a": "Charleroi Airport (CRL)", "l": [50.4601, 4.4538], "h": true, "t": ["aeroport de charleroi", "aeroport de charleroi crl", "brussel zuid luchthaven", "brussels south", "bruxelles sud", "charleroi airport", "charleroi airport crl", "charleroi havalimani", "charleroi havalimani crl", "crl", "gosselies", "luchthaven charleroi", "luchthaven charleroi crl"]}, "anr": {"a": "Antwerp Airport (ANR)", "l": [51.1894, 4.4603], "h": true, "t": ["aeroport anvers", "aeroport d anvers anr", "anr", "antwerp airport", "antwerp airport anr", "antwerpen luchthaven", "anvers havalimani", "anvers havalimani anr", "deurne airport", "deurne luchthaven", "luchthaven antwerpen", "luchthaven antwerpen anr"]}, "ost": {"a": "Ostend-Bruges Airport (OST)", "l": [51.1998, 2.8622], "h": true, "t": ["aeroport d ostende ost", "aeroport ostende", "luchthaven oostende", "luchthaven oostende ost", "oostende havalimani", "oostende havalimani ost", "oostende luchthaven", "ost", "ostend airport", "ostend bruges airport ost"]}, "lgg": {"a": "Liège Airport (LGG)", "l": [50.6374, 5.4432], "h": true, "t": ["aeroport de liege", "aeroport de liege lgg", "bierset", "lgg", "liege airport", "liege airport lgg", "liege havalimani", "liege havalimani lgg", "luchthaven luik", "luchthaven luik lgg", "luik luchthaven"]}, "amsterdam": {"a": "Amsterdam", "l": [52.3676, 4.9041], "h": false, "t": ["amsterdam"]}, "ams": {"a": "Amsterdam Schiphol (AMS)", "l": [52.3105, 4.7683], "h": true, "t": ["aeroport schiphol", "ams", "amsterdam schiphol", "amsterdam schiphol ams", "luchthaven schiphol", "schiphol", "schiphol airport", "schiphol havalimani"]}, "rotterdam": {"a": "Rotterdam", "l": [51.9244, 4.4777], "h": false, "t": ["rotterdam"]}, "den-haag": {"a": "The Hague", "l": [52.0705, 4.3007], "h": false, "t": ["den haag", "gravenhage", "la haye", "lahey", "s gravenhage", "the hague"]}, "utrecht": {"a": "Utrecht", "l": [52.0907, 5.1214], "h": false, "t": ["utrecht"]}, "eindhoven": {"a": "Eindhoven", "l": [51.4416, 5.4697], "h": false, "t": ["eindhoven"]}, "ein": {"a": "Eindhoven Airport (EIN)", "l": [51.4501, 5.3745], "h": true, "t": ["aeroport d eindhoven ein", "aeroport eindhoven", "ein", "eindhoven airport", "eindhoven airport ein", "eindhoven havalimani", "eindhoven havalimani ein", "eindhoven luchthaven"]}, "maastricht": {"a": "Maastricht", "l": [50.8514, 5.691], "h": false, "t": ["maastricht"]}, "breda": {"a": "Breda", "l": [51.5719, 4.7683], "h": false, "t": ["breda"]}, "tilburg": {"a": "Tilburg", "l": [51.5606, 5.0919], "h": false, "t": ["tilburg"]}, "paris": {"a": "Paris", "l": [48.8566, 2.3522], "h": false, "t": ["parijs", "paris"]}, "cdg": {"a": "Paris Charles de Gaulle (CDG)", "l": [49.0097, 2.5479], "h": true, "t": ["aeroport charles de gaulle", "cdg", "cdg havalimani", "charles de gaulle", "parijs charles de gaulle cdg", "paris cdg", "paris charles de gaulle cdg", "roissy"]}, "orly": {"a": "Paris Orly (ORY)", "l": [48.7262, 2.3652], "h": true, "t": ["aeroport orly", "orly", "orly havalimani", "ory", "parijs orly ory", "paris orly", "paris orly ory"]}, "lille": {"a": "Lille", "l": [50.6292, 3.0573], "h": false, "t": ["lille", "lille europe", "lille flandres", "rijsel"]}, "calais": {"a": "Calais", "l": [50.9513, 1.8587], "h": false, "t": ["calais"]}, "dunkerque": {"a": "Dunkirk", "l": [51.0344, 2.3768], "h": false, "t": ["duinkerke", "dunkerque", "dunkirk"]}, "reims": {"a": "Reims", "l": [49.2583, 4.0317], "h": false, "t": ["reims"]}, "metz": {"a": "Metz", "l": [49.1193, 6.1757], "h": false, "t": ["metz"]}, "koln": {"a": "Cologne", "l": [50.9375, 6.9603], "h": false, "t": ["cologne", "keulen", "kohln", "koln"]}, "cgn": {"a": "Cologne/Bonn Airport (CGN)", "l": [50.8659, 7.1427], "h": true, "t": ["aeroport de cologne bonn cgn", "cgn", "cologne bonn", "cologne bonn airport cgn", "flughafen koln", "koln bonn airport", "koln bonn havalimani", "koln bonn havalimani cgn", "luchthaven keulen bonn cgn"]}, "dusseldorf": {"a": "Düsseldorf", "l": [51.2277, 6.7735], "h": false, "t": ["duesseldorf", "dusseldorf"]}, "dus": {"a": "Düsseldorf Airport (DUS)", "l": [51.2895, 6.7668], "h": true, "t": ["aeroport de dusseldorf dus", "dus", "dusseldorf airport", "dusseldorf airport dus", "dusseldorf havalimani", "dusseldorf havalimani dus", "flughafen dusseldorf", "luchthaven dusseldorf dus"]}, "aachen": {"a": "Aachen", "l": [50.7753, 6.0839], "h": false, "t": ["aachen", "aix la chapelle", "aken"]}, "frankfurt": {"a": "Frankfurt", "l": [50.1109, 8.6821], "h": false, "t": ["francfort", "frankfurt", "frankfurt am main"]}, "fra": {"a": "Frankfurt Airport (FRA)", "l": [50.0379, 8.5622], "h": true, "t": ["aeroport de francfort fra", "flughafen frankfurt", "fra", "frankfurt airport", "frankfurt airport fra", "frankfurt havalimani", "frankfurt havalimani fra", "luchthaven frankfurt fra"]}, "bonn": {"a": "Bonn", "l": [50.7374, 7.0982], "h": false, "t": ["bonn"]}, "luxembourg": {"a": "Luxembourg", "l": [49.6116, 6.1319], "h": false, "t": ["luksemburg", "luxembourg", "luxembourg ville", "luxemburg"]}, "lux": {"a": "Luxembourg Airport (LUX)", "l": [49.6233, 6.2044], "h": true, "t": ["aeroport de luxembourg lux", "aeroport luxembourg", "findel", "luchthaven luxemburg lux", "luksemburg havalimani", "luksemburg havalimani lux", "lux", "luxembourg airport", "luxembourg airport lux", "luxemburg luchthaven"]}}, "kesin": {"brussels|antwerpen": 45, "brussels|liege": 100, "brussels|gent": 56, "brussels|brugge": 100, "brussels|leuven": 27, "brussels|namur": 64, "brussels|mons": 67, "brussels|hasselt": 83, "brussels|mechelen": 27, "brussels|oostende": 114, "brussels|kortrijk": 90, "brussels|bru": 13, "brussels|crl": 55, "brussels|luxembourg": 220, "brussels|paris": 315, "brussels|koln": 215, "brussels|amsterdam": 210, "brussels|ams": 193, "brussels|rotterdam": 148, "brussels|den-haag": 172, "brussels|utrecht": 180, "brussels|eindhoven": 122, "brussels|ein": 118, "brussels|maastricht": 115, "brussels|breda": 102, "brussels|aachen": 142, "brussels|dusseldorf": 222, "brussels|frankfurt": 400, "brussels|cdg": 283, "brussels|orly": 322, "brussels|lille": 112, "brussels|calais": 203, "brussels|dunkerque": 165, "brussels|cgn": 230, "antwerpen|bru": 37, "antwerpen|crl": 95, "antwerpen|gent": 59, "antwerpen|amsterdam": 160, "antwerpen|ams": 148, "antwerpen|rotterdam": 100, "antwerpen|eindhoven": 88, "antwerpen|breda": 56, "gent|bru": 56, "gent|crl": 115, "gent|brugge": 47, "gent|oostende": 62, "gent|lille": 74, "brugge|bru": 107, "brugge|crl": 145, "leuven|bru": 22, "leuven|crl": 68, "liege|bru": 90, "liege|crl": 93, "mechelen|bru": 18, "hasselt|bru": 72, "kortrijk|lille": 29, "oostende|bru": 120, "namur|crl": 40, "mons|crl": 52}}, "soz": {"status_google": "✓ Actual driving distance via Google Maps", "status_fallback": "≈ Estimated distance. We'll confirm the exact price on WhatsApp.", "status_unknown": "Address not recognised. Pick a suggestion from the list or contact us on WhatsApp.", "status_waiting": "Enter pickup and drop-off to see your price.", "val_route": "Please enter both the pickup and the drop-off address.", "val_price": "To calculate your price, select a pickup and a drop-off address.", "val_date": "Please choose the pickup date and time.", "val_cancel": "Please accept the cancellation terms.", "val_name": "Please enter your name (at least 2 characters).", "val_email": "Please enter a valid email address.", "val_phone": "Please enter a valid phone number (at least 8 digits).", "wa_title": "New Europa Taxi booking", "wa_mode_airport": "Airport transfer, price to be confirmed", "wa_route": "Trip: {from} → {to}", "wa_date": "Pickup: {date}", "wa_return": "Return: {date}", "wa_pax": "Passengers: {pax}", "wa_bags": "Luggage: {big} large, {small} small", "wa_vehicle": "Vehicle: {vehicle}", "wa_price": "Estimated price: {price}", "wa_deposit": "Deposit (20%): {deposit}", "wa_rest": "To the driver: {rest}", "wa_name": "Name: {name}", "wa_phone": "Phone: {phone}", "wa_email": "Email: {email}", "airport_wa_msg": "Hello, I would like to know the current price for an airport transfer.", "paym_online_d": "{deposit} now via Bancontact, credit card or Apple Pay. The rest, {rest}, goes to your driver.", "dt_join": "{date} at {time}", "veh_eco": "Economy (Tesla Model 3)", "veh_wagon": "Station Wagon (Extra-large boot)", "veh_vip": "Business / VIP Van (Mercedes Vito)"}}</script>
+<script type="application/json" id="et-data">{"dil": "en", "wa": "https://wa.me/32493839898", "veri": {"yerler": {"brussels": {"a": "Brussels", "l": [50.8467, 4.3517], "h": false, "t": ["bruksel", "brussel", "brussel stad", "brussel zuid", "brussels", "bruxelles", "bruxelles midi", "bruxelles ville", "bxl", "gare du midi"]}, "antwerpen": {"a": "Antwerp", "l": [51.2194, 4.4025], "h": false, "t": ["antwerp", "antwerpen", "antwerpen centraal", "anvers"]}, "gent": {"a": "Ghent", "l": [51.0543, 3.7174], "h": false, "t": ["gand", "gent", "gent sint pieters", "ghent"]}, "brugge": {"a": "Bruges", "l": [51.2093, 3.2247], "h": false, "t": ["brug", "bruges", "brugge"]}, "leuven": {"a": "Leuven", "l": [50.8798, 4.7005], "h": false, "t": ["leuven", "louvain", "loven"]}, "liege": {"a": "Liège", "l": [50.6326, 5.5797], "h": false, "t": ["liege", "liege guillemins", "luik", "luttich"]}, "charleroi": {"a": "Charleroi", "l": [50.4114, 4.4448], "h": false, "t": ["charleroi", "charleroi centrum", "charleroi ville", "sarlerua"]}, "namur": {"a": "Namur", "l": [50.4674, 4.872], "h": false, "t": ["namen", "namur"]}, "mons": {"a": "Mons", "l": [50.4542, 3.9523], "h": false, "t": ["bergen", "bergen mons", "mons"]}, "hasselt": {"a": "Hasselt", "l": [50.9307, 5.3378], "h": false, "t": ["hasselt"]}, "mechelen": {"a": "Mechelen", "l": [51.0259, 4.4776], "h": false, "t": ["malines", "mechelen"]}, "aalst": {"a": "Aalst", "l": [50.9378, 4.0402], "h": false, "t": ["aalst", "alost"]}, "kortrijk": {"a": "Kortrijk", "l": [50.828, 3.2649], "h": false, "t": ["courtrai", "kortrijk"]}, "oostende": {"a": "Ostend", "l": [51.2154, 2.9286], "h": false, "t": ["oostende", "ostend", "ostende"]}, "sint-niklaas": {"a": "Sint-Niklaas", "l": [51.1654, 4.1437], "h": false, "t": ["saint nicolas", "saint nicolas waas", "sint niklaas"]}, "genk": {"a": "Genk", "l": [50.9654, 5.5008], "h": false, "t": ["genk"]}, "roeselare": {"a": "Roeselare", "l": [50.9469, 3.1223], "h": false, "t": ["roeselare", "roulers"]}, "vilvoorde": {"a": "Vilvoorde", "l": [50.9281, 4.4287], "h": false, "t": ["vilvoorde", "vilvorde"]}, "waterloo": {"a": "Waterloo", "l": [50.7147, 4.3999], "h": false, "t": ["waterloo"]}, "tournai": {"a": "Tournai", "l": [50.607, 3.3893], "h": false, "t": ["doornik", "tournai"]}, "la-louviere": {"a": "La Louvière", "l": [50.4794, 4.1874], "h": false, "t": ["la louviere", "louviere"]}, "verviers": {"a": "Verviers", "l": [50.5891, 5.8624], "h": false, "t": ["verviers"]}, "dendermonde": {"a": "Dendermonde", "l": [51.0257, 4.1013], "h": false, "t": ["dendermonde", "termonde"]}, "wavre": {"a": "Wavre", "l": [50.7173, 4.6118], "h": false, "t": ["waver", "wavre"]}, "turnhout": {"a": "Turnhout", "l": [51.3227, 4.9449], "h": false, "t": ["turnhout"]}, "lokeren": {"a": "Lokeren", "l": [51.1043, 3.993], "h": false, "t": ["lokeren"]}, "knokke": {"a": "Knokke-Heist", "l": [51.35, 3.287], "h": false, "t": ["knokke", "knokke heist"]}, "tongeren": {"a": "Tongeren", "l": [50.7807, 5.464], "h": false, "t": ["tongeren", "tongres"]}, "ieper": {"a": "Ypres", "l": [50.851, 2.8857], "h": false, "t": ["ieper", "ypres"]}, "dinant": {"a": "Dinant", "l": [50.2607, 4.9122], "h": false, "t": ["dinant"]}, "spa": {"a": "Spa", "l": [50.4926, 5.8641], "h": false, "t": ["spa", "spa belgie", "spa belgique", "spa francorchamps"]}, "eupen": {"a": "Eupen", "l": [50.6276, 6.0367], "h": false, "t": ["eupen"]}, "arlon": {"a": "Arlon", "l": [49.6837, 5.8167], "h": false, "t": ["aarlen", "arlon"]}, "bastogne": {"a": "Bastogne", "l": [50.0008, 5.715], "h": false, "t": ["bastenaken", "bastogne"]}, "nivelles": {"a": "Nivelles", "l": [50.5977, 4.3283], "h": false, "t": ["nijvel", "nivelles"]}, "louvain-la-neuve": {"a": "Louvain-la-Neuve", "l": [50.6696, 4.6134], "h": false, "t": ["lln", "louvain la neuve"]}, "durbuy": {"a": "Durbuy", "l": [50.3527, 5.4563], "h": false, "t": ["durbuy"]}, "zaventem-stad": {"a": "Zaventem (centre)", "l": [50.8845, 4.4715], "h": false, "t": ["zaventem centre", "zaventem centrum", "zaventem merkez"]}, "bru": {"a": "Brussels Airport (Zaventem)", "l": [50.901, 4.4856], "h": true, "t": ["aeroport de bruxelles", "aeroport de zaventem", "aeroport zaventem", "bru", "bruksel havalimani", "bruksel havalimani zaventem", "brussel luchthaven", "brussel nationaal", "brussels airport", "brussels airport zaventem", "brussels luchthaven", "bruxelles national", "luchthaven zaventem", "zaventem", "zaventem airport", "zaventem havalimani"]}, "crl": {"a": "Charleroi Airport (CRL)", "l": [50.4601, 4.4538], "h": true, "t": ["aeroport de charleroi", "aeroport de charleroi crl", "brussel zuid luchthaven", "brussels south", "bruxelles sud", "charleroi airport", "charleroi airport crl", "charleroi havalimani", "charleroi havalimani crl", "crl", "gosselies", "luchthaven charleroi", "luchthaven charleroi crl"]}, "anr": {"a": "Antwerp Airport (ANR)", "l": [51.1894, 4.4603], "h": true, "t": ["aeroport anvers", "aeroport d anvers anr", "anr", "antwerp airport", "antwerp airport anr", "antwerpen luchthaven", "anvers havalimani", "anvers havalimani anr", "deurne airport", "deurne luchthaven", "luchthaven antwerpen", "luchthaven antwerpen anr"]}, "ost": {"a": "Ostend-Bruges Airport (OST)", "l": [51.1998, 2.8622], "h": true, "t": ["aeroport d ostende ost", "aeroport ostende", "luchthaven oostende", "luchthaven oostende ost", "oostende havalimani", "oostende havalimani ost", "oostende luchthaven", "ost", "ostend airport", "ostend bruges airport ost"]}, "lgg": {"a": "Liège Airport (LGG)", "l": [50.6374, 5.4432], "h": true, "t": ["aeroport de liege", "aeroport de liege lgg", "bierset", "lgg", "liege airport", "liege airport lgg", "liege havalimani", "liege havalimani lgg", "luchthaven luik", "luchthaven luik lgg", "luik luchthaven"]}, "amsterdam": {"a": "Amsterdam", "l": [52.3676, 4.9041], "h": false, "t": ["amsterdam"]}, "ams": {"a": "Amsterdam Schiphol (AMS)", "l": [52.3105, 4.7683], "h": true, "t": ["aeroport schiphol", "ams", "amsterdam schiphol", "amsterdam schiphol ams", "luchthaven schiphol", "schiphol", "schiphol airport", "schiphol havalimani"]}, "rotterdam": {"a": "Rotterdam", "l": [51.9244, 4.4777], "h": false, "t": ["rotterdam"]}, "den-haag": {"a": "The Hague", "l": [52.0705, 4.3007], "h": false, "t": ["den haag", "gravenhage", "la haye", "lahey", "s gravenhage", "the hague"]}, "utrecht": {"a": "Utrecht", "l": [52.0907, 5.1214], "h": false, "t": ["utrecht"]}, "eindhoven": {"a": "Eindhoven", "l": [51.4416, 5.4697], "h": false, "t": ["eindhoven"]}, "ein": {"a": "Eindhoven Airport (EIN)", "l": [51.4501, 5.3745], "h": true, "t": ["aeroport d eindhoven ein", "aeroport eindhoven", "ein", "eindhoven airport", "eindhoven airport ein", "eindhoven havalimani", "eindhoven havalimani ein", "eindhoven luchthaven"]}, "maastricht": {"a": "Maastricht", "l": [50.8514, 5.691], "h": false, "t": ["maastricht"]}, "breda": {"a": "Breda", "l": [51.5719, 4.7683], "h": false, "t": ["breda"]}, "tilburg": {"a": "Tilburg", "l": [51.5606, 5.0919], "h": false, "t": ["tilburg"]}, "paris": {"a": "Paris", "l": [48.8566, 2.3522], "h": false, "t": ["parijs", "paris"]}, "cdg": {"a": "Paris Charles de Gaulle (CDG)", "l": [49.0097, 2.5479], "h": true, "t": ["aeroport charles de gaulle", "cdg", "cdg havalimani", "charles de gaulle", "parijs charles de gaulle cdg", "paris cdg", "paris charles de gaulle cdg", "roissy"]}, "orly": {"a": "Paris Orly (ORY)", "l": [48.7262, 2.3652], "h": true, "t": ["aeroport orly", "orly", "orly havalimani", "ory", "parijs orly ory", "paris orly", "paris orly ory"]}, "lille": {"a": "Lille", "l": [50.6292, 3.0573], "h": false, "t": ["lille", "lille europe", "lille flandres", "rijsel"]}, "calais": {"a": "Calais", "l": [50.9513, 1.8587], "h": false, "t": ["calais"]}, "dunkerque": {"a": "Dunkirk", "l": [51.0344, 2.3768], "h": false, "t": ["duinkerke", "dunkerque", "dunkirk"]}, "reims": {"a": "Reims", "l": [49.2583, 4.0317], "h": false, "t": ["reims"]}, "metz": {"a": "Metz", "l": [49.1193, 6.1757], "h": false, "t": ["metz"]}, "koln": {"a": "Cologne", "l": [50.9375, 6.9603], "h": false, "t": ["cologne", "keulen", "kohln", "koln"]}, "cgn": {"a": "Cologne/Bonn Airport (CGN)", "l": [50.8659, 7.1427], "h": true, "t": ["aeroport de cologne bonn cgn", "cgn", "cologne bonn", "cologne bonn airport cgn", "flughafen koln", "koln bonn airport", "koln bonn havalimani", "koln bonn havalimani cgn", "luchthaven keulen bonn cgn"]}, "dusseldorf": {"a": "Düsseldorf", "l": [51.2277, 6.7735], "h": false, "t": ["duesseldorf", "dusseldorf"]}, "dus": {"a": "Düsseldorf Airport (DUS)", "l": [51.2895, 6.7668], "h": true, "t": ["aeroport de dusseldorf dus", "dus", "dusseldorf airport", "dusseldorf airport dus", "dusseldorf havalimani", "dusseldorf havalimani dus", "flughafen dusseldorf", "luchthaven dusseldorf dus"]}, "aachen": {"a": "Aachen", "l": [50.7753, 6.0839], "h": false, "t": ["aachen", "aix la chapelle", "aken"]}, "frankfurt": {"a": "Frankfurt", "l": [50.1109, 8.6821], "h": false, "t": ["francfort", "frankfurt", "frankfurt am main"]}, "fra": {"a": "Frankfurt Airport (FRA)", "l": [50.0379, 8.5622], "h": true, "t": ["aeroport de francfort fra", "flughafen frankfurt", "fra", "frankfurt airport", "frankfurt airport fra", "frankfurt havalimani", "frankfurt havalimani fra", "luchthaven frankfurt fra"]}, "bonn": {"a": "Bonn", "l": [50.7374, 7.0982], "h": false, "t": ["bonn"]}, "luxembourg": {"a": "Luxembourg", "l": [49.6116, 6.1319], "h": false, "t": ["luksemburg", "luxembourg", "luxembourg ville", "luxemburg"]}, "lux": {"a": "Luxembourg Airport (LUX)", "l": [49.6233, 6.2044], "h": true, "t": ["aeroport de luxembourg lux", "aeroport luxembourg", "findel", "luchthaven luxemburg lux", "luksemburg havalimani", "luksemburg havalimani lux", "lux", "luxembourg airport", "luxembourg airport lux", "luxemburg luchthaven"]}}, "kesin": {"brussels|antwerpen": 45, "brussels|liege": 100, "brussels|gent": 56, "brussels|brugge": 100, "brussels|leuven": 27, "brussels|namur": 64, "brussels|mons": 67, "brussels|hasselt": 83, "brussels|mechelen": 27, "brussels|oostende": 114, "brussels|kortrijk": 90, "brussels|bru": 13, "brussels|crl": 55, "brussels|luxembourg": 220, "brussels|paris": 315, "brussels|koln": 215, "brussels|amsterdam": 210, "brussels|ams": 193, "brussels|rotterdam": 148, "brussels|den-haag": 172, "brussels|utrecht": 180, "brussels|eindhoven": 122, "brussels|ein": 118, "brussels|maastricht": 115, "brussels|breda": 102, "brussels|aachen": 142, "brussels|dusseldorf": 222, "brussels|frankfurt": 400, "brussels|cdg": 283, "brussels|orly": 322, "brussels|lille": 112, "brussels|calais": 203, "brussels|dunkerque": 165, "brussels|cgn": 230, "antwerpen|bru": 37, "antwerpen|crl": 95, "antwerpen|gent": 59, "antwerpen|amsterdam": 160, "antwerpen|ams": 148, "antwerpen|rotterdam": 100, "antwerpen|eindhoven": 88, "antwerpen|breda": 56, "gent|bru": 56, "gent|crl": 115, "gent|brugge": 47, "gent|oostende": 62, "gent|lille": 74, "brugge|bru": 107, "brugge|crl": 145, "leuven|bru": 22, "leuven|crl": 68, "liege|bru": 90, "liege|crl": 93, "mechelen|bru": 18, "hasselt|bru": 72, "kortrijk|lille": 29, "oostende|bru": 120, "namur|crl": 40, "mons|crl": 52}}, "soz": {"status_google": "✓ Actual driving distance via Google Maps", "status_fallback": "≈ Estimated distance. We'll confirm the exact price on WhatsApp.", "status_unknown": "Address not recognised. Pick a suggestion from the list or contact us on WhatsApp.", "status_waiting": "Enter pickup and drop-off to see your price.", "val_route": "Please enter both the pickup and the drop-off address.", "val_price": "To calculate your price, select a pickup and a drop-off address.", "val_date": "Please choose the pickup date and time.", "val_cancel": "Please accept the cancellation terms.", "val_name": "Please enter your name (at least 2 characters).", "val_email": "Please enter a valid email address.", "val_phone": "Please enter a valid phone number (at least 8 digits).", "wa_title": "New europetaxi24 booking", "wa_mode_airport": "Airport transfer, price to be confirmed", "wa_route": "Trip: {from} → {to}", "wa_date": "Pickup: {date}", "wa_return": "Return: {date}", "wa_pax": "Passengers: {pax}", "wa_bags": "Luggage: {big} large, {small} small", "wa_vehicle": "Vehicle: {vehicle}", "wa_price": "Estimated price: {price}", "wa_deposit": "Deposit (20%): {deposit}", "wa_rest": "To the driver: {rest}", "wa_name": "Name: {name}", "wa_phone": "Phone: {phone}", "wa_email": "Email: {email}", "airport_wa_msg": "Hello, I would like to know the current price for an airport transfer.", "paym_online_d": "{deposit} now via Bancontact, credit card or Apple Pay. The rest, {rest}, goes to your driver.", "dt_join": "{date} at {time}", "veh_eco": "Economy (Tesla Model 3)", "veh_wagon": "Station Wagon (Extra-large boot)", "veh_vip": "Business / VIP Van (Mercedes Vito)"}}</script>
 </body>
 </html>

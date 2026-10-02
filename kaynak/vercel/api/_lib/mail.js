@@ -26,7 +26,7 @@ async function epostaGonder(kime, konu, html, duzMetin) {
     return { ok: false, atlandi: false, yontem: 'brevo', hata: 'BREVO_API_BASE gecersiz' };
   }
   const govde = {
-    sender: { name: 'Europa Taxi', email: c.mailFrom },
+    sender: { name: 'europetaxi24', email: c.mailFrom },
     // e-posta 'bu e-postayi yanitlayin' der: yanit noreply'a degil sirket adresine gitsin (PHP ile ayni)
     replyTo: { email: c.companyEmail },
     to: [{ email: kime }],
@@ -84,7 +84,7 @@ function musteriEpostaHtml(s) {
   return '<!doctype html><html><body style="margin:0;padding:0;background:#F2F2F4;">\n' +
 '<div style="max-width:560px;margin:0 auto;padding:24px 14px;font-family:Arial,Helvetica,sans-serif;">\n' +
 '  <div style="background:#0A0A0C;border-radius:14px 14px 0 0;padding:22px 28px;">\n' +
-'    <span style="font-size:20px;font-weight:900;letter-spacing:1px;color:#FFFFFF;">EUROPA<span style="color:#FFC107;">TAXI</span></span>\n' +
+'    <span style="font-size:20px;font-weight:900;letter-spacing:1px;color:#FFFFFF;">EUROPETAXI<span style="color:#F7B32B;">24</span></span>\n' +
 '  </div>\n' +
 '  <div style="height:4px;background:#FFC107;"></div>\n' +
 '  <div style="background:#FFFFFF;border-radius:0 0 14px 14px;padding:28px;">\n' +
@@ -97,7 +97,7 @@ function musteriEpostaHtml(s) {
 '    </div>\n' +
 '    <p style="margin:20px 0 0;font-size:13px;color:#55565E;">' + h(t(dil, 'em_outro', { phone: i.telefon || '' })) + '</p>\n' +
 '    <p style="margin:22px 0 0;font-size:11px;color:#9A9BA3;">\n' +
-'      Europa Taxi · ' + h((i.unvan || '') + ' · ' + (i.kdv || '')) + '<br>' +
+'      europetaxi24 · ' + h((i.unvan || '') + ' · ' + (i.kdv || '')) + '<br>' +
       h(i.adres || '') + '<br>' +
       h((i.telefon || '') + ' · ' + (i.eposta || '')) + '\n' +
 '    </p>\n' +

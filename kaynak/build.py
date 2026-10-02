@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-EUROPA TAXI derleyicisi.
+EUROPETAXI24 derleyicisi.
 Kullanim: python3 kaynak/build.py
 Girdi : kaynak/template.html + strings.json + mesafe-verisi.json + isletme.json + assets/ + pay/
 Cikti : www/ (hosting'e yuklenen klasor)
@@ -230,7 +230,7 @@ def surumle(html):
 for _alt in ("assets", "assets/fonts", "assets/icons"):
     if (WWW / _alt).is_dir():
         (WWW / _alt / "index.html").write_text(
-            '<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><title>Europa Taxi</title>\n',
+            '<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><title>europetaxi24</title>\n',
             encoding="utf-8")
 
 # ---------------------------------------------------------------- dil sayfalari
@@ -255,24 +255,13 @@ for dil in DILLER:
     jsonld_isletme = seo.jsonld_graph(dil, SEO_CTX)
     jsonld_faq = seo.jsonld_faq(dil, SEO_CTX, [(s[f"faq{i}_q"], s[f"faq{i}_a"]) for i in range(1, 11)])
 
-    # h1: virgulden sonrasi altin vurgu. Her kelime maske+yukselis animasyonu icin
-    # <span class="w wN"><span>kelime</span></span> ile sarilir (animasyon saf CSS).
-    def kelime_sar(metin, ilk):
-        parcalar = metin.split(" ")
-        html = " ".join(
-            f'<span class="w w{min(ilk + i, 14)}"><span>{p}</span></span>'
-            for i, p in enumerate(parcalar)
-        )
-        return html, ilk + len(parcalar)
-
+    # h1: virgulden sonrasi amber vurgu (<em>)
     baslik = esc(s["hero_title"])
     if ", " in baslik:
         on, arka = baslik.split(", ", 1)
-        on_html, sonraki = kelime_sar(on + ",", 0)
-        arka_html, _ = kelime_sar(arka, sonraki)
-        hero_baslik = f"{on_html} <em>{arka_html}</em>"
+        hero_baslik = f"{on}, <em>{arka}</em>"
     else:
-        hero_baslik, _ = kelime_sar(baslik, 0)
+        hero_baslik = baslik
 
     # datalist: bu dilin gorunen adlari (havalimanlari once, sonra alfabetik)
     def sirala(oge):
@@ -283,31 +272,66 @@ for dil in DILLER:
         for _, yer in sorted(YERLER.items(), key=sirala)
     )
 
-    # populer rota chip'leri (fiyat KESIN tablodan)
-    chipler = []
-    for a, b in veri["populer"]:
-        km = KESIN_SOZLUK.get(f"{a}|{b}") or KESIN_SOZLUK.get(f"{b}|{a}")
+    def rota_km(a, b):
+        km = seo._km_veya_none(SEO_CTX, a, b)
+        if km is None:
+            hata(f"rota km bulunamadi: {a}|{b}")
+        return km
+
+    def sure_metni(km):
+        dk = round(km / SABIT["ort_hiz_kmh"] * 60)
+        return f"{dk // 60} h {dk % 60:02d}" if dk >= 60 else f"{dk} min"
+
+    # populer rota kartlari (yatay kaydirma; fiyat KESIN tablodan, "dès X")
+    rota_kartlari = []
+    for i, (a, b) in enumerate(veri["populer"]):
+        km = rota_km(a, b)
         toplam, _, _ = fiyat_hesapla(km)
-        chipler.append(
-            f'<a class="chip" href="#rezervasyon" data-alis="{a}" data-varis="{b}">'
-            f'<span>{esc(YERLER[a]["ad"][dil])}</span><span class="ok">→</span>'
-            f'<span>{esc(YERLER[b]["ad"][dil])}</span><b>{para_tam(dil, toplam)}</b></a>'
+        rota_kartlari.append(
+            f'<a class="chip dest-kart t{i % 4 + 1}" href="#rezervasyon" data-alis="{a}" data-varis="{b}">'
+            f'<span class="dk-yol">{esc(YERLER[a]["ad"][dil])}</span>'
+            f'<b class="dk-ad">{esc(YERLER[b]["ad"][dil])}</b>'
+            f'<span class="dk-alt">{km} km</span>'
+            f'<span class="dk-fiyat">{esc(s["zones_from"].replace("{price}", para_tam(dil, toplam)))}'
+            f'<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>'
         )
 
     # hizli baslat sekmeleri: hero'da tek dokunusla forma yuklenen ilk 4 populer rota
-    # (havalimani hedefli; fiyat KESIN tablodan, chip'lerle ayni kaynak)
     hizli = []
     for a, b in veri["populer"][:4]:
-        km = KESIN_SOZLUK.get(f"{a}|{b}") or KESIN_SOZLUK.get(f"{b}|{a}")
-        toplam, _, _ = fiyat_hesapla(km)
+        toplam, _, _ = fiyat_hesapla(rota_km(a, b))
         hizli.append(
             f'<button type="button" class="hizli-sekme" data-alis="{a}" data-varis="{b}" aria-pressed="false">'
-            f'<span class="hs-nereden">{esc(YERLER[a]["ad"][dil])}</span>'
-            f'<span class="hs-nereye">{esc(YERLER[b]["ad"][dil])}</span>'
+            f'<span class="hs-yol"><span class="hs-nereden">{esc(YERLER[a]["ad"][dil])}</span>'
+            f'<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg>'
+            f'<span class="hs-nereye">{esc(YERLER[b]["ad"][dil])}</span></span>'
             f'<b class="hs-fiyat">{para_tam(dil, toplam)}</b></button>'
         )
 
-    # arac kapasite satirlari
+    # hero/altbilgi ulke etiketleri (bayrak: saf CSS)
+    ulke_chips = "".join(
+        f'<li><i class="bayrak b-{k}" aria-hidden="true"></i>{esc(s["ulke_" + k])}</li>'
+        for k in ("be", "nl", "lu", "fr", "de"))
+
+    # "Nasil calisir" gorsel kartlari: gercek rota/fiyat KESIN tablodan
+    km1 = rota_km("brussels", "bru")
+    t1, k1, _ = fiyat_hesapla(km1)
+    km3 = rota_km("brussels", "gent")
+    nasil = {
+        "NASIL_A": esc(YERLER["brussels"]["ad"][dil]), "NASIL_B": esc(YERLER["bru"]["ad"][dil]),
+        "NASIL_KM": str(km1), "NASIL_SURE": sure_metni(km1),
+        "NASIL_FIYAT": para_tam(dil, t1), "NASIL_KAPORA": para_tam(dil, k1),
+        "NASIL_C": esc(YERLER["brussels"]["ad"][dil] + " → " + YERLER["gent"]["ad"][dil]),
+        "NASIL_C_KM": str(km3), "NASIL_C_SURE": sure_metni(km3),
+    }
+
+    # arac kapasite (sayi + metin)
+    arac_yer = {}
+    for kod in ("eco", "wagon", "vip"):
+        a = veri["araclar"][kod]
+        arac_yer[f"PAX_{kod.upper()}"] = str(a["yolcu"])
+        arac_yer[f"BAG_{kod.upper()}"] = f'{a["buyuk"]}+{a["kucuk"]}'
+
     def kapasite(kod):
         a = veri["araclar"][kod]
         return esc(s["veh_capacity"]
@@ -350,19 +374,29 @@ for dil in DILLER:
         return "".join(f"<p>{esc(p)}</p>" for p in metin.split("\n\n"))
 
     def bolgeler_html():
-        """Gorunur 'Hizmet bolgeleri' bolumu: seo.zone_data -> mevcut .chip bicimi."""
+        """Gorunur 'Hizmet bolgeleri' bolumu: seo.zone_data -> liste satirlari (ilk 6 acik, kalani 'Voir tout')."""
         z = seo.zone_data(dil, SEO_CTX)
-        def chip(o):
+
+        def satir(o):
             fiyat_etiketi = s["zones_from"].replace("{price}", o["fiyat_metin"])
-            return (f'<a class="chip" href="#rezervasyon" data-alis="{o["alis_anahtar"]}" '
-                    f'data-varis="{o["varis_anahtar"]}"><span>{esc(o["ad"])}</span>'
-                    f'<span class="ok">{o["km"]} km</span><b>{esc(fiyat_etiketi)}</b></a>')
+            return (f'<a class="chip sat" href="#rezervasyon" data-alis="{o["alis_anahtar"]}" '
+                    f'data-varis="{o["varis_anahtar"]}"><span class="sat-ad"><b>{esc(o["ad"])}</b>'
+                    f'<small>{esc(o["ulke_ad"])} · {o["km"]} km</small></span>'
+                    f'<span class="sat-fiyat">{esc(fiyat_etiketi)}</span>'
+                    f'<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>')
         bloklar = []
         for baslik, anahtar in (("zones_airports_t", "havalimanlari"), ("zones_cities_t", "sehirler"),
                                 ("zones_border_t", "sinir_otesi")):
-            bloklar.append(f'<h3 class="bolge-baslik">{esc(s[baslik])}</h3>\n'
-                           f'<div class="chipler">' + "\n".join(chip(o) for o in z[anahtar]) + '</div>')
-        return "\n      ".join(bloklar)
+            liste = z[anahtar]
+            ilk, kalan = liste[:6], liste[6:]
+            html = f'<h3 class="bolge-baslik">{esc(s[baslik])}</h3>\n<div class="satirlar">' + "".join(satir(o) for o in ilk)
+            if kalan:
+                html += ('<details class="plus"><summary>' + esc(s["view_all"].replace("{n}", str(len(liste))))
+                         + '<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="satirlar">'
+                         + "".join(satir(o) for o in kalan) + "</div></details>")
+            html += "</div>"
+            bloklar.append(html)
+        return "\n    ".join(bloklar)
 
     # ---- yer tutuculari doldur ----
     sayfa = sablon
@@ -374,7 +408,12 @@ for dil in DILLER:
         "JSONLD_FAQ": js_json(jsonld_faq),
         "HERO_BASLIK": hero_baslik,
         "DATALIST": datalist,
-        "ROTA_CHIPS": "\n      ".join(chipler),
+        "ROTA_KARTLARI": "\n      ".join(rota_kartlari),
+        "ULKE_CHIPS": ulke_chips,
+        "LOGO_SEMBOL": (KAYNAK / "logo-ic.svg").read_text(encoding="utf-8").strip(),
+        "DIL_KOD_BUYUK": dil.upper(),
+        **nasil,
+        **arac_yer,
         "BOLGELER": bolgeler_html(),
         "KAP_ECO": kapasite("eco"),
         "KAP_WAGON": kapasite("wagon"),
@@ -434,16 +473,16 @@ kok_html = f"""<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="dark">
+<meta name="color-scheme" content="light">
 <meta name="robots" content="noindex,follow">
-<title>Europa Taxi</title>
+<title>europetaxi24</title>
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <link rel="stylesheet" href="/assets/kok.css">
 <script src="/assets/kok.js"></script>
 </head>
 <body>
 <div class="kutu">
-  <h1>EUROPA<span>TAXI</span></h1>
+  <h1>EUROPETAXI<span>24</span></h1>
   <ul>
     {dil_linkleri}
   </ul>
@@ -456,10 +495,10 @@ kok_html = f"""<!doctype html>
 # 404: markali, noindex; Apache ErrorDocument ve Vercel bunu 404 durum koduyla sunar.
 # (Bilinmeyen adresleri /fr/'ye 301'lemek 'yumusak 404'tur; taramayi ve SEO'yu bozar.)
 nf_satirlari = "\n    ".join(f'<p class="nf-msg" lang="{strings[d]["dil_hreflang"]}">{esc(strings[d]["nf_msg"])}</p>' for d in DILLER)
-yok404_html = kok_html.replace("<title>Europa Taxi</title>", "<title>404 · Europa Taxi</title>", 1)
+yok404_html = kok_html.replace("<title>europetaxi24</title>", "<title>404 · europetaxi24</title>", 1)
 yok404_html = yok404_html.replace('<script src="/assets/kok.js"></script>\n', "", 1)   # 404'te dil yonlendirmesi YOK
-yok404_html = yok404_html.replace('<h1>EUROPA<span>TAXI</span></h1>',
-                                  '<h1>EUROPA<span>TAXI</span></h1>\n  <div class="nf">' + nf_satirlari + '</div>', 1)
+yok404_html = yok404_html.replace('<h1>EUROPETAXI<span>24</span></h1>',
+                                  '<h1>EUROPETAXI<span>24</span></h1>\n  <div class="nf">' + nf_satirlari + '</div>', 1)
 (WWW / "404.html").write_text(surumle(yok404_html), encoding="utf-8")
 
 # ---------------------------------------------------------------- .htaccess + sitemap + robots

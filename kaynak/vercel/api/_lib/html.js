@@ -33,7 +33,7 @@ function miniSayfa(dil, baslik, icerikHtml, yenile, yenileUrl) {
 '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
 '<meta name="robots" content="noindex,nofollow">\n' +
 '<meta name="color-scheme" content="dark">\n' +
-'<title>' + h(baslik) + ' · Europa Taxi</title>\n' +
+'<title>' + h(baslik) + ' · europetaxi24</title>\n' +
 '<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">\n' +
 yenileEtiketi + '\n' +
 '<style>\n' +
@@ -57,7 +57,7 @@ yenileEtiketi + '\n' +
 '</head>\n' +
 '<body>\n' +
 '<div class="kart">\n' +
-'  <div class="marka"><b>EUROPA</b><span>TAXI</span></div>\n' +
+'  <div class="marka"><b>EUROPETAXI</b><span>24</span></div>\n' +
 '  <h1>' + h(baslik) + '</h1>\n' +
 '  ' + icerikHtml + '\n' +
 '</div>\n' +

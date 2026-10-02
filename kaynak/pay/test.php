@@ -124,7 +124,7 @@ $postaSonucu = null;
 if ($eposta_testi) {
     $postaSonucu = eposta_gonder(
         sirket_eposta(),
-        'Europa Taxi kurulum testi',
+        'europetaxi24 kurulum testi',
         '<p>Bu bir kurulum test e-postasıdır. Bunu okuyorsanız e-posta ayarları çalışıyor.</p>',
         'Bu bir kurulum test e-postasidir.',
         null,
@@ -303,7 +303,7 @@ if (!$bilgi['web_disi']) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <meta name="color-scheme" content="dark">
-<title>Kurulum tanılama · Europa Taxi</title>
+<title>Kurulum tanılama · europetaxi24</title>
 <style>
 body{background:#0A0A0C;color:#F4F4F6;font:400 15px/1.6 system-ui,sans-serif;margin:0;padding:24px;max-width:860px;margin-inline:auto}
 h1{font-size:22px}h1 span{color:#FFC107}
@@ -320,7 +320,7 @@ code{background:#1A1A1F;padding:2px 6px;border-radius:6px}
 </style>
 </head>
 <body>
-<h1>EUROPA<span>TAXI</span> · Kurulum tanılama</h1>
+<h1>EUROPETAXI<span>24</span> · Kurulum tanılama</h1>
 <div class="uyari">⚠️ KURULUM BİTİNCE BU DOSYAYI (pay/test.php) SUNUCUDAN SİLİN.
 Bu sayfa yalnızca kurulum sırasında kullanılır.</div>
 <?= $kirmizi ?>

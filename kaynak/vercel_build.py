@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-EUROPA TAXI — Vercel derleyicisi (build.py'den SONRA calisir).
+EUROPETAXI24 — Vercel derleyicisi (build.py'den SONRA calisir).
 
 Kullanim:
     python3 kaynak/build.py            # once www/ uretilir

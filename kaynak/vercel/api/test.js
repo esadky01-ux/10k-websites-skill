@@ -136,7 +136,7 @@ function raporSayfasi(c, satirlarEnv, kontrolListesi, postaSonucu) {
   return '<!doctype html>\n<html lang="tr">\n<head>\n' +
 '<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
 '<meta name="robots" content="noindex,nofollow">\n<meta name="color-scheme" content="dark">\n' +
-'<title>Kurulum tanılama · Europa Taxi</title>\n<style>\n' +
+'<title>Kurulum tanılama · europetaxi24</title>\n<style>\n' +
 'body{background:#0A0A0C;color:#F4F4F6;font:400 15px/1.6 system-ui,sans-serif;margin:0;padding:24px;max-width:860px;margin-inline:auto}\n' +
 'h1{font-size:22px}h1 span{color:#FFC107}h2{font-size:17px;margin-top:28px}\n' +
 '.uyari{background:#B3261E22;border:1px solid #B3261E;color:#FFB4AE;border-radius:12px;padding:16px 18px;font-weight:700;margin:18px 0}\n' +
@@ -149,7 +149,7 @@ function raporSayfasi(c, satirlarEnv, kontrolListesi, postaSonucu) {
 '.sonuc.hata{background:#B3261E22;border:1px solid #B3261E;color:#FFB4AE}\n' +
 'code{background:#1A1A1F;padding:2px 6px;border-radius:6px}\n' +
 '</style>\n</head>\n<body>\n' +
-'<h1>EUROPA<span>TAXI</span> · Kurulum tanılama</h1>\n' +
+'<h1>EUROPETAXI<span>24</span> · Kurulum tanılama</h1>\n' +
 '<div class="uyari">⚠️ KURULUM BİTİNCE BU UÇ NOKTAYI KAPATIN: <code>api/test.js</code> dosyasını silin ve yeniden dağıtın.\n' +
 'Bu sayfa yalnızca kurulum sırasında kullanılır.</div>\n' +
 '<h2>Ortam değişkenleri (değerler gösterilmez)</h2>\n<table>' + envHtml + '</table>\n' +
@@ -230,7 +230,7 @@ module.exports = sarmala('test', async function handler(req, res, ctx) {
   if (req.method === 'POST' && form && form.ilk('eposta_testi') !== undefined) {
     postaSonucu = await epostaGonder(
       c.companyEmail,
-      'Europa Taxi kurulum testi',
+      'europetaxi24 kurulum testi',
       '<p>Bu bir kurulum test e-postasıdır. Bunu okuyorsanız e-posta ayarları çalışıyor.</p>',
       'Bu bir kurulum test e-postasidir.'
     );

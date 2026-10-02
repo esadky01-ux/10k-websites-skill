@@ -1,13 +1,13 @@
 /* ============================================================
-   EUROPA TAXI: istemci mantigi (app.js)  YON A "GECE YOLCULUGU"
+   europetaxi24: istemci mantigi (app.js)
    - Satir ici JS YOK: sayfa verisi #et-data JSON blogundan okunur.
    - config.js bu dosyadan ONCE yuklenir (ikisi de defer, sirali).
    Iki katmanli mesafe motoru:
      Katman 1: Google Places + Directions (anahtar varsa ve testi gecerse)
      Katman 2: dahili KESIN tablo + haversine x katsayi
    Google calismasa bile site TAM islevsel kalir (kabul kriteri).
-   Bolumler: 1 veri, 2 mesafe motoru, 3 Google, 4 form mantigi, 5 dogrulama/odeme,
-             6 canlilik (baslik, paralaks, sayaclar, rota cizgisi)
+   Bolumler: 1 veri, 2 mesafe motoru, 3 Google, 4 form mantigi + 3 adimli sihirbaz,
+             5 dogrulama/odeme, 6 sayfa davranisi (baslik, menu)
    ============================================================ */
 (function () {
 "use strict";
@@ -51,17 +51,10 @@ document.querySelectorAll("[data-dil]").forEach(function(a){
 });
 dilKaydet(DIL);
 
-/* ---- hareket tercihi: CANLI dinlenir (sistem ayari degisirse hemen uygulanir) ---- */
+/* ---- hareket tercihi: sistem ayari canli okunur ---- */
 var hareketMq = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
 function hareketAzalt(){ return !!(hareketMq && hareketMq.matches); }
 function kaydirmaDavranisi(){ return hareketAzalt() ? "auto" : "smooth"; }
-var hareketDinleyicileri = [];
-function hareketDegisince(fn){ hareketDinleyicileri.push(fn); }
-if (hareketMq){
-  var hareketOlay = function(){ hareketDinleyicileri.forEach(function(fn){ fn(hareketAzalt()); }); };
-  if (hareketMq.addEventListener) hareketMq.addEventListener("change", hareketOlay);
-  else if (hareketMq.addListener) hareketMq.addListener(hareketOlay);
-}
 
 /* ============================================================
    2. MESAFE MOTORU
@@ -112,9 +105,7 @@ var durum = {
   sureDk: null,
   kaynak: null,           // "google" | "dahili"
   arac: "eco",
-  yontem: "online",
   googleAktif: false,
-  onaylandi: false,
   sayac: { yolcu: 1, buyuk: 0, kucuk: 0 }
 };
 var SAYAC_SINIR = { yolcu: {min:1, max:7}, buyuk: {min:0, max:6}, kucuk: {min:0, max:4} };
@@ -131,11 +122,14 @@ function vurgu(){
 }
 function paneliGuncelle(){
   var panel = $("fiyat-panel");
-  var f = $("p-fiyat"), kap = $("p-kapora"), kal = $("p-kalan"),
-      mes = $("p-mesafe"), sur = $("p-sure"), dur = $("p-durum"),
+  var mes = $("p-mesafe"), sur = $("p-sure"), dur = $("p-durum"),
       onlineDetay = $("odeme-online-detay");
+  /* data-v="toplam|kapora|kalan": fiyat paneli, adim 2 toplam satiri ve adim 3 ozeti ayni degeri gosterir */
+  function degerYaz(ad, metin){
+    document.querySelectorAll('[data-v="' + ad + '"]').forEach(function(el){ el.textContent = metin; });
+  }
   if (durum.km === null){
-    f.textContent = "—"; kap.textContent = "—"; kal.textContent = "—";
+    degerYaz("toplam", "—"); degerYaz("kapora", "—"); degerYaz("kalan", "—");
     mes.textContent = "—"; sur.textContent = "—";
     panel.classList.remove("dolu");
     sonToplam = null;
@@ -145,9 +139,9 @@ function paneliGuncelle(){
   var toplam = Math.round((SABIT.ACILIS + durum.km * SABIT.KM_UCRET) * 100) / 100;
   var kapora = Math.round(toplam * SABIT.KAPORA_YUZDE) / 100;
   var kalan  = Math.round((toplam - kapora) * 100) / 100;
-  f.textContent = paraFormat(toplam);
-  kap.textContent = paraFormat(kapora);
-  kal.textContent = paraFormat(kalan);
+  degerYaz("toplam", paraFormat(toplam));
+  degerYaz("kapora", paraFormat(kapora));
+  degerYaz("kalan", paraFormat(kalan));
   mes.textContent = durum.km + " km";
   sur.textContent = durum.sureDk !== null ? ("≈ " + durum.sureDk + " min") : "—";
   if (onlineDetay) onlineDetay.textContent = doldur(SOZ.paym_online_d, {deposit: paraFormat(kapora), rest: paraFormat(kalan)});
@@ -315,10 +309,7 @@ function modAyarla(m){
   $("mod-hava").setAttribute("aria-pressed", km ? "false" : "true");
   $("fiyat-panel").hidden = !km;
   $("hava-panel").hidden = km;
-  $("odeme-yontem-alani").hidden = !km;
-  $("btn-onayla").hidden = !km;
-  $("odeme-final").classList.remove("acik");
-  durum.onaylandi = false;
+  $("btn-ileri-1").hidden = !km;
   if (km) hesapla();
 }
 $("mod-km").addEventListener("click", function(){ modAyarla("km"); });
@@ -419,16 +410,6 @@ document.querySelectorAll('a[href="#rezervasyon"]:not(.chip)').forEach(function(
   });
 });
 
-/* ---- odeme yontemi kartlari ---- */
-document.querySelectorAll(".odeme-kart").forEach(function(k){
-  k.addEventListener("click", function(){
-    durum.yontem = k.getAttribute("data-yontem");
-    document.querySelectorAll(".odeme-kart").forEach(function(x){
-      x.setAttribute("aria-pressed", x === k ? "true" : "false");
-    });
-  });
-});
-
 /* ---- rota chip'leri + hizli baslat sekmeleri: rotayi forma yukle ---- */
 function sekmeTemizle(){
   document.querySelectorAll(".hizli-sekme[aria-pressed='true']").forEach(function(s){
@@ -449,6 +430,7 @@ document.querySelectorAll(".chip, .hizli-sekme").forEach(function(c){
       sekmeTemizle();
       if (sekme) c.setAttribute("aria-pressed", "true");
       vurguErtele = true;     /* parlama kaydirma bittikten sonra */
+      adimGoster(1, false);
       modAyarla("km");
       hesapla();
       vurguErtele = false;
@@ -464,16 +446,28 @@ document.querySelectorAll(".chip, .hizli-sekme").forEach(function(c){
 function gecersizTemizle(){
   document.querySelectorAll('#rezervasyon [aria-invalid="true"]').forEach(function(e){ e.removeAttribute("aria-invalid"); });
 }
+function adimDe(el){
+  var a = el && el.closest ? el.closest("[data-adim]") : null;
+  return a ? parseInt(a.getAttribute("data-adim"), 10) : adimNo;
+}
 function hataGoster(mesaj, odak){
-  var kutu = $("hata-kutu");
+  var n = odak ? adimDe(odak) : adimNo;
+  if (n !== adimNo) adimGoster(n, false);   /* hatali alan baska adimdaysa oraya don */
+  hataTemizle();
+  var kutu = document.querySelector('[data-adim-hata="' + n + '"]') || $("hata-kutu");
   kutu.textContent = mesaj;
-  kutu.classList.remove("acik");
   void kutu.offsetWidth;          // sarsma animasyonu her hatada yeniden oynasin
   kutu.classList.add("acik");
-  gecersizTemizle();
-  if (odak){ odak.setAttribute("aria-invalid", "true"); odak.focus(); }   // hatali alan kirmizi vurgulanir
+  if (odak){
+    odak.setAttribute("aria-invalid", "true");
+    odak.focus({preventScroll: true});
+    odak.scrollIntoView({behavior: kaydirmaDavranisi(), block: "center"});
+  }
 }
-function hataTemizle(){ $("hata-kutu").classList.remove("acik"); gecersizTemizle(); }
+function hataTemizle(){
+  document.querySelectorAll(".hata-kutu").forEach(function(k){ k.classList.remove("acik"); });
+  gecersizTemizle();
+}
 /* kullanici alani duzeltmeye baslayinca kirmizi vurgu kalkar */
 ["input", "change"].forEach(function(o){
   $("rezervasyon").addEventListener(o, function(ev){
@@ -484,13 +478,20 @@ function hataTemizle(){ $("hata-kutu").classList.remove("acik"); gecersizTemizle
 function epostaGecerli(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e); }
 function telefonGecerli(t){ return (t.replace(/\D/g,"").length) >= 8; }
 
-function ortakDogrula(){
+function adim1Dogrula(){
   if (!$("f-alis").value.trim() || !$("f-varis").value.trim())
     return {mesaj: SOZ.val_route, odak: $("f-alis")};
   if (durum.mod === "km" && durum.km === null)
     return {mesaj: SOZ.val_price, odak: $("f-alis")};
   if (!$("f-tarih").value || !$("f-saat").value)
-    return {mesaj: SOZ.val_date, odak: $("f-tarih")};
+    return {mesaj: SOZ.val_date, odak: !$("f-tarih").value ? $("f-tarih") : $("f-saat")};
+  if ($("f-donus").checked && (!$("f-donus-tarih").value || !$("f-donus-saat").value))
+    return {mesaj: SOZ.val_date, odak: !$("f-donus-tarih").value ? $("f-donus-tarih") : $("f-donus-saat")};
+  return null;
+}
+function ortakDogrula(){
+  var h = adim1Dogrula();
+  if (h) return h;
   if (!$("f-iptal").checked)
     return {mesaj: SOZ.val_cancel, odak: $("f-iptal")};
   return null;
@@ -502,16 +503,58 @@ function iletisimDogrula(){
   return null;
 }
 
-/* ---- rezervasyonu onayla -> odeme secimi ---- */
+/* ---- 3 adimli sihirbaz: yolculuk -> arac + iletisim -> ozet + odeme ---- */
+var adimNo = 1;
+function aracAdi(){
+  return { eco: SOZ.veh_eco, wagon: SOZ.veh_wagon, vip: SOZ.veh_vip }[durum.arac];
+}
+function ozetCiz(){
+  $("o-alis").textContent = $("f-alis").value.trim() || "—";
+  $("o-varis").textContent = $("f-varis").value.trim() || "—";
+  $("o-tarih").textContent = tarihYaz($("f-tarih").value, $("f-saat").value) || "—";
+  var donus = $("f-donus").checked && $("f-donus-tarih").value;
+  $("o-donus-satir").hidden = !donus;
+  if (donus) $("o-donus").textContent = tarihYaz($("f-donus-tarih").value, $("f-donus-saat").value);
+  $("o-arac").textContent = aracAdi();
+  $("o-yolcu").textContent = String(durum.sayac.yolcu);
+  var valiz = durum.sayac.buyuk + durum.sayac.kucuk > 0;
+  $("o-bag-satir").hidden = !valiz;
+  if (valiz) $("o-bag").textContent = durum.sayac.buyuk + " · " + durum.sayac.kucuk;
+}
+function adimGoster(n, kaydir){
+  adimNo = n;
+  document.querySelectorAll(".adim").forEach(function(el){
+    el.classList.toggle("acik", el.getAttribute("data-adim") === String(n));
+  });
+  document.querySelectorAll(".adim-cubuk li").forEach(function(li){
+    var g = parseInt(li.getAttribute("data-git"), 10);
+    li.classList.toggle("on", g === n);
+    li.classList.toggle("bitti", g < n);
+  });
+  if (n === 3) ozetCiz();
+  if (kaydir !== false) $("rezervasyon").scrollIntoView({behavior: kaydirmaDavranisi(), block: "start"});
+}
+$("btn-ileri-1").addEventListener("click", function(){
+  hataTemizle();
+  var h = adim1Dogrula();
+  if (h){ hataGoster(h.mesaj, h.odak); return; }
+  adimGoster(2);
+});
+$("btn-ileri-2").addEventListener("click", function(){ hataTemizle(); adimGoster(3); });
+document.querySelectorAll(".btn-geri").forEach(function(b){
+  b.addEventListener("click", function(){ hataTemizle(); adimGoster(parseInt(b.getAttribute("data-git"), 10)); });
+});
+document.querySelectorAll(".adim-cubuk li").forEach(function(li){
+  li.addEventListener("click", function(){
+    var g = parseInt(li.getAttribute("data-git"), 10);
+    if (g < adimNo) adimGoster(g);          /* yalniz geri; ileri gitmek dogrulamadan gecer */
+  });
+});
+/* Enter tusu sayfayi gondermesin; adim 1-2'de "devam" gibi calissin */
 $("rezervasyon").addEventListener("submit", function(ev){
   ev.preventDefault();
-  hataTemizle();
-  var h = ortakDogrula();
-  if (h){ hataGoster(h.mesaj, h.odak); return; }
-  durum.onaylandi = true;
-  var final = $("odeme-final");
-  final.classList.add("acik");
-  final.scrollIntoView({behavior: kaydirmaDavranisi(), block: "nearest"});
+  var ileri = $("btn-ileri-" + adimNo);
+  if (ileri && !ileri.hidden) ileri.click();
 });
 
 /* ---- online ode: POST /pay/create.php (sunucu fiyati YENIDEN hesaplar) ---- */
@@ -570,7 +613,7 @@ $("btn-wa").addEventListener("click", function(){
   hataTemizle();
   var h = ortakDogrula();   /* iletisim WhatsApp'ta OPSIYONEL */
   if (h){ hataGoster(h.mesaj, h.odak); return; }
-  var aracAd = { eco: SOZ.veh_eco, wagon: SOZ.veh_wagon, vip: SOZ.veh_vip }[durum.arac];
+  var aracAd = aracAdi();
   var satirlar = [SOZ.wa_title, ""];
   if (durum.mod === "hava") satirlar.push(SOZ.wa_mode_airport);
   satirlar.push(doldur(SOZ.wa_route, {from: $("f-alis").value.trim(), to: $("f-varis").value.trim()}));
@@ -601,154 +644,41 @@ $("btn-wa").addEventListener("click", function(){
 paneliGuncelle();
 
 /* ============================================================
-   6. CANLILIK: baslik, paralaks, sayilan rakamlar, rota cizgisi
-   Hepsi ilerici gelistirme: JS calismazsa icerik yine tam gorunur.
+   6. SAYFA DAVRANISI: yapiskan baslik, menu, dil menusu
+   Hepsi ilerici gelistirme: JS calismazsa <details> ile menu yine acilir/kapanir.
    ============================================================ */
-var IO = "IntersectionObserver" in window;
-var ust = $("ust"), hero = $("top");
-
-/* ---- yapiskan baslik: gercek yuksekligi CSS'e bildir + kaydirinca cam gorunum ---- */
+var ust = $("ust");
+var menu = $("menu");
 function ustOlc(){
   document.documentElement.style.setProperty("--ust-yuk", ust.offsetHeight + "px");
 }
 ustOlc();
 if (window.ResizeObserver) new ResizeObserver(ustOlc).observe(ust);
 else window.addEventListener("resize", ustOlc);
-
-/* ---- paralaks: cok hafif, yalniz transform, rAF ile, imlec + kaydirma ---- */
-var plx = { hedefX: 0, hedefY: 0, x: 0, y: 0, kare: 0, gorunur: true, acik: false, katmanlar: [] };
-document.querySelectorAll("[data-plx]").forEach(function(el){
-  plx.katmanlar.push({ el: el, f: parseFloat(el.getAttribute("data-plx")) || 1 });
-});
-function plxCiz(){
-  plx.kare = 0;
-  var kaydirma = Math.min(window.pageYOffset || 0, 900);
-  plx.x += (plx.hedefX - plx.x) * 0.085;
-  plx.y += (plx.hedefY - plx.y) * 0.085;
-  plx.katmanlar.forEach(function(k){
-    var tx = plx.x * k.f * -7;
-    var ty = plx.y * k.f * -5 + kaydirma * k.f * 0.045;
-    k.el.style.transform = "translate3d(" + tx.toFixed(2) + "px," + ty.toFixed(2) + "px,0)";
-  });
-  /* imlec hedefine yaklasana kadar devam et */
-  if (Math.abs(plx.hedefX - plx.x) > 0.002 || Math.abs(plx.hedefY - plx.y) > 0.002) plxIste();
-}
-function plxIste(){
-  if (!plx.acik || !plx.gorunur || plx.kare) return;
-  plx.kare = requestAnimationFrame(plxCiz);
-}
-function plxAyarla(azalt){
-  plx.acik = !azalt;
-  if (azalt){
-    if (plx.kare){ cancelAnimationFrame(plx.kare); plx.kare = 0; }
-    plx.hedefX = plx.hedefY = plx.x = plx.y = 0;
-    plx.katmanlar.forEach(function(k){ k.el.style.transform = ""; });
-  } else plxIste();
-}
-if (hero){
-  hero.addEventListener("pointermove", function(ev){
-    if (!plx.acik || ev.pointerType !== "mouse") return;
-    plx.hedefX = (ev.clientX / window.innerWidth - 0.5) * 2;
-    plx.hedefY = (ev.clientY / window.innerHeight - 0.5) * 2;
-    plxIste();
-  }, { passive: true });
-  hero.addEventListener("pointerleave", function(){ plx.hedefX = plx.hedefY = 0; plxIste(); }, { passive: true });
-}
-function kaydirmaOlayi(){
-  ust.classList.toggle("kaydi", (window.pageYOffset || 0) > 12);
-  plxIste();
-}
+function kaydirmaOlayi(){ ust.classList.toggle("kaydi", (window.pageYOffset || 0) > 8); }
 window.addEventListener("scroll", kaydirmaOlayi, { passive: true });
 kaydirmaOlayi();
-plxAyarla(hareketAzalt());
-hareketDegisince(plxAyarla);
 
-/* ---- hero gorunmuyorsa/sekme arka plandaysa animasyonlar dursun (pil + CPU) ---- */
-function durgunAyarla(){
-  var gorunmuyor = !plx.gorunur || document.hidden;
-  if (hero) hero.classList.toggle("durgun", gorunmuyor);
-}
-if (IO && hero){
-  new IntersectionObserver(function(kayitlar){
-    plx.gorunur = kayitlar[kayitlar.length - 1].isIntersecting;
-    durgunAyarla();
-    plxIste();
-  }).observe(hero);
-}
-document.addEventListener("visibilitychange", durgunAyarla);
-
-/* ---- guven seridi: rakamlar gorunce sayilir (metin JS'siz de nihai halde) ---- */
-var sayilar = [];
-document.querySelectorAll(".sayi").forEach(function(el){
-  var son = el.textContent, para = el.getAttribute("data-para"), hedef, bicim;
-  if (para){
-    hedef = parseFloat(para);
-    bicim = function(v){ return paraFormat(v); };
-  } else {
-    var m = /^(\d+)(.*)$/.exec(son);
-    if (!m) return;
-    hedef = parseInt(m[1], 10);
-    bicim = (function(ek){ return function(v){ return Math.round(v) + ek; }; })(m[2]);
-  }
-  sayilar.push({ el: el, son: son, hedef: hedef, bicim: bicim, bitti: false, kare: 0 });
+function menuKapat(){ if (menu.open){ menu.open = false; } }
+menu.addEventListener("toggle", function(){
+  document.documentElement.classList.toggle("menu-acik", menu.open);
+  menu.querySelector("summary").setAttribute("aria-expanded", menu.open ? "true" : "false");
 });
-function sayiBitir(s){
-  if (s.kare){ cancelAnimationFrame(s.kare); s.kare = 0; }
-  s.bitti = true;
-  s.el.textContent = s.son;
+menu.querySelectorAll("a").forEach(function(a){ a.addEventListener("click", menuKapat); });
+/* genis ekrana gecilirse acik menu kalmasin (kaydirma kilidi de kalksin) */
+if (window.matchMedia){
+  var genis = window.matchMedia("(min-width: 1100px)");
+  var genisOlay = function(){ if (genis.matches) menuKapat(); };
+  if (genis.addEventListener) genis.addEventListener("change", genisOlay); else if (genis.addListener) genis.addListener(genisOlay);
 }
-function sayiOynat(s){
-  if (s.bitti) return;
-  var t0 = null, sure = 1500;
-  function adim(t){
-    if (t0 === null) t0 = t;
-    var p = Math.min((t - t0) / sure, 1);
-    var e = 1 - Math.pow(1 - p, 3);            // ease-out cubic
-    if (p < 1){ s.el.textContent = s.bicim(s.hedef * e); s.kare = requestAnimationFrame(adim); }
-    else sayiBitir(s);
-  }
-  s.kare = requestAnimationFrame(adim);
-}
-if (IO && !hareketAzalt()){
-  var sayiGozcu = new IntersectionObserver(function(kayitlar){
-    kayitlar.forEach(function(k){
-      if (!k.isIntersecting) return;
-      sayiGozcu.unobserve(k.target);
-      var s = sayilar.filter(function(x){ return x.el === k.target; })[0];
-      if (s) sayiOynat(s);
-    });
-  }, { threshold: 0.6 });
-  sayilar.forEach(function(s){
-    /* yalniz ekranin ALTINDAKI rakamlar sifirlanir; ekrandakiler (ve tarayici botlari) nihai degeri gorur */
-    if (s.el.getBoundingClientRect().top > window.innerHeight){
-      s.el.textContent = s.bicim(0);
-      sayiGozcu.observe(s.el);
-    }
-  });
-}
-hareketDegisince(function(azalt){ if (azalt) sayilar.forEach(sayiBitir); });
-
-/* ---- nasil calisir: rota cizgisi. CSS animation-timeline destegi yoksa IntersectionObserver ---- */
-var adimlar = document.querySelector(".adimlar");
-var adimGozcu = null;
-function rotaHazirla(azalt){
-  if (!adimlar) return;
-  var destek = window.CSS && CSS.supports && CSS.supports("animation-timeline: view()");
-  if (destek || azalt || !IO){
-    adimlar.classList.remove("hazir");
-    if (adimGozcu){ adimGozcu.disconnect(); adimGozcu = null; }
-    return;
-  }
-  adimlar.classList.add("hazir");
-  if (adimGozcu) adimGozcu.disconnect();
-  adimGozcu = new IntersectionObserver(function(kayitlar){
-    kayitlar.forEach(function(k){
-      if (k.isIntersecting){ k.target.classList.add("canli"); adimGozcu.unobserve(k.target); }
-    });
-  }, { threshold: 0.5, rootMargin: "0px 0px -8% 0px" });
-  adimlar.querySelectorAll(".adim:not(.canli)").forEach(function(li){ adimGozcu.observe(li); });
-}
-rotaHazirla(hareketAzalt());
-hareketDegisince(rotaHazirla);
+document.addEventListener("keydown", function(ev){
+  if (ev.key !== "Escape") return;
+  menuKapat();
+  document.querySelectorAll(".dil-menu[open]").forEach(function(d){ d.open = false; });
+});
+/* dil menusu: disina tiklaninca kapanir */
+document.addEventListener("click", function(ev){
+  document.querySelectorAll(".dil-menu[open]").forEach(function(d){ if (!d.contains(ev.target)) d.open = false; });
+});
 
 })();

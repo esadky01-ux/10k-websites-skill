@@ -301,7 +301,7 @@ print("— H. isletme / araclar / populer rotalar / dil bekcileri")
 
 # Isletme sabitleri (sartname §1, birebir)
 isletme = json.loads((KOK / "isletme.json").read_text(encoding="utf-8"))
-kontrol(isletme["marka"] == "Europa Taxi", "isletme.marka yanlis")
+kontrol(isletme["marka"] == "europetaxi24", "isletme.marka yanlis")
 kontrol(isletme["slogan"] == "Your Ride, Our Priority", "isletme.slogan yanlis")
 kontrol(isletme["unvan"] == "CAN COMPANY", "isletme.unvan yanlis")
 kontrol(isletme["kdv"] == "BE 1016.219.906", "isletme.kdv yanlis")

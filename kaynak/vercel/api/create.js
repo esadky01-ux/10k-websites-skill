@@ -155,7 +155,7 @@ module.exports = sarmala('create', async function handler(req, res, ctx) {
   // Istemci uretimi idem belirteci (16-64 [A-Za-z0-9-]) Idempotency-Key olur; yoksa 'et-<siparis no>'.
   const { kod, veri: odeme } = await mollie('POST', 'payments', {
     amount: { currency: 'EUR', value: f.kaporaStr },
-    description: 'Europa Taxi ' + no,
+    description: 'europetaxi24 ' + no,
     redirectUrl: site + '/pay/success.php?order=' + no + '&dil=' + dil,
     webhookUrl: site + '/pay/webhook.php',
     locale: MOLLIE_YEREL[dil],

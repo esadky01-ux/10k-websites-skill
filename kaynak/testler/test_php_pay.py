@@ -1415,7 +1415,7 @@ def senaryo_birim_dis_servis():
         if len(bi) == 2:
             g0, g1 = json.loads(bi[0]["govde"]), json.loads(bi[1]["govde"])
             kontrol(bi[0]["baslik"].get("api-key") == "xkeysib-Deneme0123456789" and bi[0]["baslik"].get("content-type") == "application/json", "Brevo api-key + content-type basliklari")
-            kontrol(g0["sender"] == {"name": "Europa Taxi", "email": "noreply@sirket.test"} and g0["to"] == [{"email": "jan@x.be"}] and g0["subject"] == "Brevo konu"
+            kontrol(g0["sender"] == {"name": "europetaxi24", "email": "noreply@sirket.test"} and g0["to"] == [{"email": "jan@x.be"}] and g0["subject"] == "Brevo konu"
                     and g0["htmlContent"] == "<p>Brevo govde</p>" and g0["textContent"] == "Brevo metin", f"Brevo govdesi: {g0}")
             kontrol(g0.get("replyTo") == {"email": "is@sirket.test"}, f"Brevo replyTo = company_email: {g0.get('replyTo')}")
             kontrol("replyTo" not in g1 and g1["to"] == [{"email": "is@sirket.test"}], "sirket e-postasinda replyTo yok")
@@ -1700,7 +1700,7 @@ def senaryo_mutlu_yol():
     kontrol(re.fullmatch(rf"http://127\.0\.0\.1:{PORTLAR['mock']}/checkout/tr_[A-Za-z0-9]{{10}}", loc or "") is not None, f"Location mock checkout olmali: {loc}")
     o = s.odeme
     kontrol(o["amount"] == {"currency": "EUR", "value": "24.29"}, f"odeme tutari 24.29: {o['amount']}")
-    kontrol(o["description"] == "Europa Taxi " + s.no and re.fullmatch(r"ET-\d{6}-[0-9A-F]{6}", s.no) is not None, f"description/no: {o['description']}")
+    kontrol(o["description"] == "europetaxi24 " + s.no and re.fullmatch(r"ET-\d{6}-[0-9A-F]{6}", s.no) is not None, f"description/no: {o['description']}")
     kontrol(o["status"] == "open" and o["locale"] == "nl_BE", "durum open, locale nl_BE")
     kontrol(o["redirectUrl"] == f"http://127.0.0.1:{PORTLAR['A']}/pay/success.php?order={s.no}&dil=nl", f"redirectUrl: {o['redirectUrl']}")
     kontrol(o["webhookUrl"] == f"http://127.0.0.1:{PORTLAR['A']}/pay/webhook.php", f"webhookUrl: {o['webhookUrl']}")
@@ -1785,7 +1785,7 @@ def senaryo_paid():
         m, sk = musteri[0], sirket[0]
         kontrol(m["konu"] == t("nl", "em_subject", ref=s.no) and "Uw reservering" in m["konu"], f"musteri konusu Flamanca: {m['konu']}")
         kontrol("voorschot" in m["html"].lower() and "24,29 €" in m["html"] and "97,15 €" in m["html"] and s.no in m["html"], "musteri govdesi: voorschot, 24,29, 97,15, referans")
-        kontrol(m["gonderen"]["email"] == GONDEREN and m["gonderen"]["name"] == "Europa Taxi", f"gonderen: {m['gonderen']}")
+        kontrol(m["gonderen"]["email"] == GONDEREN and m["gonderen"]["name"] == "europetaxi24", f"gonderen: {m['gonderen']}")
         kontrol("Jan &quot;J&quot; O&#039;Brien &amp; &lt;b&gt;Zn&lt;/b&gt;" in m["html"] and "<b>Zn</b>" not in m["html"], "musteri e-postasi HTML kacisli")
         kontrol("ARACTA TAHSIL: 97,15 EUR" in sk["metin"] and "Odenen kapora: 24,29 EUR" in sk["metin"] and "Toplam       : 121,44 EUR" in sk["metin"], f"is emri tutarlari:\n{sk['metin']}")
         kontrol("Donus        : " in sk["metin"] and ", saat 18:00" in sk["metin"], "is emrinde donus")
@@ -2664,7 +2664,7 @@ def senaryo_test_ucu():
     n0 = len(postalar())
     y2 = istek("A", "POST", "/pay/test.php", {"eposta_testi": "1", "csrf": tok2}, cerez=ck2)
     P = postalar()
-    kontrol(y2.kod == 200 and len(P) == n0 + 1 and P[-1]["alicilar"] == [SIRKET_EPOSTA] and P[-1]["konu"] == "Europa Taxi kurulum testi" and "Gönderildi" in y2.metin, f"test e-postasi COMPANY_EMAIL'e ({len(P)}, {y2.kod})")
+    kontrol(y2.kod == 200 and len(P) == n0 + 1 and P[-1]["alicilar"] == [SIRKET_EPOSTA] and P[-1]["konu"] == "europetaxi24 kurulum testi" and "Gönderildi" in y2.metin, f"test e-postasi COMPANY_EMAIL'e ({len(P)}, {y2.kod})")
     y3 = istek("A", "POST", "/pay/test.php", {"eposta_testi": "1"}, cerez=ck2)
     kontrol(y3.kod == 403 and len(postalar()) == n0 + 1, "CSRF'siz test e-postasi -> 403, gonderilmez")
     n1 = len(postalar())

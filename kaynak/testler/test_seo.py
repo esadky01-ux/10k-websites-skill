@@ -342,7 +342,8 @@ for d in DILLER:
     n_eski, n_yeni = kapsam(d, eski), kapsam(d, yeni)
     kontrol(n_yeni >= n_eski, f"[{d}] yeni title+description anahtar kelime kapsami ({n_yeni}) eskisinden ({n_eski}) az")
     if any(k in seo_strings[d] for k in ("meta_title", "meta_desc")):
-        kontrol(n_yeni > n_eski, f"[{d}] meta override 'gercekten daha iyi' degil: kapsam {n_eski} -> {n_yeni}")
+        kontrol(n_yeni > n_eski or n_eski == len(KELIMELER[d]),
+                f"[{d}] meta override 'gercekten daha iyi' degil: kapsam {n_eski} -> {n_yeni}")
     print(f"   {d}: title+description anahtar kelime kapsami {n_eski}/{len(KELIMELER[d])} -> {n_yeni}/{len(KELIMELER[d])}")
     # sayfa duzeyi: her anahtar kelime, sayfadaki (birlesik) tek bir metin parcasinda dogal olarak gecmeli
     parcalar = [seo.statik_doldur(d, v, ctx) for k, v in birlesik[d].items() if not k.startswith("_") and isinstance(v, str)]
@@ -763,7 +764,7 @@ kontrol(SECURITY.endswith("\n"), "security.txt satir sonuyla bitmeli")
 print("— I. manifest.webmanifest + PNG ikonlar")
 json.loads(json.dumps(MANIFEST))
 kontrol(seo.manifest_json(ctx).endswith("\n") and json.loads(seo.manifest_json(ctx)) == MANIFEST, "manifest_json gecerli")
-for k, v in (("name", "Europa Taxi"), ("short_name", "Europa Taxi"), ("start_url", "/"), ("scope", "/"),
+for k, v in (("name", "europetaxi24"), ("short_name", "europetaxi24"), ("start_url", "/"), ("scope", "/"),
              ("background_color", "#0A0A0C"), ("theme_color", "#0A0A0C"), ("lang", "fr-BE"), ("id", "/")):
     kontrol(MANIFEST.get(k) == v, f"manifest.{k} = {MANIFEST.get(k)!r}, beklenen {v!r}")
 kontrol(MANIFEST["display"] in ("minimal-ui", "standalone", "browser"), "manifest.display")
@@ -782,16 +783,25 @@ for ik in MANIFEST["icons"]:
     kontrol((w, h) == beyan, f"{ik['src']} beyan {beyan} ama PNG {w}x{h}")
     kontrol(ik["type"] == "image/png", f"{ik['src']} type")
     purposeler.add(ik["purpose"])
-    kontrol(piksel(0, 0) == (10, 10, 12) and piksel(w - 1, h - 1) == (10, 10, 12) and piksel(w - 1, 0) == (10, 10, 12),
-            f"{ik['src']} kose pikselleri #0A0A0C olmali: {piksel(0, 0)}")
-    altin = [(x, y) for y in range(0, h, 2) for x in range(0, w, 2)
-             if abs(piksel(x, y)[0] - 255) < 20 and abs(piksel(x, y)[1] - 193) < 25 and piksel(x, y)[2] < 60]
-    kontrol(len(altin) >= (w * h / 4) * 0.02, f"{ik['src']} altin (#FFC107) ikon pikseli yok/az: {len(altin)}")
+    def amber(rgb):
+        return abs(rgb[0] - 247) < 20 and abs(rgb[1] - 179) < 25 and rgb[2] < 80
+
+    def murekkep(rgb):
+        return rgb[0] < 40 and rgb[1] < 40 and rgb[2] < 40
+    koseler = [piksel(0, 0), piksel(w - 1, h - 1), piksel(w - 1, 0)]
     if ik["purpose"] == "maskable":
-        # maskable guvenli bolge: merkez daire capi %80 disinda ALTIN piksel olmamali
+        kontrol(all(amber(k) for k in koseler), f"{ik['src']} maskable: tam kare amber zemin olmali: {koseler}")
+    else:   # 'any': yuvarlatilmis amber kare; kose saydam (siyah okunur) ya da amber
+        kontrol(all(amber(k) or k == (0, 0, 0) for k in koseler), f"{ik['src']} kose pikselleri saydam/amber olmali: {koseler}")
+    orta = [(x, y) for y in range(0, h, 2) for x in range(0, w, 2) if amber(piksel(x, y))]
+    kontrol(len(orta) >= (w * h / 4) * 0.30, f"{ik['src']} amber zemin az: {len(orta)}")
+    murek = [(x, y) for y in range(0, h, 2) for x in range(0, w, 2) if murekkep(piksel(x, y))]
+    kontrol(len(murek) >= (w * h / 4) * 0.04, f"{ik['src']} murekkep isaret yok/az: {len(murek)}")
+    if ik["purpose"] == "maskable":
+        # maskable guvenli bolge: merkez daire capi %80 disinda MUREKKEP isaret piksel olmamali
         merkez, yaricap = w / 2, w * 0.40
-        disarida = [1 for (x, y) in altin if ((x - merkez) ** 2 + (y - merkez) ** 2) ** 0.5 > yaricap]
-        kontrol(not disarida, f"{ik['src']} maskable guvenli bolge disina tasan altin piksel: {len(disarida)}")
+        disarida = [1 for (x, y) in murek if ((x - merkez) ** 2 + (y - merkez) ** 2) ** 0.5 > yaricap]
+        kontrol(not disarida, f"{ik['src']} maskable guvenli bolge disina tasan isaret piksel: {len(disarida)}")
 kontrol({"any", "maskable"} <= purposeler, "manifest 'any' ve 'maskable' ikon icermeli")
 kontrol(any(ik["sizes"] == "192x192" for ik in MANIFEST["icons"]) and
         any(ik["sizes"] == "512x512" and ik["purpose"] == "any" for ik in MANIFEST["icons"]), "192 ve 512 ikon")
@@ -799,7 +809,8 @@ apple = KAYNAK / seo.APPLE_TOUCH_ICON.lstrip("/")
 kontrol(apple.exists(), "apple-touch-icon dosyasi yok")
 if apple.exists():
     w, h, piksel = png_oku(apple)
-    kontrol((w, h) == (180, 180) and piksel(0, 0) == (10, 10, 12), f"apple-touch-icon 180x180 ve siyah zemin: {w}x{h}")
+    k0 = piksel(0, 0)
+    kontrol((w, h) == (180, 180) and abs(k0[0] - 247) < 20 and abs(k0[1] - 179) < 25, f"apple-touch-icon 180x180 ve amber zemin: {w}x{h} {k0}")
 
 # ============================================================ J. sitemap
 print("— J. sitemap.xml (test_adim4 kosullari + image)")

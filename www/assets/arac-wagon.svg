@@ -1,19 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 86">
-  <!-- Station wagon / break: uzun tavan, genis bagaj, yandan -->
-  <g stroke="#FFC107" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M14 62 Q10 61 10 54 Q10 48 18 45 L30 42 L36 25 Q37 21 42 21 L142 21 Q147 21 150 25 L166 42 L182 46 Q190 48 190 55 Q190 61 186 62"/>
-    <path d="M42 42 L46 27 L90 27 L90 42 Z" fill="rgba(255,193,7,.14)"/>
-    <path d="M97 42 L97 27 L140 27 L152 42 Z" fill="rgba(255,193,7,.14)"/>
-    <path d="M60 62 L140 62"/>
-  </g>
-  <g fill="#0A0A0C" stroke="#FFC107" stroke-width="3">
-    <circle cx="44" cy="62" r="13"/>
-    <circle cx="156" cy="62" r="13"/>
-  </g>
-  <g fill="#FFC107">
-    <circle cx="44" cy="62" r="4.5"/>
-    <circle cx="156" cy="62" r="4.5"/>
-    <rect x="178" y="48" width="9" height="4" rx="2"/>
-    <rect x="13" y="49" width="7" height="3.6" rx="1.8"/>
-  </g>
+  <!-- Break: uzun tavan, buyuk bagaj, yandan -->
+  <rect x="88" y="12" width="22" height="7" rx="3" fill="#F7B32B"/>
+  <path d="M12 62 Q8 61 8 54 Q8 46 16 44 L36 40 Q50 22 78 20 L150 20 Q168 22 176 40 L184 44 Q192 47 192 55 Q192 61 188 62 L172 62 A15 15 0 0 0 144 62 L56 62 A15 15 0 0 0 28 62 Z" fill="#121110"/>
+  <path d="M48 40 Q58 28 78 26 L110 26 L110 40 Z M116 26 L148 26 Q162 28 168 40 L116 40 Z" fill="#F6F4EF" opacity=".92"/>
+  <circle cx="42" cy="64" r="13.5" fill="#121110"/><circle cx="42" cy="64" r="6" fill="#F6F4EF"/><circle cx="42" cy="64" r="2.4" fill="#121110"/><circle cx="158" cy="64" r="13.5" fill="#121110"/><circle cx="158" cy="64" r="6" fill="#F6F4EF"/><circle cx="158" cy="64" r="2.4" fill="#121110"/>
 </svg>

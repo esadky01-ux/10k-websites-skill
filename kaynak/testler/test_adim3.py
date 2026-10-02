@@ -216,7 +216,7 @@ try:
 
     # success.php: bilinmeyen siparis -> marka gorunumlu sayfa, PHP hatasi yok
     kod, govde = al("/pay/success.php?order=ET-000000-XXXXXX")
-    kontrol("EUROPA" in govde and "Warning" not in govde and "Fatal" not in govde,
+    kontrol("EUROPETAXI" in govde and "Warning" not in govde and "Fatal" not in govde,
             "success.php bilinmeyen sipariste temiz sayfa gostermeli")
 
     # webhook: gecersiz id -> 200 + PHP hatasi yok (Mollie tekrar denemesin)

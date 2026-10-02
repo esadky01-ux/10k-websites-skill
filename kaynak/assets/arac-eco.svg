@@ -1,19 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 86">
-  <!-- Ekonomi: Tesla Model 3 benzeri fastback sedan, yandan -->
-  <g stroke="#FFC107" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M14 62 Q10 61 10 54 Q10 48 18 46 L38 42 Q62 24 88 23 L112 23 Q142 25 162 42 L180 46 Q190 48 190 55 Q190 61 186 62"/>
-    <path d="M52 42 Q68 30 88 29 L108 29 Q132 30 148 42 Z" fill="rgba(255,193,7,.14)"/>
-    <path d="M97 29 L97 42"/>
-    <path d="M60 62 L140 62"/>
-  </g>
-  <g fill="#0A0A0C" stroke="#FFC107" stroke-width="3">
-    <circle cx="42" cy="62" r="13"/>
-    <circle cx="158" cy="62" r="13"/>
-  </g>
-  <g fill="#FFC107">
-    <circle cx="42" cy="62" r="4.5"/>
-    <circle cx="158" cy="62" r="4.5"/>
-    <rect x="178" y="48" width="9" height="4" rx="2"/>
-    <rect x="13" y="49" width="7" height="3.6" rx="1.8"/>
-  </g>
+  <!-- Ekonomi: fastback sedan, yandan (ink govde, amber tavan lambasi) -->
+  <rect x="88" y="14" width="22" height="7" rx="3" fill="#F7B32B"/>
+  <path d="M12 62 Q8 61 8 54 Q8 47 17 45 L38 41 Q62 23 90 22 L112 22 Q142 24 162 41 L182 45 Q192 47 192 55 Q192 61 188 62 L172 62 A15 15 0 0 0 144 62 L56 62 A15 15 0 0 0 28 62 Z" fill="#121110"/>
+  <path d="M52 41 Q68 29 90 28 L108 28 Q132 29 148 41 Z" fill="#F6F4EF" opacity=".92"/>
+  <rect x="97" y="28" width="3" height="13" fill="#121110"/>
+  <circle cx="42" cy="64" r="13.5" fill="#121110"/><circle cx="42" cy="64" r="6" fill="#F6F4EF"/><circle cx="42" cy="64" r="2.4" fill="#121110"/><circle cx="158" cy="64" r="13.5" fill="#121110"/><circle cx="158" cy="64" r="6" fill="#F6F4EF"/><circle cx="158" cy="64" r="2.4" fill="#121110"/>
 </svg>

@@ -619,7 +619,7 @@ class Sunucu(ThreadingHTTPServer):
 
 def main():
     global DURUM
-    ap = argparse.ArgumentParser(description="Europa Taxi sahte dis servisler (Mollie + Brevo + Google)")
+    ap = argparse.ArgumentParser(description="europetaxi24 sahte dis servisler (Mollie + Brevo + Google)")
     ap.add_argument("--port", type=int, default=9500)
     ap.add_argument("--host", default="127.0.0.1")
     a = ap.parse_args()

@@ -3,7 +3,7 @@
 // OTOMATIK URETILDI — elle duzenlemeyin; kaynak dosyayi degistirip build.py calistirin.
 return json_decode(<<<'VERI'
 {
- "marka": "Europa Taxi",
+ "marka": "europetaxi24",
  "slogan": "Your Ride, Our Priority",
  "unvan": "CAN COMPANY",
  "kdv": "BE 1016.219.906",

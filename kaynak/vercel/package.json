@@ -2,7 +2,7 @@
   "name": "europa-taxi-odeme",
   "version": "1.0.0",
   "private": true,
-  "description": "Europa Taxi odeme katmani: Mollie + Brevo, Vercel Node.js serverless fonksiyonlari (sifir bagimlilik, durumsuz).",
+  "description": "europetaxi24 odeme katmani: Mollie + Brevo, Vercel Node.js serverless fonksiyonlari (sifir bagimlilik, durumsuz).",
   "license": "UNLICENSED",
   "type": "commonjs",
   "engines": {

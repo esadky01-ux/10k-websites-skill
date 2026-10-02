@@ -53,7 +53,7 @@ function eposta_gonder(string $kime, string $konu, string $html, string $duzMeti
     $brevo = $c['brevo_api_key'];
     if ($brevo !== '' && $c['brevo_api_base'] !== null && function_exists('curl_init')) {
         $govde = [
-            'sender' => ['name' => 'Europa Taxi', 'email' => $gonderen],
+            'sender' => ['name' => 'europetaxi24', 'email' => $gonderen],
             'to' => [['email' => $kime]],
             'subject' => $konu,
             'htmlContent' => $html,
@@ -101,7 +101,7 @@ function eposta_gonder(string $kime, string $konu, string $html, string $duzMeti
         $crlf = static fn (string $x): string => str_replace(["\r\n", "\r", "\n"], ["\n", "\n", "\r\n"], $x);
         $parca = static fn (string $tip, string $x): string => 'Content-Type: ' . $tip . "; charset=UTF-8\r\n"
             . "Content-Transfer-Encoding: base64\r\n\r\n" . chunk_split(base64_encode($crlf($x)), 76, "\r\n");
-        $basliklar = 'From: Europa Taxi <' . $gonderen . ">\r\n"
+        $basliklar = 'From: europetaxi24 <' . $gonderen . ">\r\n"
             . ($yanitAdresi !== null ? 'Reply-To: ' . $yanitAdresi . "\r\n" : '')
             . "MIME-Version: 1.0\r\n"
             . 'Content-Type: multipart/alternative; boundary="' . $sinir . '"';
@@ -166,7 +166,7 @@ function musteri_eposta_html(array $s): string
     return '<!doctype html><html><body style="margin:0;padding:0;background:#F2F2F4;">
 <div style="max-width:560px;margin:0 auto;padding:24px 14px;font-family:Arial,Helvetica,sans-serif;">
   <div style="background:#0A0A0C;border-radius:14px 14px 0 0;padding:22px 28px;">
-    <span style="font-size:20px;font-weight:900;letter-spacing:1px;color:#FFFFFF;">EUROPA<span style="color:#FFC107;">TAXI</span></span>
+    <span style="font-size:20px;font-weight:900;letter-spacing:1px;color:#FFFFFF;">EUROPETAXI<span style="color:#F7B32B;">24</span></span>
   </div>
   <div style="height:4px;background:#FFC107;"></div>
   <div style="background:#FFFFFF;border-radius:0 0 14px 14px;padding:28px;">
@@ -179,7 +179,7 @@ function musteri_eposta_html(array $s): string
     </div>
     <p style="margin:20px 0 0;font-size:13px;color:#55565E;">' . h(t($dil, 'em_outro', ['phone' => $i['telefon'] ?? ''])) . '</p>
     <p style="margin:22px 0 0;font-size:11px;color:#9A9BA3;">
-      Europa Taxi · ' . h(($i['unvan'] ?? '') . ' · ' . ($i['kdv'] ?? '')) . '<br>'
+      europetaxi24 · ' . h(($i['unvan'] ?? '') . ' · ' . ($i['kdv'] ?? '')) . '<br>'
         . h($i['adres'] ?? '') . '<br>'
         . h(($i['telefon'] ?? '') . ' · ' . ($i['eposta'] ?? '')) . '
     </p>

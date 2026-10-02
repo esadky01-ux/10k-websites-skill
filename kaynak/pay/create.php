@@ -208,7 +208,7 @@ $idem = girdi_idem(girdi_ilk($form, 'idem'));
 $mollieYerel = ['fr' => 'fr_BE', 'nl' => 'nl_BE', 'en' => 'en_GB', 'tr' => 'fr_BE'][$dil]; // Mollie Turkce desteklemez
 [$kod, $odeme] = mollie('POST', 'payments', [
     'amount'       => ['currency' => 'EUR', 'value' => number_format($kapora, 2, '.', '')],
-    'description'  => 'Europa Taxi ' . $no,
+    'description'  => 'europetaxi24 ' . $no,
     'redirectUrl'  => $c['site_url'] . '/pay/success.php?order=' . $no . '&dil=' . $dil,
     'webhookUrl'   => $c['site_url'] . '/pay/webhook.php',
     'locale'       => $mollieYerel,

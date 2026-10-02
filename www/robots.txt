@@ -1,5 +1,5 @@
-# Europa Taxi - robots.txt (uretildi: kaynak/seo.py robots_txt)
-# Son guncelleme: 2026-09-29
+# europetaxi24 - robots.txt (uretildi: kaynak/seo.py robots_txt)
+# Son guncelleme: 2026-10-02
 #
 # /pay/ (odeme uc noktalari) ve /api/ (sunucu uc noktalari) hicbir botta taranmaz.
 
