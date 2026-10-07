@@ -1,5 +1,5 @@
 # europetaxi24 - robots.txt (uretildi: kaynak/seo.py robots_txt)
-# Son guncelleme: 2026-10-02
+# Son guncelleme: 2026-10-07
 #
 # /pay/ (odeme uc noktalari) ve /api/ (sunucu uc noktalari) hicbir botta taranmaz.
 

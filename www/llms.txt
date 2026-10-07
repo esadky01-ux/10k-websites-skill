@@ -2,7 +2,7 @@
 
 > europetaxi24 is a taxi and airport transfer service based in Zaventem, Belgium, operated by CAN COMPANY (VAT BE 1016.219.906). Every ride has a price fixed in advance: a base fare of €10 plus €1.99 per kilometre. The service runs 24/7 across Belgium and to Germany, France, Luxembourg and the Netherlands. The website is available in French (Belgium), Dutch (Belgium), English and Turkish.
 
-Last updated: 2026-10-02. Currency: EUR. Website: https://europetaxi24.be
+Last updated: 2026-10-07. Currency: EUR. Website: https://europetaxi24.be
 
 ## Website (one page per language)
 - [English](https://europetaxi24.be/en/): booking form, prices, fleet, FAQ and legal information in English.

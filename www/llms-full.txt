@@ -1,6 +1,6 @@
 # europetaxi24 (full text)
 
-> Full text of https://europetaxi24.be in French (Belgium), Dutch (Belgium), English and Turkish. europetaxi24 is a taxi and airport transfer service based in Zaventem, Belgium, operated by CAN COMPANY (VAT BE 1016.219.906). Last updated: 2026-10-02.
+> Full text of https://europetaxi24.be in French (Belgium), Dutch (Belgium), English and Turkish. europetaxi24 is a taxi and airport transfer service based in Zaventem, Belgium, operated by CAN COMPANY (VAT BE 1016.219.906). Last updated: 2026-10-07.
 
 ## Company facts (language independent)
 - Trading name: europetaxi24. Legal entity: CAN COMPANY. VAT: BE 1016.219.906.
