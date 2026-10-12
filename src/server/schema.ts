@@ -81,11 +81,4 @@ export const SCHEMA_STATEMENTS: readonly string[] = [
     history          jsonb NOT NULL,
     updated_at       timestamptz NOT NULL
   )`,
-
-  // Sesli siparişte katalogda bulunamayan sorgular (eskiden MAXIMUS_DATA_DIR/voice-unmatched.jsonl).
-  `CREATE TABLE IF NOT EXISTS voice_unmatched (
-    seq     bigserial PRIMARY KEY,
-    at      timestamptz NOT NULL,
-    payload jsonb NOT NULL
-  )`,
 ];

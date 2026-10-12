@@ -4,11 +4,11 @@ Aarschot (Belçika) merkezli **Maximus Food & Horeca** için kurumsal B2B toptan
 Slogan: *Quality Food. Trusted Partner.* — 2020'den bu yana Belçika ve Hollanda'daki Horeca işletmelerine döner, pizza ve fritür malzemeleri.
 Next.js (App Router) · TypeScript · Tailwind CSS v4 · Lucide React · Anthropic SDK.
 
-Ana dil Felemenkçe (`/`), ikinci dil Türkçe (`/tr`).
+Arayüz dilleri Felemenkçe (`/`), Fransızca (`/fr`), İngilizce (`/en`) ve Türkçe (`/tr`); ana dil Felemenkçe.
 
 ## Özellikler
 
-- **İki dil:** Felemenkçe kök URL'ler (`/bestellen`, `/regio`, `/blog`, `/account`), Türkçe `/tr/...` (`/tr/siparis`, `/tr/bolgeler`, `/tr/hesap`). `src/proxy.ts` Türkçe URL parçalarını klasörlere eşler; hreflang, canonical ve çok dilli sitemap otomatik.
+- **Dört dil:** Felemenkçe kök URL'ler (`/bestellen`, `/regio`, `/blog`, `/account`), diğer diller kendi URL parçalarıyla `/fr/commander`, `/en/order`, `/tr/siparis` (ayrıca `/fr/zones`, `/en/regions`, `/tr/bolgeler`). `src/proxy.ts` dile özgü URL parçalarını klasörlere eşler; hreflang, canonical ve çok dilli sitemap otomatik. Uzun içerik (bölge metinleri, blog, ürün adları) yalnızca Felemenkçe ve Türkçe yazılıdır; Fransızca/İngilizce sayfalar bu metni Felemenkçeden alır ve `noindex` ile canonical taşır (bkz. `src/i18n/config.ts`).
 - **Müşteri hesabı:** kayıt, giriş (scrypt + imzalı çerez), giriş yapan müşteri fiyatları görür (`/api/prices`, sunucu tarafı), WhatsApp'a gönderilen sipariş hesaba kaydedilir, "Son siparişi tekrarla" ve kayıtlı sabit listeler.
 - **Bölge SEO sayfaları:** 28 Belçika bölgesi için `/regio/[slug]` ve `/tr/bolgeler/[slug]`; Service, FAQPage ve BreadcrumbList JSON-LD, geo meta etiketleri. Yeni bölge eklemek için `src/data/regions.ts` dizisine kayıt eklemek yeterlidir.
 - **Mobil kart görünümü:** sipariş tablosu dar ekranlarda kart listesine dönüşür.
@@ -33,15 +33,15 @@ npm run whatsapp:dry   # WhatsApp ajanı yerel simülasyon
 npm run images         # product-images-inbox/ içindeki ürün fotoğraflarını işler
 ```
 
-Hızlı Sesli Sipariş (bas-konuş → Whisper → GPT-4o-mini → sepet) için bkz. `docs/voice-agent.md`.
+Diller ve çeviri kuralları için bkz. `docs/i18n.md`; WhatsApp sipariş ajanı için `docs/whatsapp-agent.md`.
 
 ## Yapı
 
 ```
 src/app/[lang]/     sayfalar (home, bestellen, blog, regio, account, inloggen, registreren)
-src/app/api/        auth, prices, orders, lists, whatsapp/webhook, voice-agent (order-audio, tts, log)
-src/i18n/           sözlükler (nl, tr), rota eşlemeleri, sağlayıcı
-src/server/         auth, store (file + postgres), schema, prices (sunucu), whatsapp ajanı, voice (sesli sipariş hattı)
+src/app/api/        auth, prices, orders, lists, whatsapp/webhook
+src/i18n/           sözlükler (nl, fr, en, tr), rota eşlemeleri, sağlayıcı
+src/server/         auth, store (file + postgres), schema, prices (sunucu), whatsapp ajanı ve sipariş eşleştirici
 src/components/     Header, Hero, CategoryGrid, Advantages, QuickOrderMatrix, CartDrawer, ...
 src/data/           kategoriler (10), Odoo ürün kataloğundan üretilen 559 ürün (SKU, Türkçe ad, orijinal katalog adı ve koli formatı), blog yazıları
 src/lib/            site bilgileri, sepet deposu, WhatsApp fiş oluşturucu
@@ -99,7 +99,7 @@ okunurdur: her yazma `ENOENT: no such file or directory, mkdir '/var/task/data'`
    (`PostgresStore` ilk kullanımda şemayı kendisi de kurar; betik hatayı dağıtımdan önce görmek içindir.)
 
 Şema `src/server/schema.ts` içindedir (ayrı `.sql` dosyası değil, böylece Vercel paketine dahil olur).
-Tablolar: `customers`, `orders`, `saved_lists`, `conversations`, `voice_unmatched`.
+Tablolar: `customers`, `orders`, `saved_lists`, `conversations`.
 `orders.customer_id` üzerinde foreign key **yoktur**: WhatsApp ajanı hesabı olmayan numaralar için
 `wa:<telefon>` biçiminde kimlik üretir.
 

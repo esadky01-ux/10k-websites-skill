@@ -242,7 +242,7 @@ export class PostgresStore implements CustomerStore {
    * MAXIMUS_TEST_DATABASE_URL ile çalışan uyumluluk testleri her koşuda temiz başlamak için kullanır.
    */
   async truncateAllForTests(): Promise<void> {
-    await this.query("TRUNCATE customers, orders, saved_lists, conversations, voice_unmatched");
+    await this.query("TRUNCATE customers, orders, saved_lists, conversations");
   }
 
   async getCustomerByEmail(email: string) {
@@ -417,17 +417,5 @@ export class PostgresStore implements CustomerStore {
         new Date().toISOString(),
       ],
     );
-  }
-
-  /** Sesli siparişte eşleşmeyen sorgular. Asla fırlatmaz: kayıt tutma siparişi bozmamalı. */
-  async logVoiceUnmatched(payload: unknown): Promise<void> {
-    try {
-      await this.query(`INSERT INTO voice_unmatched (at, payload) VALUES ($1, $2::jsonb)`, [
-        new Date().toISOString(),
-        JSON.stringify(payload),
-      ]);
-    } catch (err) {
-      console.error("[store] voice_unmatched yazılamadı", err);
-    }
   }
 }

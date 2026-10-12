@@ -59,4 +59,3 @@ flowchart LR
 - **Odoo entegrasyonu:** `CustomerStore` için `OdooStore` (res.partner, sale.order, pricelist). Ajan `confirm_order` ile taslak satış siparişi açar.
 - **Tekrar sipariş tahmini:** sipariş geçmişinden haftalık ritim çıkarıp teslimat gününden önce "Salı siparişiniz hazır mı?" mesajı.
 - **Kayıp müşteri uyarısı:** iki hafta sipariş vermeyen müşteriyi satış ekibine bildirme.
-- **Sesli mesaj:** Meta'dan gelen ses dosyalarını transkript edip aynı akışa sokma.

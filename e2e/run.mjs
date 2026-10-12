@@ -63,7 +63,7 @@ await check("/tr/siparis rewrites to Turkish order page", async () => {
 await check("hreflang alternates present on home", async () => {
   const r = await status("/");
   assert(/hrefLang="tr"|hreflang="tr"/i.test(r.body) && /hreflang="nl-BE"/i.test(r.body) && /hreflang="x-default"/i.test(r.body), "hreflang tags");
-  assert(/rel="canonical" href="https:\/\/maximusfood\.be\/?"/.test(r.body), "canonical");
+  assert(/rel="canonical" href="https:\/\/www\.maximusfood\.eu\/?"/.test(r.body), "canonical");
 });
 
 // ── SEO: bölge sayfaları ────────────────────────────────────────────
@@ -77,7 +77,7 @@ await check("region page /regio/leuven has H1, geo meta, JSON-LD FAQ + Service +
   const graph = ld.flatMap((d) => d["@graph"] ?? [d]);
   const types = graph.map((g) => g["@type"]).flat();
   for (const t of ["Service", "FAQPage", "BreadcrumbList"]) assert(types.includes(t), `missing ${t} in JSON-LD`);
-  assert(/hreflang="tr" href="https:\/\/maximusfood\.be\/tr\/bolgeler\/leuven"/i.test(r.body), "hreflang tr for region");
+  assert(/hreflang="tr" href="https:\/\/www\.maximusfood\.eu\/tr\/bolgeler\/leuven"/i.test(r.body), "hreflang tr for region");
   assert(/<title>Horeca groothandel Leuven/i.test(r.body) || /<title>[^<]*Leuven[^<]*<\/title>/.test(r.body), "title with city");
 });
 await check("Turkish region page /tr/bolgeler/leuven works", async () => {
@@ -91,12 +91,12 @@ await check("regions index lists all 28 regions", async () => {
 });
 await check("sitemap has NL+TR region URLs and robots allows", async () => {
   const s = await status("/sitemap.xml");
-  const nlRegions = (s.body.match(/maximusfood\.be\/regio\/[a-z0-9-]+<\/loc>/g) ?? []).length;
-  const trRegions = (s.body.match(/maximusfood\.be\/tr\/bolgeler\/[a-z0-9-]+<\/loc>/g) ?? []).length;
+  const nlRegions = (s.body.match(/www\.maximusfood\.eu\/regio\/[a-z0-9-]+<\/loc>/g) ?? []).length;
+  const trRegions = (s.body.match(/www\.maximusfood\.eu\/tr\/bolgeler\/[a-z0-9-]+<\/loc>/g) ?? []).length;
   assert(nlRegions >= 28 && trRegions >= 28, `sitemap regions nl=${nlRegions} tr=${trRegions}`);
   assert(/xhtml:link/.test(s.body) || /hreflang/.test(s.body), "sitemap alternates");
   const rb = await status("/robots.txt");
-  assert(/Sitemap: https:\/\/maximusfood\.be\/sitemap\.xml/.test(rb.body), "robots sitemap");
+  assert(/Sitemap: https:\/\/www\.maximusfood\.eu\/sitemap\.xml/.test(rb.body), "robots sitemap");
 });
 await check("blog NL and TR articles render", async () => {
   const a = await status("/blog/15-procent-korting-bij-afhaling-aarschot");
@@ -241,201 +241,6 @@ await check("mobile home renders without horizontal overflow", async () => {
   assert(scrollW <= 390, `overflow ${scrollW}`);
   await mp.screenshot({ path: `${OUT}/mobile-home.png` });
 });
-// Hızlı Sesli Sipariş: sahte MediaRecorder + stub'lanmış sunucu yanıtıyla tam akış
-const FAKE_MEDIA = () => {
-  const track = { stop() {} };
-  Object.defineProperty(navigator, "mediaDevices", { configurable: true, value: { getUserMedia: async () => ({ getTracks: () => [track] }) } });
-  class FakeRecorder {
-    static isTypeSupported() { return true; }
-    constructor(stream, opts) { this.stream = stream; this.mimeType = (opts && opts.mimeType) || "audio/webm"; this.state = "inactive"; window.__rec = this; }
-    start() { this.state = "recording"; }
-    stop() { this.state = "inactive"; if (this.ondataavailable) this.ondataavailable({ data: new Blob([new Uint8Array(4000)], { type: "audio/webm" }) }); if (this.onstop) this.onstop(); }
-  }
-  window.MediaRecorder = FakeRecorder;
-  window.__spoken = [];
-  Object.defineProperty(window, "speechSynthesis", { configurable: true, value: { cancel() {}, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); } } });
-  window.SpeechSynthesisUtterance = class { constructor(t) { this.text = t; } };
-};
-const ORDER_RESULT = { transkript: "bana 5 koli tabasco 350 ml yaz", dil: "tr", eklenenler: [{ id: "fd-szn-020", isim: "Tabasco Acı Sos", koli: 5, adet: 0, adetMetni: "5 koli", ambalaj: "12 x 350 ml", birimFiyat: null }], secenekler: [{ sorgu: "tavuk döner", koli: 2, adet: 0, adetMetni: "2 koli", adaylar: [{ id: "fd-don-035", isim: "Düzgün Hindi-Dana Döner", ambalaj: "1 x 10 kg", etiket: "1 x 10 kg", birimFiyat: null }, { id: "fd-don-038", isim: "Düzgün Hindi-Dana Döner", ambalaj: "1 x 15 kg", etiket: "1 x 15 kg", birimFiyat: null }] }], bulunamayanlar: ["uzay mekiği"], toplamTutar: null, yedek: false };
-
-await check("voice order: record → server result → cart lines + summary card", async () => {
-  const vctx = await browser.newContext({ viewport: { width: 390, height: 760 }, locale: "tr-TR", userAgent: "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Mobile Safari/537.36" });
-  const vp = await vctx.newPage();
-  const pageErrors = [];
-  vp.on("pageerror", (e) => pageErrors.push(String(e)));
-  await vp.addInitScript(FAKE_MEDIA);
-  await vp.route("**/api/voice-agent", async (route) => {
-    if (route.request().method() !== "GET") return route.continue();
-    await route.fulfill({ json: { configured: true, tts: true, maxSeconds: 30 } });
-  });
-  let uploaded = null;
-  await vp.route("**/api/voice-agent/order-audio", async (route) => {
-    uploaded = { method: route.request().method(), type: route.request().headers()["content-type"] || "" };
-    await route.fulfill({ json: ORDER_RESULT });
-  });
-  await vp.goto(`${BASE}/tr`, { waitUntil: "networkidle" });
-  assert((await vp.getAttribute("html", "translate")) === "no", "html translate=no");
-  await vp.click("[data-testid=voice-open]");
-  assert((await vp.getAttribute("[data-testid=voice-panel]", "translate")) === "no", "panel notranslate");
-  await vp.waitForSelector("[data-testid=voice-mic]:not([disabled])");
-  await vp.click("[data-testid=voice-mic]");
-  await vp.waitForFunction(() => window.__rec && window.__rec.state === "recording");
-  assert(/Kaydediyor/.test(await vp.textContent("[data-testid=voice-status]")), "recording status");
-  await vp.click("[data-testid=voice-mic]");
-  await vp.waitForSelector("[data-testid=voice-summary]");
-  assert(uploaded && uploaded.method === "POST" && /multipart\/form-data/.test(uploaded.type), `upload: ${JSON.stringify(uploaded)}`);
-  assert(/bana 5 koli tabasco/.test(await vp.textContent("[data-testid=voice-transcript]")), "transcript shown");
-  assert(/5 koli/.test(await vp.textContent("[data-testid=voice-added]")), "added line shown");
-  assert(/uzay mekiği/.test(await vp.textContent("[data-testid=voice-missing]")), "missing line shown");
-  let cartLines = await vp.evaluate(() => JSON.parse(localStorage.getItem("maximus-cart-v1") ?? "{}").lines ?? []);
-  assert(cartLines.length === 1 && cartLines[0].productId === "fd-szn-020" && cartLines[0].cases === 5, `cart: ${JSON.stringify(cartLines)}`);
-  // "Hangisi olsun?" chip'i: seçilen varyant istenen miktarla sepete girer, kartta eklenenlere taşınır
-  assert(/Hangisi olsun/.test(await vp.textContent("[data-testid=voice-choices]")), "variant chooser shown");
-  assert((await vp.locator("[data-testid=voice-choice]").count()) === 2, "two variant chips");
-  await vp.click('[data-testid=voice-choice][data-product-id="fd-don-038"]');
-  await vp.waitForFunction(() => !document.querySelector("[data-testid=voice-choices]"));
-  assert(/15 kg/.test(await vp.textContent("[data-testid=voice-added]")), "chosen variant listed as added");
-  cartLines = await vp.evaluate(() => JSON.parse(localStorage.getItem("maximus-cart-v1") ?? "{}").lines ?? []);
-  const doner = cartLines.find((l) => l.productId === "fd-don-038");
-  assert(doner && doner.cases === 2, `variant in cart: ${JSON.stringify(cartLines)}`);
-  // "Özeti dinle": yalnızca dokunuşla; TTS başarısızsa tarayıcı sesine düşer
-  await vp.route("**/api/voice-agent/tts", (route) => route.fulfill({ status: 502, json: { error: "tts-upstream", detail: "upstream 401" } }));
-  await vp.click("[data-testid=voice-listen]");
-  await vp.waitForFunction(() => (window.__spoken || []).some((s) => /Sepete ekledim/.test(s)));
-  // "Sepete git" sepet panelini açar
-  await vp.click("[data-testid=voice-go-cart]");
-  await vp.waitForSelector('aside[role="dialog"].translate-x-0');
-  assert((await vp.locator("[data-testid=voice-panel]").count()) === 0, "voice panel closed");
-  assert(pageErrors.length === 0, `uncaught: ${pageErrors.join(" | ")}`);
-  await vp.screenshot({ path: `${OUT}/voice-order.png` });
-  await vctx.close();
-});
-await check("voice order: gentle notices for missing config, denied microphone and too-short clips", async () => {
-  const nctx = await browser.newContext({ viewport: { width: 390, height: 760 }, locale: "tr-TR" });
-  const np = await nctx.newPage();
-  const pageErrors = [];
-  np.on("pageerror", (e) => pageErrors.push(String(e)));
-  await np.addInitScript(() => {
-    Object.defineProperty(navigator, "mediaDevices", { configurable: true, value: { getUserMedia: async () => { throw new DOMException("Permission denied", "NotAllowedError"); } } });
-    window.MediaRecorder = class { static isTypeSupported() { return true; } };
-  });
-  await np.goto(`${BASE}/tr`, { waitUntil: "networkidle" });
-  await np.click("[data-testid=voice-open]");
-  // Anahtarsız yerel sunucu → düğme devre dışı, açık uyarı
-  await np.waitForFunction(() => /OPENAI_API_KEY/.test(document.querySelector("[data-testid=voice-panel] [role=alert]")?.textContent ?? ""));
-  assert(await np.locator("[data-testid=voice-mic]").isDisabled(), "button disabled without config");
-  await nctx.close();
-  const dctx = await browser.newContext({ viewport: { width: 390, height: 760 }, locale: "tr-TR" });
-  const dp = await dctx.newPage();
-  dp.on("pageerror", (e) => pageErrors.push(String(e)));
-  await dp.addInitScript(() => {
-    Object.defineProperty(navigator, "mediaDevices", { configurable: true, value: { getUserMedia: async () => { throw new DOMException("Permission denied", "NotAllowedError"); } } });
-    window.MediaRecorder = class { static isTypeSupported() { return true; } };
-  });
-  await dp.route("**/api/voice-agent", (route) => (route.request().method() === "GET" ? route.fulfill({ json: { configured: true, tts: false, maxSeconds: 30 } }) : route.continue()));
-  await dp.goto(`${BASE}/tr`, { waitUntil: "networkidle" });
-  await dp.click("[data-testid=voice-open]");
-  await dp.waitForSelector("[data-testid=voice-mic]:not([disabled])");
-  await dp.click("[data-testid=voice-mic]");
-  await dp.waitForFunction(() => /Mikrofon izni/.test(document.querySelector("[data-testid=voice-panel] [role=alert]")?.textContent ?? ""));
-  assert(/NotAllowedError/.test(await dp.textContent("[data-testid=voice-detail]")), "detail shows real error");
-  assert(pageErrors.length === 0, `uncaught: ${pageErrors.join(" | ")}`);
-  await dctx.close();
-});
-// Canlı görüşme (GPT-Live): sahte RTCPeerConnection + stub'lanmış /api/realtime-session ile araç çağrısı akışı
-const FAKE_RTC = () => {
-  const track = { enabled: true, stop() {} };
-  Object.defineProperty(navigator, "mediaDevices", { configurable: true, value: { getUserMedia: async () => ({ getTracks: () => [track], getAudioTracks: () => [track] }) } });
-  window.AudioContext = undefined;
-  window.__dcSent = [];
-  class FakeChannel {
-    constructor(label) { this.label = label; this.readyState = "connecting"; window.__dc = this; }
-    send(msg) { window.__dcSent.push(JSON.parse(msg)); }
-    close() { this.readyState = "closed"; }
-  }
-  class FakePC {
-    constructor() { this.connectionState = "new"; window.__pc = this; }
-    addTrack() {}
-    createDataChannel(label) { return new FakeChannel(label); }
-    async createOffer() { return { type: "offer", sdp: "v=0\r\no=fake offer" }; }
-    async setLocalDescription() {}
-    async setRemoteDescription(desc) {
-      window.__answer = desc;
-      const dc = window.__dc;
-      setTimeout(() => { dc.readyState = "open"; if (dc.onopen) dc.onopen(); if (dc.onmessage) dc.onmessage({ data: JSON.stringify({ type: "session.started" }) }); }, 10);
-    }
-    close() { this.connectionState = "closed"; }
-  }
-  window.RTCPeerConnection = FakePC;
-  window.__emit = (ev) => window.__dc.onmessage({ data: JSON.stringify(ev) });
-};
-await check("live voice: WebRTC offer → session → captions, tool call adds to cart, end call", async () => {
-  const lctx = await browser.newContext({ viewport: { width: 390, height: 760 }, locale: "tr-TR" });
-  const lp = await lctx.newPage();
-  const pageErrors = [];
-  lp.on("pageerror", (e) => pageErrors.push(String(e)));
-  await lp.addInitScript(FAKE_RTC);
-  await lp.route("**/api/voice-agent", (route) => (route.request().method() === "GET" ? route.fulfill({ json: { configured: true, tts: false, maxSeconds: 30, live: true, liveModel: "gpt-live-1" } }) : route.continue()));
-  await lp.route("**/api/realtime-session", async (route) => {
-    const body = route.request().postDataJSON();
-    assert(/^v=0/.test(body.sdp) && body.lang === "tr", "offer + lang posted");
-    await route.fulfill({ status: 201, json: { id: "sess_e2e", sdp: "v=0\r\no=fake answer", model: "gpt-live-1", backendModel: "gpt-5.6-terra" } });
-  });
-  await lp.goto(`${BASE}/tr`, { waitUntil: "networkidle" });
-  await lp.click("[data-testid=voice-open]");
-  await lp.waitForSelector("[data-testid=live-start]:not([disabled])");
-  assert((await lp.getAttribute("[data-testid=voice-tab-live]", "aria-selected")) === "true", "live tab default when configured");
-  await lp.click("[data-testid=live-start]");
-  await lp.waitForSelector("[data-testid=live-end]");
-  await lp.waitForFunction(() => /Dinliyor/.test(document.querySelector("[data-testid=live-status]")?.textContent ?? ""));
-  assert((await lp.evaluate(() => window.__dc.label)) === "oai-events", "data channel label");
-  assert((await lp.evaluate(() => window.__answer.type)) === "answer", "remote answer applied");
-  assert((await lp.evaluate(() => window.__dcSent.some((m) => m.type === "session.start"))) === false, "no session.start sent on the channel");
-  await lp.evaluate(() => window.__emit({ type: "session.input_transcript.delta", delta: "beş koli tabasco" }));
-  await lp.waitForFunction(() => /beş koli tabasco/.test(document.querySelector("[data-testid=live-captions]")?.textContent ?? ""));
-  await lp.evaluate(() => window.__emit({ type: "session.delegation.created" }));
-  await lp.waitForFunction(() => /Düşünüyor/.test(document.querySelector("[data-testid=live-status]")?.textContent ?? ""));
-  await lp.evaluate(() => window.__emit({ type: "response.event", event: { type: "response.output_item.done", item: { type: "function_call", call_id: "call_1", name: "search_catalog", arguments: JSON.stringify({ query: "tabasco 350 ml" }) } } }));
-  await lp.waitForFunction(() => window.__dcSent.some((m) => m.type === "response.item.create" && m.item.call_id === "call_1"));
-  const searchOut = await lp.evaluate(() => JSON.parse(window.__dcSent.find((m) => m.type === "response.item.create" && m.item.call_id === "call_1").item.output));
-  assert(searchOut.results.some((r) => r.id === "fd-szn-020"), "search_catalog returned tabasco");
-  assert((await lp.evaluate(() => window.__dcSent.filter((m) => m.type === "response.create").length)) === 1, "response.create after tool output");
-  await lp.evaluate(() => window.__emit({ type: "response.event", event: { type: "response.output_item.done", item: { type: "function_call", call_id: "call_2", name: "add_to_cart", arguments: JSON.stringify({ productId: "fd-szn-020", cases: 5, units: 0 }) } } }));
-  await lp.waitForFunction(() => /add_to_cart/.test(document.querySelector("[data-testid=live-tools]")?.textContent ?? ""));
-  const stored = await lp.evaluate(() => JSON.parse(localStorage.getItem("maximus-cart-v1") ?? "{}"));
-  const line = (stored.lines ?? []).find((l) => l.productId === "fd-szn-020");
-  assert(line && line.cases === 5, `cart line via tool call: ${JSON.stringify(stored.lines)}`);
-  await lp.evaluate(() => window.__emit({ type: "session.output_transcript.delta", delta: "Ekledim, 5 koli Tabasco. Başka?" }));
-  await lp.waitForFunction(() => /Konuşuyor/.test(document.querySelector("[data-testid=live-status]")?.textContent ?? ""));
-  assert(/Ekledim/.test(await lp.textContent("[data-testid=live-captions]")), "assistant caption shown");
-  await lp.click("[data-testid=live-mute]");
-  await lp.waitForFunction(() => window.__dcSent.some((m) => m.type === "session.input_audio.mute"));
-  await lp.click("[data-testid=live-end]");
-  await lp.waitForSelector("[data-testid=live-start]");
-  assert((await lp.evaluate(() => window.__dcSent.some((m) => m.type === "session.close"))) === true, "session.close sent");
-  assert((await lp.evaluate(() => window.__pc.connectionState)) === "closed", "peer connection closed");
-  assert(/Görüşme bitti/.test(await lp.textContent("[data-testid=live-ended]")), "ended notice");
-  await lp.screenshot({ path: `${OUT}/voice-live.png` });
-  // Bas-konuş sekmesi yedek olarak erişilebilir
-  await lp.click("[data-testid=voice-tab-push]");
-  await lp.waitForSelector("[data-testid=voice-mic]");
-  assert(pageErrors.length === 0, `uncaught: ${pageErrors.join(" | ")}`);
-  await lctx.close();
-});
-await check("live voice: without server config the push-to-talk tab is the default and live start is disabled", async () => {
-  const cctx = await browser.newContext({ viewport: { width: 390, height: 760 }, locale: "nl-BE" });
-  const cp = await cctx.newPage();
-  await cp.goto(`${BASE}/nl`, { waitUntil: "networkidle" });
-  await cp.click("[data-testid=voice-open]");
-  await cp.waitForSelector("[data-testid=voice-push-panel]");
-  assert((await cp.getAttribute("[data-testid=voice-tab-push]", "aria-selected")) === "true", "push tab default without live");
-  await cp.click("[data-testid=voice-tab-live]");
-  await cp.waitForSelector("[data-testid=live-start][disabled]");
-  assert(/nog niet ingesteld/.test(await cp.textContent("[data-testid=live-panel] [role=alert]")), "Dutch not-configured notice");
-  const rs = await ctx.request.post(`${BASE}/api/realtime-session`, { data: { sdp: "v=0\r\no=test", lang: "tr" } });
-  assert(rs.status() === 503, `realtime-session without key → 503, got ${rs.status()}`);
-  await cctx.close();
-});
 await check("interface languages: Dutch, French, English and Turkish pages, menu and route slugs", async () => {
   const lctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const lp = await lctx.newPage();
@@ -459,39 +264,55 @@ await check("interface languages: Dutch, French, English and Turkish pages, menu
     const res = await lp.goto(`${BASE}${path}`, { waitUntil: "domcontentloaded" });
     assert(res.status() === status, `${path} → ${res.status()}, expected ${status}`);
   }
-  // Dil menüsü dört dili ve doğru karşılık yollarını gösterir
+  // Dil seçimi her sayfada ilk bakışta görünür: tıklanacak açılır liste yok
+  for (const [path, current] of [["/fr/commander", "fr"], ["/", "nl"], ["/tr/siparis", "tr"]]) {
+    await lp.goto(`${BASE}${path}`, { waitUntil: "networkidle" });
+    const bar = lp.locator("[data-testid=lang-bar]");
+    assert(await bar.isVisible(), `${path} language bar visible without any click`);
+    const hrefs = await lp.$$eval("[data-testid=lang-bar] a", (as) => as.map((a) => a.getAttribute("href")));
+    assert(hrefs.length === 4, `${path} shows ${hrefs.length} languages, expected 4`);
+    for (const l of ["nl", "fr", "en", "tr"]) {
+      assert(await lp.locator(`[data-testid=lang-bar] [data-testid=lang-option-${l}]`).isVisible(), `${path} ${l} visible`);
+    }
+    assert((await lp.locator(`[data-testid=lang-bar] [data-testid=lang-option-${current}][aria-current="true"]`).count()) === 1, `${path} marks ${current} as current`);
+    const box = await bar.boundingBox();
+    assert(box && box.y < 120, `${path} language bar sits at the top (y=${box && Math.round(box.y)})`);
+  }
+  // Şerit bağlantıları her dilde, Felemenkçe (varsayılan) sayfalarda da doğru olmalı: tıklamadan önce href'ler sınanır
+  for (const [path, want] of [
+    ["/fr/commander", "/bestellen,/fr/commander,/en/order,/tr/siparis"],
+    ["/bestellen", "/bestellen,/fr/commander,/en/order,/tr/siparis"],
+    ["/", "/,/fr,/en,/tr"],
+    ["/regio/leuven", "/regio/leuven,/fr/zones/leuven,/en/regions/leuven,/tr/bolgeler/leuven"],
+  ]) {
+    await lp.goto(`${BASE}${path}`, { waitUntil: "networkidle" });
+    const hrefs = await lp.$$eval("[data-testid=lang-bar] a", (as) => as.map((a) => a.getAttribute("href")));
+    assert(hrefs.join(",") === want, `${path} bar hrefs: ${hrefs.join(",")}, expected ${want}`);
+  }
   await lp.goto(`${BASE}/fr/commander`, { waitUntil: "networkidle" });
-  await lp.click("[data-testid=lang-switch]");
-  await lp.waitForSelector("[data-testid=lang-menu]");
-  const hrefs = await lp.$$eval("[data-testid=lang-menu] a", (as) => as.map((a) => a.getAttribute("href")));
-  assert(hrefs.length === 4, `language menu has ${hrefs.length} entries`);
-  assert(hrefs.join(",") === "/bestellen,/fr/commander,/en/order,/tr/siparis", `menu hrefs: ${hrefs.join(",")}`);
-  await lp.click("[data-testid=lang-option-tr]");
+  await lp.click("[data-testid=lang-bar] [data-testid=lang-option-tr]");
   await lp.waitForURL("**/tr/siparis");
   assert(pageErrors.length === 0, `uncaught: ${pageErrors.join(" | ")}`);
-  await lp.screenshot({ path: `${OUT}/lang-fr-order.png` });
+  await lp.screenshot({ path: `${OUT}/lang-bar-desktop.png` });
   await lctx.close();
 
-  // Mobil: hamburger menüde dört dil de açılır liste olmadan, ekranda görünür
-  const mctx = await browser.newContext({ viewport: { width: 412, height: 870 }, locale: "tr-TR", userAgent: "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Mobile Safari/537.36" });
+  // Mobilde de şerit görünür; hamburger menüsünü açmaya gerek yok
+  const mctx = await browser.newContext({ viewport: { width: 390, height: 780 }, locale: "tr-TR", userAgent: "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Mobile Safari/537.36" });
   const mp = await mctx.newPage();
   await mp.goto(`${BASE}/tr`, { waitUntil: "networkidle" });
+  assert(await mp.locator("[data-testid=lang-bar]").isVisible(), "language bar visible on mobile without opening the menu");
+  for (const l of ["nl", "fr", "en", "tr"]) {
+    const chip = mp.locator(`[data-testid=lang-bar] [data-testid=lang-option-${l}]`);
+    assert(await chip.isVisible(), `${l} chip visible on mobile`);
+    const b = await chip.boundingBox();
+    assert(b && b.x >= 0 && b.x + b.width <= 390 && b.y + b.height <= 780, `${l} chip inside the mobile viewport`);
+  }
+  assert((await mp.evaluate(() => document.documentElement.scrollWidth)) <= 390, "no horizontal overflow from the language bar");
+  await mp.screenshot({ path: `${OUT}/lang-bar-mobile.png`, clip: { x: 0, y: 0, width: 390, height: 220 } });
+  // Hamburger menüsündeki ayrıntılı liste de duruyor
   await mp.click("[data-testid=menu-open]");
   await mp.waitForSelector("[data-testid=lang-inline]");
-  await mp.waitForTimeout(600);
-  const expected = { nl: "/", fr: "/fr", en: "/en", tr: "/tr" };
-  for (const [l, href] of Object.entries(expected)) {
-    const chip = mp.locator(`[data-testid=lang-option-${l}]`);
-    assert(await chip.isVisible(), `${l} chip visible in the drawer`);
-    assert((await chip.getAttribute("href")) === href, `${l} chip href`);
-    const box = await chip.boundingBox();
-    assert(box && box.y + box.height <= 870, `${l} chip fits on screen (bottom ${box && Math.round(box.y + box.height)})`);
-  }
-  // Üst çubuktaki açılır liste mobilde gizlidir (display:none); çekmecede görünür bir açılır düğme olmamalı
-  assert((await mp.locator("[data-testid=lang-switch]:visible").count()) === 0, "no visible dropdown button on mobile");
-  assert((await mp.locator('[data-testid=lang-option-tr][aria-current="true"]').count()) === 1, "current language marked");
-  await mp.screenshot({ path: `${OUT}/lang-mobile-menu.png` });
-  await mp.click("[data-testid=lang-option-fr]");
+  await mp.click("[data-testid=lang-inline] [data-testid=lang-option-fr]");
   await mp.waitForURL("**/fr");
   await mctx.close();
 });
@@ -511,10 +332,10 @@ await check("long-form pages fall back to a written language and stay out of the
   // Site haritası: arayüz sayfaları dört dilde, uzun içerik yalnızca nl/tr
   const xml = await (await ctx.request.get(`${BASE}/sitemap.xml`)).text();
   for (const u of ["/fr/commander", "/en/order", "/tr/siparis", "/fr/zones", "/regio/leuven", "/tr/bolgeler/leuven"]) {
-    assert(xml.includes(`maximusfood.be${u}<`) || xml.includes(`maximusfood.be${u}?`), `sitemap has ${u}`);
+    assert(xml.includes(`www.maximusfood.eu${u}<`) || xml.includes(`www.maximusfood.eu${u}?`), `sitemap has ${u}`);
   }
   for (const u of ["/fr/zones/leuven", "/en/regions/leuven", "/fr/blog", "/en/blog"]) {
-    assert(!xml.includes(`maximusfood.be${u}<`), `sitemap must not list ${u}`);
+    assert(!xml.includes(`www.maximusfood.eu${u}<`), `sitemap must not list ${u}`);
   }
   await cctx.close();
 });
@@ -561,8 +382,7 @@ await check("the site always opens in Dutch; only the visitor's own click change
   const pp = await pctx.newPage();
   await pp.goto(`${BASE}/`, { waitUntil: "networkidle" });
   assert((await pp.getAttribute("html", "lang")) === "nl-BE", "first visit is Dutch");
-  await pp.click("[data-testid=lang-switch]");
-  await pp.click("[data-testid=lang-option-tr]");
+  await pp.click("[data-testid=lang-bar] [data-testid=lang-option-tr]");
   await pp.waitForURL("**/tr");
   assert((await pp.getAttribute("html", "lang")) === "tr", "switching to Turkish works");
   await pp.goto(`${BASE}/`, { waitUntil: "networkidle" });
@@ -572,15 +392,68 @@ await check("the site always opens in Dutch; only the visitor's own click change
   assert(!/lang|locale|NEXT_LOCALE/i.test(stored.cookie), `no language cookie: ${stored.cookie}`);
   await pctx.close();
 });
-await check("voice order API: config, validation and secret-free errors", async () => {
-  const cfg = await (await ctx.request.get(`${BASE}/api/voice-agent`)).json();
-  assert(cfg.configured === false && cfg.live === false && typeof cfg.maxSeconds === "number", "config shape");
-  const oa = await ctx.request.post(`${BASE}/api/voice-agent/order-audio`, { multipart: { audio: { name: "a.webm", mimeType: "audio/webm", buffer: Buffer.alloc(2000) }, lang: "tr" } });
-  assert(oa.status() === 503, `expected 503 without key, got ${oa.status()}`);
-  const tts = await ctx.request.post(`${BASE}/api/voice-agent/tts`, { data: { text: "merhaba" } });
-  assert(tts.status() === 503, `expected 503 without key, got ${tts.status()}`);
-  const log = await ctx.request.post(`${BASE}/api/voice-agent/log`, { data: { where: "e2e", name: "TestError", message: "hello" } });
-  assert(log.status() === 204, `log status ${log.status()}`);
+await check("WhatsApp order button sits on every page and opens a prefilled chat", async () => {
+  const wctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const wp = await wctx.newPage();
+  for (const [path, label, prefill] of [["/", "Bestellen via WhatsApp", "Hallo, ik wil graag een bestelling plaatsen."], ["/fr", "Commander via WhatsApp", "Bonjour, je souhaite passer une commande."], ["/en/order", "Order via WhatsApp", "Hello, I would like to place an order."], ["/tr/siparis", "WhatsApp ile sipariş", "Merhaba, sipariş vermek istiyorum."]]) {
+    await wp.goto(`${BASE}${path}`, { waitUntil: "domcontentloaded" });
+    const btn = wp.locator("[data-testid=whatsapp-order]");
+    assert(await btn.isVisible(), `${path} shows the WhatsApp button`);
+    assert((await btn.getAttribute("aria-label")) === label, `${path} label`);
+    const href = await btn.getAttribute("href");
+    assert(href.startsWith("https://wa.me/32467077164?text="), `${path} href: ${href}`);
+    assert(decodeURIComponent(href.split("text=")[1]) === prefill, `${path} prefilled message`);
+    assert((await btn.getAttribute("target")) === "_blank", `${path} opens in a new tab`);
+  }
+  const mctx = await browser.newContext({ viewport: { width: 390, height: 780 } });
+  const mp = await mctx.newPage();
+  await mp.goto(`${BASE}/`, { waitUntil: "networkidle" });
+  // Stil uygulanmadan ölçmeyelim: düğme sabitlenene kadar bekle
+  await mp.waitForFunction(() => {
+    const e = document.querySelector("[data-testid=whatsapp-order]");
+    return e && getComputedStyle(e).position === "fixed";
+  });
+  const box = await mp.locator("[data-testid=whatsapp-order]").boundingBox();
+  assert(box && box.x + box.width <= 390 && box.y + box.height <= 780, `mobile button inside the viewport: ${JSON.stringify(box)}`);
+  // Başlık yükseldi: sipariş sayfasının yapışkan filtre çubuğu başlığın altında durmalı, altına girmemeli
+  for (const [w, h] of [[390, 800], [1280, 900]]) {
+    const sctx = await browser.newContext({ viewport: { width: w, height: h } });
+    const sp = await sctx.newPage();
+    await sp.goto(`${BASE}/bestellen`, { waitUntil: "networkidle" });
+    const m = await sp.evaluate(() => {
+      const header = document.querySelector("header");
+      const sticky = document.querySelector('[role="tablist"]')?.closest("div.sticky");
+      return { header: Math.round(header.getBoundingClientRect().height), top: sticky ? Math.round(parseFloat(getComputedStyle(sticky).top)) : null };
+    });
+    assert(m.top !== null, `${w}px sticky filter bar found`);
+    assert(m.top >= m.header, `${w}px sticky filter bar slides under the header (top ${m.top} < header ${m.header})`);
+    assert(m.top - m.header <= 8, `${w}px gap between header and sticky bar too large (${m.top - m.header}px)`);
+    await sctx.close();
+  }
+
+  // Sepet çubuğu çıktığında düğme onun üstünü kapatmamalı
+  await mp.evaluate(() => localStorage.setItem("maximus-cart-v1", JSON.stringify({ lines: [{ productId: "fd-drk-023", cases: 2, units: 0 }], delivery: "adres" })));
+  await mp.goto(`${BASE}/bestellen`, { waitUntil: "networkidle" });
+  await mp.waitForFunction(() => {
+    const e = document.querySelector("[data-testid=whatsapp-order]");
+    const b = document.querySelector("div.fixed.inset-x-0.bottom-0");
+    return e && b && getComputedStyle(e).position === "fixed";
+  });
+  const bar = await mp.locator("div.fixed.inset-x-0.bottom-0").first().boundingBox();
+  const fab = await mp.locator("[data-testid=whatsapp-order]").boundingBox();
+  assert(bar && fab, "cart bar and button both present");
+  const overlaps = !(fab.y + fab.height <= bar.y || fab.y >= bar.y + bar.height) && !(fab.x + fab.width <= bar.x || fab.x >= bar.x + bar.width);
+  assert(!overlaps, `button overlaps the sticky cart bar: button y=${Math.round(fab.y)} h=${Math.round(fab.height)}, bar y=${Math.round(bar.y)}`);
+  assert(fab.y + fab.height <= 780, "button still inside the viewport once lifted");
+
+  // Sesli asistandan geriye bir şey kalmamalı
+  assert((await mp.locator("[data-testid=voice-open], [data-testid=voice-panel]").count()) === 0, "no voice assistant left");
+  const gone = await ctx.request.get(`${BASE}/api/voice-agent`);
+  assert(gone.status() === 404, `/api/voice-agent → ${gone.status()}, expected 404`);
+  const live = await ctx.request.post(`${BASE}/api/realtime-session`, { data: { sdp: "v=0" } });
+  assert(live.status() === 404, `/api/realtime-session → ${live.status()}, expected 404`);
+  await mctx.close();
+  await wctx.close();
 });
 await check("no console errors during run", async () => {
   // 401/403 yanıtları tasarım gereği (yanlış şifre, oturumsuz veya onaysız fiyat isteği)

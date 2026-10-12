@@ -94,12 +94,6 @@ export interface CustomerStore {
   deleteList(customerId: string, listId: string): Promise<void>;
   getConversation(phone: string): Promise<ConversationState | undefined>;
   saveConversation(state: ConversationState): Promise<void>;
-  /**
-   * Sesli siparişte katalogda bulunamayan sorguları sözlük "eğitimi" için kaydeder.
-   * Asla fırlatmaz: kayıt tutmak siparişi bozmamalı. Çağıran yer senkron olduğu için
-   * sonuç beklenmez (fire-and-forget), bu yüzden arayüzde isteğe bağlıdır.
-   */
-  logVoiceUnmatched?(payload: Record<string, unknown>): Promise<void>;
 }
 
 type Data = {
@@ -230,17 +224,6 @@ export class FileStore implements CustomerStore {
       d.conversations = d.conversations.filter((c) => normalizePhone(c.phone) !== n);
       d.conversations.push({ ...state, updatedAt: new Date().toISOString() });
     });
-  }
-
-  /** Eşleşmeyen sesli sorgular: store.json yanındaki voice-unmatched.jsonl'a eklenir. */
-  async logVoiceUnmatched(payload: Record<string, unknown>) {
-    try {
-      const dir = path.dirname(this.file);
-      await fs.mkdir(dir, { recursive: true });
-      await fs.appendFile(path.join(dir, "voice-unmatched.jsonl"), JSON.stringify(payload) + "\n");
-    } catch {
-      /* log yazılamazsa sessizce geç */
-    }
   }
 }
 
