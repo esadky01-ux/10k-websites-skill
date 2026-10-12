@@ -1,6 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
+import { PostgresStore } from "./store-postgres";
 
 /**
  * Müşteri ve sipariş deposu.
@@ -216,8 +217,22 @@ export class FileStore implements CustomerStore {
   }
 }
 
+/**
+ * Bağlantı dizesi: Vercel'in Neon entegrasyonu DATABASE_URL yazar, Postgres
+ * entegrasyonu POSTGRES_URL. İkisini de tanıyoruz ki panelden hangisi bağlanırsa
+ * bağlansın kod değişmesin.
+ */
+function databaseUrl(): string | undefined {
+  const url = process.env.DATABASE_URL ?? process.env.POSTGRES_URL;
+  return url && url.trim() ? url.trim() : undefined;
+}
+
 let _store: CustomerStore | null = null;
 export function getStore(): CustomerStore {
-  if (!_store) _store = new FileStore();
+  if (!_store) {
+    const url = databaseUrl();
+    // Sunucusuz ortamda dosya sistemi salt okunurdur; veritabanı varsa her zaman o kullanılır.
+    _store = url ? new PostgresStore(url) : new FileStore();
+  }
   return _store;
 }
