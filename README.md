@@ -41,7 +41,7 @@ Hızlı Sesli Sipariş (bas-konuş → Whisper → GPT-4o-mini → sepet) için 
 src/app/[lang]/     sayfalar (home, bestellen, blog, regio, account, inloggen, registreren)
 src/app/api/        auth, prices, orders, lists, whatsapp/webhook, voice-agent (order-audio, tts, log)
 src/i18n/           sözlükler (nl, tr), rota eşlemeleri, sağlayıcı
-src/server/         auth, store (dosya tabanlı), prices (sunucu), whatsapp ajanı, voice (sesli sipariş hattı)
+src/server/         auth, store (file + postgres), schema, prices (sunucu), whatsapp ajanı, voice (sesli sipariş hattı)
 src/components/     Header, Hero, CategoryGrid, Advantages, QuickOrderMatrix, CartDrawer, ...
 src/data/           kategoriler (10), Odoo ürün kataloğundan üretilen 559 ürün (SKU, Türkçe ad, orijinal katalog adı ve koli formatı), blog yazıları
 src/lib/            site bilgileri, sepet deposu, WhatsApp fiş oluşturucu
@@ -64,9 +64,57 @@ GitHub arayüzünden de yapılabilir: dosyaları doğrudan `public/media/product
 
 ## Önizleme / yayına alma
 
-- **Vercel (en hızlı):** vercel.com/new → GitHub deposunu seçin → branch → `AUTH_SECRET` ve `ADMIN_PASSWORD` ortam değişkenlerini girin → Deploy. Önizlemede müşteri verisi geçici dosyadadır; kalıcı veri için Odoo bağlantısı veya bir veritabanı gerekir.
-- **Kendi sunucunuz (Node 22):** `npm ci && npm run build && npm start`. `MAXIMUS_DATA_DIR` ile kalıcı bir veri dizini verin.
+- **Vercel (en hızlı):** vercel.com/new → GitHub deposunu seçin → branch → `AUTH_SECRET`, `ADMIN_PASSWORD` **ve `MAXIMUS_DATABASE_URL`** ortam değişkenlerini girin → Deploy. Veritabanı değişkeni olmadan kayıt/sipariş çalışmaz, bkz. [Veri deposu](#veri-deposu).
+- **Kendi sunucunuz (Node 22):** `npm ci && npm run build && npm start`. Kalıcı disk varsa `MAXIMUS_DATA_DIR` ile bir veri dizini yeterlidir; yoksa `MAXIMUS_DATABASE_URL` kullanın.
 - **Yerel:** `npm install && cp .env.example .env && npm run dev` → http://localhost:3000
+
+## Veri deposu
+
+Müşteriler, siparişler, kayıtlı listeler ve WhatsApp sohbet durumu tek bir arayüzün (`CustomerStore`,
+`src/server/store.ts`) arkasındadır. İki uygulama vardır ve çağıran kod (rotalar, ajan, auth) ikisinde de aynıdır:
+
+| Uygulama | Nerede | Seçim |
+| --- | --- | --- |
+| `FileStore` | yalnızca yerel geliştirme ve testler (`data/store.json`) | `MAXIMUS_STORE=file` |
+| `PostgresStore` | üretim — Neon / Vercel Postgres | `MAXIMUS_STORE=postgres` |
+
+`MAXIMUS_STORE` boşsa: bağlantı dizesi tanımlıysa `postgres`, değilse `file` seçilir. Yani yerelde
+hiçbir şey ayarlamadan `npm run dev` ve `npm test` çalışır, üretimde ise veritabanı otomatik kullanılır.
+
+**Vercel'de dosya tabanlı depo kullanılamaz.** Sunucusuz fonksiyonun dosya sistemi `/tmp` dışında salt
+okunurdur: her yazma `ENOENT: no such file or directory, mkdir '/var/task/data'` ile çöker ve
+`/api/auth/register` 500 döndürür. `/tmp`'ye yazmak da çözüm değildir, çünkü her çağrı kendi geçici
+`/tmp`'sini alır — müşteri kaydolur, bir sonraki istekte yok olur. Bu yüzden üretimde
+`MAXIMUS_DATABASE_URL` zorunludur.
+
+### Veritabanı kurulumu (Neon / Vercel Postgres)
+
+1. Vercel panelinde **Storage → Create Database → Neon (Postgres)** ile bir veritabanı oluşturun ve
+   projeye bağlayın. Vercel `DATABASE_URL` / `POSTGRES_URL` değişkenlerini kendisi tanımlar; bunlar da
+   okunur, ayrıca bir şey girmeniz gerekmez. Harici bir Postgres kullanıyorsanız bağlantı dizesini
+   `MAXIMUS_DATABASE_URL` olarak ekleyin.
+2. Neon'da **havuzlanmış** ("-pooler") uç noktayı tercih edin; sunucusuz ortamda bağlantı tükenmesini
+   engeller: `postgres://user:pass@ep-xxx-pooler.eu-central-1.aws.neon.tech/maximus?sslmode=require`
+3. Şemayı kurun: `MAXIMUS_DATABASE_URL=... npm run db:migrate`. Idempotenttir, tekrar çalıştırılabilir.
+   (`PostgresStore` ilk kullanımda şemayı kendisi de kurar; betik hatayı dağıtımdan önce görmek içindir.)
+
+Şema `src/server/schema.ts` içindedir (ayrı `.sql` dosyası değil, böylece Vercel paketine dahil olur).
+Tablolar: `customers`, `orders`, `saved_lists`, `conversations`, `voice_unmatched`.
+`orders.customer_id` üzerinde foreign key **yoktur**: WhatsApp ajanı hesabı olmayan numaralar için
+`wa:<telefon>` biçiminde kimlik üretir.
+
+### Testler
+
+`npm test` dış servis gerektirmez; `PostgresStore` testleri atlanır. Gerçek veritabanına karşı
+çalıştırmak için **boş** bir test veritabanı verin (tabloları `TRUNCATE` eder, üretim veritabanını
+asla vermeyin):
+
+```bash
+MAXIMUS_TEST_DATABASE_URL=postgres://... npm test
+```
+
+`tests/store-conformance.test.ts` aynı iddiaları her iki uygulamaya karşı çalıştırır, böylece
+üretim deposunun dosya tabanlı olanla aynı davrandığı doğrulanır.
 
 ## Müşteri onayı
 

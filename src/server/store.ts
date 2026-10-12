@@ -1,11 +1,22 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
+import { normalizePhone } from "./phone";
+import { PostgresStore, databaseUrl } from "./store-postgres";
+
+export { normalizePhone };
 
 /**
  * Müşteri ve sipariş deposu.
- * Varsayılan uygulama dosya tabanlıdır (data/store.json). Odoo bağlantısı hazır olduğunda
- * aynı arayüzü uygulayan bir OdooStore ile değiştirilir; uygulama kodu değişmez.
+ *
+ * İki uygulama, tek arayüz (CustomerStore):
+ *  - FileStore    — yalnızca yerel geliştirme (data/store.json). Sunucusuz ortamda KULLANILAMAZ:
+ *                   Vercel'de fonksiyon dosya sistemi /tmp dışında salt okunurdur (mkdir ENOENT)
+ *                   ve /tmp her çağrıda sıfırlanır.
+ *  - PostgresStore — üretim (Neon / Vercel Postgres), src/server/store-postgres.ts.
+ *
+ * Seçim getStore() içinde yapılır; çağıran kod (rotalar, ajan, auth) hiç değişmez.
+ * Odoo bağlantısı hazır olduğunda aynı arayüzü uygulayan bir OdooStore eklenebilir.
  */
 export type CustomerRecord = {
   id: string;
@@ -83,6 +94,12 @@ export interface CustomerStore {
   deleteList(customerId: string, listId: string): Promise<void>;
   getConversation(phone: string): Promise<ConversationState | undefined>;
   saveConversation(state: ConversationState): Promise<void>;
+  /**
+   * Sesli siparişte katalogda bulunamayan sorguları sözlük "eğitimi" için kaydeder.
+   * Asla fırlatmaz: kayıt tutmak siparişi bozmamalı. Çağıran yer senkron olduğu için
+   * sonuç beklenmez (fire-and-forget), bu yüzden arayüzde isteğe bağlıdır.
+   */
+  logVoiceUnmatched?(payload: Record<string, unknown>): Promise<void>;
 }
 
 type Data = {
@@ -94,10 +111,10 @@ type Data = {
 
 const EMPTY: Data = { customers: [], orders: [], lists: [], conversations: [] };
 
-function normalizePhone(p: string): string {
-  return p.replace(/[^\d]/g, "").replace(/^0/, "32");
-}
-
+/**
+ * Dosya tabanlı depo — YALNIZCA yerel geliştirme ve testler için.
+ * Üretimde (Vercel) kullanılmaz: salt okunur dosya sistemi yüzünden her yazma çöker.
+ */
 export class FileStore implements CustomerStore {
   private file: string;
   private queue: Promise<unknown> = Promise.resolve();
@@ -214,10 +231,48 @@ export class FileStore implements CustomerStore {
       d.conversations.push({ ...state, updatedAt: new Date().toISOString() });
     });
   }
+
+  /** Eşleşmeyen sesli sorgular: store.json yanındaki voice-unmatched.jsonl'a eklenir. */
+  async logVoiceUnmatched(payload: Record<string, unknown>) {
+    try {
+      const dir = path.dirname(this.file);
+      await fs.mkdir(dir, { recursive: true });
+      await fs.appendFile(path.join(dir, "voice-unmatched.jsonl"), JSON.stringify(payload) + "\n");
+    } catch {
+      /* log yazılamazsa sessizce geç */
+    }
+  }
 }
 
 let _store: CustomerStore | null = null;
+
+/**
+ * Hangi uygulamanın kullanılacağını belirler.
+ *
+ * MAXIMUS_STORE=postgres|file açıkça seçer. Tanımlı değilse: bağlantı dizesi varsa postgres,
+ * yoksa file. Böylece yerelde (`npm test`, `npm run dev`) hiçbir dış servis gerekmez, üretimde
+ * ise veritabanı değişkeni tanımlı olduğu için otomatik olarak kalıcı depo kullanılır.
+ */
+export function storeKind(): "file" | "postgres" {
+  const explicit = process.env.MAXIMUS_STORE?.trim().toLowerCase();
+  if (explicit === "file" || explicit === "postgres") return explicit;
+  return databaseUrl() ? "postgres" : "file";
+}
+
 export function getStore(): CustomerStore {
-  if (!_store) _store = new FileStore();
+  if (!_store) {
+    if (storeKind() === "postgres") {
+      _store = new PostgresStore();
+    } else {
+      // Sunucusuz ortamda dosya deposu sessizce veri kaybeder; erken ve net uyar.
+      if (process.env.VERCEL) {
+        console.error(
+          "[store] UYARI: Vercel üzerinde FileStore seçildi. Yazmalar başarısız olur ve veri kalıcı olmaz. " +
+            "MAXIMUS_DATABASE_URL tanımlayın (bkz. README).",
+        );
+      }
+      _store = new FileStore();
+    }
+  }
   return _store;
 }

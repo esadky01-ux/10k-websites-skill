@@ -6,9 +6,8 @@
  * GPT çıkarımı başarısız olursa veya anahtar yoksa kural tabanlı ayrıştırıcı (parseOrderText) devreye girer,
  * böylece metin elde edildiği sürece sipariş yine sepete düşer.
  */
-import { appendFileSync, mkdirSync } from "node:fs";
-import path from "node:path";
 import { getProduct, formatPackaging, productName, type Product } from "@/data/products";
+import { getStore } from "@/server/store";
 import { parseOrderText, searchProducts, normalize, type Match } from "@/server/whatsapp/matcher";
 import { extractOrderItems, transcribeAudio, type ExtractedItem } from "./openai";
 import { translateKurdish } from "@/data/voice-vocab";
@@ -140,12 +139,19 @@ export function buildResult(transcript: string, items: ExtractedItem[], lang: Vo
   return { transkript: transcript, dil: lang, eklenenler, secenekler, bulunamayanlar, toplamTutar, yedek };
 }
 
-/** Eşleşmeyen sorguları sözlük "eğitimi" için kaydeder (MAXIMUS_DATA_DIR/voice-unmatched.jsonl). Asla fırlatmaz. */
+/**
+ * Eşleşmeyen sorguları sözlük "eğitimi" için kaydeder. Asla fırlatmaz.
+ * Yazma deponun kendisine devredilir: yerelde voice-unmatched.jsonl dosyasına,
+ * üretimde voice_unmatched tablosuna. Eskiden doğrudan dosyaya yazılıyordu ve
+ * Vercel'in salt okunur dosya sisteminde sessizce kayboluyordu.
+ * Çağıran yer senkron olduğu için sonuç beklenmez.
+ */
 function logUnmatched(query: string, transcript: string) {
   try {
-    const dir = process.env.MAXIMUS_DATA_DIR ?? path.join(process.cwd(), "data");
-    mkdirSync(dir, { recursive: true });
-    appendFileSync(path.join(dir, "voice-unmatched.jsonl"), JSON.stringify({ at: new Date().toISOString(), query, transcript }) + "\n");
+    // .catch(): sonuç beklenmediği için reddedilen söz "unhandled rejection" olmasın.
+    void getStore()
+      .logVoiceUnmatched?.({ at: new Date().toISOString(), query, transcript })
+      .catch(() => undefined);
   } catch {
     /* log yazılamazsa sessizce geç */
   }

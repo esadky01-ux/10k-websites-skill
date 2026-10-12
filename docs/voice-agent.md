@@ -105,9 +105,10 @@ dane/heb = adet). GPT-4o-mini talimatına okunaklı biçimde eklenir ve modele "
 karşılığını yaz" kuralı verilir; LLM olmadan çalışan kural tabanlı yedek de aynı kılavuzla deterministik çeviri yapar
 (`translateKurdish`: "sê koli mirîşk bîst kîlo" → "3 koli tavuk 20 kg").
 
-Katalogda karşılığı olmayan bir kelime geldiğinde sistem onu `MAXIMUS_DATA_DIR/voice-unmatched.jsonl` dosyasına
-(`{ at, query, transcript }`) yazar. Haftada bir bu dosyaya bakıp yeni kelimeleri `VOICE_VOCAB` içine eklemek, sahadaki
-"eğitim" döngüsüdür. Örnek satır: `"goşt": ["döner", "et"]`. Anahtar tarafına kelimeyi Kürtçe yazıldığı gibi (aksanlı ve aksansız
+Katalogda karşılığı olmayan bir kelime geldiğinde sistem onu depoya (`{ at, query, transcript }`) yazar: üretimde
+`voice_unmatched` tablosuna, yerel geliştirmede `MAXIMUS_DATA_DIR/voice-unmatched.jsonl` dosyasına. (Eskiden doğrudan
+dosyaya yazılıyordu ve Vercel'in salt okunur dosya sisteminde sessizce kayboluyordu.) Haftada bir buraya bakıp yeni
+kelimeleri `VOICE_VOCAB` içine eklemek, sahadaki "eğitim" döngüsüdür. Örnek satır: `"goşt": ["döner", "et"]`. Anahtar tarafına kelimeyi Kürtçe yazıldığı gibi (aksanlı ve aksansız
 iki biçimde) koymak, transkripsiyon farklarını tolere eder.
 
 ## Yapılandırma (.env)

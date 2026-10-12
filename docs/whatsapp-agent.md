@@ -8,7 +8,7 @@ kısa bir soruyla netleştirir ve onaydan sonra siparişi kaydeder.
 flowchart LR
   WA[WhatsApp Cloud API<br/>Meta] -->|webhook POST| R[/api/whatsapp/webhook]
   R --> H[handleIncoming]
-  H --> S[(FileStore<br/>data/store.json)]
+  H --> S[(CustomerStore<br/>Postgres üretimde<br/>data/store.json yerelde)]
   H --> A{ANTHROPIC_API_KEY?}
   A -->|evet| C[Claude araç döngüsü<br/>claude-opus-5]
   A -->|hayır| F[Kural tabanlı yedek<br/>resolveOrder]
@@ -29,7 +29,7 @@ flowchart LR
 | `src/server/whatsapp/agent.ts` | Sohbet durumu (telefon bazlı), dil tespiti, Claude araç döngüsü (`search_products`, `update_draft`, `show_draft`, `confirm_order`, `lookup_customer`) ve API anahtarı yokken çalışan kural tabanlı yedek akış. |
 | `src/server/whatsapp/cloudapi.ts` | Meta Graph API ile mesaj gönderme, webhook gövdesinden mesaj ayıklama. Ortam değişkenleri yoksa "kuru mod": mesajlar konsola yazılır. |
 | `src/app/api/whatsapp/webhook/route.ts` | Meta doğrulaması (GET, `hub.challenge`), imza kontrolü (`X-Hub-Signature-256`), gelen mesajları ajana iletme (POST). |
-| `src/server/store.ts` | `CustomerStore` arayüzü: müşteri, sipariş, kayıtlı liste ve sohbet durumu. Dosya tabanlı uygulama; Odoo hazır olduğunda `OdooStore` ile değiştirilir. |
+| `src/server/store.ts` | `CustomerStore` arayüzü: müşteri, sipariş, kayıtlı liste ve sohbet durumu. İki uygulama: `FileStore` (yerel) ve `PostgresStore` (üretim, `store-postgres.ts`); Odoo hazır olduğunda `OdooStore` eklenebilir. |
 | `scripts/whatsapp-dry-run.mjs` | Meta bağlantısı olmadan yerel simülasyon. |
 
 ## Konuşma akışı
