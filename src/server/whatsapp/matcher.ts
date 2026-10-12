@@ -4,7 +4,7 @@
  * ANTHROPIC_API_KEY yoksa kural tabanlı ayrıştırıcı tek başına da çalışır.
  */
 import { products, type Product } from "@/data/products";
-import { VOICE_VOCAB } from "@/data/voice-vocab";
+import { ORDER_VOCAB } from "@/data/order-vocab";
 
 export type Match = { product: Product; score: number };
 export type ParsedLine = { raw: string; quantity: number; unit: "koli" | "adet"; query: string; sizeHint?: string };
@@ -36,7 +36,7 @@ const SYNONYMS: Record<string, string[]> = {
 };
 
 // Saha sözlüğü (Kürtçe/yöresel) eş anlamlılara eklenir; anahtarlar normalize edilir
-for (const [k, v] of Object.entries(VOICE_VOCAB)) {
+for (const [k, v] of Object.entries(ORDER_VOCAB)) {
   const key = normalize(k);
   SYNONYMS[key] = [...(SYNONYMS[key] ?? []), ...v];
 }

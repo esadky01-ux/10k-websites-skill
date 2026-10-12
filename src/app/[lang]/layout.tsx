@@ -4,8 +4,7 @@ import "../globals.css";
 import { CartProvider } from "@/components/CartProvider";
 import { AuthProvider } from "@/components/AuthProvider";
 import CartDrawer from "@/components/CartDrawer";
-import VoicePlasiyerModal from "@/components/VoicePlasiyerModal";
-import VoiceAgentBoundary from "@/components/VoiceAgentBoundary";
+import WhatsAppOrderButton from "@/components/WhatsAppOrderButton";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { I18nProvider } from "@/i18n/I18nProvider";
@@ -85,9 +84,7 @@ export default async function LangLayout({ children, params }: { children: React
               <main className="flex-1">{children}</main>
               <Footer lang={lang} />
               <CartDrawer />
-              <VoiceAgentBoundary label={t.voice.unavailable} retry={t.voice.retry}>
-                <VoicePlasiyerModal />
-              </VoiceAgentBoundary>
+              <WhatsAppOrderButton />
             </CartProvider>
           </AuthProvider>
         </I18nProvider>

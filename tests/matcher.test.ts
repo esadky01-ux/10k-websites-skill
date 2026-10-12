@@ -27,6 +27,26 @@ test("searchProducts matches sauces with size", () => {
   assert.match(hit.product.nameNl, /3 liter/);
 });
 
+test("searchProducts resolves field vocabulary (Kurmancî/jargon) via ORDER_VOCAB", () => {
+  const chicken = resolveOrder("3 koli mirîşk 20kg")[0];
+  assert.ok(chicken.best, "mirîşk must reach the chicken döner products");
+  assert.match(chicken.best!.product.nameNl, /Tavuk Doner - 20kg/i);
+  assert.equal(chicken.line.quantity, 3);
+  assert.ok(searchProducts("dew").length > 0, "dew → ayran");
+  const bread = resolveOrder("5 karton nan")[0];
+  assert.ok(bread.best, "nan → ekmek/brood, karton → koli");
+  assert.equal(bread.line.unit, "koli");
+});
+
+test("resolveOrder finds nothing for a line with no product word", () => {
+  const res = resolveOrder("3 koli uzay mekigi, 2 koli 20kg");
+  assert.equal(res.length, 2);
+  for (const r of res) {
+    assert.equal(r.best, undefined, `unmatchable line must not score: ${r.line.raw}`);
+    assert.equal(r.alternatives.length, 0);
+  }
+});
+
 test("resolveOrder flags ambiguous lines", () => {
   const res = resolveOrder("2 koli kip doner");
   assert.equal(res.length, 1);

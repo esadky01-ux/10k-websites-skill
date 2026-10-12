@@ -34,3 +34,6 @@ e2e/screenshots/
 # ürün görseli gelen kutusu (npm run images ile işlenir)
 /product-images-inbox/*
 !/product-images-inbox/README.md
+
+# Claude Code kisisel izin kurallari (paylasilmaz)
+.claude/settings.local.json

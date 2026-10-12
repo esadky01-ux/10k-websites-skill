@@ -18,9 +18,11 @@ export default function Header({ lang }: { lang: Locale }) {
   ];
   return (
     <header className="sticky top-0 z-40 border-b border-cream-200 bg-white/95 backdrop-blur">
-      <div className="hidden border-b border-cream-200 bg-ink-900 text-cream-100 md:block">
+      {/* Üst şerit her ekranda görünür: diller ilk bakışta seçilebilsin diye mobilde de duruyor,
+          adres ve saat gibi uzun bilgiler yalnızca geniş ekranda gösterilir. */}
+      <div className="border-b border-cream-200 bg-ink-900 text-cream-100">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-1.5 text-xs sm:px-6">
-          <div className="flex items-center gap-6">
+          <div className="hidden items-center gap-6 md:flex">
             <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-white">
               <MapPin className="h-3.5 w-3.5 text-gold-500" />
               {site.address.full}
@@ -30,12 +32,14 @@ export default function Header({ lang }: { lang: Locale }) {
               {t.common.hours}
             </span>
           </div>
-          <div className="flex items-center gap-4">
-            <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="inline-flex items-center gap-1.5 font-semibold hover:text-white">
+          <div className="flex w-full items-center justify-between gap-4 md:w-auto md:justify-end">
+            <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap font-semibold hover:text-white">
               <Phone className="h-3.5 w-3.5 text-gold-500" />
-              {site.phoneDisplay}
+              {/* Dar ekranda yalnızca simge: dört dil şeride sığsın, numara yine aranabilir kalsın */}
+              <span className="hidden sm:inline">{site.phoneDisplay}</span>
+              <span className="sr-only sm:hidden">{site.phoneDisplay}</span>
             </a>
-            <LangSwitch className="rounded-full border border-white/20 px-2.5 py-0.5 font-semibold hover:bg-white/10" />
+            <LangSwitch />
           </div>
         </div>
       </div>

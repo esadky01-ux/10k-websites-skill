@@ -95,7 +95,7 @@ export default function QuickOrderMatrix() {
 
   return (
     <div>
-      <div className="sticky top-[57px] z-30 -mx-4 border-b border-cream-200 bg-cream-50/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6 md:top-[97px] lg:top-[69px]">
+      <div className="sticky top-[102px] z-30 -mx-4 border-b border-cream-200 bg-cream-50/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:top-[106px] sm:px-6 md:top-[114px] lg:top-[106px]">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 lg:flex-row lg:items-center">
           <div className="scroll-tabs flex gap-1.5 overflow-x-auto py-0.5 lg:flex-1" role="tablist" aria-label={tt.filters}>
             <button type="button" role="tab" aria-selected={active === ""} onClick={() => selectCategory("")} className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition ${active === "" ? "bg-ink-900 text-white" : "bg-white text-ink-700 ring-1 ring-cream-200 hover:ring-ink-300"}`}>
@@ -154,7 +154,7 @@ export default function QuickOrderMatrix() {
                           </div>
                           <div className="shrink-0 text-end text-sm"><PriceCell p={p} /></div>
                         </div>
-                        <div className="mt-3 flex items-end justify-between gap-3 border-t border-cream-200 pt-3">
+                        <div className="mt-3 flex items-end justify-between gap-3 border-t border-cream-200 pt-3 pe-14">
                           <Counters p={p} compact />
                         </div>
                       </article>
