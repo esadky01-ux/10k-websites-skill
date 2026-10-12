@@ -220,6 +220,9 @@ SURUM = {ad: hashlib.sha256((WWW / "assets" / ad).read_bytes()).hexdigest()[:10]
 # fotograflar (assets/foto/*.webp): ad sabit, ?v=<hash> ile cagrilir (resim degisince onbellek yenilenir)
 FOTO = {f.name: hashlib.sha256(f.read_bytes()).hexdigest()[:10] for f in sorted((WWW / "assets" / "foto").glob("*.webp"))} \
     if (WWW / "assets" / "foto").is_dir() else {}
+# kok dizindeki resimler (hero, arac cizimleri, logo/favicon): degisince adres degissin (resimler 1 yil onbellekte)
+RESIM = {f.name: hashlib.sha256(f.read_bytes()).hexdigest()[:10]
+         for f in sorted((WWW / "assets").iterdir()) if f.suffix in (".jpg", ".svg") and f.name != "og.jpg"}
 
 
 def surumle(html):
@@ -227,6 +230,8 @@ def surumle(html):
         html = html.replace(f'/assets/{ad}"', f'/assets/{ad}?v={h}"')
     for ad, h in FOTO.items():
         html = html.replace(f'/assets/foto/{ad}"', f'/assets/foto/{ad}?v={h}"')
+    for ad, h in RESIM.items():
+        html = html.replace(f'/assets/{ad}"', f'/assets/{ad}?v={h}"')
     return html
 
 
@@ -368,6 +373,7 @@ for dil in DILLER:
     soz_anahtarlari = [
         "status_google", "status_fallback", "status_unknown", "status_waiting",
         "val_route", "val_price", "val_date", "val_cancel", "val_name", "val_email", "val_phone",
+        "val_past", "val_return", "val_return_order",
         "wa_title", "wa_mode_airport", "wa_route", "wa_date", "wa_return", "wa_pax",
         "wa_bags", "wa_vehicle", "wa_price", "wa_deposit", "wa_rest",
         "wa_name", "wa_phone", "wa_email", "airport_wa_msg", "paym_online_d", "dt_join",

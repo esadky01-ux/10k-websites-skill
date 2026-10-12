@@ -155,7 +155,7 @@
   "wa_date": "Départ : {date}",
   "wa_return": "Retour : {date}",
   "wa_pax": "Passagers : {pax}",
-  "wa_bags": "Bagages : {big} grands, {small} petits",
+  "wa_bags": "Bagages : grands {big}, petits {small}",
   "wa_vehicle": "Véhicule : {vehicle}",
   "wa_price": "Prix estimé : {price}",
   "wa_deposit": "Acompte ({pct} %) : {deposit}",
@@ -225,7 +225,10 @@
   "recap_total": "Total",
   "view_all": "Voir tout ({n})",
   "dest_sub": "Réservez un transfert privé au départ de Bruxelles vers les aéroports et villes du Benelux, de France et d'Allemagne.",
-  "recap_vehicle": "Véhicule"
+  "recap_vehicle": "Véhicule",
+  "val_past": "La date et l'heure de départ doivent être dans le futur.",
+  "val_return": "Veuillez choisir la date et l'heure de retour.",
+  "val_return_order": "Le retour doit avoir lieu après le départ."
  },
  "nl": {
   "dil_kod": "nl",
@@ -452,7 +455,10 @@
   "recap_total": "Totaal",
   "view_all": "Alles tonen ({n})",
   "dest_sub": "Boek een privétransfer vanuit Brussel naar luchthavens en steden in de Benelux, Frankrijk en Duitsland.",
-  "recap_vehicle": "Voertuig"
+  "recap_vehicle": "Voertuig",
+  "val_past": "De vertrekdatum en het vertrekuur moeten in de toekomst liggen.",
+  "val_return": "Kies de datum en het uur van de terugrit.",
+  "val_return_order": "De terugrit moet na het vertrek plaatsvinden."
  },
  "en": {
   "dil_kod": "en",
@@ -679,7 +685,10 @@
   "recap_total": "Total",
   "view_all": "View all ({n})",
   "dest_sub": "Book a private transfer from Brussels to airports and cities across the Benelux, France and Germany.",
-  "recap_vehicle": "Vehicle"
+  "recap_vehicle": "Vehicle",
+  "val_past": "The pickup date and time must be in the future.",
+  "val_return": "Please choose the return date and time.",
+  "val_return_order": "The return must be after the pickup."
  },
  "tr": {
   "dil_kod": "tr",
@@ -906,6 +915,9 @@
   "recap_total": "Toplam",
   "view_all": "Tümünü gör ({n})",
   "dest_sub": "Brüksel çıkışlı özel transferi Benelüks, Fransa ve Almanya'daki havalimanları ve şehirler için ayarlayın.",
-  "recap_vehicle": "Araç"
+  "recap_vehicle": "Araç",
+  "val_past": "Kalkış tarihi ve saati gelecekte olmalı.",
+  "val_return": "Lütfen dönüş tarihini ve saatini seçin.",
+  "val_return_order": "Dönüş, kalkıştan sonra olmalı."
  }
 }

@@ -478,6 +478,7 @@ function hataTemizle(){
 function epostaGecerli(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e); }
 function telefonGecerli(t){ return (t.replace(/\D/g,"").length) >= 8; }
 
+function tarihZaman(tarih, saat){ return new Date(tarih + "T" + saat); }
 function adim1Dogrula(){
   if (!$("f-alis").value.trim() || !$("f-varis").value.trim())
     return {mesaj: SOZ.val_route, odak: $("f-alis")};
@@ -485,8 +486,14 @@ function adim1Dogrula(){
     return {mesaj: SOZ.val_price, odak: $("f-alis")};
   if (!$("f-tarih").value || !$("f-saat").value)
     return {mesaj: SOZ.val_date, odak: !$("f-tarih").value ? $("f-tarih") : $("f-saat")};
-  if ($("f-donus").checked && (!$("f-donus-tarih").value || !$("f-donus-saat").value))
-    return {mesaj: SOZ.val_date, odak: !$("f-donus-tarih").value ? $("f-donus-tarih") : $("f-donus-saat")};
+  if (tarihZaman($("f-tarih").value, $("f-saat").value) < new Date())
+    return {mesaj: SOZ.val_past, odak: $("f-tarih")};
+  if ($("f-donus").checked){
+    if (!$("f-donus-tarih").value || !$("f-donus-saat").value)
+      return {mesaj: SOZ.val_return, odak: !$("f-donus-tarih").value ? $("f-donus-tarih") : $("f-donus-saat")};
+    if (tarihZaman($("f-donus-tarih").value, $("f-donus-saat").value) <= tarihZaman($("f-tarih").value, $("f-saat").value))
+      return {mesaj: SOZ.val_return_order, odak: $("f-donus-tarih")};
+  }
   return null;
 }
 function ortakDogrula(){
@@ -530,9 +537,15 @@ function adimGoster(n, kaydir){
     var g = parseInt(li.getAttribute("data-git"), 10);
     li.classList.toggle("on", g === n);
     li.classList.toggle("bitti", g < n);
+    if (g === n) li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current");
   });
   if (n === 3) ozetCiz();
-  if (kaydir !== false) $("rezervasyon").scrollIntoView({behavior: kaydirmaDavranisi(), block: "start"});
+  if (kaydir !== false){
+    $("rezervasyon").scrollIntoView({behavior: kaydirmaDavranisi(), block: "start"});
+    /* klavye/ekran okuyucu: odak yeni adima tasinsin (dugme gizlenince odak kaybolmasin) */
+    var yeni = document.querySelector('.adim[data-adim="' + n + '"]');
+    if (yeni){ yeni.setAttribute("tabindex", "-1"); yeni.focus({preventScroll: true}); }
+  }
 }
 $("btn-ileri-1").addEventListener("click", function(){
   hataTemizle();
@@ -550,8 +563,13 @@ document.querySelectorAll(".adim-cubuk li").forEach(function(li){
     if (g < adimNo) adimGoster(g);          /* yalniz geri; ileri gitmek dogrulamadan gecer */
   });
 });
-/* Enter tusu sayfayi gondermesin; adim 1-2'de "devam" gibi calissin */
-$("rezervasyon").addEventListener("submit", function(ev){
+/* Enter tusu sayfayi gondermesin; adim 1-2'de "devam" gibi calissin (formda gonder dugmesi yok:
+   ortuk gonderme calismaz, bu yuzden Enter dogrudan dinlenir) */
+$("rezervasyon").addEventListener("submit", function(ev){ ev.preventDefault(); });
+$("rezervasyon").addEventListener("keydown", function(ev){
+  if (ev.key !== "Enter" || ev.isComposing) return;
+  var hedef = ev.target;
+  if (!hedef || hedef.tagName !== "INPUT" || hedef.type === "checkbox") return;
   ev.preventDefault();
   var ileri = $("btn-ileri-" + adimNo);
   if (ileri && !ileri.hidden) ileri.click();
@@ -673,8 +691,10 @@ if (window.matchMedia){
 }
 document.addEventListener("keydown", function(ev){
   if (ev.key !== "Escape") return;
+  var acikMenu = menu.open ? menu : document.querySelector(".dil-menu[open]");
   menuKapat();
   document.querySelectorAll(".dil-menu[open]").forEach(function(d){ d.open = false; });
+  if (acikMenu){ var ozet = acikMenu.querySelector("summary"); if (ozet) ozet.focus(); }
 });
 /* dil menusu: disina tiklaninca kapanir */
 document.addEventListener("click", function(ev){

@@ -178,6 +178,7 @@ h3{font-size:1.28rem;line-height:1.2;font-weight:700;letter-spacing:-.015em}
 .adim-cubuk li.on span{background:var(--ink);color:#fff}
 .adim-cubuk li.bitti span{background:var(--amber);color:var(--ink)}
 .adim{display:none}
+.adim:focus{outline:none}
 .adim.acik{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;animation:adimGir .35s var(--ease)}
 
 /* mod secici (segmentli) */
@@ -282,17 +283,18 @@ input[type="date"]::-webkit-calendar-picker-indicator,input[type="time"]::-webki
 
 .toplam-satiri{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:var(--r-m);background:var(--bg);font-weight:600}
 .toplam-satiri b{font-size:1.3rem;font-weight:800;font-variant-numeric:tabular-nums}
-.adim-alt{display:flex;gap:10px}
-.adim-alt .btn-ileri{flex:1}
+.adim-alt{display:flex;flex-wrap:wrap;gap:10px}
+.adim-alt .btn{min-width:0}
+.adim-alt .btn-ileri{flex:1 1 150px}
 .adim-alt .btn-geri{flex:0 0 auto}
 
 /* ozet (adim 3) */
 .ozet{display:grid;gap:12px;padding:16px;border:1.5px solid var(--line);border-radius:var(--r-m);background:var(--bg)}
 .ozet h3{font-size:1.1rem}
 .ozet dl{display:grid;gap:8px}
-.ozet dl > div{display:flex;justify-content:space-between;gap:16px;font-size:.92rem}
+.ozet dl > div{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 16px;font-size:.92rem}
 .ozet dt{color:var(--soluk);font-weight:600;flex:none}
-.ozet dd{font-weight:700;text-align:right;min-width:0;overflow-wrap:anywhere}
+.ozet dd{flex:1 1 9ch;font-weight:700;text-align:right;min-width:0;overflow-wrap:break-word}
 .ozet-fiyat{display:grid;gap:6px;padding-top:10px;border-top:1px solid var(--line-2)}
 .ozet-fiyat > div{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 12px;border-radius:12px;font-size:.92rem;font-weight:600}
 .ozet-fiyat b{font-size:1.05rem;font-weight:800;font-variant-numeric:tabular-nums}
@@ -554,6 +556,10 @@ input[type="date"]::-webkit-calendar-picker-indicator,input[type="time"]::-webki
   .logo-svg{height:21px}
   .dil-menu summary > .i:first-child{display:none}
   .menu-dugme{width:42px;height:42px}
+  .adim-cubuk{gap:5px}
+  .adim-cubuk li{gap:2px 5px;font-size:.72rem}
+  .adim-cubuk li span{width:20px;height:20px}
+  .adim-alt .btn{padding:0 14px}
 }
 /* 400px alti: fiyat kutulari dikey (mobil zorunlu kural) */
 @media (max-width:400px){
