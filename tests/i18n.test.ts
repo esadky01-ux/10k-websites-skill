@@ -36,7 +36,7 @@ test("every interface language is fully declared and has a dictionary", () => {
   }
 });
 
-test("the site interface is Latin-script only; Kurdish and Arabic live in the voice assistant", async () => {
+test("the site interface is Latin-script only in every language", () => {
   const nonLatin = /[\u0600-\u06FF\u0400-\u04FF]/;
   for (const [name, d] of Object.entries({ nl, tr, fr, en })) {
     for (const path of keys(d)) {
@@ -44,10 +44,19 @@ test("the site interface is Latin-script only; Kurdish and Arabic live in the vo
       if (typeof value === "string") assert.ok(!nonLatin.test(value), `${name}.${path} has non-Latin script`);
     }
   }
-  const { liveInstructions } = await import("../src/server/voice/live");
-  const prompt = liveInstructions("nl");
-  assert.match(prompt, /Kürtçe/, "live assistant still speaks Kurdish");
-  assert.match(prompt, /Arapça/, "live assistant still speaks Arabic");
+});
+
+test("the WhatsApp order button is labelled and pre-fills a message in every language", () => {
+  const prefills: Record<string, string> = {
+    nl: "Hallo, ik wil graag een bestelling plaatsen.",
+    tr: "Merhaba, sipariş vermek istiyorum.",
+    fr: "Bonjour, je souhaite passer une commande.",
+    en: "Hello, I would like to place an order.",
+  };
+  for (const [name, d] of Object.entries({ nl, tr, fr, en })) {
+    assert.match(d.whatsapp.orderButton, /WhatsApp/, `${name} label names WhatsApp`);
+    assert.equal(d.whatsapp.orderPrefill, prefills[name], `${name} prefilled message is in ${name}`);
+  }
 });
 
 test("localePath builds Dutch root and Turkish prefixed URLs", () => {
@@ -70,7 +79,20 @@ test("altPathFor switches between any two languages and keeps the route", () => 
   assert.equal(altPathFor("/tr", "tr", "nl"), "/");
   assert.equal(altPathFor("/", "nl", "fr"), "/fr");
   assert.equal(altPathFor("/blog/some-post", "nl", "tr"), "/tr/blog");
+  // Aynı içerik diline düşen diller (nl/fr/en) yazı slug'ını paylaşır: yazıda kalınır, dizine atılmaz.
+  assert.equal(altPathFor("/blog/bestverkochte-belgische-frituursauzen", "nl", "fr"), "/fr/blog/bestverkochte-belgische-frituursauzen");
+  assert.equal(altPathFor("/fr/blog/bestverkochte-belgische-frituursauzen", "fr", "en"), "/en/blog/bestverkochte-belgische-frituursauzen");
+  // nl/tr sınırı geçilirken karşılık slug'a gidilir.
+  assert.equal(altPathFor("/blog/bestverkochte-belgische-frituursauzen", "nl", "tr"), "/tr/blog/friturler-icin-en-cok-satan-belcika-soslari");
   assert.equal(altPathFor("/en/login", "en", "en"), "/en/login");
+  // Proxy dile özgü parçayı içeride Hollandaca klasöre yeniden yazar; şerit yine doğru karşılığı üretmeli
+  assert.equal(altPathFor("/fr/bestellen", "fr", "tr"), "/tr/siparis");
+  assert.equal(altPathFor("/fr/bestellen", "fr", "fr"), "/fr/commander");
+  assert.equal(altPathFor("/tr/regio/leuven", "tr", "en"), "/en/regions/leuven");
+  // SSG'de usePathname() varsayılan dilde de iç yolu verir (/bestellen → /nl/bestellen); baştaki dil atılmalı
+  assert.equal(altPathFor("/nl/bestellen", "nl", "fr"), "/fr/commander");
+  assert.equal(altPathFor("/nl", "nl", "fr"), "/fr");
+  assert.equal(altPathFor("/nl/regio/leuven", "nl", "tr"), "/tr/bolgeler/leuven");
 });
 
 test("localePath and folderForSlug round-trip for every language and route", () => {

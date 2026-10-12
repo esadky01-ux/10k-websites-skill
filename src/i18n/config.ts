@@ -1,15 +1,14 @@
 /**
  * Diller ve dile göre URL yapısı.
  *
- * Kürtçe ve Arapça bilerek arayüz dili değildir: bu müşteriler siteyi Türkçe, Hollandaca, Fransızca veya
- * İngilizce okur ama siparişi kendi dilinde konuşur. İkisi de yalnızca sesli asistanda yaşar
- * (canlı plasiyer Kürtçe ve Arapça konuşur); bkz. src/server/voice/live.ts ve src/data/voice-vocab.ts.
+ * Kürtçe ve yöresel kelimeler arayüz dili değildir ama sipariş metninde geçebilir: WhatsApp sipariş
+ * eşleştiricisi bunları src/data/order-vocab.ts sözlüğüyle katalog terimlerine çevirir.
  *
  * Yeni bir dili kaldırmak/eklemek için tek yer burasıdır: `locales` dizisinden adını çıkarmak
  * (ve src/i18n/<dil>.ts dosyasını silmek) o dili siteden tamamen kaldırır; başka hiçbir dosya değişmez.
  *
  * İki katman vardır:
- *  - Arayüz dilleri (`locales`): menü, sepet, formlar, sesli asistan — hepsi altı dilde.
+ *  - Arayüz dilleri (`locales`): menü, sepet, formlar — hepsinin sözlüğü tamdır.
  *  - İçerik dilleri (`contentLocales`): 28 bölge sayfasının şehir metinleri, blog yazıları ve
  *    ürün adları yalnızca Hollandaca ve Türkçe yazılıdır. Diğer diller bu metinleri
  *    `contentLocale` eşlemesindeki dilden alır; o sayfalar arama motorlarına `noindex` verilir ve

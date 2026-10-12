@@ -2,25 +2,33 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
 import { Check, Globe } from "lucide-react";
 import { useI18n } from "@/i18n/I18nProvider";
-import { defaultLocale, localeFlag, localeNames, localeShort, locales, routeKeyForSlug, routeSlugs, type Locale } from "@/i18n/config";
+import { translatedPost } from "@/data/blog";
+import { contentLocale, defaultLocale, isLocale, localeFlag, localeNames, localeShort, locales, routeKeyForSlug, routeSlugs, type Locale } from "@/i18n/config";
 
 /**
  * Geçerli sayfanın başka bir dildeki karşılığının yolu.
- * Rota parçası dile göre çevrilir (/tr/siparis → /fr/commander). Blog yazılarının slug'ları
- * dile özgü olduğundan yazı sayfasından blog dizinine gidilir.
+ * Rota parçası dile göre çevrilir (/tr/siparis → /fr/commander). Blog yazısı slug'ları yalnızca
+ * içerik dilleri (nl/tr) arasında farklıdır: o geçişte karşılık slug'a, karşılığı yoksa blog dizinine gidilir.
  */
 export function altPathFor(pathname: string, lang: Locale, target: Locale): string {
   const segs = pathname.split("/").filter(Boolean);
-  if (lang !== defaultLocale && segs[0] === lang) segs.shift();
+  // SSG'de usePathname() iç rota yolunu verir (/bestellen → /nl/bestellen), tarayıcıda ise
+  // görünen yolu. Baştaki dil parçası hangi dil olursa olsun (varsayılan dahil) atılır.
+  if (isLocale(segs[0])) segs.shift();
   let rest: string[] = [];
   if (segs[0]) {
-    const key = routeKeyForSlug(lang, segs[0]);
+    // Yol parçası iki biçimde gelebilir: ziyaretçinin gördüğü dile özgü parça (/fr/commander) ya da
+    // proxy'nin içeride yeniden yazdığı Hollandaca klasör adı (/fr/bestellen). İkisini de tanı.
+    const key = routeKeyForSlug(lang, segs[0]) ?? routeKeyForSlug(defaultLocale, segs[0]);
     if (key) {
       rest = [routeSlugs[key][target], ...segs.slice(1)];
-      if (key === "blog" && segs[1]) rest = [routeSlugs[key][target]]; // yazı slug'ları dile özgü
+      // Yazı slug'ları yalnızca içerik dilleri (nl/tr) arasında farklıdır; nl/fr/en aynı slug'ı paylaşır.
+      if (key === "blog" && segs[1] && contentLocale[lang] !== contentLocale[target]) {
+        const other = translatedPost(lang, segs[1]);
+        rest = other ? [routeSlugs[key][target], other.post.slug] : [routeSlugs[key][target]];
+      }
     } else {
       rest = segs;
     }
@@ -39,29 +47,13 @@ function Flag({ lang }: { lang: Locale }) {
 }
 
 /**
- * Dil seçici.
- *  - "dropdown" (varsayılan): dar üst çubuk için bayrak + kod düğmesi, tıklayınca liste açar.
- *  - "inline": bütün diller doğrudan görünür (mobil menüde açılır liste ekrandan taşıyordu).
+ * Dil seçici. Açılır liste yoktur: diller her sayfada ilk bakışta görünür, ziyaretçi aramak zorunda kalmaz.
+ *  - "bar"    (varsayılan): başlığın üst şeridinde bayrak + kısa kod; mobilde de görünür.
+ *  - "inline": mobil menüde bayrak + dilin kendi adıyla iki sütunlu ızgara.
  */
-export default function LangSwitch({ className = "", variant = "dropdown" }: { className?: string; variant?: "dropdown" | "inline" }) {
+export default function LangSwitch({ className = "", variant = "bar" }: { className?: string; variant?: "bar" | "inline" }) {
   const pathname = usePathname();
   const { lang, t } = useI18n();
-  const [open, setOpen] = useState(false);
-  const boxRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const onDown = (e: MouseEvent) => {
-      if (boxRef.current && !boxRef.current.contains(e.target as Node)) setOpen(false);
-    };
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
-    document.addEventListener("mousedown", onDown);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("mousedown", onDown);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
 
   if (variant === "inline") {
     return (
@@ -97,39 +89,28 @@ export default function LangSwitch({ className = "", variant = "dropdown" }: { c
   }
 
   return (
-    <div ref={boxRef} className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-label={t.header.langSwitchAria}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        className={`inline-flex items-center gap-1.5 ${className}`}
-        data-testid="lang-switch"
-      >
-        <Flag lang={lang} />
-        <span>{localeShort[lang]}</span>
-      </button>
-      {open && (
-        <div role="menu" aria-label={t.header.langSwitch} className="absolute end-0 top-full z-50 mt-2 min-w-48 overflow-hidden rounded-2xl border border-cream-200 bg-white py-1 shadow-xl" data-testid="lang-menu">
-          {locales.map((l) => (
-            <Link
-              key={l}
-              href={altPathFor(pathname, lang, l)}
-              hrefLang={l}
-              role="menuitem"
-              onClick={() => setOpen(false)}
-              lang={l}
-              className={`flex items-center gap-2.5 px-4 py-2.5 text-sm transition ${l === lang ? "font-bold text-brand-600" : "text-ink-700 hover:bg-cream-100"}`}
-              data-testid={`lang-option-${l}`}
-            >
-              <Flag lang={l} />
-              <span>{localeNames[l]}</span>
-              {l === lang && <Check className="ms-auto h-4 w-4 shrink-0" aria-hidden />}
-            </Link>
-          ))}
-        </div>
-      )}
+    <div className={`flex items-center gap-1 ${className}`} role="group" aria-label={t.header.langSwitchAria} data-testid="lang-bar">
+      <Globe className="me-0.5 hidden h-3.5 w-3.5 text-gold-500 sm:block" aria-hidden />
+      {locales.map((l) => {
+        const active = l === lang;
+        return (
+          <Link
+            key={l}
+            href={altPathFor(pathname, lang, l)}
+            hrefLang={l}
+            lang={l}
+            aria-current={active ? "true" : undefined}
+            title={localeNames[l]}
+            className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs leading-none transition ${
+              active ? "bg-white/20 font-bold text-white" : "text-cream-100/75 hover:bg-white/10 hover:text-white"
+            }`}
+            data-testid={`lang-option-${l}`}
+          >
+            <Flag lang={l} />
+            <span>{localeShort[l]}</span>
+          </Link>
+        );
+      })}
     </div>
   );
 }

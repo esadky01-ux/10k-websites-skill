@@ -14,10 +14,10 @@ export const site = {
   phone: "+32 467 07 71 64",
   phoneDisplay: "+32 467 07 71 64",
   whatsapp: "32467077164",
-  email: "info@maximusfood.be",
+  email: "info@maximusfood.eu",
   hours: "Pzt – Cum 08:00 – 17:00 · Cmt 09:00 – 13:00",
   pickupDiscount: 0.15,
-  url: "https://maximusfood.be",
+  url: "https://www.maximusfood.eu",
   serviceArea: "Belçika & Hollanda",
   geo: { lat: 50.9932, lng: 4.8377 },
 };
