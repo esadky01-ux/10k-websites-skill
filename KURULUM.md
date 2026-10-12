@@ -127,7 +127,7 @@ Değiştirin → `python3 kaynak/build.py` → `www/` içeriğini yükleyin.
 
 ### Hero fotoğrafı
 Gerçek "gece Brüksel + siyah Tesla" fotoğrafı hazır olduğunda:
-`kaynak/assets/hero-masa.jpg` (1600×900) ve `hero-mobil.jpg` (828×1104) adlarıyla koyun →
+`kaynak/assets/hero-masa.webp` (1600×905) ve `hero-mobil.webp` (800×1072) adlarıyla koyun →
 derleyin → yükleyin. Şu anki görseller markaya uygun yer tutuculardır.
 
 ### Sipariş kayıtları

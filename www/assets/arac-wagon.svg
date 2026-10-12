@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 86">
-  <!-- Break: uzun tavan, buyuk bagaj, yandan -->
-  <rect x="88" y="12" width="22" height="7" rx="3" fill="#F7B32B"/>
-  <path d="M12 62 Q8 61 8 54 Q8 46 16 44 L36 40 Q50 22 78 20 L150 20 Q168 22 176 40 L184 44 Q192 47 192 55 Q192 61 188 62 L172 62 A15 15 0 0 0 144 62 L56 62 A15 15 0 0 0 28 62 Z" fill="#121110"/>
-  <path d="M48 40 Q58 28 78 26 L110 26 L110 40 Z M116 26 L148 26 Q162 28 168 40 L116 40 Z" fill="#F6F4EF" opacity=".92"/>
-  <circle cx="42" cy="64" r="13.5" fill="#121110"/><circle cx="42" cy="64" r="6" fill="#F6F4EF"/><circle cx="42" cy="64" r="2.4" fill="#121110"/><circle cx="158" cy="64" r="13.5" fill="#121110"/><circle cx="158" cy="64" r="6" fill="#F6F4EF"/><circle cx="158" cy="64" r="2.4" fill="#121110"/>
-</svg>

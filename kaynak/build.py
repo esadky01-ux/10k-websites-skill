@@ -296,11 +296,12 @@ for dil in DILLER:
     def foto_anahtari(a, b):
         """Kart gorseli: varis; varis Bruksel havalimani ise (baska sehirden gelen rota) alis sehri."""
         anahtar = a if (b == "bru" and a != "brussels") else b
-        anahtar = {"ams": "amsterdam", "cdg": "paris", "orly": "paris", "cgn": "koln", "lux": "luxembourg"}.get(anahtar, anahtar)
+        anahtar = {"ams": "amsterdam", "cdg": "paris", "orly": "paris", "cgn": "koln", "lux": "luxembourg",
+                                   "bru": "havalimani", "crl": "havalimani"}.get(anahtar, anahtar)
         return anahtar if (KAYNAK / "assets" / "foto" / f"{anahtar}.webp").is_file() else None
 
     rota_kartlari = []
-    for i, (a, b) in enumerate(veri["populer"]):
+    for i, (a, b) in enumerate(list(veri["populer"]) + [("brussels", "luxembourg"), ("brussels", "koln")]):
         km = rota_km(a, b)
         toplam, _, _ = fiyat_hesapla(km)
         rota_kartlari.append(

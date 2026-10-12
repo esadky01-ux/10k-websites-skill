@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 86">
-  <!-- Ekonomi: fastback sedan, yandan (ink govde, amber tavan lambasi) -->
-  <rect x="88" y="14" width="22" height="7" rx="3" fill="#F7B32B"/>
-  <path d="M12 62 Q8 61 8 54 Q8 47 17 45 L38 41 Q62 23 90 22 L112 22 Q142 24 162 41 L182 45 Q192 47 192 55 Q192 61 188 62 L172 62 A15 15 0 0 0 144 62 L56 62 A15 15 0 0 0 28 62 Z" fill="#121110"/>
-  <path d="M52 41 Q68 29 90 28 L108 28 Q132 29 148 41 Z" fill="#F6F4EF" opacity=".92"/>
-  <rect x="97" y="28" width="3" height="13" fill="#121110"/>
-  <circle cx="42" cy="64" r="13.5" fill="#121110"/><circle cx="42" cy="64" r="6" fill="#F6F4EF"/><circle cx="42" cy="64" r="2.4" fill="#121110"/><circle cx="158" cy="64" r="13.5" fill="#121110"/><circle cx="158" cy="64" r="6" fill="#F6F4EF"/><circle cx="158" cy="64" r="2.4" fill="#121110"/>
-</svg>

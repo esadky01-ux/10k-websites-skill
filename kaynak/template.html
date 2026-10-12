@@ -37,8 +37,8 @@
 <!-- Yazi tipi kendi sunucumuzdan (GDPR: Google'a istek yok). Sadece latin dosyasi onyuklenir. -->
 <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/archivo-latin.woff2" crossorigin>
 <!-- Hero gorseli: dogru kadraj onceden yuklensin (masaustu/mobil ayri) -->
-<link rel="preload" as="image" href="/assets/hero-masa.jpg" media="(min-width: 760px)" fetchpriority="high">
-<link rel="preload" as="image" href="/assets/hero-mobil.jpg" media="(max-width: 759px)" fetchpriority="high">
+<link rel="preload" as="image" href="/assets/hero-masa.webp" media="(min-width: 760px)" fetchpriority="high">
+<link rel="preload" as="image" href="/assets/hero-mobil.webp" media="(max-width: 759px)" fetchpriority="high">
 <link rel="stylesheet" href="/assets/site.css">
 
 <!-- Yapisal veri: TaxiService + LocalBusiness (tek @id) -->
@@ -128,8 +128,8 @@
 <section class="hero" id="top">
   <div class="hero-sahne" aria-hidden="true">
     <picture>
-      <source media="(max-width:759px)" srcset="/assets/hero-mobil.jpg">
-      <img src="/assets/hero-masa.jpg" alt="" fetchpriority="high" width="1600" height="900">
+      <source media="(max-width:759px)" srcset="/assets/hero-mobil.webp">
+      <img src="/assets/hero-masa.webp" alt="" fetchpriority="high" width="1600" height="905">
     </picture>
   </div>
 
@@ -258,19 +258,19 @@
           <legend>{{vehicle_title}}</legend>
           <div class="arac-secim" id="arac-secim">
             <button type="button" class="arac-kart" data-arac="eco" aria-pressed="true">
-              <img src="/assets/arac-eco.svg" alt="{{alt_veh_eco}}" width="96" height="48" loading="lazy">
+              <img src="/assets/foto/arac-eco.webp" alt="{{alt_veh_eco}}" width="96" height="65" loading="lazy" decoding="async">
               <span class="a-metin"><b class="a-ad">{{veh_eco_name}}</b><span class="a-model">{{veh_eco_model}}</span>
                 <span class="a-kap"><svg class="i" aria-hidden="true"><use href="#i-user"/></svg>{{PAX_ECO}}<svg class="i" aria-hidden="true"><use href="#i-bag"/></svg>{{BAG_ECO}}<span class="sr">{{KAP_ECO}}</span></span></span>
               <span class="a-isaret" aria-hidden="true"><svg class="i"><use href="#i-check"/></svg></span>
             </button>
             <button type="button" class="arac-kart" data-arac="wagon" aria-pressed="false">
-              <img src="/assets/arac-wagon.svg" alt="{{alt_veh_wagon}}" width="96" height="48" loading="lazy">
+              <img src="/assets/foto/arac-wagon.webp" alt="{{alt_veh_wagon}}" width="96" height="65" loading="lazy" decoding="async">
               <span class="a-metin"><b class="a-ad">{{veh_wagon_name}}</b><span class="a-model">{{veh_wagon_model}}</span>
                 <span class="a-kap"><svg class="i" aria-hidden="true"><use href="#i-user"/></svg>{{PAX_WAGON}}<svg class="i" aria-hidden="true"><use href="#i-bag"/></svg>{{BAG_WAGON}}<span class="sr">{{KAP_WAGON}}</span></span></span>
               <span class="a-isaret" aria-hidden="true"><svg class="i"><use href="#i-check"/></svg></span>
             </button>
             <button type="button" class="arac-kart" data-arac="vip" aria-pressed="false">
-              <img src="/assets/arac-vip.svg" alt="{{alt_veh_vip}}" width="96" height="48" loading="lazy">
+              <img src="/assets/foto/arac-vip.webp" alt="{{alt_veh_vip}}" width="96" height="65" loading="lazy" decoding="async">
               <span class="a-metin"><b class="a-ad">{{veh_vip_name}}</b><span class="a-model">{{veh_vip_model}}</span>
                 <span class="a-kap"><svg class="i" aria-hidden="true"><use href="#i-user"/></svg>{{PAX_VIP}}<svg class="i" aria-hidden="true"><use href="#i-bag"/></svg>{{BAG_VIP}}<span class="sr">{{KAP_VIP}}</span></span></span>
               <span class="a-isaret" aria-hidden="true"><svg class="i"><use href="#i-check"/></svg></span>
@@ -415,7 +415,7 @@
     <ul class="seritler seritler--4">
       <li class="kart-hizmet">
         <div class="gorsel gorsel--hizmet h1" aria-hidden="true">
-          <svg viewBox="0 0 320 200" focusable="false"><path d="M-10 150h340" stroke="#121110" stroke-opacity=".18" stroke-width="3" stroke-dasharray="14 12"/><g transform="translate(150 28) rotate(38) scale(4)"><use href="#i-plane" width="24" height="24" color="#121110"/></g></svg>
+          <img src="/assets/foto/hizmet-havalimani.webp" alt="" width="640" height="482" loading="lazy" decoding="async">
         </div>
         <h3>{{svc1_t}}</h3><p>{{svc1_d}}</p>
         <a class="ok-link" href="#rezervasyon">{{nav_book}}<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -429,14 +429,14 @@
       </li>
       <li class="kart-hizmet">
         <div class="gorsel gorsel--hizmet h3" aria-hidden="true">
-          <svg viewBox="0 0 320 200" focusable="false"><path d="M160 20 100 190h120z" fill="#121110" fill-opacity=".85"/><path d="M160 60v18M160 100v22M160 142v30" stroke="#F7B32B" stroke-width="6" stroke-linecap="round"/></svg>
+          <img src="/assets/foto/hizmet-sinir.webp" alt="" width="640" height="482" loading="lazy" decoding="async">
         </div>
         <h3>{{svc3_t}}</h3><p>{{svc3_d}}</p>
         <a class="ok-link" href="#rezervasyon">{{nav_book}}<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
       </li>
       <li class="kart-hizmet">
         <div class="gorsel gorsel--hizmet h4" aria-hidden="true">
-          <svg viewBox="0 0 320 200" focusable="false"><path d="M70 70h150a30 30 0 0 1 0 60H110" fill="none" stroke="#121110" stroke-width="7" stroke-linecap="round" stroke-opacity=".85"/><path d="m92 48-26 22 26 22M128 152l26-22-26-22" fill="none" stroke="#121110" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="250" cy="100" r="9" fill="#F7B32B"/></svg>
+          <img src="/assets/foto/hizmet-donus.webp" alt="" width="640" height="482" loading="lazy" decoding="async">
         </div>
         <h3>{{svc4_t}}</h3><p>{{svc4_d}}</p>
         <a class="ok-link" href="#rezervasyon">{{nav_book}}<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -456,21 +456,21 @@
   <div class="kaydir" role="region" aria-label="{{fleet_title}}" tabindex="0">
     <ul class="seritler seritler--3">
       <li class="kart-filo">
-        <div class="f-gorsel"><img src="/assets/arac-eco.svg" alt="{{alt_veh_eco}}" width="240" height="104" loading="lazy"></div>
+        <div class="f-gorsel"><img src="/assets/foto/arac-eco.webp" alt="{{alt_veh_eco}}" width="320" height="215" loading="lazy" decoding="async"></div>
         <h3>{{veh_eco_name}}</h3>
         <p class="f-model">{{veh_eco_model}}</p>
         <p class="f-kap"><svg class="i" aria-hidden="true"><use href="#i-user"/></svg>{{PAX_ECO}}<svg class="i" aria-hidden="true"><use href="#i-bag"/></svg>{{BAG_ECO}}<span class="sr">{{KAP_ECO}}</span></p>
         <button type="button" class="btn btn--cerceve filo-sec" data-arac="eco">{{fleet_btn}}</button>
       </li>
       <li class="kart-filo">
-        <div class="f-gorsel"><img src="/assets/arac-wagon.svg" alt="{{alt_veh_wagon}}" width="240" height="104" loading="lazy"></div>
+        <div class="f-gorsel"><img src="/assets/foto/arac-wagon.webp" alt="{{alt_veh_wagon}}" width="320" height="215" loading="lazy" decoding="async"></div>
         <h3>{{veh_wagon_name}}</h3>
         <p class="f-model">{{veh_wagon_model}}</p>
         <p class="f-kap"><svg class="i" aria-hidden="true"><use href="#i-user"/></svg>{{PAX_WAGON}}<svg class="i" aria-hidden="true"><use href="#i-bag"/></svg>{{BAG_WAGON}}<span class="sr">{{KAP_WAGON}}</span></p>
         <button type="button" class="btn btn--cerceve filo-sec" data-arac="wagon">{{fleet_btn}}</button>
       </li>
       <li class="kart-filo">
-        <div class="f-gorsel"><img src="/assets/arac-vip.svg" alt="{{alt_veh_vip}}" width="240" height="104" loading="lazy"></div>
+        <div class="f-gorsel"><img src="/assets/foto/arac-vip.webp" alt="{{alt_veh_vip}}" width="320" height="215" loading="lazy" decoding="async"></div>
         <h3>{{veh_vip_name}}</h3>
         <p class="f-model">{{veh_vip_model}}</p>
         <p class="f-kap"><svg class="i" aria-hidden="true"><use href="#i-user"/></svg>{{PAX_VIP}}<svg class="i" aria-hidden="true"><use href="#i-bag"/></svg>{{BAG_VIP}}<span class="sr">{{KAP_VIP}}</span></p>

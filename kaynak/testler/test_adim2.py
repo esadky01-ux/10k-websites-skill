@@ -310,13 +310,13 @@ def hesapla_ilk_yukleme(dil, hero, gz):
     return toplam
 
 for dil in DILLER:
-    masa_gz = hesapla_ilk_yukleme(dil, "hero-masa.jpg", True)
-    mobil_gz = hesapla_ilk_yukleme(dil, "hero-mobil.jpg", True)
+    masa_gz = hesapla_ilk_yukleme(dil, "hero-masa.webp", True)
+    mobil_gz = hesapla_ilk_yukleme(dil, "hero-mobil.webp", True)
     kontrol(masa_gz <= 300, f"[{dil}] masaustu ilk yukleme (gzip) {masa_gz:.0f} KB (hedef <=300)")
     kontrol(mobil_gz <= 250, f"[{dil}] mobil ilk yukleme (gzip) {mobil_gz:.0f} KB (hedef <=250)")
 # ham (sikistirmasiz) butce: sunucu gzip verir; ham sinir yalniz kontrolsuz buyumeye karsi (tum 70 bolge satiri + logo yolu dahil)
-kontrol(hesapla_ilk_yukleme("fr", "hero-masa.jpg", False) < 320, "masaustu ilk yukleme (ham) >= 320 KB")
-kontrol(hesapla_ilk_yukleme("fr", "hero-mobil.jpg", False) < 300, "mobil ilk yukleme (ham) >= 300 KB")
+kontrol(hesapla_ilk_yukleme("fr", "hero-masa.webp", False) < 320, "masaustu ilk yukleme (ham) >= 320 KB")
+kontrol(hesapla_ilk_yukleme("fr", "hero-mobil.webp", False) < 300, "mobil ilk yukleme (ham) >= 300 KB")
 
 # ============================================================ H. kok yonlendirme
 print("— H. kok sayfa")
