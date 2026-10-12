@@ -41,7 +41,7 @@ Diller ve çeviri kuralları için bkz. `docs/i18n.md`; WhatsApp sipariş ajanı
 src/app/[lang]/     sayfalar (home, bestellen, blog, regio, account, inloggen, registreren)
 src/app/api/        auth, prices, orders, lists, whatsapp/webhook
 src/i18n/           sözlükler (nl, fr, en, tr), rota eşlemeleri, sağlayıcı
-src/server/         auth, store (dosya tabanlı), prices (sunucu), whatsapp ajanı ve sipariş eşleştirici
+src/server/         auth, store (Postgres ya da dosya), prices (sunucu), whatsapp ajanı ve sipariş eşleştirici
 src/components/     Header, Hero, CategoryGrid, Advantages, QuickOrderMatrix, CartDrawer, ...
 src/data/           kategoriler (10), Odoo ürün kataloğundan üretilen 559 ürün (SKU, Türkçe ad, orijinal katalog adı ve koli formatı), blog yazıları
 src/lib/            site bilgileri, sepet deposu, WhatsApp fiş oluşturucu
@@ -64,8 +64,8 @@ GitHub arayüzünden de yapılabilir: dosyaları doğrudan `public/media/product
 
 ## Önizleme / yayına alma
 
-- **Vercel (en hızlı):** vercel.com/new → GitHub deposunu seçin → branch → `AUTH_SECRET` ve `ADMIN_PASSWORD` ortam değişkenlerini girin → Deploy. Önizlemede müşteri verisi geçici dosyadadır; kalıcı veri için Odoo bağlantısı veya bir veritabanı gerekir.
-- **Kendi sunucunuz (Node 22):** `npm ci && npm run build && npm start`. `MAXIMUS_DATA_DIR` ile kalıcı bir veri dizini verin.
+- **Vercel (en hızlı):** vercel.com/new → GitHub deposunu seçin → branch → `AUTH_SECRET`, `ADMIN_PASSWORD` ve `DATABASE_URL` ortam değişkenlerini girin → Deploy. `DATABASE_URL` Vercel'de **zorunludur**: sunucusuz dosya sistemi salt okunurdur, dosya tabanlı depo orada yazamaz (kayıt `ENOENT: mkdir '/var/task/data'` ile düşer). Storage → Neon/Postgres bağlandığında değişken projeye kendiliğinden eklenir; tablolar ilk istekte oluşur.
+- **Kendi sunucunuz (Node 22):** `npm ci && npm run build && npm start`. Bir Postgres varsa `DATABASE_URL` verin; yoksa `MAXIMUS_DATA_DIR` ile kalıcı bir veri dizini gösterin.
 - **Yerel:** `npm install && cp .env.example .env && npm run dev` → http://localhost:3000
 
 ## Müşteri onayı
