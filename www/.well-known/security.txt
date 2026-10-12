@@ -1,5 +1,5 @@
 # europetaxi24 - guvenlik iletisimi (RFC 9116)
 Contact: mailto:Europataxisrl@gmail.com
-Expires: 2027-10-07T00:00:00.000Z
+Expires: 2027-10-12T00:00:00.000Z
 Preferred-Languages: fr, nl, en, tr
 Canonical: https://europetaxi24.be/.well-known/security.txt

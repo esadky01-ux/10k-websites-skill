@@ -217,17 +217,22 @@ if (KAYNAK / "pay").exists():
 import hashlib
 SURUM = {ad: hashlib.sha256((WWW / "assets" / ad).read_bytes()).hexdigest()[:10]
          for ad in ("site.css", "app.js", "kok.css", "kok.js")}
+# fotograflar (assets/foto/*.webp): ad sabit, ?v=<hash> ile cagrilir (resim degisince onbellek yenilenir)
+FOTO = {f.name: hashlib.sha256(f.read_bytes()).hexdigest()[:10] for f in sorted((WWW / "assets" / "foto").glob("*.webp"))} \
+    if (WWW / "assets" / "foto").is_dir() else {}
 
 
 def surumle(html):
     for ad, h in SURUM.items():
         html = html.replace(f'/assets/{ad}"', f'/assets/{ad}?v={h}"')
+    for ad, h in FOTO.items():
+        html = html.replace(f'/assets/foto/{ad}"', f'/assets/foto/{ad}?v={h}"')
     return html
 
 
 # dizin listeleme kalkani: 'Options -Indexes' AllowOverride'a bagli (izin yoksa site 500 verir);
 # bunun yerine her klasore noindex bir index.html konur.
-for _alt in ("assets", "assets/fonts", "assets/icons"):
+for _alt in ("assets", "assets/fonts", "assets/icons", "assets/foto"):
     if (WWW / _alt).is_dir():
         (WWW / _alt / "index.html").write_text(
             '<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><title>europetaxi24</title>\n',
@@ -283,14 +288,23 @@ for dil in DILLER:
         return f"{dk // 60} h {dk % 60:02d}" if dk >= 60 else f"{dk} min"
 
     # populer rota kartlari (yatay kaydirma; fiyat KESIN tablodan, "dès X")
+    def foto_anahtari(a, b):
+        """Kart gorseli: varis; varis Bruksel havalimani ise (baska sehirden gelen rota) alis sehri."""
+        anahtar = a if (b == "bru" and a != "brussels") else b
+        anahtar = {"ams": "amsterdam", "cdg": "paris", "orly": "paris", "cgn": "koln", "lux": "luxembourg"}.get(anahtar, anahtar)
+        return anahtar if (KAYNAK / "assets" / "foto" / f"{anahtar}.webp").is_file() else None
+
     rota_kartlari = []
     for i, (a, b) in enumerate(veri["populer"]):
         km = rota_km(a, b)
         toplam, _, _ = fiyat_hesapla(km)
         rota_kartlari.append(
-            f'<a class="chip dest-kart t{i % 4 + 1}" href="#rezervasyon" data-alis="{a}" data-varis="{b}">'
-            f'<span class="dk-yol">{esc(YERLER[a]["ad"][dil])}</span>'
-            f'<b class="dk-ad">{esc(YERLER[b]["ad"][dil])}</b>'
+            f'<a class="chip dest-kart t{i % 4 + 1}{" foto" if foto_anahtari(a, b) else ""}" href="#rezervasyon" data-alis="{a}" data-varis="{b}">'
+            + (f'<img class="dk-foto" src="/assets/foto/{foto_anahtari(a, b)}.webp" alt="" width="640" height="849" loading="lazy" decoding="async">'
+               if foto_anahtari(a, b) else "")
+            + (f'<span class="dk-yol">→ {esc(YERLER[b]["ad"][dil])}</span><b class="dk-ad">{esc(YERLER[a]["ad"][dil])}</b>'
+               if (b == "bru" and a != "brussels") else
+               f'<span class="dk-yol">{esc(YERLER[a]["ad"][dil])} →</span><b class="dk-ad">{esc(YERLER[b]["ad"][dil])}</b>') +
             f'<span class="dk-alt">{km} km</span>'
             f'<span class="dk-fiyat">{esc(s["zones_from"].replace("{price}", para_tam(dil, toplam)))}'
             f'<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>'
