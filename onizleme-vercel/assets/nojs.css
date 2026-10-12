@@ -1,0 +1,3 @@
+/* JS kapaliyken: rezervasyon adimlari alt alta tam gorunur, sihirbaz dugmeleri gizlenir */
+.adim{display:grid!important;grid-template-columns:minmax(0,1fr);gap:12px}
+.adim-cubuk,.btn-ileri,.btn-geri{display:none!important}

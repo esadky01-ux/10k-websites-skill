@@ -1,0 +1,346 @@
+# europetaxi24 (full text)
+
+> Full text of https://europetaxi24.be in French (Belgium), Dutch (Belgium), English and Turkish. europetaxi24 is a taxi and airport transfer service based in Zaventem, Belgium, operated by CAN COMPANY (VAT BE 1016.219.906). Last updated: 2026-10-12.
+
+## Company facts (language independent)
+- Trading name: europetaxi24. Legal entity: CAN COMPANY. VAT: BE 1016.219.906.
+- Business address: Excelsiorlaan 31, 1930 Zaventem, Belgium.
+- Phone and WhatsApp: +32 493 83 98 98 (https://wa.me/32493839898). Email: Europataxisrl@gmail.com.
+- Price formula: €10 base fare + €1.99 per kilometre. Deposit 20% online, balance to the driver.
+- Availability: every day, 24 hours a day. Area: Belgium, Germany, France, Luxembourg, Netherlands.
+
+## Français (fr-BE): https://europetaxi24.be/fr/
+
+### Taxi & transfert aéroport · Belgique et Benelux
+Votre taxi dans le Benelux, au prix fixé d'avance. Indiquez votre départ et votre destination : le prix exact s'affiche immédiatement. Acompte de 20 % en ligne, le reste au chauffeur. Belgique, Pays-Bas, Luxembourg, France, Allemagne, 7j/7.
+
+### Comment ça marche
+- Indiquez votre trajet: Départ, arrivée, date : le prix exact s'affiche immédiatement.
+- Réservez en 2 minutes: Acompte de 20 % en ligne ou confirmation directe par WhatsApp.
+- Voyagez l'esprit libre: Votre chauffeur est là à l'heure. Le solde se règle dans la voiture.
+
+### Pourquoi europetaxi24
+- Prix fixe, zéro surprise: Le prix affiché à la réservation est celui que vous payez. Pas de compteur qui tourne.
+- Disponible jour et nuit: Vols matinaux, arrivées tardives : nous roulons 7j/7, 24h/24.
+- Aéroports et longue distance: Zaventem, Charleroi, Schiphol, Paris, Cologne : transferts en Belgique, au Benelux et au-delà.
+- Chauffeurs professionnels: Chauffeurs agréés et véhicules récents, assurés et bien entretenus.
+
+### Notre flotte
+- Économie: Tesla Model 3 (4 passagers · 2 grandes + 2 petites valises)
+- Break: Grand volume de coffre (4 passagers · 4 grandes + 2 petites valises)
+- Business / VIP Van: Mercedes Vito (7 passagers · 6 grandes + 4 petites valises)
+
+### Trajets populaires
+Prix calculés avec notre formule : 10 € + 1,99 € par km.
+
+| Trajet | Distance | Prix total | Acompte en ligne | Solde au chauffeur |
+|---|---|---|---|---|
+| Bruxelles → Brussels Airport (Zaventem) | 13 km | 35,87 € | 7,17 € | 28,70 € |
+| Bruxelles → Aéroport de Charleroi (CRL) | 55 km | 119,45 € | 23,89 € | 95,56 € |
+| Gand → Brussels Airport (Zaventem) | 56 km | 121,44 € | 24,29 € | 97,15 € |
+| Anvers → Brussels Airport (Zaventem) | 37 km | 83,63 € | 16,73 € | 66,90 € |
+| Bruxelles → Anvers | 45 km | 99,55 € | 19,91 € | 79,64 € |
+| Bruxelles → Gand | 56 km | 121,44 € | 24,29 € | 97,15 € |
+| Bruxelles → Amsterdam Schiphol (AMS) | 193 km | 394,07 € | 78,81 € | 315,26 € |
+| Bruxelles → Paris | 315 km | 636,85 € | 127,37 € | 509,48 € |
+| Bruges → Brussels Airport (Zaventem) | 107 km | 222,93 € | 44,59 € | 178,34 € |
+| Liège → Brussels Airport (Zaventem) | 90 km | 189,10 € | 37,82 € | 151,28 € |
+
+### Zones desservies : Belgique et pays voisins
+Prix indicatifs au départ du centre de Bruxelles, calculés avec notre formule (10 € + 1,99 € par km). Le prix exact de votre trajet s'affiche à la réservation.
+- Transferts aéroport: Brussels Airport (Zaventem) (13 km, 35,87 €); Aéroport de Charleroi (CRL) (55 km, 119,45 €); Aéroport d'Eindhoven (EIN) (118 km, 244,82 €); Amsterdam Schiphol (AMS) (193 km, 394,07 €); Aéroport de Cologne/Bonn (CGN) (230 km, 467,70 €); Paris Charles de Gaulle (CDG) (283 km, 573,17 €); Paris Orly (ORY) (322 km, 650,78 €)
+- Villes en Belgique: Louvain (27 km, 63,73 €); Malines (27 km, 63,73 €); Anvers (45 km, 99,55 €); Gand (56 km, 121,44 €); Namur (64 km, 137,36 €); Mons (67 km, 143,33 €); Hasselt (83 km, 175,17 €); Courtrai (90 km, 189,10 €); Bruges (100 km, 209,00 €); Liège (100 km, 209,00 €); Ostende (114 km, 236,86 €)
+- Trajets transfrontaliers: Breda (102 km, 212,98 €); Maastricht (115 km, 238,85 €); Eindhoven (122 km, 252,78 €); Rotterdam (148 km, 304,52 €); La Haye (172 km, 352,28 €); Utrecht (180 km, 368,20 €); Amsterdam (210 km, 427,90 €); Lille (112 km, 232,88 €); Dunkerque (165 km, 338,35 €); Calais (203 km, 413,97 €); Paris (315 km, 636,85 €); Aix-la-Chapelle (142 km, 292,58 €); Cologne (215 km, 437,85 €); Düsseldorf (222 km, 451,78 €); Francfort (400 km, 806,00 €); Luxembourg (220 km, 447,80 €)
+
+### Mode de paiement
+- Vous payez un acompte de 20 % en ligne via Bancontact, carte de crédit ou Apple Pay (paiement sécurisé par Mollie). Le solde se règle au chauffeur, en espèces ou par carte.
+- Aux aéroports, l'attente est gratuite pendant 60 minutes après l'atterrissage. Aux autres adresses, les 15 premières minutes sont offertes, ensuite 0,50 € par minute.
+- Annulation à plus de 24 heures du départ : remboursement intégral. À moins de 24 heures du départ, l'acompte n'est pas remboursé.
+
+### Questions fréquentes
+**Comment le prix est-il calculé ?**
+Prise en charge de 10 € plus 1,99 € par kilomètre réel. Le prix affiché à la réservation est définitif : aucun supplément de nuit ou de week-end.
+
+**Comment se passe le paiement ?**
+Vous payez un acompte de 20 % en ligne via Bancontact, carte de crédit ou Apple Pay (paiement sécurisé par Mollie). Le solde se règle au chauffeur, en espèces ou par carte.
+
+**Puis-je annuler ma réservation ?**
+Oui. À plus de 24 heures du départ, l'acompte est intégralement remboursé. À moins de 24 heures, l'acompte reste dû.
+
+**Mon vol a du retard, que se passe-t-il ?**
+Aux aéroports, l'attente est gratuite pendant 60 minutes après l'atterrissage. Aux autres adresses, les 15 premières minutes sont offertes, ensuite 0,50 € par minute.
+
+**Roulez-vous vers l'étranger ?**
+Oui : Allemagne, France, Luxembourg et Pays-Bas. Paris, Amsterdam, Cologne ou Schiphol, le prix se calcule de la même façon.
+
+**Combien de passagers et de bagages ?**
+Jusqu'à 7 passagers et 6 grandes valises avec notre Mercedes Vito. Pour 4 passagers ou moins, la Tesla Model 3 ou le break suffit.
+
+**Combien coûte un taxi de Bruxelles à l'aéroport de Zaventem (BRU) ?**
+Du centre de Bruxelles à Brussels Airport (Zaventem), le transfert aéroport fait environ 13 km, soit 35,87 € au tarif kilométrique (10 € + 1,99 € par km). Depuis Gand (environ 56 km), comptez 121,44 €. Le prix confirmé à la réservation est définitif ; pour le forfait aéroport, demandez le prix du jour par WhatsApp. Acompte de 20 % en ligne, le reste au chauffeur.
+
+**Combien coûte un taxi de Bruxelles à l'aéroport de Charleroi (CRL) ?**
+De Bruxelles à l'aéroport de Charleroi, la navette en taxi fait environ 55 km, soit 119,45 € au tarif kilométrique (10 € + 1,99 € par km). Le prix confirmé à la réservation est définitif. À l'aéroport, l'attente est gratuite pendant 60 minutes après l'atterrissage.
+
+**Roulez-vous la nuit et tôt le matin ?**
+Oui, nous roulons 7j/7 et 24h/24, y compris pour les vols matinaux et les arrivées tardives. Il n'y a aucun supplément de nuit ou de week-end : le prix confirmé à la réservation ne change pas.
+
+**Combien coûte un taxi transfrontalier de Bruxelles vers Paris ou Amsterdam ?**
+Nous roulons vers l'Allemagne, la France, le Luxembourg et les Pays-Bas avec la même formule (10 € + 1,99 € par km). Au départ de Bruxelles : Amsterdam Schiphol, environ 193 km, soit 394,07 € ; Paris, environ 315 km, soit 636,85 €. Le prix exact s'affiche avant de réserver.
+
+### Informations société
+europetaxi24 est un service de CAN COMPANY, TVA BE 1016.219.906.
+E-mail: Europataxisrl@gmail.com · Téléphone: +32 493 83 98 98
+CAN COMPANY · BE 1016.219.906 · Excelsiorlaan 31, 1930 Zaventem, Belgium
+
+## Nederlands (nl-BE): https://europetaxi24.be/nl/
+
+### Taxi & luchthavenvervoer · België en Benelux
+Uw taxi in de Benelux, met vaste prijs op voorhand. Geef uw vertrek- en aankomstadres in en u ziet meteen de exacte prijs. Voorschot van 20 % online, de rest betaalt u aan de chauffeur. België, Nederland, Luxemburg, Frankrijk, Duitsland, 7 dagen op 7.
+
+### Zo werkt het
+- Geef uw rit in: Vertrek, aankomst, datum: de exacte prijs verschijnt meteen.
+- Reserveer in 2 minuten: Voorschot van 20 % online of rechtstreeks bevestigen via WhatsApp.
+- Reis zonder zorgen: Uw chauffeur staat op tijd klaar. De rest betaalt u in de wagen.
+
+### Waarom europetaxi24
+- Vaste prijs, geen verrassingen: De prijs bij de reservering is de prijs die u betaalt. Geen draaiende teller.
+- Dag en nacht beschikbaar: Vroege vluchten, late aankomsten: wij rijden 7 dagen op 7, dag en nacht.
+- Luchthavens en lange afstand: Zaventem, Charleroi, Schiphol, Parijs, Keulen: ritten in België, de Benelux en daarbuiten.
+- Professionele chauffeurs: Vergunde chauffeurs en recente, verzekerde en goed onderhouden wagens.
+
+### Onze vloot
+- Economy: Tesla Model 3 (4 passagiers · 2 grote + 2 kleine koffers)
+- Break: Extra grote koffer (4 passagiers · 4 grote + 2 kleine koffers)
+- Business / VIP Van: Mercedes Vito (7 passagiers · 6 grote + 4 kleine koffers)
+
+### Populaire ritten
+Prijzen volgens onze formule: 10 € + 1,99 € per km.
+
+| Rit | Afstand | Totaalprijs | Voorschot online | Saldo aan chauffeur |
+|---|---|---|---|---|
+| Brussel → Brussels Airport (Zaventem) | 13 km | 35,87 € | 7,17 € | 28,70 € |
+| Brussel → Luchthaven Charleroi (CRL) | 55 km | 119,45 € | 23,89 € | 95,56 € |
+| Gent → Brussels Airport (Zaventem) | 56 km | 121,44 € | 24,29 € | 97,15 € |
+| Antwerpen → Brussels Airport (Zaventem) | 37 km | 83,63 € | 16,73 € | 66,90 € |
+| Brussel → Antwerpen | 45 km | 99,55 € | 19,91 € | 79,64 € |
+| Brussel → Gent | 56 km | 121,44 € | 24,29 € | 97,15 € |
+| Brussel → Amsterdam Schiphol (AMS) | 193 km | 394,07 € | 78,81 € | 315,26 € |
+| Brussel → Parijs | 315 km | 636,85 € | 127,37 € | 509,48 € |
+| Brugge → Brussels Airport (Zaventem) | 107 km | 222,93 € | 44,59 € | 178,34 € |
+| Luik → Brussels Airport (Zaventem) | 90 km | 189,10 € | 37,82 € | 151,28 € |
+
+### Werkgebied: België en de buurlanden
+Richtprijzen vanuit Brussel-centrum, berekend met onze formule (10 € + 1,99 € per km). De exacte prijs van uw rit ziet u bij het reserveren.
+- Luchthavenvervoer: Brussels Airport (Zaventem) (13 km, 35,87 €); Luchthaven Charleroi (CRL) (55 km, 119,45 €); Eindhoven Airport (EIN) (118 km, 244,82 €); Amsterdam Schiphol (AMS) (193 km, 394,07 €); Luchthaven Keulen/Bonn (CGN) (230 km, 467,70 €); Parijs Charles de Gaulle (CDG) (283 km, 573,17 €); Parijs Orly (ORY) (322 km, 650,78 €)
+- Steden in België: Leuven (27 km, 63,73 €); Mechelen (27 km, 63,73 €); Antwerpen (45 km, 99,55 €); Gent (56 km, 121,44 €); Namen (64 km, 137,36 €); Bergen (67 km, 143,33 €); Hasselt (83 km, 175,17 €); Kortrijk (90 km, 189,10 €); Brugge (100 km, 209,00 €); Luik (100 km, 209,00 €); Oostende (114 km, 236,86 €)
+- Grensoverschrijdende ritten: Breda (102 km, 212,98 €); Maastricht (115 km, 238,85 €); Eindhoven (122 km, 252,78 €); Rotterdam (148 km, 304,52 €); Den Haag (172 km, 352,28 €); Utrecht (180 km, 368,20 €); Amsterdam (210 km, 427,90 €); Rijsel (112 km, 232,88 €); Duinkerke (165 km, 338,35 €); Calais (203 km, 413,97 €); Parijs (315 km, 636,85 €); Aken (142 km, 292,58 €); Keulen (215 km, 437,85 €); Düsseldorf (222 km, 451,78 €); Frankfurt (400 km, 806,00 €); Luxemburg (220 km, 447,80 €)
+
+### Betaalwijze
+- U betaalt een voorschot van 20 % online via Bancontact, kredietkaart of Apple Pay (beveiligd door Mollie). De rest betaalt u aan de chauffeur, cash of met de kaart.
+- Op de luchthaven wachten we gratis tot 60 minuten na de landing. Op andere adressen zijn de eerste 15 minuten gratis, daarna rekenen we 0,50 € per minuut aan.
+- Annuleert u meer dan 24 uur voor vertrek, dan wordt het voorschot volledig terugbetaald. Minder dan 24 uur voor vertrek wordt het voorschot niet terugbetaald.
+
+### Veelgestelde vragen
+**Hoe wordt de prijs berekend?**
+Instapgeld van 10 € plus 1,99 € per gereden kilometer. De prijs bij de reservering is definitief: geen nacht- of weekendtoeslag.
+
+**Hoe verloopt de betaling?**
+U betaalt een voorschot van 20 % online via Bancontact, kredietkaart of Apple Pay (beveiligd door Mollie). De rest betaalt u aan de chauffeur, cash of met de kaart.
+
+**Kan ik mijn reservering annuleren?**
+Ja. Annuleert u meer dan 24 uur voor vertrek, dan krijgt u het voorschot volledig terug. Binnen de 24 uur wordt het voorschot niet terugbetaald.
+
+**Mijn vlucht heeft vertraging, wat nu?**
+Op de luchthaven wachten we gratis tot 60 minuten na de landing. Op andere adressen zijn de eerste 15 minuten gratis, daarna rekenen we 0,50 € per minuut aan.
+
+**Rijden jullie naar het buitenland?**
+Ja: Duitsland, Frankrijk, Luxemburg en Nederland. Of het nu Parijs, Amsterdam, Keulen of Schiphol is, de prijs wordt op dezelfde manier berekend.
+
+**Hoeveel passagiers en bagage kunnen mee?**
+Tot 7 passagiers en 6 grote koffers met onze Mercedes Vito. Voor 4 passagiers of minder volstaat de Tesla Model 3 of de break.
+
+**Wat kost een luchthaventransfer van Brussel naar Brussels Airport (Zaventem, BRU)?**
+Van Brussel-centrum naar Brussels Airport (Zaventem) is het luchthavenvervoer ongeveer 13 km, of 35,87 € volgens het kilometertarief (10 € + 1,99 € per km). Vanuit Gent (ongeveer 56 km) betaalt u 121,44 €. De prijs die bij de reservering wordt bevestigd, is definitief; voor de vaste luchthavenprijs vraagt u de dagprijs via WhatsApp. Voorschot van 20 % online, de rest aan de chauffeur.
+
+**Wat kost een taxi van Brussel naar de luchthaven van Charleroi (CRL)?**
+Van Brussel naar de luchthaven van Charleroi is het ongeveer 55 km, of 119,45 € volgens het kilometertarief (10 € + 1,99 € per km). De prijs die bij de reservering wordt bevestigd, is definitief. Op de luchthaven wachten we gratis tot 60 minuten na de landing.
+
+**Rijdt u ook 's nachts en vroeg in de ochtend?**
+Ja, wij rijden 7 dagen op 7 en 24 uur op 24, ook voor vroege vluchten en late aankomsten. Er is geen nacht- of weekendtoeslag: de prijs die bij de reservering wordt bevestigd, verandert niet.
+
+**Wat kost een grensoverschrijdende taxi van Brussel naar Parijs of Amsterdam?**
+Wij rijden naar Duitsland, Frankrijk, Luxemburg en Nederland met dezelfde formule (10 € + 1,99 € per km). Vanuit Brussel: Amsterdam Schiphol is ongeveer 193 km, dus 394,07 €; Parijs is ongeveer 315 km, dus 636,85 €. De exacte prijs ziet u voordat u boekt.
+
+### Bedrijfsgegevens
+europetaxi24 is een dienst van CAN COMPANY, BTW BE 1016.219.906.
+E-mail: Europataxisrl@gmail.com · Telefoon: +32 493 83 98 98
+CAN COMPANY · BE 1016.219.906 · Excelsiorlaan 31, 1930 Zaventem, Belgium
+
+## English (en): https://europetaxi24.be/en/
+
+### Taxi & airport transfers · Belgium and Benelux
+Your taxi across the Benelux, priced before you ride. Enter your pickup and drop-off address and see the exact price instantly. Pay a 20% deposit online; the rest goes to your driver. Belgium, the Netherlands, Luxembourg, France and Germany, every day.
+
+### How it works
+- Enter your trip: Pickup, drop-off, date: your exact price appears instantly.
+- Book in 2 minutes: Pay a 20% deposit online or confirm directly on WhatsApp.
+- Travel with peace of mind: Your driver arrives on time. The rest is paid in the car.
+
+### Why europetaxi24
+- Fixed price, zero surprises: The price you see at booking is the price you pay. No running meter.
+- Available day and night: Early flights, late arrivals: we're on the road 24/7.
+- Airports and long distance: Zaventem, Charleroi, Schiphol, Paris, Cologne: transfers across Belgium, the Benelux and beyond.
+- Professional drivers: Licensed drivers and modern, insured, well-maintained vehicles.
+
+### Our fleet
+- Economy: Tesla Model 3 (4 passengers · 2 large + 2 small bags)
+- Station Wagon: Extra-large boot (4 passengers · 4 large + 2 small bags)
+- Business / VIP Van: Mercedes Vito (7 passengers · 6 large + 4 small bags)
+
+### Popular routes
+Prices follow our formula: €10 + €1.99 per km.
+
+| Route | Distance | Total price | Deposit online | Balance to driver |
+|---|---|---|---|---|
+| Brussels → Brussels Airport (Zaventem) | 13 km | €35.87 | €7.17 | €28.70 |
+| Brussels → Charleroi Airport (CRL) | 55 km | €119.45 | €23.89 | €95.56 |
+| Ghent → Brussels Airport (Zaventem) | 56 km | €121.44 | €24.29 | €97.15 |
+| Antwerp → Brussels Airport (Zaventem) | 37 km | €83.63 | €16.73 | €66.90 |
+| Brussels → Antwerp | 45 km | €99.55 | €19.91 | €79.64 |
+| Brussels → Ghent | 56 km | €121.44 | €24.29 | €97.15 |
+| Brussels → Amsterdam Schiphol (AMS) | 193 km | €394.07 | €78.81 | €315.26 |
+| Brussels → Paris | 315 km | €636.85 | €127.37 | €509.48 |
+| Bruges → Brussels Airport (Zaventem) | 107 km | €222.93 | €44.59 | €178.34 |
+| Liège → Brussels Airport (Zaventem) | 90 km | €189.10 | €37.82 | €151.28 |
+
+### Service areas: Belgium and neighbouring countries
+Indicative prices from central Brussels, calculated with our formula (€10 + €1.99 per km). The exact price of your ride is shown when you book.
+- Airport transfers: Brussels Airport (Zaventem) (13 km, €35.87); Charleroi Airport (CRL) (55 km, €119.45); Eindhoven Airport (EIN) (118 km, €244.82); Amsterdam Schiphol (AMS) (193 km, €394.07); Cologne/Bonn Airport (CGN) (230 km, €467.70); Paris Charles de Gaulle (CDG) (283 km, €573.17); Paris Orly (ORY) (322 km, €650.78)
+- Cities in Belgium: Leuven (27 km, €63.73); Mechelen (27 km, €63.73); Antwerp (45 km, €99.55); Ghent (56 km, €121.44); Namur (64 km, €137.36); Mons (67 km, €143.33); Hasselt (83 km, €175.17); Kortrijk (90 km, €189.10); Bruges (100 km, €209.00); Liège (100 km, €209.00); Ostend (114 km, €236.86)
+- Cross-border rides: Breda (102 km, €212.98); Maastricht (115 km, €238.85); Eindhoven (122 km, €252.78); Rotterdam (148 km, €304.52); The Hague (172 km, €352.28); Utrecht (180 km, €368.20); Amsterdam (210 km, €427.90); Lille (112 km, €232.88); Dunkirk (165 km, €338.35); Calais (203 km, €413.97); Paris (315 km, €636.85); Aachen (142 km, €292.58); Cologne (215 km, €437.85); Düsseldorf (222 km, €451.78); Frankfurt (400 km, €806.00); Luxembourg (220 km, €447.80)
+
+### Payment method
+- You pay a 20% deposit online via Bancontact, credit card or Apple Pay (secured by Mollie). The rest is paid to the driver, in cash or by card.
+- At airports, waiting is free for 60 minutes after landing. At other addresses, the first 15 minutes are free, then 0.50 € per minute.
+- Cancel more than 24 hours before departure: full refund. Less than 24 hours before departure, the deposit is non-refundable.
+
+### Frequently asked questions
+**How is the price calculated?**
+A base fare of €10 plus €1.99 per kilometre driven. The price shown at booking is final: no night or weekend surcharges.
+
+**How does payment work?**
+You pay a 20% deposit online via Bancontact, credit card or Apple Pay (secured by Mollie). The rest is paid to the driver, in cash or by card.
+
+**Can I cancel my booking?**
+Yes. Cancel more than 24 hours before departure and the deposit is fully refunded. Within 24 hours of departure, the deposit is non-refundable.
+
+**What if my flight is delayed?**
+At airports, waiting is free for 60 minutes after landing. At other addresses, the first 15 minutes are free, then 0.50 € per minute.
+
+**Do you drive abroad?**
+Yes: Germany, France, Luxembourg and the Netherlands. Paris, Amsterdam, Cologne or Schiphol, the price is calculated the same way.
+
+**How many passengers and bags fit?**
+Up to 7 passengers and 6 large suitcases in our Mercedes Vito. For 4 passengers or fewer, the Tesla Model 3 or the station wagon is plenty.
+
+**How much is a taxi from Brussels to Brussels Airport (Zaventem, BRU)?**
+From central Brussels to Brussels Airport (Zaventem), the airport transfer is about 13 km, so €35.87 at the per-kilometre rate (€10 + €1.99 per km). From Ghent (about 56 km) it is €121.44. The price confirmed at booking is final; for the fixed airport price, ask for today's price on WhatsApp. Pay a 20% deposit online and the rest to the driver.
+
+**How much is a taxi from Brussels to Charleroi Airport (CRL)?**
+From Brussels to Charleroi Airport it is about 55 km, so €119.45 at the per-kilometre rate (€10 + €1.99 per km). The price confirmed at booking is final. At the airport, waiting is free for 60 minutes after landing.
+
+**Do you drive at night and early in the morning?**
+Yes, we are available every day, 24 hours a day, including for early flights and late arrivals. There is no night or weekend surcharge: the price confirmed at booking does not change.
+
+**How much is a cross-border taxi from Brussels to Paris or Amsterdam?**
+We drive to Germany, France, Luxembourg and the Netherlands with the same formula (€10 + €1.99 per km). From Brussels: Amsterdam Schiphol is about 193 km, so €394.07; Paris is about 315 km, so €636.85. The exact price is shown before you book.
+
+### Company details
+europetaxi24 is a service of CAN COMPANY, VAT BE 1016.219.906.
+Email: Europataxisrl@gmail.com · Phone: +32 493 83 98 98
+CAN COMPANY · BE 1016.219.906 · Excelsiorlaan 31, 1930 Zaventem, Belgium
+
+## Türkçe (tr): https://europetaxi24.be/tr/
+
+### Taksi & havalimanı transferi · Belçika ve Benelüks
+Benelüks'te taksiniz, fiyatı baştan belli. Nereden nereye gideceğinizi yazın, kesin fiyatı anında görün. %20 kaporayı online ödeyin, kalanı şoföre verin. Belçika, Hollanda, Lüksemburg, Fransa ve Almanya, her gün.
+
+### Nasıl çalışır
+- Yolculuğunuzu girin: Alış, varış, tarih: kesin fiyat anında ekranda.
+- 2 dakikada ayırtın: %20 kaporayı online ödeyin ya da doğrudan WhatsApp'tan onaylayın.
+- İçiniz rahat yolculuk edin: Şoförünüz saatinde kapınızda. Kalan tutar araçta ödenir.
+
+### Neden europetaxi24
+- Sabit fiyat, sürpriz yok: Rezervasyonda gördüğünüz fiyat, ödeyeceğiniz fiyattır. İşleyen taksimetre yok.
+- Gece gündüz hizmet: Sabah uçuşları, gece varışları: her gün 7/24 yoldayız.
+- Havalimanı ve uzun mesafe: Zaventem, Charleroi, Schiphol, Paris, Köln: Belçika, Benelüks ve ötesine transfer.
+- Profesyonel şoförler: Lisanslı şoförler; yeni, sigortalı ve bakımlı araçlar.
+
+### Filomuz
+- Ekonomi: Tesla Model 3 (4 yolcu · 2 büyük + 2 küçük valiz)
+- Station Wagon: Ekstra geniş bagaj (4 yolcu · 4 büyük + 2 küçük valiz)
+- Business / VIP Van: Mercedes Vito (7 yolcu · 6 büyük + 4 küçük valiz)
+
+### Popüler rotalar
+Fiyatlar formülümüzle hesaplanır: 10 € + km başına 1,99 €.
+
+| Güzergah | Mesafe | Toplam fiyat | Online kapora | Şoföre kalan |
+|---|---|---|---|---|
+| Brüksel → Brüksel Havalimanı (Zaventem) | 13 km | 35,87 € | 7,17 € | 28,70 € |
+| Brüksel → Charleroi Havalimanı (CRL) | 55 km | 119,45 € | 23,89 € | 95,56 € |
+| Gent → Brüksel Havalimanı (Zaventem) | 56 km | 121,44 € | 24,29 € | 97,15 € |
+| Anvers → Brüksel Havalimanı (Zaventem) | 37 km | 83,63 € | 16,73 € | 66,90 € |
+| Brüksel → Anvers | 45 km | 99,55 € | 19,91 € | 79,64 € |
+| Brüksel → Gent | 56 km | 121,44 € | 24,29 € | 97,15 € |
+| Brüksel → Amsterdam Schiphol (AMS) | 193 km | 394,07 € | 78,81 € | 315,26 € |
+| Brüksel → Paris | 315 km | 636,85 € | 127,37 € | 509,48 € |
+| Brugge → Brüksel Havalimanı (Zaventem) | 107 km | 222,93 € | 44,59 € | 178,34 € |
+| Liège → Brüksel Havalimanı (Zaventem) | 90 km | 189,10 € | 37,82 € | 151,28 € |
+
+### Hizmet bölgeleri: Belçika ve komşu ülkeler
+Fiyatlar Brüksel merkezinden başlayan yolculuklar için formülümüzle hesaplanmış tahmini tutarlardır (10 € + km başına 1,99 €). Yolculuğunuzun kesin fiyatı rezervasyon sırasında görünür.
+- Havalimanı transferi: Brüksel Havalimanı (Zaventem) (13 km, 35,87 €); Charleroi Havalimanı (CRL) (55 km, 119,45 €); Eindhoven Havalimanı (EIN) (118 km, 244,82 €); Amsterdam Schiphol (AMS) (193 km, 394,07 €); Köln/Bonn Havalimanı (CGN) (230 km, 467,70 €); Paris Charles de Gaulle (CDG) (283 km, 573,17 €); Paris Orly (ORY) (322 km, 650,78 €)
+- Belçika şehirleri: Leuven (27 km, 63,73 €); Mechelen (27 km, 63,73 €); Anvers (45 km, 99,55 €); Gent (56 km, 121,44 €); Namur (64 km, 137,36 €); Mons (67 km, 143,33 €); Hasselt (83 km, 175,17 €); Kortrijk (90 km, 189,10 €); Brugge (100 km, 209,00 €); Liège (100 km, 209,00 €); Oostende (114 km, 236,86 €)
+- Sınır ötesi yolculuklar: Breda (102 km, 212,98 €); Maastricht (115 km, 238,85 €); Eindhoven (122 km, 252,78 €); Rotterdam (148 km, 304,52 €); Lahey (172 km, 352,28 €); Utrecht (180 km, 368,20 €); Amsterdam (210 km, 427,90 €); Lille (112 km, 232,88 €); Dunkerque (165 km, 338,35 €); Calais (203 km, 413,97 €); Paris (315 km, 636,85 €); Aachen (142 km, 292,58 €); Köln (215 km, 437,85 €); Düsseldorf (222 km, 451,78 €); Frankfurt (400 km, 806,00 €); Lüksemburg (220 km, 447,80 €)
+
+### Ödeme yöntemi
+- %20 kaporayı Bancontact, kredi kartı veya Apple Pay ile online ödersiniz (Mollie güvencesiyle). Kalanı şoföre nakit veya kartla ödersiniz.
+- Havalimanlarında iniş sonrası 60 dakika bekleme ücretsizdir. Diğer adreslerde ilk 15 dakika ücretsiz, sonrası dakika başına 0,50 €.
+- Rezervasyona 24 saatten fazla süre varken yapılan iptallerde tam iade. Son 24 saat içinde kapora iade edilmez.
+
+### Sık sorulan sorular
+**Fiyat nasıl hesaplanıyor?**
+10 € açılış ücreti artı gidilen her kilometre için 1,99 €. Rezervasyondaki fiyat kesindir: gece veya hafta sonu farkı yok.
+
+**Ödeme nasıl yapılıyor?**
+%20 kaporayı Bancontact, kredi kartı veya Apple Pay ile online ödersiniz (Mollie güvencesiyle). Kalanı şoföre nakit veya kartla ödersiniz.
+
+**Rezervasyonumu iptal edebilir miyim?**
+Evet. Kalkışa 24 saatten fazla süre varsa kapora tam iade edilir. Son 24 saat içinde kapora iade edilmez.
+
+**Uçağım rötar yaparsa ne olur?**
+Havalimanlarında iniş sonrası 60 dakika bekleme ücretsizdir. Diğer adreslerde ilk 15 dakika ücretsiz, sonrası dakika başına 0,50 €.
+
+**Yurt dışına gidiyor musunuz?**
+Evet: Almanya, Fransa, Lüksemburg ve Hollanda. Paris, Amsterdam, Köln veya Schiphol; fiyat aynı şekilde hesaplanır.
+
+**Kaç yolcu ve valiz sığar?**
+Mercedes Vito'muz en fazla 7 yolcu ve 6 büyük valiz alır. 4 yolcu ve altı için Tesla Model 3 veya station wagon yeterlidir.
+
+**Brüksel'den Brüksel Havalimanı'na (Zaventem, BRU) transfer ne kadar tutar?**
+Brüksel merkezinden Brussels Airport'a (Zaventem) havalimanı transferi yaklaşık 13 km'dir; kilometre tarifesiyle (10 € + km başına 1,99 €) 35,87 € tutar. Gent'ten (yaklaşık 56 km) 121,44 € tutar. Rezervasyonda onaylanan fiyat kesindir; havalimanı sabit fiyatı için günün fiyatını WhatsApp'tan sorabilirsiniz. %20 kaporayı online ödersiniz, kalanı şoföre verirsiniz.
+
+**Brüksel'den Charleroi Havalimanı'na (CRL) transfer ücreti nedir?**
+Brüksel'den Charleroi Havalimanı'na yaklaşık 55 km'dir; kilometre tarifesiyle (10 € + km başına 1,99 €) 119,45 € tutar. Rezervasyonda onaylanan fiyat kesindir. Havalimanlarında iniş sonrası 60 dakika bekleme ücretsizdir.
+
+**Gece ve sabahın erken saatlerinde hizmet veriyor musunuz?**
+Evet, her gün 7/24 hizmet veriyoruz; sabah erken uçuşlar ve geç saatteki varışlar dahil. Gece veya hafta sonu farkı yoktur: rezervasyonda onaylanan fiyat değişmez.
+
+**Brüksel'den Paris veya Amsterdam'a sınır ötesi taksi ne kadar?**
+Almanya, Fransa, Lüksemburg ve Hollanda'ya aynı formülle (10 € + km başına 1,99 €) gidiyoruz. Brüksel çıkışlı örnekler: Amsterdam Schiphol yaklaşık 193 km, 394,07 €; Paris yaklaşık 315 km, 636,85 €. Kesin fiyat rezervasyondan önce görüntülenir.
+
+### Şirket bilgileri
+europetaxi24, CAN COMPANY şirketinin hizmetidir; KDV no BE 1016.219.906.
+E-posta: Europataxisrl@gmail.com · Telefon: +32 493 83 98 98
+CAN COMPANY · BE 1016.219.906 · Excelsiorlaan 31, 1930 Zaventem, Belgium
